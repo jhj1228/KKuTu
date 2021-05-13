@@ -21,6 +21,8 @@ var Cluster = require("cluster");
 var Const = require('../const');
 var Lizard = require('../sub/lizard');
 var JLog = require('../sub/jjlog');
+var admin = GLOBAL.ADMIN
+const DiffMatchPatch = require("diff-match-patch")
 // 망할 셧다운제 var Ajae = require("../sub/ajae");
 var DB;
 var SHOP;
@@ -36,6 +38,8 @@ const NUM_SLAVES = 4;
 const GUEST_IMAGE = "/img/kkutu/guest.png";
 const MAX_OKG = 18;
 const PER_OKG = 600000;
+
+const differ = new DiffMatchPatch()
 
 exports.NIGHT = false;
 exports.init = function(_DB, _DIC, _ROOM, _GUEST_PERMISSION, _CHAN){
@@ -236,11 +240,12 @@ exports.Client = function(socket, profile, sid){
 		my.guest = true;
 		my.isAjae = false;
 		my.profile = {
-			id: sid,
+			id: "guest__" + sid,
 			title: getGuestName(sid),
 			image: GUEST_IMAGE
 		};
 	}
+	my.nickname = null;
 	my.socket = socket;
 	my.place = 0;
 	my.team = 0;
@@ -284,13 +289,12 @@ exports.Client = function(socket, profile, sid){
 	});
 	socket.on('message', function(msg){
 		var data, room = ROOM[my.place];
-		if(!my) return;
-		if(!msg) return;
 		
-		JLog.log(`Chan @${channel} Msg #${my.id}: ${msg}`);
+		if(JSON.parse(msg).type != 'reloadData') JLog.log(`Chan @${channel} Msg #${my.id}: ${msg}`);
 		try{ data = JSON.parse(msg); }catch(e){ data = { error: 400 }; }
+		/*JLog.log(`Chan @${channel} Msg #${my.id}: ${data.type == 'drawingCanvas' ? JSON.stringify({type: data.type, diffed: data.diffed}) : msg}`);*/
 		if(Cluster.isWorker) process.send({ type: "tail-report", id: my.id, chan: channel, place: my.place, msg: data.error ? msg : data });
-		
+
 		exports.onClientMessage(my, data);
 	});
 	/* 망할 셧다운제
@@ -306,6 +310,24 @@ exports.Client = function(socket, profile, sid){
 		}
 	};
 	*/
+	my.drawingCanvas = function(msg) {
+		let $room = ROOM[my.place];
+
+		if(!$room) return;
+		if(!$room.gaming) return;
+		if($room.rule.rule != 'Drawing') return;
+
+		$room.drawingCanvas(msg, my.id);
+	};
+	my.canvasNotValid = function(msg) {
+		let $room = ROOM[my.place];
+
+		if(!$room) return;
+		if(!$room.gaming) return;
+		if($room.rule.rule != 'Drawing') return;
+
+		my.send('drawCanvas', { diffed: false, data: $room.fullImageString })
+	}
 	my.getData = function(gaming){
 		var o = {
 			id: my.id,
@@ -325,6 +347,7 @@ exports.Client = function(socket, profile, sid){
 			o.data = my.data;
 			o.money = my.money;
 			o.equip = my.equip;
+			o.nickname = my.nickname;
 			o.exordial = my.exordial;
 		}
 		return o;
@@ -417,7 +440,11 @@ exports.Client = function(socket, profile, sid){
 			var first = !$user;
 			var black = first ? "" : $user.black;
 			
-			if(first) $user = { money: 0 };
+			/* Enhanced User Block System [S] */
+			const blockedUntil = (first || !$user.blockedUntil) ? null : $user.blockedUntil;
+			/* Enhanced User Block System [E] */
+
+			if(first) $user = { nickname: my.profile.title || my.profile.name, money: 0 };
 			if(black == "null") black = false;
 			if(black == "chat"){
 				black = false;
@@ -438,18 +465,30 @@ exports.Client = function(socket, profile, sid){
 					}
 				}
 			}*/
+			my.nickname = $user.nickname;
 			my.exordial = $user.exordial || "";
+			if (my.nickname) my.profile.title = my.nickname;
 			my.equip = $user.equip || {};
 			my.box = $user.box || {};
 			my.data = new exports.Data($user.kkutu);
 			my.money = Number($user.money);
 			my.friends = $user.friends || {};
-			if(first) my.flush();
-			else{
+			if(first){
+				my.flush();
+				DB.users.update([ '_id', my.id ]).set([ 'nickname', my.nickname || "별명 미지정" ]).on(function($body){
+					if(!my.nickname) JLog.warn(`OAuth로부터 별명을 받아오지 못한 유저가 있습니다. #${my.id}`);
+					DB.session.update([ '_id', sid ]).set([ 'nickname', my.nickname || "별명 미지정" ]).on();
+				});
+			}else{
 				my.checkExpire();
 				my.okgCount = Math.floor((my.data.playTime || 0) / PER_OKG);
 			}
-			if(black) R.go({ result: 444, black: black });
+			/* Enhanced User Block System [S] */
+			if(black){
+				if(blockedUntil) R.go({ result: 444, black: black, blockedUntil: blockedUntil });
+				else R.go({ result: 444, black: black });
+			}
+			/* Enhanced User Block System [E] */
 			else if(Cluster.isMaster && $user.server) R.go({ result: 409, black: $user.server });
 			else if(exports.NIGHT && my.isAjae === false) R.go({ result: 440 });
 			else R.go({ result: 200 });
@@ -508,13 +547,20 @@ exports.Client = function(socket, profile, sid){
 				}
 				return my.sendError(430, room.id);
 			}
-			if(!spec){
-				if($room.gaming){
+			if(!spec) {
+				if ($room.gaming) {
 					return my.send('error', { code: 416, target: $room.id });
-				}else if(my.guest) if(!GUEST_PERMISSION.enter){
-					return my.sendError(401);
+				} else if (my.guest) {
+                    if (!GUEST_PERMISSION.enter) return my.sendError(401);
+                } else if ($room.opts.onlybeginner && my.getLevel() > 50) {
+					if (my.guest == true) {
+						return my.sendError(610)
+					} else {
+						return my.sendError(2010);
+					}
 				}
 			}
+			if ($room.opts.noguest && my.guest == true) return my.sendError(610);
 			if($room.players.length >= $room.limit + (spec ? Const.MAX_OBSERVER : 0)){
 				return my.sendError(429);
 			}
@@ -531,7 +577,7 @@ exports.Client = function(socket, profile, sid){
 					if($room.kicked.indexOf(my.id) != -1){
 						return my.sendError(406);
 					}
-					if($room.password != room.password && $room.password){
+					if($room.password != room.password && $room.password && admin.indexOf(my.id) == -1){
 						$room = undefined;
 						return my.sendError(403);
 					}
@@ -667,7 +713,7 @@ exports.Client = function(socket, profile, sid){
 		
 		if(!$room) return;
 		if($room.master != my.id) return;
-		if($room.players.length < 2) return my.sendError(411);
+		// if($room.players.length < 2) return my.sendError(411);
 		
 		$room.ready();
 	};
@@ -856,7 +902,7 @@ exports.Room = function(room, channel){
 		if(!my.rule.ai){
 			return caller.sendError(415);
 		}
-		my.players.push(new exports.Robot(null, my.id, 2));
+		my.players.push(new exports.Robot(null, my.id, 4));
 		my.export();
 	};
 	my.setAI = function(target, level, team){
@@ -1043,6 +1089,28 @@ exports.Room = function(room, channel){
 		}
 		return false;
 	};
+	my.drawingCanvas = function(msg, userid) { //msg -> Message, userid -> sender ID
+		if(my.game.painter == userid) { // verify this data sended by painter
+			let diffed = true
+
+			// { type: "drawingCanvas", diffed: Boolean, data: String }
+			if (msg.diffed) {
+				diff = differ.patch_fromText(msg.data)
+				const diffResult = differ.patch_apply(diff, my.game.fullImageString)
+
+				if(diffResult[1]) {
+					my.game.fullImageString = diffResult[0]
+				} else {
+					my.byMaster('diffNotValid', {}, true)
+				}
+			} else {
+				diffResult = msg.data
+				diffed = false
+			}
+
+			my.byMaster('drawCanvas', { diffed, data: msg.data }, true);
+		}
+	};
 	my.ready = function(){
 		var i, all = true;
 		var len = 0;
@@ -1067,7 +1135,7 @@ exports.Room = function(room, channel){
 			}
 		}
 		if(!DIC[my.master]) return;
-		if(len < 2) return DIC[my.master].sendError(411);
+		// if(len < 2) return DIC[my.master].sendError(411);
 		if(i = my.preReady(teams)) return DIC[my.master].sendError(i);
 		if(all){
 			my._teams = teams;
@@ -1294,7 +1362,21 @@ exports.Room = function(room, channel){
 		if(!my.gaming) return;
 		if(!my.game.seq) return;
 		
-		my.game.turn = (my.game.turn + 1) % my.game.seq.length;
+		if(my.opts && my.opts.randomturn && my.opts.reverse){
+			my.game.turn = Math.floor(Math.random()*my.game.seq.length)
+		} else {
+			// my.game.turn = (my.game.turn + 1) % my.game.seq.length;
+		let $room = ROOM[my.place];
+			if(my.opts.randomturn) {
+				my.game.turn = (my.game.turn + Math.floor(Math.random()*(my.game.seq.length-2+1)) + 1) % my.game.seq.length;
+			}
+			else {
+				my.game.turn = (my.game.turn + 1) % my.game.seq.length;
+			}
+		if(my.opts.reverse) {
+			my.game.turn = reverse((my.game.turn - 1)) % my.game.seq.length;
+		}
+		};
 		my.turnStart(force);
 	};
 	my.turnEnd = function(){
@@ -1391,46 +1473,61 @@ function getRewards(mode, score, bonus, rank, all, ss){
 	// rank는 0~7
 	switch(Const.GAME_TYPE[mode]){
 		case "EKT":
-			rw.score += score * 1.4;
+			rw.score += score * 15;
 			break;
 		case "ESH":
-			rw.score += score * 0.5;
+			rw.score += score * 15;
 			break;
 		case "KKT":
-			rw.score += score * 1.42;
+			rw.score += score * 15;
 			break;
 		case "KSH":
-			rw.score += score * 0.55;
+			rw.score += score * 15;
 			break;
 		case "CSQ":
-			rw.score += score * 0.4;
+			rw.score += score * 15;
 			break;
 		case 'KCW':
-			rw.score += score * 1.0;
+			rw.score += score * 15;
 			break;
 		case 'KTY':
-			rw.score += score * 0.3;
+			rw.score += score * 15;
 			break;
 		case 'ETY':
-			rw.score += score * 0.37;
+			rw.score += score * 15;
 			break;
 		case 'KAP':
-			rw.score += score * 0.8;
+			rw.score += score * 15;
 			break;
 		case 'HUN':
-			rw.score += score * 0.5;
+			rw.score += score * 15;
 			break;
 		case 'KDA':
-			rw.score += score * 0.57;
+			rw.score += score * 15;
 			break;
 		case 'EDA':
-			rw.score += score * 0.65;
+			rw.score += score * 15;
 			break;
 		case 'KSS':
-			rw.score += score * 0.5;
+			rw.score += score * 15;
 			break;
 		case 'ESS':
-			rw.score += score * 0.22;
+			rw.score += score * 15;
+			break;
+		case 'KDG':
+			rw.score += score * 15;
+			break;
+		case 'EDG':
+			rw.score += score * 15;
+			break;
+		case 'KMH':
+			rw.score += score * 15;
+			break;
+		case 'EAP':
+			rw.score += score * 15;
+			break;
+		case 'EKD':
+			rw.score += score * 15;
 			break;
 		default:
 			break;
