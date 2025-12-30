@@ -1,0 +1,257 @@
+<html>
+<head>
+    <title>끄투 공지사항</title>
+    <style>
+        /* [기본 설정] */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* 전체 스크롤 막음 */
+            background-color: #f0f2f5;
+            font-family: '나눔바른고딕', '맑은 고딕', sans-serif;
+            display: flex;
+            flex-direction: column; /* 세로 배치 (메뉴 + 내용) */
+        }
+
+        /* [상단 네비게이션 탭] */
+        .nav-header {
+            background: white;
+            padding: 0 20px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+            flex-shrink: 0; /* 크기 줄어듦 방지 */
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            color: #888;
+            padding: 13px 20px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+            font-family: inherit;
+        }
+
+        .nav-btn:hover {
+            color: #4a90e2;
+        }
+
+        /* 선택된 버튼 스타일 */
+        .nav-btn.active {
+            color: #4a90e2;
+        }
+
+        /* 선택된 버튼 아래 파란 줄 */
+        .nav-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #4a90e2;
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* [내용이 들어가는 스크롤 영역] */
+        .content-container {
+            flex-grow: 1; /* 남은 공간 다 채우기 */
+            overflow-y: auto; /* 여기서 스크롤 발생 */
+            padding: 20px;
+            box-sizing: border-box;
+
+            /* 스크롤바 숨기기 */
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        
+        .content-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* [탭 내용 숨김/표시 제어] */
+        .tab-content {
+            display: none; /* 기본적으로 숨김 */
+        }
+        
+        .tab-content.active {
+            display: block; /* active 클래스가 있으면 보임 */
+            animation: fadeIn 0.3s ease; /* 부드럽게 나타나기 */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* [카드 디자인 공통] */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 버전/제목 헤더 */
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #f8f9fa;
+            padding-bottom: 10px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #333;
+        }
+        
+        .header-sub {
+            font-size: 14px;
+            color: #888;
+            margin-left: auto; /* 오른쪽 정렬 */
+        }
+
+        /* 뱃지 스타일 */
+        .badge {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: bold;
+            color: white;
+        }
+        .bg-red { background: #ff5e57; }
+        .bg-blue { background: #4a90e2; }
+        .bg-green { background: #2ecc71; }
+
+        /* 리스트 스타일 */
+        ul { padding-left: 0; margin: 0; list-style: none; }
+        li {
+            font-size: 14px; color: #555; margin-bottom: 8px;
+            padding-left: 18px; position: relative; line-height: 1.5;
+        }
+        li::before {
+            content: '•'; color: #4a90e2; font-weight: bold;
+            position: absolute; left: 4px; top: 0px; font-size: 18px;
+        }
+        .highlight { font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-header">
+        <button class="nav-btn active" onclick="switchTab('tab-updates', this)">업데이트 로그</button>
+        <button class="nav-btn" onclick="switchTab('tab-notices', this)">공지사항</button>
+    </nav>
+
+    <div class="content-container">
+        
+        <div id="tab-updates" class="tab-content active">
+			<div class="card">
+				<div class="card-header">
+					<span class="header-title" style="color:#4a90e2">v1.0.3</span>
+					<span class="badge bg-red">NEW</span>
+					<span class="header-sub">25.12.30</span>
+				</div>
+				<ul>
+					<li>서비스 이용 약관 및 개인정보 취급 방침이 시행되었습니다.</li>
+                    <li>감자 서버는 GUEST 전용, 냉이 서버는 회원 전용 서버로 분리되었습니다.</li>
+				</ul>
+			</div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="header-title" style="color:#666">v1.0.2</span>
+                    <span class="header-sub">25.12.29</span>
+                </div>
+                <ul>
+                    <li>BGM 변경 기능이 추가되었습니다.</li>
+                    <li>이제 GUEST는 reCAPTCHA 인증 후 접속할 수 있습니다.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="header-title" style="color:#666">v1.0.1</span>
+                    <span class="header-sub">25.12.28</span>
+                </div>
+                <ul>
+                    <li>게임 로딩 화면이 비정상적으로 깨져있던 현상이 수정되었습니다.</li>
+                    <li>GUEST의 프로필 조회 불가 및 말풍선이 보이지 않던 버그가 수정되었습니다.</li>
+                    <li>닉네임 변경 기능이 추가되었습니다.</li>
+					<li>볼륨 조절 기능이 추가되었습니다.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="header-title" style="color:#666">v1.0.0</span>
+					<span class="header-sub">25.12.27</span>
+                </div>
+                <ul>
+                    <li>글자로 놀자! 레전드끄투가 공개되었습니다.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="tab-notices" class="tab-content">
+            
+            <div class="card" style="border-left: 5px solid #ff5e57;">
+                <div class="card-header">
+                    <span class="header-title">필독 공지사항</span>
+                    <span class="badge bg-red">중요</span>
+                    <!-- <span class="header-sub">12.29</span> -->
+                </div>
+                <ul>
+                    <li>욕설 및 비매너 행위는 <b>제재 대상</b>이 될 수 있습니다.</li>
+					<li>레전드끄투는 모바일 UI를 지원하지 않습니다. 불편하시더라도 데스크톱 모드를 이용해주시기 바랍니다.</li>
+                </ul>
+            </div>
+            <!-- <div class="card" style="border-left: 5px solid #002AFF;">
+                <div class="card-header">
+                    <span class="header-title">확인된 사항</span>
+                </div>
+                <ul>
+                    <li>게임 시작 시 "게임 정보를 불러오고 있습니다." 문구가 뜨지 않는 현상</li>
+                </ul>
+            </div> -->
+        </div>
+
+    </div>
+
+    <script>
+        function switchTab(tabId, element) {
+            // 1. 모든 탭 내용 숨기기
+            var contents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
+            }
+
+            // 2. 모든 버튼의 활성화 상태 끄기
+            var buttons = document.getElementsByClassName('nav-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+
+            // 3. 선택한 탭 보여주기
+            document.getElementById(tabId).classList.add('active');
+
+            // 4. 클릭한 버튼 활성화 하기
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>
