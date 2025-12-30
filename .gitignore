@@ -8,5 +8,5 @@ Server/lib/Web/public/js/**
 !Server/lib/Web/public/js/diff-match-patch-compressed.js
 Server/lib/sub/auth.json
 Server/lib/sub/global.json
-Server/db.sql
+/KKUTU_ERROR.log
 .vscode
