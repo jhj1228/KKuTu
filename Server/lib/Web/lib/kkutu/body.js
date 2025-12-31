@@ -1627,10 +1627,12 @@ function requestProfile(id) {
 		$("#profile-place").html(o.place ? (o.place + L['roomNumber']) : L['lobby']);
 		for (i in o.data.record) {
 			var r = o.data.record[i];
+			var winRate = r[0] > 0 ? ((r[1] / r[0]) * 100).toFixed(2) : "0.00";
 
 			$rec.append($("<div>").addClass("profile-record-field")
 				.append($("<div>").addClass("profile-field-name").html(L['mode' + i]))
 				.append($("<div>").addClass("profile-field-record").html(r[0] + L['P'] + " " + r[1] + L['W']))
+				.append($("<div>").addClass("profile-field-wr").html(winRate + "%"))
 				.append($("<div>").addClass("profile-field-score").html(commify(r[2]) + L['PTS']))
 			);
 		}
