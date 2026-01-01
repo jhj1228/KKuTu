@@ -45,7 +45,8 @@ exports.OPTIONS = {
 	'ulm': { name: "Unlimited" },
 	'sht': { name: "Short" },
 	'rtn': { name: "Return" },
-	'rdt': { name: "Randomturn" }
+	'rdt': { name: "Randomturn" },
+	'unw': { name: "Unknownword" },
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -78,7 +79,7 @@ exports.RULE = {
 	'KKT': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "unw"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -87,7 +88,7 @@ exports.RULE = {
 	'KSH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -123,7 +124,7 @@ exports.RULE = {
 	'KAP': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -160,7 +161,7 @@ exports.RULE = {
 	'KMH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -169,7 +170,7 @@ exports.RULE = {
 	'KKK': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -214,7 +215,7 @@ exports.RULE = {
 	'KRH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
 		time: 1,
 		ai: true,
 		big: false,

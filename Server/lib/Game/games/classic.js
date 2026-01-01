@@ -275,9 +275,15 @@ exports.submit = function (client, text) {
 				}
 				setTimeout(my.turnNext, my.game.turnTime / 6);
 				if (!client.robot) {
-					client.invokeWordPiece(text, 1);
-					DB.kkutu[l].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
+					if (!my.opts.unknownword) {
+						client.invokeWordPiece(text, 1);
+						DB.kkutu[l].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
+					}
 				}
+			}
+			if (my.opts.unknownword) {
+				approved();
+				return;
 			}
 			if (firstMove || my.opts.manner) getAuto.call(my, preChar, preSubChar, 1).then(function (w) {
 				if (w) approved();
@@ -294,6 +300,21 @@ exports.submit = function (client, text) {
 		function denied(code) {
 			my.game.loading = false;
 			client.publish('turnError', { code: code || 404, value: text }, true);
+		}
+		if (my.opts.unknownword) {
+			if ($doc) {
+				denied(410);
+			} else {
+				$doc = {
+					mean: "",
+					theme: "",
+					type: "unknown",
+					hit: 0,
+					baby: 0
+				};
+				preApproved();
+			}
+			return;
 		}
 		if ($doc) {
 			if (!my.opts.injeong && ($doc.flag & Const.KOR_FLAG.INJEONG)) denied();

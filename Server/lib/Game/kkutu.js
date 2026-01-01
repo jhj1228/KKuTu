@@ -1263,6 +1263,10 @@ exports.Room = function (room, channel) {
 			rw = getRewards(my.mode, o.game.score / res[i].dim, o.game.bonus, res[i].rank, rl, sumScore);
 			rw.playTime = now - o.playAt;
 			o.applyEquipOptions(rw); // 착용 아이템 보너스 적용
+			if (my.opts.unknownword) {
+				rw.score = 0;
+				rw.money = 0;
+			}
 			if (rw.together) {
 				if (o.game.wpc) o.game.wpc.forEach(function (item) { o.obtain("$WPC" + item, 1); }); // 글자 조각 획득 처리
 				o.onOKG(rw.playTime);
