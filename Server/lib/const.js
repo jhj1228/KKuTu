@@ -208,6 +208,15 @@ exports.RULE = {
 		ai: false,
 		big: false,
 		ewq: false
+	},
+	'KRH': {
+		lang: "ko",
+		rule: "Classic",
+		opts: ["man", "ext", "mis", "loa", "str", "rdt"],
+		time: 1,
+		ai: true,
+		big: false,
+		ewq: true
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
@@ -260,6 +269,7 @@ exports.KO_INJEONG = [
 	"WEB", // 웹툰
 	"KPO", // 유명인
 	"JPT", // 일본 철도역
+	"CFE", // 자격/면허
 	"ZEL", // 젤다의 전설
 	"CKR", // 쿠키런
 	"TCG", // 트릭컬 리바이브

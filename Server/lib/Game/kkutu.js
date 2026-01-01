@@ -1460,65 +1460,53 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 	// all은 1~8
 	// rank는 0~7
 	switch (Const.GAME_TYPE[mode]) {
-		case "EKT":
-			rw.score += score * 1.4;
-			break;
-		case "ESH":
-			rw.score += score * 0.5;
-			break;
 		case "KKT":
-			rw.score += score * 2.84;
+			rw.score += score * 1.42;
 			break;
 		case "KSH":
-			rw.score += score * 1.1;
+			rw.score += score * 0.55;
 			break;
 		case "CSQ":
-			rw.score += score * 0.8;
+			rw.score += score * 0.4;
 			break;
 		case 'KCW':
-			rw.score += score * 2.0;
+			rw.score += score * 1.0;
 			break;
 		case 'KTY':
-			rw.score += score * 0.6;
-			break;
-		case 'ETY':
-			rw.score += score * 0.37;
+			rw.score += score * 0.3;
 			break;
 		case 'KAP':
-			rw.score += score * 1.6;
-			break;
-		case 'HUN':
-			rw.score += score * 1.0;
-			break;
-		case 'KDA':
-			rw.score += score * 1.14;
-			break;
-		case 'EDA':
-			rw.score += score * 0.65;
-			break;
-		case 'KSS':
-			rw.score += score * 1.0;
-			break;
-		case 'ESS':
-			rw.score += score * 0.22;
-			break;
-		case 'KMH':
-			rw.score += score * 1.6;
-			break;
-		case 'KKK':
-			rw.score += score * 3.7;
-			break;
-		case 'KDG':
-			rw.score += score * 1.14;
-			break;
-		case 'MOQ':
-			rw.score += score * 1.36;
-			break;
-		case 'ALL':
 			rw.score += score * 0.8;
 			break;
+		case 'HUN':
+			rw.score += score * 0.5;
+			break;
+		case 'KDA':
+			rw.score += score * 0.57;
+			break;
+		case 'KSS':
+			rw.score += score * 0.5;
+			break;
+		case 'KMH':
+			rw.score += score * 0.8;
+			break;
+		case 'KKK':
+			rw.score += score * 1.85;
+			break;
+		case 'KDG':
+			rw.score += score * 0.57;
+			break;
+		case 'MOQ':
+			rw.score += score * 0.68;
+			break;
+		case 'ALL':
+			rw.score += score * 0.4;
+			break;
 		case 'KTT':
-			rw.score += score * 1.1;
+			rw.score += score * 0.55;
+			break;
+		case 'KRH':
+			rw.score += score * 0.58;
 			break;
 		default:
 			break;
@@ -1535,8 +1523,8 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 		rw.together = true;
 	}
 	rw.score += bonus;
-	rw.score = rw.score || 0;
-	rw.money = rw.money || 0;
+	rw.score = rw.score * 2 || 0;
+	rw.money = rw.money * 2 || 0;
 
 	// applyEquipOptions에서 반올림한다.
 	return rw;
