@@ -9,4 +9,5 @@ Server/lib/Web/public/js/**
 Server/lib/sub/auth.json
 Server/lib/sub/global.json
 /KKUTU_ERROR.log
+/db.sql
 .vscode
