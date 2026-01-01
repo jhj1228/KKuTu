@@ -103,8 +103,8 @@ block Middle
 		div.dialog-bar
 			h4= '배경 음악 선택'
 			select#bgm-select
-				option(value='lobbyseol') 1. 기본
-				option(value='lobby', selected) 2. 명절
+				option(value='lobby', selected) 1. 기본
+				option(value='lobbyseol') 2. 명절
 				option(value='lobbyending') 3. 끄투 엔딩
 				option(value='inthepool') 4. IN THE SEA x IN THE POOL
 				option(value='enchanted') 5. Enchanted Love
@@ -144,14 +144,14 @@ block Middle
 			button#lb-next(style='margin-right: 6px;')= L('nextPage')
 			button#lb-me= L('myRank')
 			button#lb-prev= L('prevPage')
-	+Dialog('QuickDiag', 300, 250, L('quickRoom'))
+	+Dialog('QuickDiag', 300, 295, L('quickRoom'))
 		div.dialog-bar
 			h4= L('gameMode')
 			select#quick-mode
 				- for(var i in locals.MODE)
 					option(value=Number(i))= L('mode' + locals.MODE[i])
-		div.dialog-bar(style='height: 80px;')
-			h4(style='height: 55px;')= L('misc')
+		div.dialog-bar(style='height: 130px;')
+			h4(style='height: 85px;')= L('misc')
 			- for(var i in locals.OPTIONS)
 				+GameOption(i, 'quick')
 		div.dialog-bar
@@ -160,7 +160,7 @@ block Middle
 			h4(style='width: 100%; height: 20px;')#quick-queue
 		div.dialog-bar.tail-button
 			button#quick-ok= L('OK')
-	+Dialog('RoomDiag', 300, 390)
+	+Dialog('RoomDiag', 300, 435)
 		div.dialog-bar
 			h4= L('roomTitle')
 			input#room-title(placeholder=(nick || L('guest'))+L('roomDefault'), maxlength=20)
@@ -206,8 +206,8 @@ block Middle
 				option(value=90)
 				option(value=120)
 				option(value=150)
-		div.dialog-bar(style='height: 80px;')
-			h4(style='height: 65px;')= L('misc')
+		div.dialog-bar(style='height: 130px;')
+			h4(style='height: 85px;')= L('misc')
 			- for(var i in locals.OPTIONS)
 				+GameOption(i, 'room')
 			div.dialog-opt#room-injpick-panel

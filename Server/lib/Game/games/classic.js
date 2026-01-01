@@ -270,7 +270,7 @@ exports.submit = function (client, text) {
 					bonus: (my.game.mission === true) ? score - my.getScore(text, t, true) : 0,
 					baby: $doc.baby
 				}, true);
-				if (my.game.mission === true) {
+				if (my.game.mission === true || (my.opts.mission && my.opts.randommission)) {
 					my.game.mission = getMission(my.rule.lang);
 				}
 				setTimeout(my.turnNext, my.game.turnTime / 6);

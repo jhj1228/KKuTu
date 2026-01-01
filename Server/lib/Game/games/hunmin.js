@@ -51,7 +51,7 @@ exports.roundReady = function () {
 	if (my.game.round <= my.round) {
 		my.game.theme = getTheme(2, my.game.done);
 		my.game.chain = [];
-		if (my.opts.mission) my.game.mission = getMission(my.game.theme);
+		if (my.opts.mission) my.game.mission = getMission(my.rule.lang);
 		my.game.done.push(my.game.theme);
 		my.byMaster('roundReady', {
 			round: my.game.round,
@@ -167,8 +167,8 @@ exports.submit = function (client, text, data) {
 						score: score,
 						bonus: (my.game.mission === true) ? score - my.getScore(text, t, true) : 0
 					}, true);
-					if (my.game.mission === true) {
-						my.game.mission = getMission(my.game.theme);
+					if (my.game.mission === true || (my.opts.mission && my.opts.randommission)) {
+						my.game.mission = getMission(my.rule.lang);
 					}
 					setTimeout(my.turnNext, my.game.turnTime / 6);
 					if (!client.robot) {
