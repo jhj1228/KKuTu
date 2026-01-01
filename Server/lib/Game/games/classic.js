@@ -221,7 +221,19 @@ exports.submit = function (client, text) {
 	if (!my.game.char) return;
 
 	if (!isChainable(text, my.mode, my.game.char, my.game.subChar)) return client.chat(text);
-	if (my.game.chain.indexOf(text) != -1) return client.publish('turnError', { code: 409, value: text }, true);
+
+	var dupCount = 0;
+	if (my.game.chain) {
+		for (var i = 0; i < my.game.chain.length; i++) {
+			if (my.game.chain[i] === text) dupCount++;
+		}
+	}
+
+	if (my.opts.return) {
+		if (dupCount >= 5) return client.publish('turnError', { code: 409, value: text }, true);
+	} else {
+		if (dupCount > 0) return client.publish('turnError', { code: 409, value: text }, true);
+	}
 
 	l = my.rule.lang;
 	my.game.loading = true;

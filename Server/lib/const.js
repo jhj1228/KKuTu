@@ -43,6 +43,7 @@ exports.OPTIONS = {
 	'no2': { name: "No2" },
 	'ulm': { name: "Unlimited" },
 	'sht': { name: "Short" },
+	'rtn': { name: "Return" },
 	'rdt': { name: "Randomturn" }
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
@@ -76,7 +77,7 @@ exports.RULE = {
 	'KKT': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "loa", "str", "k32", "rdt"],
+		opts: ["man", "ext", "mis", "loa", "str", "k32", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -85,7 +86,7 @@ exports.RULE = {
 	'KSH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "loa", "str", "rdt"],
+		opts: ["man", "ext", "mis", "loa", "str", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -121,7 +122,7 @@ exports.RULE = {
 	'KAP': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "loa", "str", "rdt"],
+		opts: ["man", "ext", "mis", "loa", "str", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -131,7 +132,7 @@ exports.RULE = {
 	'HUN': {
 		lang: "ko",
 		rule: "Hunmin",
-		opts: ["ext", "mis", "loa", "str", "rdt"],
+		opts: ["ext", "mis", "loa", "str", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -140,7 +141,7 @@ exports.RULE = {
 	'KDA': {
 		lang: "ko",
 		rule: "Daneo",
-		opts: ["ijp", "mis", "rdt"],
+		opts: ["ijp", "mis", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -158,7 +159,7 @@ exports.RULE = {
 	'KMH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "loa", "str", "rdt"],
+		opts: ["man", "ext", "mis", "loa", "str", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -167,7 +168,7 @@ exports.RULE = {
 	'KKK': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "loa", "str", "rdt"],
+		opts: ["man", "ext", "mis", "loa", "str", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -194,7 +195,7 @@ exports.RULE = {
 	'ALL': {
 		lang: "ko",
 		rule: "All",
-		opts: ["mis", "rdt"],
+		opts: ["mis", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -212,7 +213,7 @@ exports.RULE = {
 	'KRH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "loa", "str", "rdt"],
+		opts: ["man", "ext", "mis", "loa", "str", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
