@@ -294,7 +294,6 @@ exports.submit = function (client, text) {
 				approved();
 				return;
 			}
-
 			if (firstMove || my.opts.manner) getAuto.call(my, preChar, preSubChar, 1).then(function (w) {
 				if (w) approved();
 				else {
@@ -312,12 +311,12 @@ exports.submit = function (client, text) {
 			client.publish('turnError', { code: code || 404, value: text }, true);
 		}
 		if (my.opts.unknownword) {
+			if (!/^[가-힣ㄱ-ㅎㅏ-ㅣ]+$/.test(text)) {
+				denied(411);
+				return;
+			}
 			if ($doc) {
-				if (client.robot) {
-					preApproved();
-				} else {
-					denied(410);
-				}
+				denied(410);
 			} else {
 				$doc = {
 					mean: "",
@@ -382,7 +381,18 @@ exports.readyRobot = function (robot) {
 	var w, text, i;
 	var lmax;
 	var isRev = Const.GAME_TYPE[my.mode] == "KAP";
+	if (my.opts.unknownword) {
+		text = my.game.char;
+		var randomLen = Math.floor(Math.random() * 19) + 2;
+		for (var k = 1; k < randomLen; k++) {
+			var randomCode = 0xAC00 + Math.floor(Math.random() * 11172);
+			text += String.fromCharCode(randomCode);
+		}
 
+		robot._done.push(text);
+		setTimeout(my.turnRobot, 10, robot, text);
+		return;
+	}
 	getAuto.call(my, my.game.char, my.game.subChar, 2).then(function (list) {
 		if (list.length) {
 			list.sort(function (a, b) { return b.hit - a.hit; });

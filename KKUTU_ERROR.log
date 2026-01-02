@@ -1,2 +1,13 @@
 This is an error log file of the game server.
-You may use like `tail -f KKUTU_ERROR.log` to watch this.
+You may use like `tail -f KKUTU_ERROR.log` to watch this.:8506 [2026-1-2 5:54:53 ├F10: PM┤] ERROR: SyntaxError: Invalid regular expression: /^(?)./: Invalid group
+SyntaxError: Invalid regular expression: /^(?)./: Invalid group
+    at new RegExp (<anonymous>)
+    at produce (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\games\classic.js:514:22)
+    at C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\games\classic.js:510:4
+    at callback (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\sub\collection.js:316:13)
+    at Query.preCB (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\sub\collection.js:298:6)
+    at Query.handleReadyForQuery (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\node_modules\pg\lib\query.js:138:12)
+    at Client._handleReadyForQuery (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\node_modules\pg\lib\client.js:290:19)
+    at Connection.emit (events.js:314:20)
+    at C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\node_modules\pg\lib\connection.js:114:12
+    at Parser.parse (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\node_modules\pg-protocol\dist\parser.js:40:17)
