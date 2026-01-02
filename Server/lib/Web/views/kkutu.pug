@@ -159,7 +159,7 @@ block Middle
 			h4(style='width: 100%; height: 20px;')#quick-queue
 		div.dialog-bar.tail-button
 			button#quick-ok= L('OK')
-	+Dialog('RoomDiag', 300, 435)
+	+Dialog('RoomDiag', 300, 475)
 		div.dialog-bar
 			h4= L('roomTitle')
 			input#room-title(placeholder=(nick || L('guest'))+L('roomDefault'), maxlength=20)
@@ -205,8 +205,8 @@ block Middle
 				option(value=90)
 				option(value=120)
 				option(value=150)
-		div.dialog-bar(style='height: 130px;')
-			h4(style='height: 85px;')= L('misc')
+		div.dialog-bar(style='height: 170px;')
+			h4(style='height: 135px;')= L('misc')
 			- for(var i in locals.OPTIONS)
 				+GameOption(i, 'room')
 			div.dialog-opt#room-injpick-panel
@@ -227,7 +227,6 @@ block Middle
 						div(style='float: left; width: 100%;')
 							input(id=name, type='checkbox', style='width: auto;')
 							label(for=name)= LANG['theme_' + item]
-							
 				div(style='width: 100%; font-weight: bold; color: #000; text-align: center; font-size: 15px;') 어인정 주제
 				each item in locals.KO_INJEONG
 					if locals.IJP_EXCEPT.indexOf(item) == -1
@@ -235,8 +234,6 @@ block Middle
 						div(style='float: left; width: 100%;')
 							input(id=name, type='checkbox', style='width: auto;')
 							label(for=name)= LANG['theme_' + item]
-
-			div.dialog-opt#en-pick-list(style='width: 100%;')
 		div.dialog-bar.tail-button
 			button#injpick-ok= L('OK')
 	+Dialog('PracticeDiag', 300, 135)
@@ -501,6 +498,7 @@ block Middle
 		div#Chat
 		input#Talk(maxlength=200)
 		button#ChatBtn= L('send')
+	//- +Product('AD')
 
 block Bottom
 	div.bottom-legal!= L('Copyright')

@@ -10,4 +10,5 @@ Server/lib/sub/auth.json
 Server/lib/sub/global.json
 KKUTU_ERROR.log
 db.sql
+Server/lib/Web/public/Ads.txt
 .vscode

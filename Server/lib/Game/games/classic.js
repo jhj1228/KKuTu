@@ -294,6 +294,7 @@ exports.submit = function (client, text) {
 				approved();
 				return;
 			}
+
 			if (firstMove || my.opts.manner) getAuto.call(my, preChar, preSubChar, 1).then(function (w) {
 				if (w) approved();
 				else {
@@ -312,7 +313,11 @@ exports.submit = function (client, text) {
 		}
 		if (my.opts.unknownword) {
 			if ($doc) {
-				denied(410);
+				if (client.robot) {
+					preApproved();
+				} else {
+					denied(410);
+				}
 			} else {
 				$doc = {
 					mean: "",
