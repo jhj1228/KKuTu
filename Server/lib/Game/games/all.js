@@ -97,8 +97,13 @@ exports.turnEnd = function () {
 
 	my.game.late = true;
 	if (target) if (target.game) {
-		score = Const.getPenalty(my.game.chain, target.game.score);
-		target.game.score += score;
+		if (my.opts.boom) {
+			score = -target.game.score;
+			target.game.score = 0;
+		} else {
+			score = Const.getPenalty(my.game.chain, target.game.score);
+			target.game.score += score;
+		}
 	}
 	my.byMaster('turnEnd', {
 		ok: false,

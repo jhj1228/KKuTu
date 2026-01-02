@@ -47,6 +47,7 @@ exports.OPTIONS = {
 	'rtn': { name: "Return" },
 	'rdt': { name: "Randomturn" },
 	'unw': { name: "Unknownword" },
+	'bom': { name: "Boom" }
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -79,7 +80,7 @@ exports.RULE = {
 	'KKT': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "unw"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "unw", "bom"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -88,7 +89,7 @@ exports.RULE = {
 	'KSH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -124,7 +125,7 @@ exports.RULE = {
 	'KAP': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -134,7 +135,7 @@ exports.RULE = {
 	'HUN': {
 		lang: "ko",
 		rule: "Hunmin",
-		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt"],
+		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -143,7 +144,7 @@ exports.RULE = {
 	'KDA': {
 		lang: "ko",
 		rule: "Daneo",
-		opts: ["ijp", "mis", "rdm", "rtn", "rdt"],
+		opts: ["ijp", "mis", "rdm", "rtn", "rdt", "bom"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -161,7 +162,7 @@ exports.RULE = {
 	'KMH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -170,7 +171,7 @@ exports.RULE = {
 	'KKK': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -197,7 +198,7 @@ exports.RULE = {
 	'ALL': {
 		lang: "ko",
 		rule: "All",
-		opts: ["mis", "rdm", "rtn", "rdt"],
+		opts: ["mis", "rdm", "rtn", "rdt", "bom"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -215,7 +216,7 @@ exports.RULE = {
 	'KRH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw"],
+		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom"],
 		time: 1,
 		ai: true,
 		big: false,
