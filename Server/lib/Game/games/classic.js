@@ -382,30 +382,31 @@ exports.readyRobot = function (robot) {
 	var lmax;
 	var isRev = Const.GAME_TYPE[my.mode] == "KAP";
 	if (my.opts.unknownword) {
-		text = my.game.char;
 		const LEN_LIMITS = [4, 7, 10, 15, 20];
 		var maxLen = LEN_LIMITS[level];
-		var randomLen = Math.floor(Math.random() * (maxLen - 1)) + 2;
-		if (my.opts.unknownword) {
-			text = my.game.char;
-			const LEN_LIMITS = [4, 7, 10, 15, 20];
-			var maxLen = LEN_LIMITS[level];
-			var randomLen = Math.floor(Math.random() * (maxLen - 2)) + 3;
-			if (my.game.mission && typeof my.game.mission === 'string') {
-				for (var k = 1; k < randomLen; k++) {
-					text += my.game.mission;
-				}
-			} else {
-				for (var k = 1; k < randomLen; k++) {
-					var randomCode = 0xAC00 + Math.floor(Math.random() * 11172);
-					text += String.fromCharCode(randomCode);
-				}
+		var randomLen = Math.floor(Math.random() * (maxLen - 2)) + 3;
+		var body = "";
+		var loopCount = randomLen - 1;
+
+		if (my.game.mission && typeof my.game.mission === 'string') {
+			for (var k = 0; k < loopCount; k++) {
+				body += my.game.mission;
 			}
-			robot._done.push(text);
-			const DELAYS = [3000, 2000, 1500, 700, 100];
-			setTimeout(my.turnRobot, DELAYS[level], robot, text);
-			return;
+		} else {
+			for (var k = 0; k < loopCount; k++) {
+				var randomCode = 0xAC00 + Math.floor(Math.random() * 11172);
+				body += String.fromCharCode(randomCode);
+			}
 		}
+		if (isRev) {
+			text = body + my.game.char;
+		} else {
+			text = my.game.char + body;
+		}
+		robot._done.push(text);
+		const DELAYS = [3000, 2000, 1500, 700, 100];
+		setTimeout(my.turnRobot, DELAYS[level], robot, text);
+		return;
 	}
 	getAuto.call(my, my.game.char, my.game.subChar, 2).then(function (list) {
 		if (list.length) {
@@ -433,6 +434,7 @@ exports.readyRobot = function (robot) {
 			}
 		} else denied();
 	});
+
 	function denied() {
 		text = isRev ? `T.T ...${my.game.char}` : `${my.game.char}... T.T`;
 		after();

@@ -328,7 +328,7 @@
 		"optReturn": "리턴",
 		"explReturn": "이미 사용했던 단어를 최대 5번동안 다시 사용할 수 있습니다.",
 		"optRandommission": "랜덤미션",
-		"explRandommission": "매 턴 마다 미션 단어가 바뀝니다. 반드시 미션이랑 같이 사용해야 합니다.",
+		"explRandommission": "매 턴 마다 미션 단어가 바뀝니다.",
 		"optUnknownword": "언노운워드",
 		"explUnknownword": "사전에 없는 단어로만 이을 수 있습니다. 경험치/핑은 획득할 수 없습니다.",
 		"optBoom": "폭탄",
