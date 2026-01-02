@@ -232,7 +232,11 @@ exports.submit = function (client, text) {
 	if (my.opts.return) {
 		if (dupCount >= 5) return client.publish('turnError', { code: 409, value: text }, true);
 	} else {
-		if (dupCount > 0) return client.publish('turnError', { code: 409, value: text }, true);
+		if (dupCount > 0) {
+			client.publish('turnError', { code: 409, value: text }, true);
+			if (client.robot) my.readyRobot(client);
+			return;
+		}
 	}
 
 	l = my.rule.lang;
@@ -402,7 +406,11 @@ exports.readyRobot = function (robot) {
 	function pickList(list) {
 		if (list) do {
 			if (!(w = list.shift())) break;
-		} while (w._id.length > ROBOT_LENGTH_LIMIT[level] || robot._done.includes(w._id));
+		} while (
+			w._id.length > ROBOT_LENGTH_LIMIT[level] ||
+			robot._done.includes(w._id) ||
+			(my.game.chain && my.game.chain.indexOf(w._id) != -1)
+		);
 		if (w) {
 			text = w._id;
 			delay += 500 * ROBOT_THINK_COEF[level] * Math.random() / Math.log(1.1 + w.hit);
@@ -523,9 +531,11 @@ function getAuto(char, subc, type) {
 				};
 				break;
 		}
-		DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(bool ? 1 : 123).on(function ($md) {
+		DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(bool ? 1 : 2000).on(function ($md) {
 			forManner($md);
-			if (my.game.chain) aft($md.filter(function (item) { return !my.game.chain.includes(item); }));
+			if (my.game.chain) {
+				aft($md.filter(function (item) { return !my.game.chain.includes(item._id); }));
+			}
 			else aft($md);
 		});
 		function forManner(list) {

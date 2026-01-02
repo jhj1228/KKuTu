@@ -1,21 +1,2 @@
 This is an error log file of the game server.
-You may use like `tail -f KKUTU_ERROR.log` to watch this.:8496 [2026-1-2 12:27:40 ├F10: AM┤] ERROR: ReferenceError: opts is not defined
-ReferenceError: opts is not defined
-    at getRewards (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\kkutu.js:1514:2)
-    at exports.Room.my.roundEnd (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\kkutu.js:1263:9)
-    at exports.Room.exports.roundReady (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\games\classic.js:150:6)
-    at exports.Room.my.route.my.routeSync (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\kkutu.js:1405:13)
-    at Timeout.my.roundReady (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\kkutu.js:1204:13)
-    at listOnTimeout (internal/timers.js:554:17)
-    at processTimers (internal/timers.js:497:7):8496 [2026-1-2 12:28:46 ├F10: AM┤] ERROR: ReferenceError: opt is not defined
-ReferenceError: opt is not defined
-    at getRewards (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\kkutu.js:1514:2)
-    at exports.Room.my.roundEnd (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\kkutu.js:1263:9)
-    at exports.Room.my.go (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\kkutu.js:988:10)
-    at exports.Client.my.leave (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\kkutu.js:631:20)
-    at Object.KKuTu.onClientMessage (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\slave.js:290:7)
-    at WebSocket.<anonymous> (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\Game\kkutu.js:297:11)
-    at WebSocket.emit (events.js:314:20)
-    at Receiver._receiver.onmessage (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\node_modules\ws\lib\WebSocket.js:143:47)
-    at Receiver.dataMessage (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\node_modules\ws\lib\Receiver.js:389:14)
-    at Receiver.getData (C:\Users\kbg51\OneDrive\Desktop\KKuTu\Server\lib\node_modules\ws\lib\Receiver.js:330:12)
+You may use like `tail -f KKUTU_ERROR.log` to watch this.

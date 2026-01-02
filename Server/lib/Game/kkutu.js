@@ -1352,10 +1352,8 @@ exports.Room = function (room, channel) {
 		return my.route("readyRobot", robot);
 	};
 	my.turnRobot = function (robot, text, data) {
-		if (!my.gaming) return;
-
-		my.submit(robot, text, data);
-		//return my.route("turnRobot", robot, text);
+		if (!my.gaming) return false;
+		return my.submit(robot, text, data);
 	};
 	my.turnNext = function (force) {
 		if (!my.gaming) return;
