@@ -43,6 +43,29 @@ block Subject
 block JS
 	script(type='text/javascript', src='/js/in_game_kkutu.min.js')
 	script(src='https://www.google.com/recaptcha/api.js')
+	script.
+		$(function() {
+			function updateMissionState() {
+				var $mission = $('#room-mission');
+				var $target = $('#room-randommission');
+
+				if ($mission.length === 0 || $target.length === 0) return;
+				
+				var isChecked = $mission.is(':checked');
+				if (!isChecked) {
+					$target.prop('checked', false);
+					$target.prop('disabled', true);
+				} else {
+					$target.prop('disabled', false);
+					$target.parent().css('opacity', '1');
+				}
+			}
+			$(document).on('change', '#room-mission', updateMissionState);
+			$(document).on('click', '#NewRoomBtn', function() {
+				setTimeout(updateMissionState, 10); 
+			});
+			setTimeout(updateMissionState, 100);
+		});
 
 block CSS
 	link(rel='stylesheet', href='/css/in_game_kkutu_shop.css')

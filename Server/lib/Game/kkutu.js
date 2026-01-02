@@ -1019,6 +1019,10 @@ exports.Room = function (room, channel) {
 				k = Const.OPTIONS[i].name.toLowerCase();
 				my.opts[k] = room.opts[k] && my.rule.opts.includes(i);
 			}
+			if (!my.opts.mission) {
+				my.opts.randommission = false;
+			}
+
 			if (ijc = my.rule.opts.includes("ijp")) {
 				ij = Const[`${my.rule.lang.toUpperCase()}_IJP`];
 				my.opts.injpick = (room.opts.injpick || []).filter(function (item) { return ij.includes(item); });
@@ -1457,9 +1461,6 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 			break;
 		case 'KKK':
 			rw.score += score * 1.85;
-			break;
-		case 'KDG':
-			rw.score += score * 0.57;
 			break;
 		case 'MOQ':
 			rw.score += score * 0.68;
