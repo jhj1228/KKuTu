@@ -17,7 +17,6 @@
  */
 
 $(document).ready(function () {
-	window.differ = new diff_match_patch()
 	var i;
 
 	$data.PUBLIC = $("#PUBLIC").html() == "true";
@@ -147,9 +146,6 @@ $(document).ready(function () {
 		game: {
 			display: $(".jjo-display"),
 			hints: $(".GameBox .hints"),
-			tools: $('.GameBox .tools'),
-			drawingTitle: $('#drawing-title'),
-			themeisTitle: $('#themeis-title'),
 			cwcmd: $(".GameBox .cwcmd"),
 			bb: $(".GameBox .bb"),
 			items: $(".GameBox .items"),

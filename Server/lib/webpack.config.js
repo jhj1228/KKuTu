@@ -22,14 +22,14 @@ const LICENSE = [
 	"along with this program. If not, see <http://www.gnu.org/licenses/>."
 ].join('\n');
 
-class ConcatPlugin{
-	constructor({ files, destination }){
+class ConcatPlugin {
+	constructor({ files, destination }) {
 		this.files = files;
 		this.destination = destination;
 	}
-	apply(compiler){
+	apply(compiler) {
 		const result = ["/**", LICENSE, "*/", "(function(){"];
-		
+
 		compiler.hooks.beforeCompile.tap("ConcatPlugin", () => {
 			this.files
 				.filter(file => File.existsSync(file))
@@ -75,7 +75,6 @@ module.exports = {
 				resolve(gameSourcePath, "rule_hunmin.js"),
 				resolve(gameSourcePath, "rule_daneo.js"),
 				resolve(gameSourcePath, "rule_sock.js"),
-				resolve(gameSourcePath, "rule_drawing.js"),
 				resolve(gameSourcePath, "rule_moqwi.js"),
 				resolve(gameSourcePath, "rule_all.js"),
 				resolve(gameSourcePath, "body.js"),

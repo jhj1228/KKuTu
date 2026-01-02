@@ -143,7 +143,7 @@ for (i = 0; i <= 10; i++) $audiosets[0].push(
 var $sound = {};
 var $_sound = {}; // 현재 재생 중인 것들
 var $data = {};
-var $lib = { Classic: {}, Jaqwi: {}, Crossword: {}, Typing: {}, Hunmin: {}, Daneo: {}, Sock: {}, Drawing: {}, Moqwi: {}, All: {} };
+var $lib = { Classic: {}, Jaqwi: {}, Crossword: {}, Typing: {}, Hunmin: {}, Daneo: {}, Sock: {}, Moqwi: {}, All: {} };
 var $rec;
 var mobile;
 

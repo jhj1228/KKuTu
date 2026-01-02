@@ -43,8 +43,6 @@ block Subject
 block JS
 	script(type='text/javascript', src='/js/in_game_kkutu.min.js')
 	script(src='https://www.google.com/recaptcha/api.js')
-	script(type='text/javascript', src='/js/fabric.min.js')
-	script(type='text/javascript', src='/js/diff-match-patch-compressed.js')
 
 block CSS
 	link(rel='stylesheet', href='/css/in_game_kkutu_shop.css')
@@ -177,17 +175,16 @@ block Middle
 					option(value=0)= L('modeKKT')
 					option(value=5)= L('modeKAP')
 					option(value=4)= L('modeKTY')
-					option(value=14)= L('modeKTT')
+					option(value=13)= L('modeKTT')
 					option(value=7)= L('modeKDA')
 					option(value=3)= L('modeKCW')
 					option(value=8)= L('modeKSS')
 					option(value=9)= L('modeKMH')
 					option(value=10)= L('modeKKK')
-					//- option(value=11)= L('modeKDG')
-					option(value=15)= L("modeKRH")
-					option(value=13)= L('modeALL')
+					option(value=14)= L("modeKRH")
+					option(value=12)= L('modeALL')
 					option(value=2)= L('modeCSQ')
-					option(value=12)= L('modeMOQ')
+					option(value=11)= L('modeMOQ')
 					option(value=6)= L('modeHUN')
 		div.dialog-bar(style='margin-top: -5px; height: 50px;')
 			h4
@@ -420,45 +417,6 @@ block Middle
 		div.game-head
 			div.items
 			div.hints(style='display: none;')
-			div.tools(style='display: none;')
-				div(style="width: 100%")
-					div(style="float: left; width: 35%;")
-						span#themeis= L('themeis')
-					div(style="float: left; width: 65%;")
-						span#themeis-title
-				div(style="width: 100%")
-					div(style="float: left; width: 35%;")
-						span#drawing= L('wordis')
-					div(style="float: left; width: 65%;")
-						span#drawing-title
-				div(style="width: 100%")
-					label(for="drawing-line-width")= L('drawingLineWidth')
-					input#drawing-line-width(type="range", value="1", min="1", max="40")
-				.palette
-					div
-						button.button-color#color-red
-					div
-						button.button-color#color-orange
-					div
-						button.button-color#color-yellow
-					div
-						button.button-color#color-green
-					div
-						button.button-color#color-blue
-					div
-						button.button-color#color-indigo
-					div
-						button.button-color#color-violet
-					div
-						button.button-color#color-black
-					div
-						button.button-color#color-white
-				div(style="width: 100%")
-					div(style="float: left; width: 60%;")
-						label(for="drawing-color")= L('drawingColor')
-						input#drawing-color(type="color", value="#000000")
-					div(style="float: left; width: 40%;")
-						button#drawing-clear= L('drawingClear')
 			div.b-left.cwcmd(style='display: none;')
 				div.cw-q-head
 				input#cw-q-input(placeholder=L('inputHere'), style='width: 313px; height: 20px; font-size: 15px;')

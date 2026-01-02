@@ -1133,7 +1133,6 @@ iframe {
 .rounds {
 	margin-top: -130px;
 	width: 990px;
-	margin: auto;
 	color: #FFFFFF;
 	text-align: center;
 	text-shadow: 0px 1px 1px #141414;
@@ -1141,10 +1140,6 @@ iframe {
 
 .cw.rounds {
 	margin-top: -380px;
-}
-
-.painter.rounds {
-	margin-left: -1.5em !important;
 }
 
 .rounds label {

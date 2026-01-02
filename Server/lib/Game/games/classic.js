@@ -406,10 +406,6 @@ exports.readyRobot = function (robot) {
 			setTimeout(my.turnRobot, DELAYS[level], robot, text);
 			return;
 		}
-		robot._done.push(text);
-		const DELAYS = [3000, 2000, 1500, 700, 100];
-		setTimeout(my.turnRobot, DELAYS[level], robot, text);
-		return;
 	}
 	getAuto.call(my, my.game.char, my.game.subChar, 2).then(function (list) {
 		if (list.length) {
