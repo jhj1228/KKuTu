@@ -1192,7 +1192,6 @@ $(document).ready(function () {
 		};
 	}
 });
-
 /**
  * Rule the words! KKuTu Online
  * Copyright (C) 2017 JJoriping(op@jjo.kr)
@@ -4991,7 +4990,6 @@ function yell(msg) {
 		}, 3000);
 	}, 1000);
 }
-
 /**
  * Rule the words! KKuTu Online
  * Copyright (C) 2017 JJoriping(op@jjo.kr)
