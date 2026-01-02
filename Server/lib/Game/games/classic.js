@@ -386,9 +386,25 @@ exports.readyRobot = function (robot) {
 		const LEN_LIMITS = [4, 7, 10, 15, 20];
 		var maxLen = LEN_LIMITS[level];
 		var randomLen = Math.floor(Math.random() * (maxLen - 1)) + 2;
-		for (var k = 1; k < randomLen; k++) {
-			var randomCode = 0xAC00 + Math.floor(Math.random() * 11172);
-			text += String.fromCharCode(randomCode);
+		if (my.opts.unknownword) {
+			text = my.game.char;
+			const LEN_LIMITS = [4, 7, 10, 15, 20];
+			var maxLen = LEN_LIMITS[level];
+			var randomLen = Math.floor(Math.random() * (maxLen - 2)) + 3;
+			if (my.game.mission && typeof my.game.mission === 'string') {
+				for (var k = 1; k < randomLen; k++) {
+					text += my.game.mission;
+				}
+			} else {
+				for (var k = 1; k < randomLen; k++) {
+					var randomCode = 0xAC00 + Math.floor(Math.random() * 11172);
+					text += String.fromCharCode(randomCode);
+				}
+			}
+			robot._done.push(text);
+			const DELAYS = [3000, 2000, 1500, 700, 100];
+			setTimeout(my.turnRobot, DELAYS[level], robot, text);
+			return;
 		}
 		robot._done.push(text);
 		const DELAYS = [3000, 2000, 1500, 700, 100];
