@@ -90,18 +90,17 @@ block Middle
 		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none; background-color: #FFADAD;')= L('exit')
 		button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')= L('replay')
 		button#LeaderboardBtn.for-lobby(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
-		div#facebook-menu.fb-like.for-lobby.for-master.for-normal.for-gaming(data-href='http://kkutu.kr', data-width='300', data-layout='button_count', data-action='like', data-show-faces='true', data-share='true')
 	+Dialog('SettingDiag', 300, 335, L('settingsText'))
 		div.dialog-bar
 			h4= L('mute')
 			+SettingOption('mute-bgm', L('bgm'))
 			+SettingOption('mute-effect', L('effect'))
-			h4= '배경 음악 조절'
+			h4= L('bgmoption')
 			input#bgm-volume(type='range' min='0' max='1' value='0.5' step='0.01' style='width: 50%;')
-			h4= '효과음 조절'
+			h4= L('effectoption')
 			input#effect-volume(type='range' min='0' max='1' value='0.5' step='0.01' style='width: 50%;')
 		div.dialog-bar
-			h4= '배경 음악 선택'
+			h4= L('selectbgm')
 			select#bgm-select
 				option(value='lobby', selected) 1. 기본
 				option(value='lobbyseol') 2. 명절
@@ -184,7 +183,7 @@ block Middle
 					option(value=8)= L('modeKSS')
 					option(value=9)= L('modeKMH')
 					option(value=10)= L('modeKKK')
-					option(value=11)= L('modeKDG')
+					//- option(value=11)= L('modeKDG')
 					option(value=15)= L("modeKRH")
 					option(value=13)= L('modeALL')
 					option(value=2)= L('modeCSQ')
@@ -221,21 +220,23 @@ block Middle
 			button#injpick-no= L('injpickNo')
 		div.dialog-bar#injpick-list(style='height: 280px; overflow-y: scroll;')
 			div.dialog-opt#ko-pick-list(style='width: 100%;')
-				- locals.KO_THEME.concat(locals.KO_INJEONG).forEach(function(item){
-					- var name = "ko-pick-" + item;
-					- if(locals.IJP_EXCEPT.indexOf(item) != -1) return;
-					div(style='float: left; width: 100%;')
-						input(id=name, type='checkbox', style='width: auto;')
-						label(for=name)= LANG['theme_' + item]
-				- });
+				div(style='width: 100%; font-weight: bold; color: #000; text-align: center; font-size: 15px;') 일반 주제
+				each item in locals.KO_THEME
+					if locals.IJP_EXCEPT.indexOf(item) == -1
+						- var name = "ko-pick-" + item
+						div(style='float: left; width: 100%;')
+							input(id=name, type='checkbox', style='width: auto;')
+							label(for=name)= LANG['theme_' + item]
+							
+				div(style='width: 100%; font-weight: bold; color: #000; text-align: center; font-size: 15px;') 어인정 주제
+				each item in locals.KO_INJEONG
+					if locals.IJP_EXCEPT.indexOf(item) == -1
+						- var name = "ko-pick-" + item
+						div(style='float: left; width: 100%;')
+							input(id=name, type='checkbox', style='width: auto;')
+							label(for=name)= LANG['theme_' + item]
+
 			div.dialog-opt#en-pick-list(style='width: 100%;')
-				- locals.EN_THEME.concat(locals.EN_INJEONG).forEach(function(item){
-					- var name = "en-pick-" + item;
-					- if(locals.IJP_EXCEPT.indexOf(item) != -1) return;
-					div(style='float: left; width: 100%;')
-						input(id=name, type='checkbox', style='width: auto;')
-						label(for=name)= LANG['theme_' + item]
-				- });
 		div.dialog-bar.tail-button
 			button#injpick-ok= L('OK')
 	+Dialog('PracticeDiag', 300, 135)

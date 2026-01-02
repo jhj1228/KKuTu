@@ -177,7 +177,7 @@ exports.RULE = {
 		big: false,
 		ewq: false
 	},
-	'KDG': {
+	/* 'KDG': {
 		lang: "ko",
 		rule: "Drawing",
 		opts: ["ijp", "sht", "ulm"],
@@ -185,7 +185,7 @@ exports.RULE = {
 		ai: false,
 		big: true,
 		ewq: true
-	},
+	}, */
 	'MOQ': {
 		lang: "ko",
 		rule: "Moqwi",
