@@ -1023,13 +1023,12 @@ exports.Room = function (room, channel) {
 				my.opts[k] = room.opts[k] && my.rule.opts.includes(i);
 			}
 			if (my.opts.unknownword) {
-				my.opts.manner = false;   // 매너
-				my.opts.gentle = false;   // 젠틀
-				my.opts.injeong = false;  // 어인정
-				my.opts.loanword = false; // 우리말(외래어)
-				my.opts.strict = false;   // 깐깐
+				my.opts.manner = false;
+				my.opts.gentle = false;
+				my.opts.injeong = false;
+				my.opts.loanword = false;
+				my.opts.strict = false;
 			}
-			// 언노운워드가 꺼져있을 때만 매너-젠틀 상호 배타 로직 실행
 			else {
 				if (my.opts.manner) {
 					my.opts.gentle = false;
