@@ -66,11 +66,16 @@ exports.roundReady = function () {
 				if ((len -= i) <= conf.min) break;
 			}
 			words.sort(function (a, b) { return b.length - a.length; });
+
+			if (my.opts.wordpick) {
+				my.game.answers = words.slice();
+			}
 			my.game.words = [];
 			my.game.board = getBoard(words, conf.len);
 			my.byMaster('roundReady', {
 				round: my.game.round,
-				board: my.game.board
+				board: my.game.board,
+				answers: my.opts.wordpick ? my.game.answers : null
 			}, true);
 			my.game.turnTimer = setTimeout(my.turnStart, 2400);
 		});
@@ -108,9 +113,16 @@ exports.submit = function (client, text, data) {
 	if (text.length < (my.opts.no2 ? 3 : 2)) {
 		return client.chat(text);
 	}
+	if (my.opts.wordpick) {
+		if (!my.game.answers || my.game.answers.indexOf(text) === -1) {
+			return client.chat(text);
+		}
+	}
+
 	if (my.game.words.indexOf(text) != -1) {
 		return client.chat(text);
 	}
+
 	DB.kkutu[my.rule.lang].findOne(['_id', text]).limit(['_id', true]).on(function ($doc) {
 		if (!my.game.board) return;
 
@@ -143,23 +155,6 @@ exports.submit = function (client, text, data) {
 			client.chat(text);
 		}
 	});
-	/*if((i = my.game.words.indexOf(text)) != -1){
-		score = my.getScore(text);
-		my.game.words.splice(i, 1);
-		client.game.score += score;
-		client.publish('turnEnd', {
-			target: client.id,
-			value: text,
-			score: score
-		}, true);
-		if(!my.game.words.length){
-			clearTimeout(my.game.qTimer);
-			my.turnEnd();
-		}
-		client.invokeWordPiece(text, 1.4);
-	}else{
-		client.chat(text);
-	}*/
 };
 exports.getScore = function (text, delay) {
 	var my = this;

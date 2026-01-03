@@ -16,15 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-$lib.Sock.roundReady = function(data, spec){
+$lib.Sock.roundReady = function (data, spec) {
 	var turn = data.seq ? data.seq.indexOf($data.id) : -1;
-	
+
 	clearBoard();
 	$data._relay = true;
 	$(".jjoriping,.rounds,.game-body").addClass("cw");
 	$data._va = [];
 	$data._lang = RULE[MODE[$data.room.mode]].lang;
 	$data._board = data.board;
+	$data._answers = data.answers || null;
+
 	$data._maps = [];
 	$data._roundTime = $data.room.time * 1000;
 	$data._fastTime = 10000;
@@ -32,64 +34,81 @@ $lib.Sock.roundReady = function(data, spec){
 	$stage.game.bb.show();
 	$lib.Sock.drawDisplay();
 	drawRound(data.round);
-	if(!spec) playSound('round_start');
+	if (!spec) playSound('round_start');
 	clearInterval($data._tTime);
 };
-$lib.Sock.turnEnd = function(id, data){
+$lib.Sock.turnEnd = function (id, data) {
 	var $sc = $("<div>").addClass("deltaScore").html("+" + data.score);
 	var $uc = $("#game-user-" + id);
 	var key;
 	var i, j, l;
-	
-	if(data.score){
+
+	if (data.score) {
 		key = data.value;
 		l = key.length;
 		$data._maps.push(key);
-		for(i=0; i<l; i++){
+		for (i = 0; i < l; i++) {
 			$data._board = $data._board.replace(key.charAt(i), "　");
 		}
-		if(id == $data.id){
+		if (id == $data.id) {
 			playSound('success');
-		}else{
+		} else {
 			playSound('mission');
 		}
 		$lib.Sock.drawDisplay();
 		addScore(id, data.score);
 		updateScore(id, getScore(id));
 		drawObtainedScore($uc, $sc);
-	}else{
+	} else {
 		stopBGM();
 		$data._relay = false;
 		playSound('horr');
 	}
 };
-$lib.Sock.drawMaps = function(){
+$lib.Sock.drawMaps = function () {
 	var i;
-	
+
 	$stage.game.bb.empty();
-	$data._maps.sort(function(a, b){ return b.length - a.length; }).forEach(function(item){
-		$stage.game.bb.append($word(item));
-	});
-	function $word(text){
+
+	if ($data._answers) {
+		$data._answers.forEach(function (item) {
+			var isFound = $data._maps.includes(item);
+			$stage.game.bb.append($word(item, isFound));
+		});
+	}
+	else {
+		$data._maps.sort(function (a, b) { return b.length - a.length; }).forEach(function (item) {
+			$stage.game.bb.append($word(item, true));
+		});
+	}
+	function $word(text, isFound) {
 		var $R = $("<div>").addClass("bb-word");
 		var i, len = text.length;
 		var $c;
-		
-		for(i=0; i<len; i++){
-			$R.append($c = $("<div>").addClass("bb-char").html(text.charAt(i)));
-			// if(text.charAt(i) != "？") $c.css('color', "#EEEEEE");
+		var charToShow;
+
+		for (i = 0; i < len; i++) {
+			charToShow = text.charAt(i);
+			$c = $("<div>").addClass("bb-char");
+			if ($data._answers && !isFound && i > 0) {
+				charToShow = "？";
+				$c.css('color', 'rgba(255, 255, 255, 0.4)');
+			}
+
+			$c.html(charToShow);
+			$R.append($c);
 		}
 		return $R;
 	}
 };
-$lib.Sock.drawDisplay = function(){
+$lib.Sock.drawDisplay = function () {
 	var $a = $("<div>").css('height', "100%"), $c;
 	var va = $data._board.split("");
 	var size = ($data._lang == "ko") ? "12.5%" : "10%";
-	
-	va.forEach(function(item, index){
+
+	va.forEach(function (item, index) {
 		$a.append($c = $("<div>").addClass("sock-char sock-" + item).css({ width: size, height: size }).html(item));
-		if($data._va[index] && $data._va[index] != item){
+		if ($data._va[index] && $data._va[index] != item) {
 			$c.html($data._va[index]).addClass("sock-picked").animate({ 'opacity': 0 }, 500);
 		}
 	});
@@ -97,14 +116,14 @@ $lib.Sock.drawDisplay = function(){
 	$stage.game.display.empty().append($a);
 	$lib.Sock.drawMaps();
 };
-$lib.Sock.turnStart = function(data, spec){
+$lib.Sock.turnStart = function (data, spec) {
 	var i, j;
-	
+
 	clearInterval($data._tTime);
 	$data._tTime = addInterval(turnGoing, TICK);
 	playBGM('jaqwi');
 };
 $lib.Sock.turnGoing = $lib.Jaqwi.turnGoing;
-$lib.Sock.turnHint = function(data){
+$lib.Sock.turnHint = function (data) {
 	playSound('fail');
 };

@@ -50,6 +50,7 @@ exports.OPTIONS = {
 	'unw': { name: "Unknownword" },
 	'bom': { name: "Boom" },
 	'rvs': { name: "Reverse" },
+	'wpk': { name: "Wordpick" }
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -155,7 +156,7 @@ exports.RULE = {
 	'KSS': { // 솎솎
 		lang: "ko",
 		rule: "Sock",
-		opts: ["no2"],
+		opts: ["no2", "wpk"],
 		time: 1,
 		ai: false,
 		big: true,
