@@ -60,11 +60,39 @@ block JS
 					$target.parent().css('opacity', '1');
 				}
 			}
-			$(document).on('change', '#room-mission', updateMissionState);
+			function updateMannerGentleState() {
+				var $manner = $('#room-manner');
+				var $gentle = $('#room-gentle');
+				if ($manner.length === 0 || $gentle.length === 0) return;
+				if ($manner.is(':checked')) {
+					$gentle.prop('checked', false);
+					$gentle.prop('disabled', true);
+					$gentle.parent().css('opacity', '1');
+				}
+				else if ($gentle.is(':checked')) {
+					$manner.prop('checked', false);
+					$manner.prop('disabled', true);
+					$manner.parent().css('opacity', '1');
+				}
+				else {
+					$manner.prop('disabled', false).parent().css('opacity', '1');
+					$gentle.prop('disabled', false).parent().css('opacity', '1');
+				}
+			}
+			$(document).on('change', '#room-manner', updateMannerGentleState);
+			$(document).on('change', '#room-gentle', updateMannerGentleState);
 			$(document).on('click', '#NewRoomBtn', function() {
-				setTimeout(updateMissionState, 10); 
+				setTimeout(function() {
+					updateMissionState();
+					updateMannerGentleState();
+				}, 10);
 			});
-			setTimeout(updateMissionState, 100);
+
+			// 초기 로딩 시 실행
+			setTimeout(function() {
+				updateMissionState();
+				updateMannerGentleState();
+			}, 100);
 		});
 
 block CSS

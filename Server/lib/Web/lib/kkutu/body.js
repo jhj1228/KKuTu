@@ -2984,15 +2984,35 @@ function saveLocalSettings() {
 }
 function loadLocalSettings() {
 	var saved = localStorage.getItem('kkutu_settings');
+	var opt = null;
+
 	if (saved) {
 		try {
-			var opt = JSON.parse(saved);
-			applyOptions(opt);
-			console.log("저장된 설정을 불러왔습니다.");
+			opt = JSON.parse(saved);
 		} catch (e) {
-			console.error("설정 로드 실패:", e);
+			console.error("설정 로드 실패, 기본값으로 초기화합니다:", e);
 		}
 	}
+	if (!opt) {
+		opt = {
+			mb: false,
+			me: false,
+			bv: 0.5,
+			ev: 0.5,
+			di: false,
+			dw: false,
+			df: false,
+			ar: false,
+			su: false,
+			ow: false,
+			ou: false,
+			bs: "lobby"
+		};
+	}
+
+	// 설정 적용
+	applyOptions(opt);
+	console.log("설정을 불러왔습니다.");
 }
 $(document).ready(function () {
 	loadLocalSettings();

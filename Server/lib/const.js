@@ -34,6 +34,7 @@ exports.IS_SECURED = GLOBAL.IS_SECURED;
 exports.SSL_OPTIONS = GLOBAL.SSL_OPTIONS;
 exports.OPTIONS = {
 	'man': { name: "Manner" },
+	'gte': { name: "Gentle" },
 	'ext': { name: "Injeong" },
 	'mis': { name: "Mission" },
 	'rdm': { name: "Randommission" },
@@ -81,7 +82,7 @@ exports.RULE = {
 	'KKT': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "unw", "bom", "rvs"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "unw", "bom", "rvs"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -90,7 +91,7 @@ exports.RULE = {
 	'KSH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -126,7 +127,7 @@ exports.RULE = {
 	'KAP': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -163,7 +164,7 @@ exports.RULE = {
 	'KMH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -172,7 +173,7 @@ exports.RULE = {
 	'KKK': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -208,7 +209,7 @@ exports.RULE = {
 	'KRH': {
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
 		time: 1,
 		ai: true,
 		big: false,

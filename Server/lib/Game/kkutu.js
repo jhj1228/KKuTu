@@ -1022,7 +1022,11 @@ exports.Room = function (room, channel) {
 			if (!my.opts.mission) {
 				my.opts.randommission = false;
 			}
-
+			if (my.opts.manner) {
+				my.opts.gentle = false;
+			} else if (my.opts.gentle) {
+				my.opts.manner = false;
+			}
 			if (ijc = my.rule.opts.includes("ijp")) {
 				ij = Const[`${my.rule.lang.toUpperCase()}_IJP`];
 				my.opts.injpick = (room.opts.injpick || []).filter(function (item) { return ij.includes(item); });

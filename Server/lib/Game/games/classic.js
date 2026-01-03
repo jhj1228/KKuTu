@@ -290,21 +290,35 @@ exports.submit = function (client, text) {
 					}
 				}
 			}
-			if (my.opts.unknownword) {
-				approved();
-				return;
-			}
-			if (firstMove || my.opts.manner) getAuto.call(my, preChar, preSubChar, 1).then(function (w) {
-				if (w) approved();
-				else {
-					my.game.loading = false;
-					client.publish('turnError', { code: firstMove ? 402 : 403, value: text }, true);
-					if (client.robot) {
-						my.readyRobot(client);
-					}
+			function checkFinal() {
+				if (my.opts.unknownword) {
+					approved();
+					return;
 				}
-			});
-			else approved();
+				if (firstMove || my.opts.manner) getAuto.call(my, preChar, preSubChar, 1).then(function (w) {
+					if (w) approved();
+					else {
+						my.game.loading = false;
+						client.publish('turnError', { code: firstMove ? 402 : 403, value: text }, true);
+						if (client.robot) {
+							my.readyRobot(client);
+						}
+					}
+				});
+				else approved();
+			}
+			if (my.opts.gentle) {
+				getAuto.call(my, preChar, preSubChar, 2).then(function (list) {
+					if (list.length <= 5) {
+						my.game.loading = false;
+						client.publish('turnError', { code: 412, value: text }, true);
+					} else {
+						checkFinal();
+					}
+				});
+			} else {
+				checkFinal();
+			}
 		}
 		function denied(code) {
 			my.game.loading = false;
