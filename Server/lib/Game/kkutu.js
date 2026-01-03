@@ -1022,13 +1022,24 @@ exports.Room = function (room, channel) {
 				k = Const.OPTIONS[i].name.toLowerCase();
 				my.opts[k] = room.opts[k] && my.rule.opts.includes(i);
 			}
+			if (my.opts.unknownword) {
+				my.opts.manner = false;   // 매너
+				my.opts.gentle = false;   // 젠틀
+				my.opts.injeong = false;  // 어인정
+				my.opts.loanword = false; // 우리말(외래어)
+				my.opts.strict = false;   // 깐깐
+			}
+			// 언노운워드가 꺼져있을 때만 매너-젠틀 상호 배타 로직 실행
+			else {
+				if (my.opts.manner) {
+					my.opts.gentle = false;
+				} else if (my.opts.gentle) {
+					my.opts.manner = false;
+				}
+			}
+
 			if (!my.opts.mission) {
 				my.opts.randommission = false;
-			}
-			if (my.opts.manner) {
-				my.opts.gentle = false;
-			} else if (my.opts.gentle) {
-				my.opts.manner = false;
 			}
 			if (ijc = my.rule.opts.includes("ijp")) {
 				ij = Const[`${my.rule.lang.toUpperCase()}_IJP`];

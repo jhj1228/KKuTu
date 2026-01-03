@@ -45,32 +45,38 @@ block JS
 	script(src='https://www.google.com/recaptcha/api.js')
 	script.
 		$(function() {
+			// 1. 미션 - 랜덤 미션 연동
 			function updateMissionState() {
 				var $mission = $('#room-mission');
 				var $random = $('#room-randommission');
-				if ($mission.length === 0 || $random.length === 0) return;
-				
-				var isChecked = $mission.is(':checked');
 
+				if ($mission.length === 0 || $random.length === 0) return;
+
+				var isChecked = $mission.is(':checked');
 				if (!isChecked) {
 					$random.prop('checked', false);
 					$random.prop('disabled', true);
-					$random.parent().css('opacity', '1');
+					$random.parent().css('opacity', '1'); // 미션은 꺼지면 흐리게(기존 유지)
 				} else {
 					$random.prop('disabled', false);
 					$random.parent().css('opacity', '1');
 				}
 			}
+
+			// 2. 매너 - 젠틀 상호 배타
 			function updateMannerGentleState() {
 				var $manner = $('#room-manner');
 				var $gentle = $('#room-gentle');
 				
 				if ($manner.length === 0 || $gentle.length === 0) return;
+				
+				// 언노운워드가 켜져있으면 이 로직 패스
+				if ($('#room-unknownword').is(':checked')) return;
 
 				if ($manner.is(':checked')) {
 					$gentle.prop('checked', false);
 					$gentle.prop('disabled', true);
-					$gentle.parent().css('opacity', '1');
+					$gentle.parent().css('opacity', '1'); // 매너-젠틀은 흐리게(기존 유지)
 				} else if ($gentle.is(':checked')) {
 					$manner.prop('checked', false);
 					$manner.prop('disabled', true);
@@ -81,20 +87,60 @@ block JS
 				}
 			}
 
+			// 3. [NEW] 언노운워드 - 5개 규칙 강제 비활성화
+			function updateUnknownWordState() {
+				var $unknown = $('#room-unknownword');
+				// 제어할 대상 ID 목록
+				var targets = ['#room-manner', '#room-gentle', '#room-injeong', '#room-loanword', '#room-strict'];
+				
+				if ($unknown.length === 0) return;
+
+				var isChecked = $unknown.is(':checked');
+
+				if (isChecked) {
+					// 언노운워드 켜짐: 대상 전부 체크 해제 & 비활성화 & 투명도는 1로 유지
+					targets.forEach(function(id) {
+						var $el = $(id);
+						if ($el.length) {
+							$el.prop('checked', false);
+							$el.prop('disabled', true);
+							$el.parent().css('opacity', '1'); // 요청하신 대로 1 유지
+						}
+					});
+				} else {
+					// 언노운워드 꺼짐: 대상 전부 활성화 (체크는 해제된 상태로 둠)
+					targets.forEach(function(id) {
+						var $el = $(id);
+						if ($el.length) {
+							$el.prop('disabled', false);
+							$el.parent().css('opacity', '1');
+						}
+					});
+					
+					// 언노운이 꺼졌으니, 미션/매너 로직을 다시 한 번 돌려서 상태 복구
+					updateMissionState();
+					updateMannerGentleState();
+				}
+			}
+
+			// 이벤트 연결
 			$(document).on('change', '#room-mission', updateMissionState);
 			$(document).on('change', '#room-manner', updateMannerGentleState);
 			$(document).on('change', '#room-gentle', updateMannerGentleState);
+			$(document).on('change', '#room-unknownword', updateUnknownWordState);
 
-			$(document).on('click', '#NewRoomBtn', function() {
-				setTimeout(function() {
-					updateMissionState();
-					updateMannerGentleState();
-				}, 10);
-			});
-			setTimeout(function() {
+			// 초기화 (순서 중요: 언노운워드가 가장 강력하므로 마지막에 실행하거나, 로직 내부에서 처리)
+			var initFunc = function() {
 				updateMissionState();
 				updateMannerGentleState();
-			}, 100);
+				updateUnknownWordState(); // 가장 마지막에 실행하여 덮어쓰기
+			};
+
+			$(document).on('click', '#NewRoomBtn', function() {
+				setTimeout(initFunc, 50);
+			});
+
+			setTimeout(initFunc, 200);
 		});
 
 block CSS
