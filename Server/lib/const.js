@@ -79,16 +79,16 @@ exports.RULE = {
 			ewq: 현재 턴 나가면 라운드 종료?
 		}
 	*/
-	'KKT': {
+	'KKT': { // 쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "unw", "bom", "rvs"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "bom", "rvs"],
 		time: 1,
 		ai: true,
 		big: false,
 		ewq: true
 	},
-	'KSH': {
+	'KSH': { // 끝말잇기
 		lang: "ko",
 		rule: "Classic",
 		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
@@ -97,7 +97,7 @@ exports.RULE = {
 		big: false,
 		ewq: true
 	},
-	'CSQ': {
+	'CSQ': { // 자음퀴즈
 		lang: "ko",
 		rule: "Jaqwi",
 		opts: ["ijp"],
@@ -106,7 +106,7 @@ exports.RULE = {
 		big: false,
 		ewq: false
 	},
-	'KCW': {
+	'KCW': { // 십자말풀이
 		lang: "ko",
 		rule: "Crossword",
 		opts: [],
@@ -115,7 +115,7 @@ exports.RULE = {
 		big: true,
 		ewq: false
 	},
-	'KTY': {
+	'KTY': { // 타자대결
 		lang: "ko",
 		rule: "Typing",
 		opts: ["prv"],
@@ -124,7 +124,7 @@ exports.RULE = {
 		big: false,
 		ewq: false
 	},
-	'KAP': {
+	'KAP': { // 앞말잇기
 		lang: "ko",
 		rule: "Classic",
 		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
@@ -134,7 +134,7 @@ exports.RULE = {
 		_back: true,
 		ewq: true
 	},
-	'HUN': {
+	'HUN': { // 훈민정음
 		lang: "ko",
 		rule: "Hunmin",
 		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs"],
@@ -143,7 +143,7 @@ exports.RULE = {
 		big: false,
 		ewq: true
 	},
-	'KDA': {
+	'KDA': { // 단어대결
 		lang: "ko",
 		rule: "Daneo",
 		opts: ["ijp", "mis", "rdm", "rtn", "rdt", "bom", "rvs"],
@@ -152,7 +152,7 @@ exports.RULE = {
 		big: false,
 		ewq: true
 	},
-	'KSS': {
+	'KSS': { // 솎솎
 		lang: "ko",
 		rule: "Sock",
 		opts: ["no2"],
@@ -161,7 +161,7 @@ exports.RULE = {
 		big: true,
 		ewq: false
 	},
-	'KMH': {
+	'KMH': { // 가운뎃말잇기
 		lang: "ko",
 		rule: "Classic",
 		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
@@ -170,16 +170,16 @@ exports.RULE = {
 		big: false,
 		ewq: false
 	},
-	'KKK': {
+	'KKK': { // 끄투
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs"],
 		time: 1,
 		ai: true,
 		big: false,
 		ewq: false
 	},
-	'MOQ': {
+	'MOQ': { // 모음퀴즈
 		lang: "ko",
 		rule: "Moqwi",
 		opts: ["ijp"],
@@ -188,7 +188,7 @@ exports.RULE = {
 		big: false,
 		ewq: false
 	},
-	'ALL': {
+	'ALL': { // 전체
 		lang: "ko",
 		rule: "All",
 		opts: ["mis", "rdm", "rtn", "rdt", "bom", "rvs"],
@@ -197,7 +197,7 @@ exports.RULE = {
 		big: false,
 		ewq: true
 	},
-	'KTT': {
+	'KTT': { // 주제타자대결
 		lang: "ko",
 		rule: "Typing",
 		opts: ["ijp"],
@@ -206,7 +206,7 @@ exports.RULE = {
 		big: false,
 		ewq: false
 	},
-	'KRH': {
+	'KRH': { // 랜덤잇기
 		lang: "ko",
 		rule: "Classic",
 		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs"],
