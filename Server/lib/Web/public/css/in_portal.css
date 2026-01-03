@@ -16,21 +16,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#holder{
+#holder {
 	width: 200px;
 	text-align: center;
 	text-shadow: 0px 0px 4px #333;
 	font-weight: bold;
 }
-#logo{
+
+#logo {
 	margin-top: -20px;
 }
-#kkutu-bulletin{
+
+#kkutu-bulletin {
 	border: 0px;
 	margin-bottom: 5px;
 }
 
-#menu-bar a{
+#menu-bar a {
 	display: block;
 	float: left;
 	padding: 10px 5px;
@@ -42,7 +44,7 @@
 	box-shadow: 0px 1px 1px #333;
 }
 
-#game-start{
+#game-start {
 	float: left;
 	width: 315px;
 	height: 70px;
@@ -52,46 +54,151 @@
 	border-bottom-left-radius: inherit;
 	border-bottom-right-radius: inherit;
 }
-	#game-start:hover{ font-size: 24px; background-color: rgba(0, 0, 0, 0.5); }
-.server-list-box{
+
+#game-start:hover {
+	font-size: 24px;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.server-list-box {
 	float: right;
 	width: 320px;
-	background-color: rgba(0, 0, 0, 0.4);
+	background-color: rgba(30, 30, 30, 0.8);
+	border-radius: 8px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+	margin-bottom: 20px;
+	overflow: hidden;
 }
-.server-list-title{
-	padding: 2px 0px;
+
+.server-list-title {
+	padding: 8px 10px;
 	width: 100%;
-	background-color: rgba(0, 0, 0, 0.4);
+	box-sizing: border-box;
+	background-color: rgba(255, 255, 255, 0.1);
+	font-size: 13px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-#server-refresh{
+
+#server-refresh {
 	margin: 0px 5px;
 	cursor: pointer;
+	float: right;
+	opacity: 0.8;
 }
-.server{
-	float: left;
-	margin: 2px 0px;
-	width: 320px;
-	height: 16px;
-	font-size: 13px;
-	cursor: pointer;
-}
-	.server>div{ float: left; }
-	.server-status{ border-radius: 6px; margin: 2px; width: 12px; height: 12px; }
-		.ss-o{ background-color: #3E3; }
-		.ss-p{ background-color: #EE3; }
-		.ss-q{ background-color: #F55; }
-		.ss-x{ background-color: #777; }
-	.server-name{ width: 60px; }
-	.server-people{ width: 190px; height: 100%; }
-		.server-people>.graph-bar{ background-image: url(/img/blue_gauge.png); }
-		.server-people>label{ position: relative; display: block; top: -14px; width: 100%; text-align: center; font-size: 11px; }
-	.server-enter{ width: 50px; text-align: center; }
-	.server:hover{ background-color: rgba(255, 255, 255, 0.1); }
 
-#Background{
+#server-refresh:hover {
+	opacity: 1;
+	transform: rotate(90deg);
+	transition: transform 0.2s;
+}
+
+.server {
+	float: left;
+	margin: 1px 5px;
+	width: calc(100% - 10px);
+	height: 16px;
+	font-size: 12px;
+	cursor: pointer;
+	border-radius: 3px;
+	display: flex;
+	align-items: center;
+	transition: background-color 0.1s;
+}
+
+.server:hover {
+	background-color: rgba(255, 255, 255, 0.15);
+}
+
+.server>div {
+	display: block;
+}
+
+.server-status {
+	border-radius: 50%;
+	margin: 0 6px 0 4px;
+	width: 8px;
+	height: 8px;
+	box-shadow: 0 0 3px currentColor;
+	flex-shrink: 0;
+}
+
+.ss-o {
+	background-color: #3E3;
+	color: #3E3;
+}
+
+.ss-p {
+	background-color: #EE3;
+	color: #EE3;
+}
+
+.ss-q {
+	background-color: #F55;
+	color: #F55;
+}
+
+.ss-x {
+	background-color: #777;
+	color: #777;
+}
+
+.server-name {
+	width: 65px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 16px;
+}
+
+.server-people {
+	width: 190px;
+	height: 100%;
+	position: relative;
+	margin-right: 5px;
+}
+
+.server-people>.graph-bar {
+	background-image: url(/img/blue_gauge.png);
+	height: 100%;
+	border-radius: 2px;
+	display: block;
+	opacity: 0.7;
+}
+
+.server-people>label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 16px;
+	line-height: 16px;
+	text-align: center;
+	font-size: 11px;
+	color: #fff;
+	text-shadow: 1px 1px 1px #000;
+	z-index: 2;
+	letter-spacing: -0.5px;
+}
+
+.server-enter {
+	width: auto;
+	flex-grow: 1;
+	text-align: center;
+	opacity: 0.5;
+	font-size: 11px;
+	line-height: 16px;
+}
+
+#Background {
 	animation: BGScroll 4s linear infinite;
 }
-@keyframes BGScroll{
-	from{ background-position: 0px 0px; }
-	to{ background-position: -200px -200px; }
+
+@keyframes BGScroll {
+	from {
+		background-position: 0px 0px;
+	}
+
+	to {
+		background-position: -200px -200px;
+	}
 }
