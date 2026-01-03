@@ -422,21 +422,16 @@ exports.readyRobot = function (robot) {
 	}
 	getAuto.call(my, my.game.char, my.game.subChar, 2).then(function (list) {
 		if (list.length) {
-			// (참고) 여기서의 기본 정렬은 아래 분기문들 때문에 사실상 덮어씌워집니다.
 			list.sort(function (a, b) { return b.hit - a.hit; });
 
 			if (ROBOT_HIT_LIMIT[level] > list[0].hit) denied();
 			else {
 				if (level >= 3 && !robot._done.length) {
-					// [수정됨] 매너 또는 젠틀 모드일 경우:
 					if (my.opts.manner || my.opts.gentle) {
-						// hit(인기도)나 길이와 상관없이 리스트를 무작위로 섞음 (Shuffle)
-						// 이렇게 하면 DB에 있는 단어 중 짧은 것과 긴 것이 자연스럽게 섞여 나옵니다.
 						list.sort(function (a, b) { return Math.random() - 0.5; });
 
 						pickList(list);
 					} else {
-						// [기존 로직] 일반 모드: 공격적인 단어 계산
 						if (Math.random() < 0.5) list.sort(function (a, b) { return b._id.length - a._id.length; });
 						if (list[0]._id.length < 8 && my.game.turnTime >= 2300) {
 							for (i in list) {
