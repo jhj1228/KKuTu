@@ -47,52 +47,54 @@ block JS
 		$(function() {
 			function updateMissionState() {
 				var $mission = $('#room-mission');
-				var $target = $('#room-randommission');
-
-				if ($mission.length === 0 || $target.length === 0) return;
+				var $random = $('#room-randommission');
+				if ($mission.length === 0 || $random.length === 0) return;
 				
 				var isChecked = $mission.is(':checked');
+
 				if (!isChecked) {
-					$target.prop('checked', false);
-					$target.prop('disabled', true);
+					$random.prop('checked', false);
+					$random.prop('disabled', true);
+					$random.parent().css('opacity', '1');
 				} else {
-					$target.prop('disabled', false);
-					$target.parent().css('opacity', '1');
+					$random.prop('disabled', false);
+					$random.parent().css('opacity', '1');
 				}
 			}
 			function updateMannerGentleState() {
 				var $manner = $('#room-manner');
 				var $gentle = $('#room-gentle');
+				
 				if ($manner.length === 0 || $gentle.length === 0) return;
+
 				if ($manner.is(':checked')) {
 					$gentle.prop('checked', false);
 					$gentle.prop('disabled', true);
 					$gentle.parent().css('opacity', '1');
-				}
-				else if ($gentle.is(':checked')) {
+				} else if ($gentle.is(':checked')) {
 					$manner.prop('checked', false);
 					$manner.prop('disabled', true);
 					$manner.parent().css('opacity', '1');
-				}
-				else {
+				} else {
 					$manner.prop('disabled', false).parent().css('opacity', '1');
 					$gentle.prop('disabled', false).parent().css('opacity', '1');
 				}
 			}
+
+			$(document).on('change', '#room-mission', updateMissionState);
 			$(document).on('change', '#room-manner', updateMannerGentleState);
 			$(document).on('change', '#room-gentle', updateMannerGentleState);
+
 			$(document).on('click', '#NewRoomBtn', function() {
 				setTimeout(function() {
 					updateMissionState();
 					updateMannerGentleState();
-				}, 10);
+				}, 50);
 			});
-
-			// 초기 로딩 시 실행
 			setTimeout(function() {
 				updateMissionState();
 				updateMannerGentleState();
-			}, 100);
+			}, 200);
 		});
 
 block CSS

@@ -5057,8 +5057,6 @@ function loadLocalSettings() {
 			bs: "lobby"
 		};
 	}
-
-	// 설정 적용
 	applyOptions(opt);
 	console.log("설정을 불러왔습니다.");
 }
