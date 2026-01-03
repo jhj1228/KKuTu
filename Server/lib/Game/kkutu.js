@@ -260,6 +260,7 @@ exports.Client = function (socket, profile, sid) {
 	} else {
 		my.onOKG = function (time) {
 			var d = (new Date()).getDate();
+			var updated = false;
 
 			if (my.guest) return;
 			if (d != my.data.connectDate) {
@@ -270,11 +271,13 @@ exports.Client = function (socket, profile, sid) {
 			my.data.playTime += time;
 
 			while (my.data.playTime >= PER_OKG * (my.okgCount + 1)) {
-				if (my.okgCount >= MAX_OKG) return;
+				if (my.okgCount >= MAX_OKG) break;
 				my.okgCount++;
+				updated = true;
 			}
-			my.send('okg', { time: my.data.playTime, count: my.okgCount });
-			// process.send({ type: 'okg', id: my.id, time: time });
+			if (updated) {
+				my.send('okg', { time: my.data.playTime, count: my.okgCount });
+			}
 		};
 	}
 	socket.on('close', function (code) {
@@ -1243,11 +1246,13 @@ exports.Room = function (room, channel) {
 			res[i].reward = rw;
 			o.data.score += rw.score || 0;
 			o.money += rw.money || 0;
-			o.data.record[Const.GAME_TYPE[my.mode]][2] += rw.score || 0;
 			o.data.record[Const.GAME_TYPE[my.mode]][3] += rw.playTime;
-			if (!my.practice && rw.together) {
-				o.data.record[Const.GAME_TYPE[my.mode]][0]++;
-				if (res[i].rank == 0) o.data.record[Const.GAME_TYPE[my.mode]][1]++;
+			if (!my.opts.unknownword) {
+				o.data.record[Const.GAME_TYPE[my.mode]][2] += rw.score || 0;
+				if (!my.practice && rw.together) {
+					o.data.record[Const.GAME_TYPE[my.mode]][0]++;
+					if (res[i].rank == 0) o.data.record[Const.GAME_TYPE[my.mode]][1]++;
+				}
 			}
 			users[o.id] = o.getData();
 
