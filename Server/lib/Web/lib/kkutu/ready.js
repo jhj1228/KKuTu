@@ -268,12 +268,8 @@ $(document).ready(function () {
 			return false;
 		}
 	});
-	$data.opts = $.cookie('kks');
-	if ($data.opts) {
-		var opts = JSON.parse($data.opts);
-		opts.bv = $("#bgm-volume").val();
-		opts.ev = $("#effect-volume").val();
-		applyOptions(opts);
+	if (typeof loadLocalSettings === "function") {
+		loadLocalSettings();
 	}
 	$(".dialog-head .dialog-title").on('mousedown', function (e) {
 		var $pd = $(e.currentTarget).parents(".dialog");
@@ -630,20 +626,9 @@ $(document).ready(function () {
 		location.href = "/";
 	});
 	$stage.dialog.settingOK.on('click', function (e) {
-		applyOptions({
-			mb: $("#mute-bgm").is(":checked"),
-			me: $("#mute-effect").is(":checked"),
-			bv: $("#bgm-volume").val(),
-			ev: $("#effect-volume").val(),
-			di: $("#deny-invite").is(":checked"),
-			dw: $("#deny-whisper").is(":checked"),
-			df: $("#deny-friend").is(":checked"),
-			ar: $("#auto-ready").is(":checked"),
-			su: $("#sort-user").is(":checked"),
-			ow: $("#only-waiting").is(":checked"),
-			ou: $("#only-unlock").is(":checked")
-		});
-		$.cookie('kks', JSON.stringify($data.opts));
+		if (typeof saveLocalSettings === "function") {
+			saveLocalSettings();
+		}
 		$stage.dialog.setting.hide();
 	});
 	$stage.dialog.profileLevel.on('click', function (e) {

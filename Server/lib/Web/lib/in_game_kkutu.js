@@ -439,12 +439,8 @@ $(document).ready(function () {
 			return false;
 		}
 	});
-	$data.opts = $.cookie('kks');
-	if ($data.opts) {
-		var opts = JSON.parse($data.opts);
-		opts.bv = $("#bgm-volume").val();
-		opts.ev = $("#effect-volume").val();
-		applyOptions(opts);
+	if (typeof loadLocalSettings === "function") {
+		loadLocalSettings();
 	}
 	$(".dialog-head .dialog-title").on('mousedown', function (e) {
 		var $pd = $(e.currentTarget).parents(".dialog");
@@ -801,20 +797,9 @@ $(document).ready(function () {
 		location.href = "/";
 	});
 	$stage.dialog.settingOK.on('click', function (e) {
-		applyOptions({
-			mb: $("#mute-bgm").is(":checked"),
-			me: $("#mute-effect").is(":checked"),
-			bv: $("#bgm-volume").val(),
-			ev: $("#effect-volume").val(),
-			di: $("#deny-invite").is(":checked"),
-			dw: $("#deny-whisper").is(":checked"),
-			df: $("#deny-friend").is(":checked"),
-			ar: $("#auto-ready").is(":checked"),
-			su: $("#sort-user").is(":checked"),
-			ow: $("#only-waiting").is(":checked"),
-			ou: $("#only-unlock").is(":checked")
-		});
-		$.cookie('kks', JSON.stringify($data.opts));
+		if (typeof saveLocalSettings === "function") {
+			saveLocalSettings();
+		}
 		$stage.dialog.setting.hide();
 	});
 	$stage.dialog.profileLevel.on('click', function (e) {
@@ -2132,6 +2117,12 @@ function applyOptions(opt) {
 	$data.BGMVolume = parseFloat($data.opts.bv);
 	$data.EffectVolume = parseFloat($data.opts.ev);
 
+	if ($data.BGMVolume <= 0.01) $data.BGMVolume = 0;
+	if ($data.EffectVolume <= 0.01) $data.EffectVolume = 0;
+	if ($data.opts.bs) {
+		$("#bgm-select").val($data.opts.bs);
+	}
+
 	$("#mute-bgm").attr('checked', $data.muteBGM);
 	$("#mute-effect").attr('checked', $data.muteEff);
 	$("#bgm-volume").val($data.BGMVolume);
@@ -2144,20 +2135,50 @@ function applyOptions(opt) {
 	$("#only-waiting").attr('checked', $data.opts.ow);
 	$("#only-unlock").attr('checked', $data.opts.ou);
 
-	if ($data.bgm) {
-		if ($data.BGMVolume) {
-			$data.bgm.volume = $data.BGMVolume;
-			$data.bgm = playBGM($data.bgm.key, true);
-		} else {
-			$data.bgm.volume = 0;
-			$data.bgm.stop();
+	var selectedBGM = $("#bgm-select").val();
+	if ($data.bgm && $data.bgm.key === "lobby") {
+		if ($data.bgm.originalKey !== selectedBGM) {
+			$data.bgm = playBGM('lobby', true);
+			return;
 		}
-		if ($data.muteBGM) {
-			$data.bgm.volume = 0;
-			$data.bgm.stop();
-		} else {
-			$data.bgm.volume = 1;
-			$data.bgm = playBGM($data.bgm.key, true);
+	}
+	if ($data.bgm) {
+		var targetVol = ($data.muteBGM || $data.BGMVolume === 0) ? 0 : $data.BGMVolume;
+		if ($data.bgm.gainNode) {
+			try {
+				$data.bgm.gainNode.gain.cancelScheduledValues(audioContext.currentTime);
+				if (targetVol === 0) {
+					$data.bgm.gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+				} else {
+					$data.bgm.gainNode.gain.setTargetAtTime(targetVol, audioContext.currentTime, 0.1);
+				}
+			} catch (e) {
+				$data.bgm.gainNode.gain.value = targetVol;
+			}
+		} else if ($data.bgm.audio) {
+			$data.bgm.audio.volume = targetVol;
+		}
+	}
+	if (typeof $_sound !== 'undefined') {
+		var effTargetVol = ($data.muteEff || $data.EffectVolume === 0) ? 0 : $data.EffectVolume;
+		for (var k in $_sound) {
+			var s = $_sound[k];
+			if (s && s.loop === false) {
+				if (s.gainNode) {
+					try {
+						s.gainNode.gain.cancelScheduledValues(audioContext.currentTime);
+						if (effTargetVol === 0) {
+							s.gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+						} else {
+							s.gainNode.gain.setTargetAtTime(effTargetVol, audioContext.currentTime, 0.1);
+						}
+					} catch (e) {
+						s.gainNode.gain.value = effTargetVol;
+					}
+				} else if (s.audio) {
+					s.audio.volume = effTargetVol;
+				}
+			}
 		}
 	}
 }
@@ -4698,38 +4719,39 @@ function stopBGM() {
 function playSound(key, loop) {
 	var src, sound;
 	var mute = (loop && $data.muteBGM) || (!loop && $data.muteEff);
-	var bgmMuted = loop && $data.BGMVolume == 0;
-	var effectMuted = !loop && $data.EffectVolume == 0;
 
 	sound = $sound[key] || $sound.missing;
+
+	var vol = loop ? $data.BGMVolume : $data.EffectVolume;
+	if (vol === undefined || vol === null) vol = 0.5;
+
 	if (window.hasOwnProperty("AudioBuffer") && sound instanceof AudioBuffer) {
 		var gainNode = audioContext.createGain();
 		src = audioContext.createBufferSource();
 		src.startedAt = audioContext.currentTime;
 		src.loop = loop;
-		if (mute || bgmMuted || effectMuted) {
-			gainNode.gain.value = 0;
-			src.buffer = audioContext.createBuffer(2, sound.length, audioContext.sampleRate);
-		} else {
-			gainNode.gain.value = (loop ? $data.BGMVolume : $data.EffectVolume) || 0.5;
-			src.buffer = sound;
-		}
+
+		var volume = mute ? 0 : vol;
+		gainNode.gain.value = volume;
+
+		src.buffer = sound;
 		gainNode.connect(audioContext.destination);
 		src.connect(gainNode);
+
+		src.gainNode = gainNode;
 	} else {
 		if (sound.readyState) sound.audio.currentTime = 0;
 		sound.audio.loop = loop || false;
-		sound.audio.volume = mute ? 0 : ((loop ? $data.BGMVolume : $data.EffectVolume) || 0.5);
+		sound.audio.volume = mute ? 0 : vol;
 		src = sound;
 	}
+
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
+	src.originalKey = key;
 	src.key = key === "lobby" || key === "lobbyoriginal" || key === "lobbyseol" || key === "lobbyending" || key === "inthepool" || key === "enchanted" ? "lobby" : key;
+
 	src.start();
-	/*if(sound.readyState) sound.currentTime = 0;
-	sound.loop = loop || false;
-	sound.volume = ((loop && $data.muteBGM) || (!loop && $data.muteEff)) ? 0 : 1;
-	sound.play();*/
 
 	return src;
 }
@@ -4990,6 +5012,46 @@ function yell(msg) {
 		}, 3000);
 	}, 1000);
 }
+function saveLocalSettings() {
+	var opt = {
+		mb: $("#mute-bgm").is(':checked'),
+		me: $("#mute-effect").is(':checked'),
+		bv: $("#bgm-volume").val(),
+		ev: $("#effect-volume").val(),
+		di: $("#deny-invite").is(':checked'),
+		dw: $("#deny-whisper").is(':checked'),
+		df: $("#deny-friend").is(':checked'),
+		ar: $("#auto-ready").is(':checked'),
+		su: $("#sort-user").is(':checked'),
+		ow: $("#only-waiting").is(':checked'),
+		ou: $("#only-unlock").is(':checked'),
+		bs: $("#bgm-select").val()
+	};
+	applyOptions(opt);
+	localStorage.setItem('kkutu_settings', JSON.stringify(opt));
+}
+function loadLocalSettings() {
+	var saved = localStorage.getItem('kkutu_settings');
+	if (saved) {
+		try {
+			var opt = JSON.parse(saved);
+			applyOptions(opt);
+			console.log("저장된 설정을 불러왔습니다.");
+		} catch (e) {
+			console.error("설정 로드 실패:", e);
+		}
+	}
+}
+$(document).ready(function () {
+	loadLocalSettings();
+	$("#mute-bgm, #mute-effect, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select").on('change', function () {
+		saveLocalSettings();
+	});
+
+	$("#bgm-volume, #effect-volume").on('input change', function () {
+		saveLocalSettings();
+	});
+});
 /**
  * Rule the words! KKuTu Online
  * Copyright (C) 2017 JJoriping(op@jjo.kr)
