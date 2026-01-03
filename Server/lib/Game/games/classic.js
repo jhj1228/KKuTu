@@ -103,18 +103,16 @@ exports.getTitle = function () {
 		var i, list = [];
 		var len;
 
-		/* ���ϰ� �ʹ� �ɸ��ٸ� �ּ��� Ǯ��.
-		R.go(true);
-		return R;
-		*/
 		if (title == null) {
-			R.go(EXAMPLE);
+			R.go(null);
 		} else {
 			len = title.length;
-			for (i = 0; i < len; i++) list.push(getAuto.call(my, title[i], getSubChar.call(my, title[i]), 1));
+			for (i = 0; i < len; i++) list.push(getAuto.call(my, title[i], getSubChar.call(my, title[i]), 2));
 
 			Lizard.all(list).then(function (res) {
-				for (i in res) if (!res[i]) return R.go(EXAMPLE);
+				for (i in res) {
+					if (!res[i] || res[i].length <= 5) return R.go(null);
+				}
 
 				return R.go(title);
 			});
@@ -424,25 +422,37 @@ exports.readyRobot = function (robot) {
 	}
 	getAuto.call(my, my.game.char, my.game.subChar, 2).then(function (list) {
 		if (list.length) {
+			// (참고) 여기서의 기본 정렬은 아래 분기문들 때문에 사실상 덮어씌워집니다.
 			list.sort(function (a, b) { return b.hit - a.hit; });
+
 			if (ROBOT_HIT_LIMIT[level] > list[0].hit) denied();
 			else {
 				if (level >= 3 && !robot._done.length) {
-					if (Math.random() < 0.5) list.sort(function (a, b) { return b._id.length - a._id.length; });
-					if (list[0]._id.length < 8 && my.game.turnTime >= 2300) {
-						for (i in list) {
-							w = list[i]._id.charAt(isRev ? 0 : (list[i]._id.length - 1));
-							if (!ended.hasOwnProperty(w)) ended[w] = [];
-							ended[w].push(list[i]);
-						}
-						getWishList(Object.keys(ended)).then(function (key) {
-							var v = ended[key];
+					// [수정됨] 매너 또는 젠틀 모드일 경우:
+					if (my.opts.manner || my.opts.gentle) {
+						// hit(인기도)나 길이와 상관없이 리스트를 무작위로 섞음 (Shuffle)
+						// 이렇게 하면 DB에 있는 단어 중 짧은 것과 긴 것이 자연스럽게 섞여 나옵니다.
+						list.sort(function (a, b) { return Math.random() - 0.5; });
 
-							if (!v) denied();
-							else pickList(v);
-						});
-					} else {
 						pickList(list);
+					} else {
+						// [기존 로직] 일반 모드: 공격적인 단어 계산
+						if (Math.random() < 0.5) list.sort(function (a, b) { return b._id.length - a._id.length; });
+						if (list[0]._id.length < 8 && my.game.turnTime >= 2300) {
+							for (i in list) {
+								w = list[i]._id.charAt(isRev ? 0 : (list[i]._id.length - 1));
+								if (!ended.hasOwnProperty(w)) ended[w] = [];
+								ended[w].push(list[i]);
+							}
+							getWishList(Object.keys(ended)).then(function (key) {
+								var v = ended[key];
+
+								if (!v) denied();
+								else pickList(v);
+							});
+						} else {
+							pickList(list);
+						}
 					}
 				} else pickList(list);
 			}
