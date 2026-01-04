@@ -54,19 +54,19 @@ $audiosets = [
 		},
 		{
 			key: "lobbuoriginal",
-			value: "/media/kkutu/LobbyBGM.mp3"
+			value: "/media/kkutuoriginal/LobbyBGM.mp3"
 		},
 		{
 			key: "lobbyending",
-			value: "/media/kkutu/LobbyBGMending.mp3"
+			value: "/media/kkutuoriginal/LobbyBGMending.mp3"
 		},
 		{
 			key: "inthepool",
-			value: "/media/kkutu/LobbyINTHEPOOL.mp3"
+			value: "/media/kkutuoriginal/LobbyINTHEPOOL.mp3"
 		},
 		{
 			key: "enchanted",
-			valye: "/media/kkutu/LobbyEnchantedlove.mp3"
+			valye: "/media/kkutuoriginal/LobbyEnchantedlove.mp3"
 		},
 		{
 			key: "k",
