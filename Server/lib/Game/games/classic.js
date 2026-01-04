@@ -656,6 +656,8 @@ function getSubChar(char) {
 				break;
 			}
 		case "KKT": case "KSH": case "KAP": case "KMH": case "KRH":
+			if (my.opts.dueum) break;
+
 			k = c - 0xAC00;
 			if (k < 0 || k > 11171) break;
 			ca = [Math.floor(k / 28 / 21), Math.floor(k / 28) % 21, k % 28];

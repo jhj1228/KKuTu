@@ -326,6 +326,8 @@
 		"explNo2": "두 글자 단어의 사용을 막습니다.",
 		"optRandomturn": "랜덤턴",
 		"explRandomturn": "턴이 순서대로 진행되지 않고 무작위로 선별됩니다.",
+		"optDueum": "두음법칙 금지",
+		"explDueum": "두음법칙이 적용되지 않습니다.",
 		"optReturn": "리턴",
 		"explReturn": "이미 사용했던 단어를 최대 5번동안 다시 사용할 수 있습니다.",
 		"optRandommission": "랜덤미션",
