@@ -260,7 +260,11 @@ exports.submit = function (client, text) {
 				my.game.late = true;
 				clearTimeout(my.game.turnTimer);
 				t = tv - my.game.turnAt;
-				score = my.getScore(text, t);
+				if (my.opts.return && dupCount > 0) {
+					score = 0;
+				} else {
+					score = my.getScore(text, t);
+				}
 				my.game.dic[text] = (my.game.dic[text] || 0) + 1;
 				my.game.chain.push(text);
 				my.game.roundTime -= t;
