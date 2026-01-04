@@ -1028,15 +1028,18 @@ exports.Room = function (room, channel) {
 				my.opts.injeong = false;
 				my.opts.loanword = false;
 				my.opts.strict = false;
-			}
-			else {
+			} else {
 				if (my.opts.manner) {
 					my.opts.gentle = false;
 				} else if (my.opts.gentle) {
 					my.opts.manner = false;
 				}
 			}
-
+			if (my.opts.randomturn) {
+				my.opts.reverse = false;
+			} else if (my.opts.reverse) {
+				my.opts.randomturn = false;
+			}
 			if (!my.opts.mission) {
 				my.opts.randommission = false;
 			}
