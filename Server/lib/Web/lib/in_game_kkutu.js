@@ -2154,6 +2154,7 @@ function applyOptions(opt) {
 	$("#sort-user").attr('checked', $data.opts.su);
 	$("#only-waiting").attr('checked', $data.opts.ow);
 	$("#only-unlock").attr('checked', $data.opts.ou);
+	$("#no-filter").attr('checked', $data.opts.nf);
 
 	var selectedBGM = $("#bgm-select").val();
 	if ($data.bgm && $data.bgm.key === "lobby") {
@@ -4804,6 +4805,7 @@ function forkChat() {
 	$stage.chat.scrollTop(999999999);
 }
 function badWords(text) {
+	if ($data.opts && $data.opts.nf) return text;
 	return text.replace(BAD, "♥♥");
 }
 function chatBalloon(text, id, flag) {
@@ -5047,7 +5049,8 @@ function saveLocalSettings() {
 		su: $("#sort-user").is(':checked'),
 		ow: $("#only-waiting").is(':checked'),
 		ou: $("#only-unlock").is(':checked'),
-		bs: $("#bgm-select").val()
+		bs: $("#bgm-select").val(),
+		nf: $("#no-filter").is(':checked')
 	};
 	applyOptions(opt);
 	localStorage.setItem('kkutu_settings', JSON.stringify(opt));
@@ -5077,7 +5080,8 @@ function loadLocalSettings() {
 			su: false,
 			ow: false,
 			ou: false,
-			bs: "lobby"
+			bs: "lobby",
+			nf: false
 		};
 	}
 	applyOptions(opt);
@@ -5085,7 +5089,7 @@ function loadLocalSettings() {
 }
 $(document).ready(function () {
 	loadLocalSettings();
-	$("#mute-bgm, #mute-effect, #deny-vibrate, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select").on('change', function () {
+	$("#mute-bgm, #mute-effect, #deny-vibrate, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select, #no-filter").on('change', function () {
 		saveLocalSettings();
 	});
 

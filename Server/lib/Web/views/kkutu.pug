@@ -197,7 +197,7 @@ block Middle
 		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none; background-color: #FFADAD;')= L('exit')
 		button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')= L('replay')
 		button#LeaderboardBtn.for-lobby(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
-	+Dialog('SettingDiag', 300, 335, L('settingsText'))
+	+Dialog('SettingDiag', 300, 355, L('settingsText'))
 		div.dialog-bar
 			h4= L('mute')
 			+SettingOption('mute-bgm', L('bgm'))
@@ -224,6 +224,8 @@ block Middle
 			h4= L('ingames')
 			+SettingOption('auto-ready', L('autoReady'))
 			+SettingOption('deny-vibrate', L('denyVibrate'))
+			h4
+			+SettingOption('no-filter', L('noFilter'))
 		div.dialog-bar
 			h4= L('etc')
 			+SettingOption('sort-user', L('sortUser'), "width: 200px;")
