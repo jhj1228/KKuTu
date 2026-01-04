@@ -933,9 +933,16 @@ $(document).ready(function () {
 	});
 	$stage.dialog.profileShut.on('click', function (e) {
 		var o = $data.users[$data._profiled];
-
 		if (!o) return;
-		toggleShutBlock(o.profile.title || o.profile.name);
+
+		var targetName = o.profile.title || o.profile.name;
+		var $btn = $(e.currentTarget);
+		toggleShutBlock(targetName);
+		if ($data._shut.hasOwnProperty(targetName)) {
+			$btn.text(L['liftshut']);
+		} else {
+			$btn.text((typeof L !== 'undefined' && L.shut));
+		}
 	});
 	$stage.dialog.profileWhisper.on('click', function (e) {
 		var o = $data.users[$data._profiled];
