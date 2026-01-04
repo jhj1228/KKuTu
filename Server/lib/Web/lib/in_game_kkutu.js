@@ -2146,6 +2146,7 @@ function applyOptions(opt) {
 	$("#mute-effect").attr('checked', $data.muteEff);
 	$("#bgm-volume").val($data.BGMVolume);
 	$("#effect-volume").val($data.EffectVolume);
+	$("#deny-vibrate").attr('checked', $data.opts.dv);
 	$("#deny-invite").attr('checked', $data.opts.di);
 	$("#deny-whisper").attr('checked', $data.opts.dw);
 	$("#deny-friend").attr('checked', $data.opts.df);
@@ -4410,6 +4411,7 @@ function onGoods(e) {
 	}
 }
 function vibrate(level) {
+	if ($data.opts.dv) return;
 	if (level < 1) return;
 
 	$("#Middle").css('padding-top', level);
@@ -5037,6 +5039,7 @@ function saveLocalSettings() {
 		me: $("#mute-effect").is(':checked'),
 		bv: $("#bgm-volume").val(),
 		ev: $("#effect-volume").val(),
+		dv: $("#deny-vibrate").is(':checked'),
 		di: $("#deny-invite").is(':checked'),
 		dw: $("#deny-whisper").is(':checked'),
 		df: $("#deny-friend").is(':checked'),
@@ -5066,6 +5069,7 @@ function loadLocalSettings() {
 			me: false,
 			bv: 0.5,
 			ev: 0.5,
+			dv: false,
 			di: false,
 			dw: false,
 			df: false,
@@ -5081,7 +5085,7 @@ function loadLocalSettings() {
 }
 $(document).ready(function () {
 	loadLocalSettings();
-	$("#mute-bgm, #mute-effect, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select").on('change', function () {
+	$("#mute-bgm, #mute-effect, #deny-vibrate, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select").on('change', function () {
 		saveLocalSettings();
 	});
 
