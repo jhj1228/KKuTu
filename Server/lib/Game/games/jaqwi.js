@@ -21,28 +21,28 @@ var Lizard = require('../../sub/lizard');
 var DB;
 var DIC;
 
-var ROBOT_CATCH_RATE = [ 0.1, 0.3, 0.5, 0.7, 0.99 ];
-var ROBOT_TYPE_COEF = [ 2000, 1200, 800, 300, 0 ];
+var ROBOT_CATCH_RATE = [0.1, 0.3, 0.5, 0.7, 0.99];
+var ROBOT_TYPE_COEF = [2000, 1200, 800, 300, 0];
 var robotTimers = {};
 
-exports.init = function(_DB, _DIC){
+exports.init = function (_DB, _DIC) {
 	DB = _DB;
 	DIC = _DIC;
 };
-exports.getTitle = function(){
+exports.getTitle = function () {
 	var R = new Lizard.Tail();
 	var my = this;
-	
+
 	my.game.done = [];
-	setTimeout(function(){
+	setTimeout(function () {
 		R.go("①②③④⑤⑥⑦⑧⑨⑩");
 	}, 500);
 	return R;
 };
-exports.roundReady = function(){
+exports.roundReady = function () {
 	var my = this;
 	var ijl = my.opts.injpick.length;
-	
+
 	clearTimeout(my.game.qTimer);
 	clearTimeout(my.game.hintTimer);
 	clearTimeout(my.game.hintTimer2);
@@ -51,11 +51,11 @@ exports.roundReady = function(){
 	my.game.giveup = [];
 	my.game.round++;
 	my.game.roundTime = my.time * 1000;
-	if(my.game.round <= my.round){
+	if (my.game.round <= my.round) {
 		my.game.theme = my.opts.injpick[Math.floor(Math.random() * ijl)];
-		getAnswer.call(my, my.game.theme).then(function($ans){
-			if(!my.game.done) return;
-			
+		getAnswer.call(my, my.game.theme).then(function ($ans) {
+			if (!my.game.done) return;
+
 			// $ans가 null이면 골치아프다...
 			my.game.late = false;
 			my.game.answer = $ans || {};
@@ -68,43 +68,43 @@ exports.roundReady = function(){
 			}, true);
 			setTimeout(my.turnStart, 2400);
 		});
-	}else{
+	} else {
 		my.roundEnd();
 	}
 };
-exports.turnStart = function(){
+exports.turnStart = function () {
 	var my = this;
 	var i;
-	
-	if(!my.game.answer) return;
-	
+
+	if (!my.game.answer) return;
+
 	my.game.conso = getConsonants(my.game.answer._id, 1);
 	my.game.roundAt = (new Date()).getTime();
 	my.game.meaned = 0;
 	my.game.primary = 0;
 	my.game.qTimer = setTimeout(my.turnEnd, my.game.roundTime);
-	my.game.hintTimer = setTimeout(function(){ turnHint.call(my); }, my.game.roundTime * 0.333);
-	my.game.hintTimer2 = setTimeout(function(){ turnHint.call(my); }, my.game.roundTime * 0.667);
+	my.game.hintTimer = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.333);
+	my.game.hintTimer2 = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.667);
 	my.byMaster('turnStart', {
 		char: my.game.conso,
 		roundTime: my.game.roundTime
 	}, true);
-	
-	for(i in my.game.robots){
+
+	for (i in my.game.robots) {
 		my.readyRobot(my.game.robots[i]);
 	}
 };
-function turnHint(){
+function turnHint() {
 	var my = this;
-	
+
 	my.byMaster('turnHint', {
 		hint: my.game.hint[my.game.meaned++]
 	}, true);
 }
-exports.turnEnd = function(){
+exports.turnEnd = function () {
 	var my = this;
 
-	if(my.game.answer){
+	if (my.game.answer) {
 		my.game.late = true;
 		my.byMaster('turnEnd', {
 			answer: my.game.answer ? my.game.answer._id : ""
@@ -112,27 +112,27 @@ exports.turnEnd = function(){
 	}
 	my.game._rrt = setTimeout(my.roundReady, 2500);
 };
-exports.submit = function(client, text){
+exports.submit = function (client, text) {
 	var my = this;
 	var score, t, i;
 	var $ans = my.game.answer;
 	var now = (new Date()).getTime();
 	var play = (my.game.seq ? my.game.seq.includes(client.id) : false) || client.robot;
 	var gu = my.game.giveup ? my.game.giveup.includes(client.id) : true;
-	
-	if(!my.game.winner) return;
-	if(my.game.winner.indexOf(client.id) == -1
+
+	if (!my.game.winner) return;
+	if (my.game.winner.indexOf(client.id) == -1
 		&& text == $ans._id
 		&& play && !gu
-	){
+	) {
 		t = now - my.game.roundAt;
-		if(my.game.primary == 0) if(my.game.roundTime - t > 10000){ // 가장 먼저 맞힌 시점에서 10초 이내에 맞히면 점수 약간 획득
+		if (my.game.primary == 0) if (my.game.roundTime - t > 10000) { // 가장 먼저 맞힌 시점에서 10초 이내에 맞히면 점수 약간 획득
 			clearTimeout(my.game.qTimer);
 			my.game.qTimer = setTimeout(my.turnEnd, 10000);
-			for(i in my.game.robots){
-				if(my.game.roundTime > my.game.robots[i]._delay){
+			for (i in my.game.robots) {
+				if (my.game.roundTime > my.game.robots[i]._delay) {
 					clearTimeout(my.game.robots[i]._timer);
-					if(client != my.game.robots[i]) if(Math.random() < ROBOT_CATCH_RATE[my.game.robots[i].level])
+					if (client != my.game.robots[i]) if (Math.random() < ROBOT_CATCH_RATE[my.game.robots[i].level])
 						my.game.robots[i]._timer = setTimeout(my.turnRobot, ROBOT_TYPE_COEF[my.game.robots[i].level], my.game.robots[i], text);
 				}
 			}
@@ -150,115 +150,116 @@ exports.submit = function(client, text){
 			bonus: 0
 		}, true);
 		client.invokeWordPiece(text, 0.9);
-		while(my.game.meaned < my.game.hint.length){
+		while (my.game.meaned < my.game.hint.length) {
 			turnHint.call(my);
 		}
-	}else if(play && !gu && (text == "gg" || text == "ㅈㅈ")){
+	} else if (play && !gu && (text == "gg" || text == "ㅈㅈ")) {
 		my.game.giveup.push(client.id);
 		client.publish('turnEnd', {
 			target: client.id,
 			giveup: true
 		}, true);
-	}else{
+	} else {
 		client.chat(text);
 	}
-	if(play) if(my.game.primary + my.game.giveup.length >= my.game.seq.length){
+	if (play) if (my.game.primary + my.game.giveup.length >= my.game.seq.length) {
 		clearTimeout(my.game.hintTimer);
 		clearTimeout(my.game.hintTimer2);
 		clearTimeout(my.game.qTimer);
 		my.turnEnd();
 	}
 };
-exports.getScore = function(text, delay){
+exports.getScore = function (text, delay) {
 	var my = this;
 	var rank = my.game.hum - my.game.primary + 3;
 	var tr = 1 - delay / my.game.roundTime;
-	var score = 6 * Math.pow(rank, 1.4) * ( 0.5 + 0.5 * tr );
+	var score = 6 * Math.pow(rank, 1.4) * (0.5 + 0.5 * tr);
 
 	return Math.round(score * my.game.themeBonus);
 };
-exports.readyRobot = function(robot){
+exports.readyRobot = function (robot) {
 	var my = this;
 	var level = robot.level;
 	var delay, text;
 	var i;
-	
-	if(!my.game.answer) return;
+
+	if (!my.game.answer) return;
 	clearTimeout(robot._timer);
 	robot._delay = 99999999;
-	for(i=0; i<2; i++){
-		if(Math.random() < ROBOT_CATCH_RATE[level]){
+	for (i = 0; i < 2; i++) {
+		if (Math.random() < ROBOT_CATCH_RATE[level]) {
 			text = my.game.answer._id;
 			delay = my.game.roundTime / 3 * i + text.length * ROBOT_TYPE_COEF[level];
 			robot._timer = setTimeout(my.turnRobot, delay, robot, text);
 			robot._delay = delay;
 			break;
-		}else continue;
+		} else continue;
 	}
 };
-function getConsonants(word, lucky){
+function getConsonants(word, lucky) {
 	var R = "";
 	var i, len = word.length;
 	var c;
 	var rv = [];
-	
+
 	lucky = lucky || 0;
-	while(lucky > 0){
+	while (lucky > 0) {
 		c = Math.floor(Math.random() * len);
-		if(rv.includes(c)) continue;
+		if (rv.includes(c)) continue;
 		rv.push(c);
 		lucky--;
 	}
-	for(i=0; i<len; i++){
+	for (i = 0; i < len; i++) {
 		c = word.charCodeAt(i) - 44032;
-		
-		if(c < 0 || rv.includes(i)){
+
+		if (c < 0 || rv.includes(i)) {
 			R += word.charAt(i);
 			continue;
-		}else c = Math.floor(c / 588);
+		} else c = Math.floor(c / 588);
 		R += Const.INIT_SOUNDS[c];
 	}
 	return R;
 }
-function getHint($ans){
+function getHint($ans) {
 	var R = [];
 	var h1;
 	var h2;
-	 if ($ans.mean.replace(/＂\d+＂|［\d+］|（\d+）/g,"").length)
-        h1 = $ans.mean.replace(new RegExp($ans._id, "g"), "★");
-    else
-        h1 = getConsonants($ans._id, Math.ceil($ans._id.length / 3));
-	
+	if ($ans.mean.replace(/＂\d+＂|［\d+］|（\d+）/g, "").length)
+		h1 = $ans.mean.replace(new RegExp($ans._id, "g"), "★");
+	else
+		h1 = getConsonants($ans._id, Math.ceil($ans._id.length / 3));
+
 	R.push(h1);
-	do{
+	do {
 		h2 = getConsonants($ans._id, Math.ceil($ans._id.length / 2));
-	}while(h1 == h2);
+	} while (h1 == h2);
 	R.push(h2);
-	
+
 	return R;
 }
-function getAnswer(theme, nomean){
+function getAnswer(theme, nomean) {
 	var my = this;
 	var R = new Lizard.Tail();
-	var args = [ [ '_id', { $nin: my.game.done } ] ];
-	
-	args.push([ 'theme', new RegExp("(,|^)(" + theme + ")(,|$)") ]);
-	args.push([ 'type', Const.KOR_GROUP ]);
-	args.push([ 'flag', { $lte: 7 } ]);
-	DB.kkutu['ko'].find.apply(my, args).on(function($res){
-		if(!$res) return R.go(null);
+	var args = [['_id', { $nin: my.game.done }]];
+
+	args.push(['theme', new RegExp("(,|^)(" + theme + ")(,|$)")]);
+	args.push(['type', Const.KOR_GROUP]);
+	args.push(['flag', { $lte: 7 }]);
+	DB.kkutu['ko'].find.apply(my, args).on(function ($res) {
+		if (!$res) return R.go(null);
 		var pick;
 		var len = $res.length;
-		
-		if(!len) return R.go(null);
-		do{
+
+		if (!len) return R.go(null);
+		do {
 			pick = Math.floor(Math.random() * len);
-			if($res[pick]._id.length >= 2) if($res[pick].type == "INJEONG" || $res[pick].mean.length >= 0){
-				return R.go($res[pick]);
-			}
+			if ($res[pick]._id.length >= 2 && (my.opts.unlimited || $res[pick]._id.length <= 15))
+				if ($res[pick].type == "INJEONG" || $res[pick].mean.length >= 0) {
+					return R.go($res[pick]);
+				}
 			$res.splice(pick, 1);
 			len--;
-		}while(len > 0);
+		} while (len > 0);
 		R.go(null);
 	});
 	return R;

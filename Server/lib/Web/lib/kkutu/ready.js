@@ -770,7 +770,7 @@ $(document).ready(function () {
 		if ($data._shut.hasOwnProperty(targetName)) {
 			$btn.text(L['liftshut']);
 		} else {
-			$btn.text((typeof L !== 'undefined' && L.shut));
+			$(this).text(L['shut']);
 		}
 	});
 	$stage.dialog.profileWhisper.on('click', function (e) {

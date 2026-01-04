@@ -50,7 +50,8 @@ exports.OPTIONS = {
 	'unw': { name: "Unknownword" },
 	'bom': { name: "Boom" },
 	'rvs': { name: "Reverse" },
-	'wpk': { name: "Wordpick" }
+	'wpk': { name: "Wordpick" },
+	'ulm': { name: "Unlimited" },
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -101,7 +102,7 @@ exports.RULE = {
 	'CSQ': { // 자음퀴즈
 		lang: "ko",
 		rule: "Jaqwi",
-		opts: ["ijp"],
+		opts: ["ijp", "ulm"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -183,7 +184,7 @@ exports.RULE = {
 	'MOQ': { // 모음퀴즈
 		lang: "ko",
 		rule: "Moqwi",
-		opts: ["ijp"],
+		opts: ["ijp", "ulm"],
 		time: 1,
 		ai: true,
 		big: false,
