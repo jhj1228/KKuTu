@@ -57,7 +57,7 @@ exports.getTitle = function () {
 				});
 				break;
 			default:
-				var lenRegex = my.opts.unlimited ? /^.{2,}$/ : /^.{2,8}$/;
+				var lenRegex = my.opts.unlimited ? /^.{2,}$/ : /^.{2,5}$/;
 
 				DB.kkutu[my.rule.lang].find(['_id', lenRegex], ['hit', { $gte: 1 }]).limit(416).on(function ($res) {
 					pick($res.map(function (item) { return item._id; }));
@@ -202,7 +202,7 @@ function getAuto(theme) {
 	var lst = false;
 
 	if (!my.opts.unlimited) {
-		aqs.push(['_id', /^.{2,8}$/]);
+		aqs.push(['_id', /^.{2,5}$/]);
 	}
 
 	if (my.game.chain) aqs.push(['_id', { '$nin': my.game.chain }]);
