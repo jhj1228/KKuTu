@@ -121,7 +121,7 @@ exports.RULE = {
 	'KTY': { // 타자대결
 		lang: "ko",
 		rule: "Typing",
-		opts: ["prv"],
+		opts: ["prv", "ulm"],
 		time: 1,
 		ai: false,
 		big: false,
@@ -203,7 +203,7 @@ exports.RULE = {
 	'KTT': { // 주제타자대결
 		lang: "ko",
 		rule: "Typing",
-		opts: ["ijp"],
+		opts: ["ijp", "ulm"],
 		time: 1,
 		ai: false,
 		big: false,

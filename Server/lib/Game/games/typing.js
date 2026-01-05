@@ -57,7 +57,9 @@ exports.getTitle = function () {
 				});
 				break;
 			default:
-				DB.kkutu[my.rule.lang].find(['_id', /^.{2,5}$/], ['hit', { $gte: 1 }]).limit(416).on(function ($res) {
+				var lenRegex = my.opts.unlimited ? /^.{2,}$/ : /^.{2,8}$/;
+
+				DB.kkutu[my.rule.lang].find(['_id', lenRegex], ['hit', { $gte: 1 }]).limit(416).on(function ($res) {
 					pick($res.map(function (item) { return item._id; }));
 				});
 				break;
@@ -198,6 +200,10 @@ function getAuto(theme) {
 	var aft;
 	var raiser;
 	var lst = false;
+
+	if (!my.opts.unlimited) {
+		aqs.push(['_id', /^.{2,8}$/]);
+	}
 
 	if (my.game.chain) aqs.push(['_id', { '$nin': my.game.chain }]);
 	raiser = DB.kkutu[my.rule.lang].find.apply(this, aqs);
