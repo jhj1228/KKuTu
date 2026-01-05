@@ -159,7 +159,11 @@ exports.submit = function (client, text, data) {
 					my.game.late = true;
 					clearTimeout(my.game.turnTimer);
 					t = tv - my.game.turnAt;
-					score = my.getScore(text, t);
+					if (my.opts.return && dupCount > 0) {
+						score = 0;
+					} else {
+						score = my.getScore(text, t);
+					}
 					my.game.chain.push(text);
 					my.game.roundTime -= t;
 					client.game.score += score;

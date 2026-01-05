@@ -107,6 +107,7 @@ $(document).ready(function () {
 			profileLevel: $("#profile-level"),
 			profileDress: $("#profile-dress"),
 			profileWhisper: $("#profile-whisper"),
+			profileReport: $("#profile-report"),
 			kickVote: $("#KickVoteDiag"),
 			kickVoteY: $("#kick-vote-yes"),
 			kickVoteN: $("#kick-vote-no"),
@@ -132,7 +133,9 @@ $(document).ready(function () {
 			chatLog: $("#ChatLogDiag"),
 			obtain: $("#ObtainDiag"),
 			obtainOK: $("#obtain-ok"),
-			help: $("#HelpDiag")
+			help: $("#HelpDiag"),
+			report: $("#ReportDiag"),
+			reportOK: $("#report-ok")
 		},
 		box: {
 			chat: $(".ChatBox"),
@@ -777,6 +780,12 @@ $(document).ready(function () {
 		var o = $data.users[$data._profiled];
 
 		$stage.talk.val("/e " + (o.profile.title || o.profile.name).replace(/\s/g, "") + " ").focus();
+	});
+	$stage.dialog.profileReport.on('click', function (e) {
+		requestReport();
+	});
+	$stage.dialog.reportOK.on('click', function (e) {
+		submitReport();
 	});
 	$stage.dialog.profileDress.on('click', function (e) {
 		// alert(L['error_555']);

@@ -192,6 +192,50 @@ function checkTailUser(id, place, msg) {
 		DIC[temp].send('tail', { a: "user", rid: place, id: id, msg: msg });
 	}
 }
+function sendReportToDiscord(reporter, targetId, reason) {
+	if (!GLOBAL.DISCORD_WEBHOOK_URL) return;
+
+	var targetUser = DIC[targetId];
+	var targetName = targetUser ? (targetUser.nickname || targetUser.profile.name) : "알 수 없음";
+	var targetIP = targetUser ? targetUser.remoteAddress : "IP 정보 없음";
+
+	var payload = JSON.stringify({
+		username: "KKuTu 신고 봇",
+		embeds: [{
+			title: "🚨 사용자 신고 접수",
+			color: 16711680, // 빨간색
+			fields: [
+				{ name: "신고자", value: `${reporter.nickname} (#${reporter.id})`, inline: true },
+				{ name: "신고 대상", value: `${targetName} (#${targetId})`, inline: true },
+				{ name: "대상 IP", value: targetIP, inline: false },
+				{ name: "신고 사유", value: reason, inline: false },
+				{ name: "시간", value: new Date().toLocaleString(), inline: false }
+			]
+		}]
+	});
+
+	var url = require('url').parse(GLOBAL.DISCORD_WEBHOOK_URL);
+
+	var options = {
+		hostname: url.hostname,
+		path: url.path,
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'Content-Length': Buffer.byteLength(payload)
+		}
+	};
+
+	var req = https.request(options, (res) => {
+	});
+
+	req.on('error', (e) => {
+		JLog.error(`Discord Webhook Error: ${e.message}`);
+	});
+
+	req.write(payload);
+	req.end();
+}
 function narrateFriends(id, friends, stat) {
 	if (!friends) return;
 	var fl = Object.keys(friends);
@@ -324,6 +368,9 @@ Cluster.on('message', function (worker, msg) {
 			break;
 		case "room-invalid":
 			delete ROOM[msg.room.id];
+			break;
+		case "report":
+			sendReportToDiscord(msg.data.reporter, msg.data.target, msg.data.reason);
 			break;
 		default:
 			JLog.warn(`Unhandled IPC message type: ${msg.type}`);
@@ -682,6 +729,25 @@ function processClientRequest($c, msg) {
 			}
 			break;
 		*/
+		case 'report':
+			if (!msg.target || !msg.reason) return;
+			if ($c.guest && !GUEST_PERMISSION.report) {
+				$c.sendError(458);
+				return;
+			}
+			var REPORT_COOLDOWN = 60 * 1000;
+			if ($c._lastReport && now - $c._lastReport < REPORT_COOLDOWN) {
+				$c.send('notice', { value: "신고는 1분에 한 번만 가능합니다." });
+				return;
+			}
+			if (!DIC[msg.target]) {
+				$c.sendError(450);
+				return;
+			}
+			sendReportToDiscord($c, msg.target, msg.reason);
+			$c._lastReport = now;
+			$c.send('notice', { value: "신고가 접수되었습니다." });
+			break;
 		case 'test':
 			checkTailUser($c.id, $c.place, msg);
 			break;
@@ -689,7 +755,6 @@ function processClientRequest($c, msg) {
 			break;
 	}
 }
-
 KKuTu.onClientClosed = function ($c, code) {
 	delete DIC[$c.id];
 	if ($c._error != 409) MainDB.users.update(['_id', $c.id]).set(['server', ""]).on();

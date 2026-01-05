@@ -278,6 +278,7 @@ $(document).ready(function () {
 			profileLevel: $("#profile-level"),
 			profileDress: $("#profile-dress"),
 			profileWhisper: $("#profile-whisper"),
+			profileReport: $("#profile-report"),
 			kickVote: $("#KickVoteDiag"),
 			kickVoteY: $("#kick-vote-yes"),
 			kickVoteN: $("#kick-vote-no"),
@@ -303,7 +304,9 @@ $(document).ready(function () {
 			chatLog: $("#ChatLogDiag"),
 			obtain: $("#ObtainDiag"),
 			obtainOK: $("#obtain-ok"),
-			help: $("#HelpDiag")
+			help: $("#HelpDiag"),
+			report: $("#ReportDiag"),
+			reportOK: $("#report-ok")
 		},
 		box: {
 			chat: $(".ChatBox"),
@@ -948,6 +951,12 @@ $(document).ready(function () {
 		var o = $data.users[$data._profiled];
 
 		$stage.talk.val("/e " + (o.profile.title || o.profile.name).replace(/\s/g, "") + " ").focus();
+	});
+	$stage.dialog.profileReport.on('click', function (e) {
+		requestReport();
+	});
+	$stage.dialog.reportOK.on('click', function (e) {
+		submitReport();
 	});
 	$stage.dialog.profileDress.on('click', function (e) {
 		// alert(L['error_555']);
@@ -2334,6 +2343,9 @@ function onMessage(data) {
 	var $target;
 
 	switch (data.type) {
+		case 'notice':
+			notice(data.value);
+			break;
 		case 'recaptcha':
 			var $introText = $("#intro-text");
 			$introText.empty();
@@ -3747,16 +3759,19 @@ function requestProfile(id) {
 	$stage.dialog.profileDress.hide();
 	$stage.dialog.profileWhisper.hide();
 	$stage.dialog.profileHandover.hide();
+	$stage.dialog.profileReport.hide();
 
 	if ($data.id == id) $stage.dialog.profileDress.show();
 	else if (!o.robot) {
 		$stage.dialog.profileShut.show();
 		$stage.dialog.profileWhisper.show();
+		$stage.dialog.profileReport.show();
 	}
 	if ($data.room) {
 		if ($data.id != id && $data.id == $data.room.master) {
 			$stage.dialog.profileKick.show();
 			$stage.dialog.profileHandover.show();
+			$stage.dialog.profileReport.show();
 		}
 	}
 	showDialog($stage.dialog.profile);
@@ -5104,6 +5119,29 @@ $(document).ready(function () {
 		saveLocalSettings();
 	});
 });
+function requestReport() {
+	var targetUser = $data.users[$data._profiled] || $data.usersR[$data._profiled];
+	if (!targetUser) return notice(L['notReport']);
+	$("#report-reason-select").val("");
+	$("#report-reason-text").val("").attr("placeholder", "신고 사유를 구체적으로 입력해 주세요. 최대 250자 작성할 수 있으며, 신고 사유가 구체적일수록 처리하기 수월해집니다.");
+	showDialog($stage.dialog.report);
+}
+function submitReport() {
+	var selectedReason = $("#report-reason-select").val();
+	var detail = $("#report-reason-text").val().trim();
+	if (!selectedReason) {
+		return notice(L['profileReportX']);
+	}
+	if (!detail) {
+		return notice(L['profileReportXX']);
+	}
+	if (!$data._profiled) {
+		return notice(L['notReport']);
+	}
+	var finalReason = "[" + selectedReason + "] " + detail;
+	send('report', { target: $data._profiled, reason: finalReason });
+	$stage.dialog.report.hide();
+}
 /**
  * Rule the words! KKuTu Online
  * Copyright (C) 2017 JJoriping(op@jjo.kr)

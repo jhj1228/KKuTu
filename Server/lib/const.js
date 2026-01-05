@@ -285,7 +285,7 @@ exports.KO_INJEONG = [
 	"JOB", // 직업
 	"CKR", // 쿠키런
 	"KRF", // 키라라 판타지아
-	"TCG", // 트릭컬 리바이브
+	"TCG", // 트릭컬 RE:VIVE
 	"POK", // 포켓몬스터
 	"PJS", // 프로젝트 세카이 컬러풀 스테이지! (단어없음)
 	"PCR", // 프린세스 커넥트! Re:Dive
