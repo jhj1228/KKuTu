@@ -755,8 +755,11 @@ $(document).ready(function () {
 	$stage.menu.exit.on('click', function (e) {
 		if ($data.room.gaming) {
 			if ($data.room.opts.noleave && $data.room.players.indexOf($data.id) !== -1) {
-				return alert(L['AlertNoleave']);
+				if (!$data.admin) {
+					return alert(L['AlertNoleave']);
+				}
 			}
+
 			if (!confirm(L['sureExit'])) return;
 			clearGame();
 		}
@@ -1179,7 +1182,12 @@ $(document).ready(function () {
 			);*/
 		};
 		ws.onmessage = _onMessage = function (e) {
-			onMessage(JSON.parse(e.data));
+			var data = JSON.parse(e.data);
+			if (data.type === 'error' && data.code === 459) {
+				return alert(L['error_459'].replace("{V1}", data.time));
+			}
+
+			onMessage(data);
 		};
 		ws.onclose = function (e) {
 			var ct = L['closed'] + " (#" + e.code + ")";

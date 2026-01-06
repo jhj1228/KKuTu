@@ -21,6 +21,7 @@ var Cluster = require("cluster");
 var Const = require('../const');
 var Lizard = require('../sub/lizard');
 var JLog = require('../sub/jjlog');
+var PENALTY = {};
 // 망할 셧다운제 var Ajae = require("../sub/ajae");
 var DB;
 var SHOP;
@@ -281,6 +282,20 @@ exports.Client = function (socket, profile, sid) {
 		};
 	}
 	socket.on('close', function (code) {
+		var r = ROOM[my.place];
+		if (r && r.gaming && r.opts.noleave) {
+			if (my.form == 'J' && !my.admin) {
+				if (!PENALTY[my.id]) {
+					PENALTY[my.id] = { count: 0, until: 0 };
+				}
+				PENALTY[my.id].count++;
+				var banTime = PENALTY[my.id].count * 60 * 1000;
+				PENALTY[my.id].until = Date.now() + banTime;
+
+				console.log(`[PENALTY] ${my.nickname}님이 중퇴하여 방 입장이 ${Math.ceil(banTime / 1000)}초간 제한됩니다.`);
+			}
+		}
+
 		if (ROOM[my.place]) ROOM[my.place].go(my);
 		if (my.subPlace) my.pracRoom.go(my);
 		exports.onClientClosed(my, code);
@@ -512,6 +527,21 @@ exports.Client = function (socket, profile, sid) {
 		}
 	};
 	my.enter = function (room, spec, pass) {
+		if (PENALTY[my.id]) {
+			var now = Date.now();
+			if (PENALTY[my.id]) {
+				var now = Date.now();
+				if (PENALTY[my.id].until > now) {
+					var remain = Math.ceil((PENALTY[my.id].until - now) / 1000);
+					return my.send('error', {
+						code: 459,
+						time: remain
+					});
+				} else {
+					delete PENALTY[my.id];
+				}
+			}
+		}
 		var $room, i;
 
 		if (my.place) {
