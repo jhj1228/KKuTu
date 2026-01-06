@@ -53,6 +53,7 @@ exports.OPTIONS = {
 	'wpk': { name: "Wordpick" },
 	'ulm': { name: "Unlimited" },
 	'due': { name: "Dueum" },
+	'nol': { name: "Noleave" }
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -85,7 +86,7 @@ exports.RULE = {
 	'KKT': { // 쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "bom", "rvs", "due"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "bom", "rvs", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -94,7 +95,7 @@ exports.RULE = {
 	'KSH': { // 끝말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -103,7 +104,7 @@ exports.RULE = {
 	'CSQ': { // 자음퀴즈
 		lang: "ko",
 		rule: "Jaqwi",
-		opts: ["ijp", "ulm"],
+		opts: ["ijp", "ulm", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -112,7 +113,7 @@ exports.RULE = {
 	'KCW': { // 십자말풀이
 		lang: "ko",
 		rule: "Crossword",
-		opts: [],
+		opts: ["nol"],
 		time: 2,
 		ai: false,
 		big: true,
@@ -121,7 +122,7 @@ exports.RULE = {
 	'KTY': { // 타자대결
 		lang: "ko",
 		rule: "Typing",
-		opts: ["prv", "ulm"],
+		opts: ["prv", "ulm", "nol"],
 		time: 1,
 		ai: false,
 		big: false,
@@ -130,7 +131,7 @@ exports.RULE = {
 	'KAP': { // 앞말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -140,7 +141,7 @@ exports.RULE = {
 	'HUN': { // 훈민정음
 		lang: "ko",
 		rule: "Hunmin",
-		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs"],
+		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -149,7 +150,7 @@ exports.RULE = {
 	'KDA': { // 단어대결
 		lang: "ko",
 		rule: "Daneo",
-		opts: ["ijp", "mis", "rdm", "rtn", "rdt", "bom", "rvs"],
+		opts: ["ijp", "mis", "rdm", "rtn", "rdt", "bom", "rvs", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -158,7 +159,7 @@ exports.RULE = {
 	'KSS': { // 솎솎
 		lang: "ko",
 		rule: "Sock",
-		opts: ["no2", "wpk"],
+		opts: ["no2", "wpk", "nol"],
 		time: 1,
 		ai: false,
 		big: true,
@@ -167,7 +168,7 @@ exports.RULE = {
 	'KMH': { // 가운뎃말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -176,7 +177,7 @@ exports.RULE = {
 	'KKK': { // 끄투
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs", "due"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -185,7 +186,7 @@ exports.RULE = {
 	'MOQ': { // 모음퀴즈
 		lang: "ko",
 		rule: "Moqwi",
-		opts: ["ijp", "ulm"],
+		opts: ["ijp", "ulm", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -194,7 +195,7 @@ exports.RULE = {
 	'ALL': { // 전체
 		lang: "ko",
 		rule: "All",
-		opts: ["mis", "rdm", "rtn", "rdt", "bom", "rvs"],
+		opts: ["mis", "rdm", "rtn", "rdt", "bom", "rvs", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -203,7 +204,7 @@ exports.RULE = {
 	'KTT': { // 주제타자대결
 		lang: "ko",
 		rule: "Typing",
-		opts: ["ijp", "ulm"],
+		opts: ["ijp", "ulm", "nol"],
 		time: 1,
 		ai: false,
 		big: false,
@@ -212,7 +213,7 @@ exports.RULE = {
 	'KRH': { // 랜덤잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -267,6 +268,7 @@ exports.KO_INJEONG = [
 	"CYP", // 사이퍼즈
 	"NVL", // 소설
 	"STA", // 스타크래프트
+	"APT", // 아파트
 	"ESB", // 앙상블 스타즈!
 	"APP", // 애플리케이션 (단어없음)
 	"UND", // 언더테일

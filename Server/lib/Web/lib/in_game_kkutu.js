@@ -754,6 +754,9 @@ $(document).ready(function () {
 	});
 	$stage.menu.exit.on('click', function (e) {
 		if ($data.room.gaming) {
+			if ($data.room.opts.noleave && $data.room.players.indexOf($data.id) !== -1) {
+				return alert(L['AlertNoleave']);
+			}
 			if (!confirm(L['sureExit'])) return;
 			clearGame();
 		}
