@@ -21,11 +21,11 @@ var Lizard = require('../../sub/lizard');
 var DB;
 var DIC;
 
-const ROBOT_START_DELAY = [1200, 800, 400, 200, 0];
-const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 0];
-const ROBOT_THINK_COEF = [4, 2, 1, 0, 0];
+const ROBOT_START_DELAY = [1200, 800, 400, 200, 50, 0];
+const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 75, 0];
+const ROBOT_THINK_COEF = [4, 2, 1, 0, 0, 0];
 const ROBOT_HIT_LIMIT = [9999];
-const ROBOT_LENGTH_LIMIT = [3, 4, 9, 99, 99];
+const ROBOT_LENGTH_LIMIT = [3, 4, 9, 15, 25, 99];
 const RIEUL_TO_NIEUN = [4449, 4450, 4457, 4460, 4462, 4467];
 const RIEUL_TO_IEUNG = [4451, 4455, 4456, 4461, 4466, 4469];
 const NIEUN_TO_IEUNG = [4455, 4461, 4466, 4469];
@@ -398,9 +398,12 @@ exports.readyRobot = function (robot) {
 	var lmax;
 	var isRev = Const.GAME_TYPE[my.mode] == "KAP";
 	if (my.opts.unknownword) {
-		const LEN_LIMITS = [4, 7, 10, 15, 20];
-		var maxLen = LEN_LIMITS[level];
+		const LEN_LIMITS = [4, 7, 10, 15, 20, 50];
+		var maxLen = LEN_LIMITS[level] || 50;
 		var randomLen = Math.floor(Math.random() * (maxLen - 2)) + 3;
+		if (level >= 5) {
+			randomLen = Math.floor(Math.random() * 10) + 40;
+		}
 		var body = "";
 		var loopCount = randomLen - 1;
 
@@ -420,7 +423,7 @@ exports.readyRobot = function (robot) {
 			text = my.game.char + body;
 		}
 		robot._done.push(text);
-		const DELAYS = [3000, 2000, 1500, 700, 100];
+		const DELAYS = [3000, 2000, 1500, 700, 100, 0];
 		setTimeout(my.turnRobot, DELAYS[level], robot, text);
 		return;
 	}
@@ -433,10 +436,12 @@ exports.readyRobot = function (robot) {
 				if (level >= 3 && !robot._done.length) {
 					if (my.opts.manner || my.opts.gentle) {
 						list.sort(function (a, b) { return Math.random() - 0.5; });
-
 						pickList(list);
 					} else {
-						if (Math.random() < 0.5) list.sort(function (a, b) { return b._id.length - a._id.length; });
+						if (level >= 5 || Math.random() < 0.5) {
+							list.sort(function (a, b) { return b._id.length - a._id.length; });
+						}
+
 						if (list[0]._id.length < 8 && my.game.turnTime >= 2300) {
 							for (i in list) {
 								w = list[i]._id.charAt(isRev ? 0 : (list[i]._id.length - 1));

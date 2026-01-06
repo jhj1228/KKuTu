@@ -291,8 +291,6 @@ exports.Client = function (socket, profile, sid) {
 				PENALTY[my.id].count++;
 				var banTime = PENALTY[my.id].count * 60 * 1000;
 				PENALTY[my.id].until = Date.now() + banTime;
-
-				console.log(`[PENALTY] ${my.nickname}님이 중퇴하여 방 입장이 ${Math.ceil(banTime / 1000)}초간 제한됩니다.`);
 			}
 		}
 
@@ -538,7 +536,7 @@ exports.Client = function (socket, profile, sid) {
 						time: remain
 					});
 				} else {
-					delete PENALTY[my.id];
+					delete PENALTY[my.id]
 				}
 			}
 		}
@@ -1121,6 +1119,7 @@ exports.Room = function (room, channel) {
 	my.ready = function () {
 		var i, all = true;
 		var len = 0;
+		var hum = 0;
 		var teams = [[], [], [], [], []];
 
 		for (i in my.players) {
@@ -1133,6 +1132,7 @@ exports.Room = function (room, channel) {
 			if (DIC[my.players[i]].form == "S") continue;
 
 			len++;
+			hum++;
 			teams[DIC[my.players[i]].team].push(my.players[i]);
 
 			if (my.players[i] == my.master) continue;
@@ -1141,7 +1141,7 @@ exports.Room = function (room, channel) {
 				break;
 			}
 		}
-		if (!DIC[my.master]) return;
+		if (hum < 1 && !DIC[my.master].admin) return DIC[my.master].sendError(460);
 		if (len < 2) return DIC[my.master].sendError(411);
 		if (i = my.preReady(teams)) return DIC[my.master].sendError(i);
 		if (all) {

@@ -61,6 +61,10 @@ $audiosets = [
 			value: "/media/kkutu/LobbyBGMending.mp3"
 		},
 		{
+			key: "lobbymuseum",
+			value: "media/kkutu/LobbyMuseum.mp3"
+		},
+		{
 			key: "inthepool",
 			value: "/media/kkutu/LobbyINTHEPOOL.mp3"
 		},

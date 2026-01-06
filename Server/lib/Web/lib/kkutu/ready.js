@@ -173,6 +173,7 @@ $(document).ready(function () {
 		{ key: "lobby", value: "/media/kkutu/LobbyBGM.mp3" },
 		{ key: "lobbyseol", value: "/media/kkutu/LobbySeolBGM.mp3" },
 		{ key: "lobbyending", value: "/media/kkutu/LobbyBGMending.mp3" },
+		{ key: "lobbymuseum", value: "/media/kkutu/LobbyMuseum.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
 		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },

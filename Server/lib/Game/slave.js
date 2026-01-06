@@ -305,7 +305,7 @@ KKuTu.onClientMessage = function ($c, msg) {
 			if (!GUEST_PERMISSION.practice) if ($c.guest) return;
 			if (isNaN(msg.level = Number(msg.level))) return;
 			if (ROOM[$c.place].rule.ai) {
-				if (msg.level < 0 || msg.level >= 5) return;
+				if (msg.level < 0 || msg.level >= 6) return;
 			} else if (msg.level != -1) return;
 
 			$c.practice(msg.level);
@@ -395,7 +395,7 @@ KKuTu.onClientMessage = function ($c, msg) {
 			if (ROOM[$c.place].gaming) return;
 			if (ROOM[$c.place].master != $c.id) return;
 			if (isNaN(msg.level = Number(msg.level))) return;
-			if (msg.level < 0 || msg.level >= 5) return;
+			if (msg.level < 0 || msg.level >= 6) return;
 			if (isNaN(msg.team = Number(msg.team))) return;
 			if (msg.team < 0 || msg.team > 4) return;
 

@@ -34,12 +34,12 @@ let mainWindow;
 
 App.on('ready', main);
 App.on('window-all-closed', () => {
-	if(process.platform != 'darwin'){
+	if (process.platform != 'darwin') {
 		App.quit();
 	}
 });
 App.on('activate', () => {
-	if(mainWindow === null){
+	if (mainWindow === null) {
 		main();
 	}
 });
@@ -47,7 +47,7 @@ Runner.send = (...argv) => {
 	mainWindow.webContents.send.apply(mainWindow.webContents, argv);
 };
 
-function main(){
+function main() {
 	Menu.setApplicationMenu(Menu.buildFromTemplate(Runner.MAIN_MENU));
 
 	mainWindow = new BrowserWindow({
