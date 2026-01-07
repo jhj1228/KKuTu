@@ -908,7 +908,9 @@ exports.Room = function (room, channel) {
 		if (!my.rule.ai) {
 			return caller.sendError(415);
 		}
-		my.players.push(new exports.Robot(null, my.id, 4));
+		var level = caller.admin ? 5 : 2;
+
+		my.players.push(new exports.Robot(null, my.id, level));
 		my.export();
 	};
 	my.setAI = function (target, level, team) {

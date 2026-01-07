@@ -67,20 +67,21 @@
 }
 
 /* NIK */
-.x-gm .users-name::before {
-	content: "[GM]";
-	color: #2F77D9;
-	text-shadow: 0px 0px 2px #2AF;
+/* 1. 무지개 애니메이션 정의 (좌우로 움직임) */
+@keyframes rainbow-move {
+	0% {
+		background-position: 0% 50%;
+	}
+
+	100% {
+		background-position: 200% 50%;
+	}
 }
 
-.chat-item>.x-gm::before {
-	content: "[GM]";
-	color: #2F77D9;
-	text-shadow: 0px 0px 2px #2AF;
-}
-
+.x-gm .users-name::before,
+.chat-item>.x-gm::before,
 .room-user-title>.x-gm::before {
-	content: "[GM]";
+	/* content: "[GM]"; */
 	color: #2F77D9;
 	text-shadow: 0px 0px 2px #2AF;
 }
@@ -111,4 +112,15 @@
 
 .x-pink_name {
 	color: #F15F9A;
+}
+
+.x-rainbow_name {
+	background-image: linear-gradient(to right, #ff3333, #ffa533, #43c227, #2f77d9, #1c18b9, #a939cc, #f15f9a);
+	background-size: 200% auto;
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	color: transparent;
+	animation: rainbow-move 2s linear infinite;
+	filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, 0.5));
 }
