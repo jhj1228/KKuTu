@@ -249,7 +249,7 @@ $(document).ready(function () {
 		{ key: "lobbymuseum", value: "/media/kkutu/LobbyMuseum.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
 		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
-		{ key: "flandres", value: "/media/kkutu/LobbyFlandreS.mp3" },
+		{ key: "scarletzone", value: "/media/kkutu/LobbySCARLETZONE.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },
 		{ key: "jaqwiF", value: "/media/kkutu/JaqwiFastBGM.mp3" },
 		{ key: "game_start", value: "/media/kkutu/game_start.mp3" },
@@ -4708,7 +4708,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "lobbyoriginal" || key === "lobbyseol" || key === "lobbyending" || key === "lobbymuseum" || key === "inthepool" || key === "enchanted" || key === "flandres" ? "lobby" : key;
+	src.key = key === "lobby" || key === "lobbyoriginal" || key === "lobbyseol" || key === "lobbyending" || key === "lobbymuseum" || key === "inthepool" || key === "enchanted" || key === "scarletzone" ? "lobby" : key;
 
 	src.start();
 
