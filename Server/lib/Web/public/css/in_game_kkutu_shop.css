@@ -67,7 +67,6 @@
 }
 
 /* NIK */
-/* 1. 무지개 애니메이션 정의 (좌우로 움직임) */
 @keyframes rainbow-move {
 	0% {
 		background-position: 0% 50%;

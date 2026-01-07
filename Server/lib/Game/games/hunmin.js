@@ -48,7 +48,9 @@ exports.roundReady = function () {
 	my.game.round++;
 	my.game.roundTime = my.time * 1000;
 	if (my.game.round <= my.round) {
-		my.game.theme = getTheme(2, my.game.done);
+		var themeLen = my.opts.threeword ? 3 : 2;
+		my.game.theme = getTheme(themeLen, my.game.done);
+
 		my.game.chain = [];
 		if (my.opts.mission) my.game.mission = getMission(my.game.theme);
 		my.game.done.push(my.game.theme);
@@ -266,8 +268,8 @@ function getMission(theme) {
 	var flag;
 
 	if (!theme) return;
-	if (Math.random() < 0.5) flag = 0;
-	else flag = 1;
+
+	flag = Math.floor(Math.random() * theme.length);
 
 	return String.fromCharCode(44032 + 588 * (theme.charCodeAt(flag) - 4352));
 }

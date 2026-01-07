@@ -53,7 +53,8 @@ exports.OPTIONS = {
 	'wpk': { name: "Wordpick" },
 	'ulm': { name: "Unlimited" },
 	'due': { name: "Dueum" },
-	'nol': { name: "Noleave" }
+	'nol': { name: "Noleave" },
+	'thw': { name: "Threeword" },
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -141,7 +142,7 @@ exports.RULE = {
 	'HUN': { // 훈민정음
 		lang: "ko",
 		rule: "Hunmin",
-		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs", "nol"],
+		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs", "nol", "thw"],
 		time: 1,
 		ai: true,
 		big: false,
