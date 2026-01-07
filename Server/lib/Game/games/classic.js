@@ -21,11 +21,11 @@ var Lizard = require('../../sub/lizard');
 var DB;
 var DIC;
 
-const ROBOT_START_DELAY = [1200, 800, 400, 200, 50, 0];
-const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 75, 0];
+const ROBOT_START_DELAY = [1200, 800, 400, 200, 100, 0];
+const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 150, 0];
 const ROBOT_THINK_COEF = [4, 2, 1, 0, 0, 0];
 const ROBOT_HIT_LIMIT = [9999];
-const ROBOT_LENGTH_LIMIT = [3, 4, 9, 15, 25, 99];
+const ROBOT_LENGTH_LIMIT = [3, 4, 9, 15, 20, 99];
 const RIEUL_TO_NIEUN = [4449, 4450, 4457, 4460, 4462, 4467];
 const RIEUL_TO_IEUNG = [4451, 4455, 4456, 4461, 4466, 4469];
 const NIEUN_TO_IEUNG = [4455, 4461, 4466, 4469];

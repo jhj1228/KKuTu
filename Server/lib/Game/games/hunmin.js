@@ -20,8 +20,8 @@ var Const = require('../../const');
 var Lizard = require('../../sub/lizard');
 var DB;
 var DIC;
-const ROBOT_START_DELAY = [1200, 800, 400, 200, 50, 0];
-const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 75, 0];
+const ROBOT_START_DELAY = [1200, 800, 400, 200, 100, 0];
+const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 150, 0];
 const ROBOT_THINK_COEF = [4, 2, 1, 0, 0, 0];
 const ROBOT_HIT_LIMIT = [8, 4, 2, 1, 0, 0];
 // ㄱ, ㄴ, ㄷ, ㅁ, ㅂ, ㅅ, ㅇ, ㅈ, ㅊ, ㅌ, ㅍ, ㅎ
