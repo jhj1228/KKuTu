@@ -18,10 +18,10 @@ var Lizard = require('../../sub/lizard');
 var DB;
 var DIC;
 
-const ROBOT_START_DELAY = [1200, 800, 400, 200, 0];
-const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 0];
-const ROBOT_THINK_COEF = [4, 2, 1, 0, 0];
-const ROBOT_HIT_LIMIT = [4, 2, 1, 0, 0];
+const ROBOT_START_DELAY = [1200, 800, 400, 200, 100, 0];
+const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 150, 0];
+const ROBOT_THINK_COEF = [4, 2, 1, 0, 0, 0];
+const ROBOT_HIT_LIMIT = [8, 4, 2, 1, 0, 0];
 
 exports.init = function (_DB, _DIC) {
 	DB = _DB;
@@ -149,7 +149,11 @@ exports.submit = function (client, text, data) {
 				my.game.late = true;
 				clearTimeout(my.game.turnTimer);
 				t = tv - my.game.turnAt;
-				score = my.getScore(text, t);
+				if (my.opts.return && dupCount > 0) {
+					score = 0;
+				} else {
+					score = my.getScore(text, t);
+				}
 				my.game.chain.push(text);
 				my.game.roundTime -= t;
 				client.game.score += score;
@@ -252,7 +256,7 @@ function getAuto(type) {
 	var raiser;
 	var lst = false;
 
-	if (my.game.chain && !my.opts.return) aqs.push(['_id', { '$nin': my.game.chain }]);
+	if (my.game.chain) aqs.push(['_id', { '$nin': my.game.chain }]);
 	raiser = DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(bool ? 1 : 123);
 	switch (type) {
 		case 0:

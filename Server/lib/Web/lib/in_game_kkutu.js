@@ -3685,8 +3685,8 @@ function requestProfile(id) {
 	if ($data.room) {
 		if ($data.id != id && $data.id == $data.room.master) {
 			$stage.dialog.profileKick.show();
-			$stage.dialog.profileHandover.show();
-			$stage.dialog.profileReport.show();
+			if (!o.robot) $stage.dialog.profileHandover.show();
+			if (!o.robot) $stage.dialog.profileReport.show();
 		}
 	}
 	showDialog($stage.dialog.profile);
