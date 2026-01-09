@@ -2,7 +2,7 @@ const config = require('../../sub/auth.json');
 
 module.exports.config = {
     strategy: require('passport-twitter').Strategy,
-    color: '#55ACEE',
+    color: '#000',
     fontColor: '#FFFFFF',
     vendor: 'twitter',
     displayName: 'withTwitter'

@@ -215,6 +215,7 @@ block Middle
 				optgroup(label='기타 BGM')
 					option(value='inthepool') IN THE SEA x IN THE POOL
 					option(value='enchanted') Enchanted Love
+					option(value='memory') Memory
 		div.dialog-bar
 			h4= L('denyReq')
 			+SettingOption('deny-invite', L('denyInvite'))
@@ -254,14 +255,14 @@ block Middle
 			button#lb-next(style='margin-right: 6px;')= L('nextPage')
 			button#lb-me= L('myRank')
 			button#lb-prev= L('prevPage')
-	+Dialog('QuickDiag', 300, 295, L('quickRoom'))
+	+Dialog('QuickDiag', 300, 315, L('quickRoom'))
 		div.dialog-bar
 			h4= L('gameMode')
 			select#quick-mode
 				- for(var i in locals.MODE)
 					option(value=Number(i))= L('mode' + locals.MODE[i])
-		div.dialog-bar(style='height: 130px;')
-			h4(style='height: 85px;')= L('misc')
+		div.dialog-bar(style='height: 150px;')
+			h4(style='height: 155px;')= L('misc')
 			- for(var i in locals.OPTIONS)
 				+GameOption(i, 'quick')
 		div.dialog-bar
@@ -270,7 +271,7 @@ block Middle
 			h4(style='width: 100%; height: 20px;')#quick-queue
 		div.dialog-bar.tail-button
 			button#quick-ok= L('OK')
-	+Dialog('RoomDiag', 300, 475)
+	+Dialog('RoomDiag', 300, 445)
 		div.dialog-bar
 			h4= L('roomTitle')
 			input#room-title(placeholder=(nick || L('guest'))+L('roomDefault'), maxlength=20)
@@ -302,14 +303,12 @@ block Middle
 		div.dialog-bar(style='margin-top: -5px; height: 50px;')
 			h4
 			h4#game-mode-expl.dialog-bar-value(style='width: 100%; font-size: 11px;')
-		div.dialog-bar
-			h4= L('numRound')
-			input#room-round(type='number', min=1, max=10, step=1, value=5)
-		div.dialog-bar
-			h4= L('roundTime')
-			select#room-time
-				option(value=5, style='color: #FF0000')
-				option(value=10, style='color: #ff8000')
+		div.dialog-bar(style='overflow: hidden;')
+			h4 라운드 설정
+			input#room-round(type='number', min=1, max=10, step=1, value=5, style="float: left; width: 75px;")
+			select#room-time(style="float: left; width: 95px; margin-left: 5px;")
+				option(value=5, style='color: #FF4444')
+				option(value=10, style='color: #FF8000')
 				option(value=30)
 				option(value=60, selected)
 				option(value=90)
@@ -429,16 +428,15 @@ block Middle
 	+Dialog('ReportDiag', 350, 265, L('profileReport'))
 		<b>1. 가장 적합한 신고 사유를 선택해 주세요.</b>
 		select#report-reason-select(style='width: 100%; margin-top:5px; padding: 5px;')
-			option(value='', disabled, selected) 신고 사유를 선택해 주세요.
-			option(value='불건전한 채팅') 불건전한 채팅
-			option(value='비정상적인 플레이') 비정상적인 플레이
-			option(value='부적절한 프로필') 부적절한 닉네임 또는 소개
-			option(value='홍보성 채팅') 홍보성 채팅
-			option(value='운영진 사칭') 운영진 사칭
-			option(value='기타 위반') 기타
+			optgroup(label='신고 사유를 선택해 주세요.')
+				option(value='불건전한 채팅') 불건전한 채팅
+				option(value='비정상적인 플레이') 비정상적인 플레이
+				option(value='부적절한 프로필') 부적절한 닉네임 또는 소개
+				option(value='홍보성 채팅') 홍보성 채팅
+				option(value='운영진 사칭') 운영진 사칭
+				option(value='기타 위반') 기타
 		<b>2. 신고 사유를 구체적으로 입력해 주세요.</b>
 			textarea#report-reason-text(style="width:calc(100% - 12px); height:115px; margin-top:5px;", placeholder="신고 사유를 구체적으로 입력해 주세요. 최대 250자 작성할 수 있으며, 신고 사유가 구체적일수록 처리하기 수월해집니다.", maxlength=250)
-		
 		div.dialog-bar.tail-button
 			button#report-ok= L('nowReport')
 	+Dialog('KickVoteDiag', 300, 160, L('kickVote'))

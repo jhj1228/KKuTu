@@ -174,6 +174,7 @@ $(document).ready(function () {
 		{ key: "lobbyseol", value: "/media/kkutu/LobbySeolBGM.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
 		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
+		{ key: "memory", value: "/media/kkutu/LobbyMemory.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },
 		{ key: "jaqwiF", value: "/media/kkutu/JaqwiFastBGM.mp3" },
 		{ key: "game_start", value: "/media/kkutu/game_start.mp3" },

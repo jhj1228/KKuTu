@@ -1,6 +1,6 @@
 {
 	"GLOBAL": {
-		"Copyright": "<a href='legal/agreement.pug' target='_blank'>서비스 이용 약관</a><a href='legal/privacy.pug' target='_blank'>개인정보 취급 방침</a><a href='legal/copyright.pug' target='_blank'>저작권 안내</a><br><label style='color: #777777;'>글자로 놀자! 레전드끄투 Copyright (C) 2021-2026 정희정(kbg5113@gmail.com)</label>",
+		"Copyright": "<a href='legal/agreement.pug' target='_blank'>서비스 이용 약관</a><a href='legal/privacy.pug' target='_blank'>개인정보 취급 방침</a><a href='legal/copyright.pug' target='_blank'>저작권 안내</a><br><label style='color: #777777;'>글자로 놀자! 레전드끄투 Copyright (C) 2025-2026 정희정(kbg5113@gmail.com)</label>",
 		"Dictionary": "사전 정보 제공:<a href='https://stdict.korean.go.kr' target='_blank'>국립국어원 표준국어대사전</a><a href='http://wordnet.princeton.edu' target='_blank'>WordNet</a><br><label style='color: #777777;'>WordNet 3.0 Copyright 2006 by Princeton University. All rights reserved.</label>",
 		"License": "<label style='color: #666;'>본 소프트웨어는 어떠한 형태의 보증도 제공되지 않는 자유 소프트웨어이며 배포 규정을 만족시키는 조건 아래 자유롭게 재배포할 수 있습니다.<br>이에 대한 자세한 사항은 본 소프트웨어의 구현을 담은 다음 레포지토리에서 확인하십시오: <a target='_blank' href='https://github.com/jhj1228/KKuTu'>https://github.com/jhj1228/KKuTu</a></label>",
 		"HOME": "FA{home}",
@@ -68,7 +68,7 @@
 		"withNaver": "네이버 아이디로 로그인",
 		"withFacebook": "페이스북 아이디로 로그인",
 		"withGoogle": "구글 아이디로 로그인",
-		"withTwitter": "트위터 아이디로 로그인",
+		"withTwitter": "X 아이디로 로그인",
 		"withKakao": "카카오 아이디로 로그인",
 		"withDiscord": "디스코드 아이디로 로그인",
 		"withTwitch": "트위치 아이디로 로그인",
