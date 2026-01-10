@@ -436,7 +436,7 @@ block Middle
 				option(value='운영진 사칭') 운영진 사칭
 				option(value='기타 위반') 기타
 		<b>2. 신고 사유를 구체적으로 입력해 주세요.</b>
-			textarea#report-reason-text(style="width:calc(100% - 12px); height:115px; margin-top:5px;", placeholder="신고 사유를 구체적으로 입력해 주세요. 최대 250자 작성할 수 있으며, 신고 사유가 구체적일수록 처리하기 수월해집니다.", maxlength=250)
+			textarea#report-reason-text(style="width:calc(100% - 12px); height:115px; margin-top:5px;", placeholder="최대 250자 작성할 수 있으며, 신고 사유가 구체적일수록 처리하기 수월해집니다.", maxlength=250)
 		div.dialog-bar.tail-button
 			button#report-ok= L('nowReport')
 	+Dialog('KickVoteDiag', 300, 160, L('kickVote'))

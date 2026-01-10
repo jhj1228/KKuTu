@@ -33,28 +33,27 @@ exports.TESTER = GLOBAL.ADMIN.concat([
 exports.IS_SECURED = GLOBAL.IS_SECURED;
 exports.SSL_OPTIONS = GLOBAL.SSL_OPTIONS;
 exports.OPTIONS = {
-	'man': { name: "Manner" },
-	'gte': { name: "Gentle" },
-	'ext': { name: "Injeong" },
-	'mis': { name: "Mission" },
-	'rdm': { name: "Randommission" },
-	'loa': { name: "Loanword" },
-	'prv': { name: "Proverb" },
-	'str': { name: "Strict" },
-	'k32': { name: "Sami" },
-	'no2': { name: "No2" },
-	'ulm': { name: "Unlimited" },
-	'sht': { name: "Short" },
-	'rtn': { name: "Return" },
-	'rdt': { name: "Randomturn" },
-	'unw': { name: "Unknownword" },
-	'bom': { name: "Boom" },
-	'rvs': { name: "Reverse" },
-	'wpk': { name: "Wordpick" },
-	'ulm': { name: "Unlimited" },
-	'due': { name: "Dueum" },
-	'nol': { name: "Noleave" },
-	'thw': { name: "Threeword" },
+	'man': { name: "Manner" }, // 매너
+	'gte': { name: "Gentle" }, // 젠틀
+	'ext': { name: "Injeong" }, // 어인정
+	'mis': { name: "Mission" }, // 미션
+	'rdm': { name: "Randommission" }, // 랜덤미션
+	'loa': { name: "Loanword" }, // 우리말
+	'prv': { name: "Proverb" }, // 속담
+	'str': { name: "Strict" }, // 깐깐
+	'k32': { name: "Sami" }, // 3232
+	'no2': { name: "No2" }, // 2글자 금지
+	// 'sht': { name: "Short" }, // 짧음
+	'rtn': { name: "Return" }, // 리턴
+	'rdt': { name: "Randomturn" }, // 랜덤턴
+	'unw': { name: "Unknownword" }, // 언노운워드
+	// 'bom': { name: "Boom" }, // 폭탄
+	// 'rvs': { name: "Reverse" }, // 리버스
+	'wpk': { name: "Wordpick" }, // 워드픽
+	'ulm': { name: "Unlimited" }, // 무제한
+	'due': { name: "Dueum" }, // 두음법칙 금지
+	'nol': { name: "Noleave" }, // 중퇴금지
+	'thw': { name: "Threeword" }, // 3글자
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -87,7 +86,7 @@ exports.RULE = {
 	'KKT': { // 쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "bom", "rvs", "due", "nol"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -96,7 +95,7 @@ exports.RULE = {
 	'KSH': { // 끝말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due", "nol"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -132,7 +131,7 @@ exports.RULE = {
 	'KAP': { // 앞말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due", "nol"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -142,7 +141,7 @@ exports.RULE = {
 	'HUN': { // 훈민정음
 		lang: "ko",
 		rule: "Hunmin",
-		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs", "nol", "thw"],
+		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "nol", "thw"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -151,7 +150,7 @@ exports.RULE = {
 	'KDA': { // 단어대결
 		lang: "ko",
 		rule: "Daneo",
-		opts: ["ijp", "mis", "rdm", "rtn", "rdt", "bom", "rvs", "nol"],
+		opts: ["ijp", "mis", "rdm", "rtn", "rdt", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -169,7 +168,7 @@ exports.RULE = {
 	'KMH': { // 가운뎃말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due", "nol"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -178,7 +177,7 @@ exports.RULE = {
 	'KKK': { // 끄투
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "bom", "rvs", "due", "nol"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -196,7 +195,7 @@ exports.RULE = {
 	'ALL': { // 전체
 		lang: "ko",
 		rule: "All",
-		opts: ["mis", "rdm", "rtn", "rdt", "bom", "rvs", "nol"],
+		opts: ["mis", "rdm", "rtn", "rdt", "nol"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -214,7 +213,7 @@ exports.RULE = {
 	'KRH': { // 랜덤잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "bom", "rvs", "due", "nol"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "nol"],
 		time: 1,
 		ai: true,
 		big: false,

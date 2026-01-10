@@ -363,13 +363,7 @@ exports.Client = function (socket, profile, sid) {
 	my.publish = function (type, data, noBlock) {
 		var i;
 		var now = new Date(), st = now - my._pub;
-
-		if (st <= Const.SPAM_ADD_DELAY) my.spam++;
-		else if (st >= Const.SPAM_CLEAR_DELAY) my.spam = 0;
-		if (my.spam >= Const.SPAM_LIMIT) {
-			if (!my.blocked) my.numSpam = 0;
-			my.blocked = true;
-		}
+		if (my.admin) noBlock = true;
 		if (!noBlock) {
 			my._pub = now;
 			if (my.blocked) {
@@ -651,7 +645,7 @@ exports.Client = function (socket, profile, sid) {
 	};
 	my.setTeam = function (team) {
 		my.team = team;
-		my.publish('user', my.getData());
+		my.publish('user', my.getData(), true);
 	};
 	my.kick = function (target, kickVote) {
 		var $room = ROOM[my.place];
@@ -1211,7 +1205,7 @@ exports.Room = function (room, channel) {
 			my.export();
 			setTimeout(my.roundReady, 2000);
 		});
-		my.byMaster('starting', { target: my.id });
+		my.byMaster('starting', { target: my.id }, true);
 		delete my._avTeam;
 		delete my._teams;
 	};
