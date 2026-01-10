@@ -394,6 +394,15 @@ exports.Client = function (socket, profile, sid) {
 	};
 	my.chat = function (msg, code) {
 		if (my.noChat) return my.send('chat', { notice: true, code: 443 });
+		if (!code && !my.admin) {
+			var now = Date.now();
+			if (my.lastMsg === msg && (now - (my.lastMsgTime || 0)) < 5000) {
+				return my.send('chat', { notice: true, code: 461 });
+			}
+			my.lastMsg = msg;
+			my.lastMsgTime = now;
+		}
+
 		my.publish('chat', { value: msg, notice: code ? true : false, code: code });
 	};
 	my.checkExpire = function () {
