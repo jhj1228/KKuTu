@@ -365,6 +365,12 @@ exports.Client = function (socket, profile, sid) {
 		var now = new Date(), st = now - my._pub;
 		if (my.admin) noBlock = true;
 		if (!noBlock) {
+			if (st <= Const.SPAM_ADD_DELAY) my.spam++;
+			else if (st >= Const.SPAM_CLEAR_DELAY) my.spam = 0;
+			if (my.spam >= Const.SPAM_LIMIT) {
+				if (!my.blocked) my.numSpam = 0;
+				my.blocked = true;
+			}
 			my._pub = now;
 			if (my.blocked) {
 				if (st < Const.BLOCKED_LENGTH) {
@@ -373,7 +379,10 @@ exports.Client = function (socket, profile, sid) {
 						return my.socket.close();
 					}
 					return my.send('blocked');
-				} else my.blocked = false;
+				} else {
+					my.blocked = false;
+					my.spam = 0;
+				}
 			}
 		}
 		data.profile = my.profile;
