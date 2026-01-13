@@ -543,10 +543,7 @@ exports.Client = function (socket, profile, sid) {
 				var now = Date.now();
 				if (PENALTY[my.id].until > now) {
 					var remain = Math.ceil((PENALTY[my.id].until - now) / 1000);
-					return my.send('error', {
-						code: 459,
-						time: remain
-					});
+					return my.send('error', { code: 459, time: remain });
 				} else {
 					delete PENALTY[my.id]
 				}
@@ -729,7 +726,7 @@ exports.Client = function (socket, profile, sid) {
 
 		if (!$room) return;
 		if ($room.master != my.id) return;
-		if ($room.players.length < 2) return my.sendError(411);
+		if ($room.players.length < (my.admin ? 1 : 2)) return my.sendError(411);
 
 		$room.ready();
 	};
@@ -1156,7 +1153,7 @@ exports.Room = function (room, channel) {
 			}
 		}
 		if (hum < 1 && !DIC[my.master].admin) return DIC[my.master].sendError(460);
-		if (len < 2) return DIC[my.master].sendError(411);
+		if (len < (DIC[my.master].admin ? 1 : 2)) return DIC[my.master].sendError(411);
 		if (i = my.preReady(teams)) return DIC[my.master].sendError(i);
 		if (all) {
 			my._teams = teams;

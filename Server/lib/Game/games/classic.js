@@ -63,12 +63,9 @@ exports.getTitle = function () {
 		case 'KRH':
 		case 'KSH':
 		case 'KKK':
-			ja = 44032 + 588 * Math.floor(Math.random() * 18);
-			eng = "^[\\u" + ja.toString(16) + "-\\u" + (ja + 587).toString(16) + "]";
-			break;
 		case 'KAP':
 			ja = 44032 + 588 * Math.floor(Math.random() * 18);
-			eng = "[\\u" + ja.toString(16) + "-\\u" + (ja + 587).toString(16) + "]$";
+			eng = "^[\\u" + ja.toString(16) + "-\\u" + (ja + 587).toString(16) + "]";
 			break;
 	}
 	function tryTitle(h) {

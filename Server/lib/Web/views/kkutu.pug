@@ -103,7 +103,7 @@ block JS
 			}
 			function updateUnknownWordState() {
 				var $unknown = $('#room-unknownword');
-				var targets = ['#room-manner', '#room-gentle', '#room-injeong', '#room-loanword', '#room-strict'];
+				var targets = ['#room-manner', '#room-gentle', '#room-injeong', '#room-loanword', '#room-strict', '#room-dueum'];
 				
 				if ($unknown.length === 0) return;
 
@@ -181,13 +181,13 @@ block Middle
 		div#version= VERSION
 		div#intro-text= L('LOADING')
 	div.kkutu-menu
-		button#HelpBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #BBBBBB;')!= L('help')
+		//- button#HelpBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #BBBBBB;')!= L('help')
 		button#SettingBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #CCCCCC;')!= L('settings')
 		button#CommunityBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #DAA9FF;')!= L('community')
 		button#SpectateBtn.for-master.for-normal(style='display: none; background-color: #D19DFF;')= L('spectate')
 		button#SetRoomBtn.for-master(style='display: none; background-color: #B0D2F3;')= L('setRoom')
 		button#NewRoomBtn.for-lobby(style='display: none; background-color: #8EC0F3;')= L('newRoom')
-		button#QuickRoomBtn.for-lobby(style='display: none; background-color: #B0D2F3;')= L('quickRoom')
+		//- button#QuickRoomBtn.for-lobby(style='display: none; background-color: #B0D2F3;')= L('quickRoom')
 		button#ShopBtn.for-lobby(style='display: none; background-color: #B3E7B7;')= L('shop')
 		button#DictionaryBtn.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #73D07A;')= L('dict')
 		button#InviteBtn.for-master(style='display: none; background-color: #9FE669;')= L('invite')
@@ -195,7 +195,7 @@ block Middle
 		button#ReadyBtn.for-normal(style='display: none; background-color: #FFC67F;')= L('ready')
 		button#StartBtn.for-master(style='display: none; background-color: #FFB576;')= L('start')
 		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none; background-color: #FFADAD;')= L('exit')
-		button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')= L('replay')
+		//- button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')= L('replay')
 		button#LeaderboardBtn.for-lobby(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
 	+Dialog('SettingDiag', 300, 355, L('settingsText'))
 		div.dialog-bar
@@ -498,7 +498,6 @@ block Middle
 		div.dialog-bar.tail-button
 			button#dress-ok= L('OK')
 			button#dress-cf= L('charFactory')
-			button(onclick=`alert("${L("paybackHelp")}");`)= L('payback')
 	+Dialog('CharFactoryDiag', 500, 410, L('charFactory'))
 		div.dialog-bar(style='width: 300px;')
 			div#cf-tray

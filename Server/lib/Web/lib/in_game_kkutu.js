@@ -1489,10 +1489,10 @@ $lib.Crossword.turnHint = function(data){
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-﻿$lib.Typing.roundReady = function(data){
+$lib.Typing.roundReady = function (data) {
 	var i, len = $data.room.game.title.length;
 	var $l;
-	
+
 	$data._chatter = mobile ? $stage.game.hereText : $stage.talk;
 	clearBoard();
 	$data._round = data.round;
@@ -1505,20 +1505,20 @@ $lib.Crossword.turnHint = function(data){
 	playSound('round_start');
 	recordEvent('roundReady', { data: data });
 };
-function onSpace(e){
-	if(e.keyCode == 32){
+function onSpace(e) {
+	if (e.keyCode == 32) {
 		$stage.chatBtn.trigger('click');
 		e.preventDefault();
 	}
 }
-function drawList(){
+function drawList() {
 	var wl = $data._list.slice($data.chain);
 	var lv = $data.room.opts.proverb ? 1 : 5;
 	var pts = "";
 	var w0l = wl[0].length;
-	
-	if(w0l >= 20) pts = "18px";
-	if(w0l >= 50) pts = "15px";
+
+	if (w0l >= 20) pts = "18px";
+	if (w0l >= 50) pts = "15px";
 	$stage.game.display.css('font-size', pts);
 	wl[0] = "<label style='color: #FFFF44;'>" + wl[0] + "</label>";
 	$stage.game.display.html(wl.slice(0, lv).join(' '));
@@ -1528,19 +1528,19 @@ function drawList(){
 		.html(wl.slice(lv, 2 * lv).join(' '))
 		.css({ 'text-align': "center", 'background-color': "#70712D" });
 }
-$lib.Typing.spaceOn = function(){
-	if($data.room.opts.proverb) return;
+$lib.Typing.spaceOn = function () {
+	if ($data.room.opts.proverb) return;
 	$data._spaced = true;
 	$("body").on('keydown', "#" + $data._chatter.attr('id'), onSpace);
 };
-$lib.Typing.spaceOff = function(){
+$lib.Typing.spaceOff = function () {
 	delete $data._spaced;
 	$("body").off('keydown', "#" + $data._chatter.attr('id'), onSpace);
 };
-$lib.Typing.turnStart = function(data){
-	if(!$data._spectate){
+$lib.Typing.turnStart = function (data) {
+	if (!$data._spectate) {
 		$stage.game.here.show();
-		if(mobile) $stage.game.hereText.val("").focus();
+		if (mobile) $stage.game.hereText.val("").focus();
 		else $stage.talk.val("").focus();
 		$lib.Typing.spaceOn();
 	}
@@ -1555,47 +1555,47 @@ $lib.Typing.turnStart = function(data){
 	});
 };
 $lib.Typing.turnGoing = $lib.Jaqwi.turnGoing;
-$lib.Typing.turnEnd = function(id, data){
+$lib.Typing.turnEnd = function (id, data) {
 	var $sc = $("<div>")
 		.addClass("deltaScore")
 		.html("+" + data.score);
 	var $uc = $("#game-user-" + id);
-	
-	if(data.error){
+
+	if (data.error) {
 		$data.chain++;
 		drawList();
 		playSound('fail');
-	}else if(data.ok){
-		if($data.id == id){
+	} else if (data.ok) {
+		if ($data.id == id) {
 			$data.chain++;
 			drawList();
 			playSound('mission');
 			pushHistory(data.value, "");
-		}else if($data._spectate){
+		} else if ($data._spectate) {
 			playSound('mission');
 		}
 		addScore(id, data.score);
 		drawObtainedScore($uc, $sc);
 		updateScore(id, getScore(id));
-	}else{
+	} else {
 		clearInterval($data._tTime);
 		$lib.Typing.spaceOff();
 		$stage.game.here.hide();
 		stopBGM();
 		playSound('horr');
 		addTimeout(drawSpeed, 1000, data.speed);
-		if($data._round < $data.room.round) restGoing(10);
+		if ($data._round < $data.room.round) restGoing(10);
 	}
 };
-function restGoing(rest){
+function restGoing(rest) {
 	$(".jjo-turn-time .graph-bar")
 		.html(rest + L['afterRun']);
-	if(rest > 0) addTimeout(restGoing, 1000, rest - 1);
+	if (rest > 0) addTimeout(restGoing, 1000, rest - 1);
 }
-function drawSpeed(table){
+function drawSpeed(table) {
 	var i;
-	
-	for(i in table){
+
+	for (i in table) {
 		$("#game-user-" + i + " .game-user-score").empty()
 			.append($("<div>").css({ 'float': "none", 'color': "#4444FF", 'text-align': "center" }).html(table[i] + "<label style='font-size: 11px;'>" + L['kpm'] + "</label>"));
 	}
