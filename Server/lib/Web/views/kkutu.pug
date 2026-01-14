@@ -497,6 +497,24 @@ block Middle
 		div.dialog-bar.tail-button
 			button#dress-ok= L('OK')
 			button#dress-cf= L('charFactory')
+			button#dress-wardrobe= L('wardrobe')
+	+Dialog('WardrobeDiag', 540, 600, L('wardrobe'))
+		div.dialog-bar
+			h4= L('wardrobe')
+		div.dialog-bar
+			div#wardrobe-grid
+				- for(var i=0;i<5;i++)
+					div.wardrobe-slot(data-index=i)
+						div.moremi.wardrobe-view(style='width: 80px; height: 80px;')
+						div.wardrobe-meta
+							h5.wardrobe-label= L('empty')
+							div.wardrobe-actions
+								button.wardrobe-load= L('load')
+								button.wardrobe-save-slot= L('save')
+								button.wardrobe-delete= L('delete')
+		div.dialog-bar.tail-button
+			button#wardrobe-save= L('save')
+			button#wardrobe-close= L('NO')
 	+Dialog('CharFactoryDiag', 500, 410, L('charFactory'))
 		div.dialog-bar(style='width: 300px;')
 			div#cf-tray

@@ -1706,6 +1706,77 @@ iframe {
 	font-size: inherit;
 }
 
+.wardrobe-grid {
+	display: flex;
+	justify-content: space-between;
+	padding: 6px 0;
+}
+
+.wardrobe-slot {
+	width: 90px;
+	text-align: center;
+	cursor: pointer;
+	border: 1px solid #e1e1e1;
+	padding: 6px;
+	border-radius: 4px;
+	background: #fafafa;
+}
+
+.wardrobe-slot.selected {
+	outline: 2px solid #5CB85C;
+}
+
+.wardrobe-view {
+	width: 80px;
+	height: 80px;
+	margin: 0 auto;
+}
+
+.wardrobe-label {
+	font-size: 11px;
+	margin-top: 6px;
+	color: #666;
+}
+
+.wardrobe-meta {
+	margin-top: 6px;
+}
+
+.wardrobe-actions {
+	margin-top: 6px;
+	display: flex;
+	gap: 6px;
+	justify-content: center;
+}
+
+.wardrobe-actions button {
+	padding: 4px 8px;
+	font-size: 12px;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+	background: #fff;
+	cursor: pointer;
+}
+
+.wardrobe-actions button.wardrobe-delete {
+	background: #f8d7da;
+	border-color: #f5c6cb;
+}
+
+.wardrobe-slot {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.wardrobe-grid {
+	display: flex;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 6px 12px;
+}
+
+
 .dress-item-image {
 	width: 40px;
 	height: 40px;
