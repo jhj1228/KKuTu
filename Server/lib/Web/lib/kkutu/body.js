@@ -1530,6 +1530,7 @@ function drawLeaderboard(data) {
 		var profile = $data.users[item.id];
 
 		if (profile) profile = profile.profile.title || profile.profile.name;
+		else if (item.nickname) profile = item.nickname;
 		else profile = L['hidden'];
 
 		item.score = Number(item.score);
