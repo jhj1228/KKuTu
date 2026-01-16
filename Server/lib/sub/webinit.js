@@ -16,29 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var GLOBAL	 = require("./global.json");
-var MainDB	 = require("../Web/db");
-var JLog	 = require("./jjlog");
+var GLOBAL = require("./global.json");
+var MainDB = require("../Web/db");
+var JLog = require("./jjlog");
 var Language = {
 	'ko_KR': require("../Web/lang/ko_KR.json"),
-	'en_US': require("../Web/lang/en_US.json")
 };
 
 
-for(let lang in Language) updateThemes(lang);
+for (let lang in Language) updateThemes(lang);
 
-function updateThemes(lang){
+function updateThemes(lang) {
 	Language[lang].themes = {};
-	for(let j in Language[lang].kkutu)
-		if(j.includes("theme_"))
+	for (let j in Language[lang].kkutu)
+		if (j.includes("theme_"))
 			Language[lang].themes[j] = Language[lang].kkutu[j];
 }
-function updateLanguage(){
+function updateLanguage() {
 	var i, src;
-	
-	for(i in Language){
+
+	for (i in Language) {
 		src = `../Web/lang/${i}.json`;
-		
+
 		delete require.cache[require.resolve(src)];
 		Language[i] = require(src);
 
@@ -46,73 +45,73 @@ function updateLanguage(){
 	}
 	MainDB.kkutu_shop_desc.refreshLanguage(Language);
 }
-function getLanguage(locale, page, shop){
+function getLanguage(locale, page, shop) {
 	var i;
 	var L = Language[locale] || {};
 	var R = {};
-	
-	for(i in L.GLOBAL) R[i] = L.GLOBAL[i];
-	if(shop) for(i in L.SHOP) R[i] = L.SHOP[i];
-	for(i in L[page]) R[i] = L[page][i];
-	if(page == "help") Object.assign(R, L.themes);
-	if(R['title']) R['title'] = `[${process.env['KKT_SV_NAME']}] ${R['title']}`;
-	
+
+	for (i in L.GLOBAL) R[i] = L.GLOBAL[i];
+	if (shop) for (i in L.SHOP) R[i] = L.SHOP[i];
+	for (i in L[page]) R[i] = L[page][i];
+	if (page == "help") Object.assign(R, L.themes);
+	if (R['title']) R['title'] = `[${process.env['KKT_SV_NAME']}] ${R['title']}`;
+
 	return R;
 }
-function page(req, res, file, data){
-	if(data == undefined)	data = {};
-	if(req.session.createdAt){
-		if(new Date() - req.session.createdAt > 3600000){
+function page(req, res, file, data) {
+	if (data == undefined) data = {};
+	if (req.session.createdAt) {
+		if (new Date() - req.session.createdAt > 3600000) {
 			delete req.session.profile;
 		}
-	}else{
+	} else {
 		req.session.createdAt = new Date();
 	}
 	var addr = req.ip || "";
 	var sid = req.session.id || "";
-	
+
 	data.published = global.isPublic;
 	data.lang = req.query.locale || "ko_KR";
-	if(!Language[data.lang]) data.lang = "ko_KR";
+	if (!Language[data.lang]) data.lang = "ko_KR";
 	// URL ...?locale=en_US will show the page in English
-	
+
 	// if(exports.STATIC) data.static = exports.STATIC[data.lang];
 	data.season = GLOBAL.SEASON;
 	data.season_pre = GLOBAL.SEASON_PRE;
-	
+
 	data.locale = getLanguage(data.lang, data._page || file.split('_')[0], data._shop);
 	data.session = req.session;
-	if((/mobile/i).test(req.get('user-agent')) || req.query.mob){
+	if ((/mobile/i).test(req.get('user-agent')) || req.query.mob) {
 		data.mobile = true;
-		if(req.query.pc){
+		if (req.query.pc) {
 			data.as_pc = true;
 			data.page = file;
-		}else if(exports.MOBILE_AVAILABLE && exports.MOBILE_AVAILABLE.includes(file)){
+		} else if (exports.MOBILE_AVAILABLE && exports.MOBILE_AVAILABLE.includes(file)) {
 			data.page = 'm_' + file;
-		}else{
+		} else {
 			data.mobile = false;
 			data.page = file;
 		}
-	}else{
+	} else {
 		data.page = file;
 	}
-	
+
 	JLog.log(`${addr.slice(7)}@${sid.slice(0, 10)} ${data.page}, ${JSON.stringify(req.params)}`);
-	res.render(data.page, data, function(err, html){
-		if(err) res.send(err.toString());
+	res.render(data.page, data, function (err, html) {
+		if (err) res.send(err.toString());
 		else res.send(html);
 	});
 }
-exports.init = function(Server, shop){
-	Server.get("/language/:page/:lang", function(req, res){
+exports.init = function (Server, shop) {
+	Server.get("/language/:page/:lang", function (req, res) {
 		var page = req.params.page.replace(/_/g, "/");
 		var lang = req.params.lang;
-		
-		if(page.substr(0, 2) == "m/") page = page.slice(2);
-		if(page == "portal") page = "kkutu";
-		res.send("window.L = "+JSON.stringify(getLanguage(lang, page, shop))+";");
+
+		if (page.substr(0, 2) == "m/") page = page.slice(2);
+		if (page == "portal") page = "kkutu";
+		res.send("window.L = " + JSON.stringify(getLanguage(lang, page, shop)) + ";");
 	});
-	Server.get("/language/flush", function(req, res){
+	Server.get("/language/flush", function (req, res) {
 		updateLanguage();
 		res.sendStatus(200);
 	});

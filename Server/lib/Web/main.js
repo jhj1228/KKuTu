@@ -21,30 +21,29 @@
  * Login 을 Passport 로 수행하기 위한 수정
  */
 
-var WS		 = require("ws");
-var Express	 = require("express");
+var WS = require("ws");
+var Express = require("express");
 var Exession = require("express-session");
-var Redission= require("connect-redis")(Exession);
-var Redis	 = require("redis");
-var Parser	 = require("body-parser");
-var DDDoS	 = require("dddos");
-var Server	 = Express();
-var DB		 = require("./db");
+var Redission = require("connect-redis")(Exession);
+var Redis = require("redis");
+var Parser = require("body-parser");
+var DDDoS = require("dddos");
+var Server = Express();
+var DB = require("./db");
 //볕뉘 수정 구문삭제 (28)
-var JLog	 = require("../sub/jjlog");
-var WebInit	 = require("../sub/webinit");
-var GLOBAL	 = require("../sub/global.json");
+var JLog = require("../sub/jjlog");
+var WebInit = require("../sub/webinit");
+var GLOBAL = require("../sub/global.json");
 var Secure = require('../sub/secure');
 //볕뉘 수정
 var passport = require('passport');
 //볕뉘 수정 끝
-var Const	 = require("../const");
-var https	 = require('https');
-var fs		 = require('fs');
+var Const = require("../const");
+var https = require('https');
+var fs = require('fs');
 
 var Language = {
 	'ko_KR': require("./lang/ko_KR.json"),
-	'en_US': require("./lang/en_US.json")
 };
 //볕뉘 수정
 var ROUTES = { major: {}, consume: {}, admin: {}, login: {} };
@@ -78,15 +77,15 @@ Server.use(Exession({
 Server.use(passport.initialize());
 Server.use(passport.session());
 Server.use((req, res, next) => {
-	if(req.session.passport) {
+	if (req.session.passport) {
 		delete req.session.passport;
 	}
 	next();
 });
 Server.use((req, res, next) => {
-	if(Const.IS_SECURED) {
-		if(req.protocol == 'http') {
-			let url = 'https://'+req.get('host')+req.path;
+	if (Const.IS_SECURED) {
+		if (req.protocol == 'http') {
+			let url = 'https://' + req.get('host') + req.path;
 			res.status(302).redirect(url);
 		} else {
 			next();
@@ -119,15 +118,15 @@ WebInit.init(Server, true);
 Object.keys(ROUTES).forEach((v) => {
 	ROUTES[v] = require(`./routes/${v}`);
 });
-DB.ready = function(){
-	setInterval(function(){
-		var q = [ 'createdAt', { $lte: Date.now() - 3600000 * 12 } ];
+DB.ready = function () {
+	setInterval(function () {
+		var q = ['createdAt', { $lte: Date.now() - 3600000 * 12 }];
 
 		DB.session.remove(q).on();
 	}, 600000);
-	setInterval(function(){
-		gameServers.forEach(function(v){
-			if(v.socket) v.socket.send(`{"type":"seek"}`);
+	setInterval(function () {
+		gameServers.forEach(function (v) {
+			if (v.socket) v.socket.send(`{"type":"seek"}`);
 			else v.seek = undefined;
 		});
 	}, 4000);
@@ -135,56 +134,56 @@ DB.ready = function(){
 
 	DB.kkutu_shop_desc.refreshLanguage(Language);
 	Server.listen(80);
-	if(Const.IS_SECURED) {
+	if (Const.IS_SECURED) {
 		const options = Secure();
 		https.createServer(options, Server).listen(443);
 	}
 };
-Const.MAIN_PORTS.forEach(function(v, i){
+Const.MAIN_PORTS.forEach(function (v, i) {
 	var KEY = process.env['WS_KEY'];
 	var protocol;
-	if(Const.IS_SECURED) {
+	if (Const.IS_SECURED) {
 		protocol = 'wss';
 	} else {
 		protocol = 'ws';
 	}
 	gameServers[i] = new GameClient(KEY, `${protocol}://${GLOBAL.GAME_SERVER_HOST}:${v}/${KEY}`);
 });
-function GameClient(id, url){
+function GameClient(id, url) {
 	var my = this;
 
 	my.id = id;
-	my.socket = new WS(url, { perMessageDeflate: false, rejectUnauthorized: false});
-	
-	my.send = function(type, data){
-		if(!data) data = {};
+	my.socket = new WS(url, { perMessageDeflate: false, rejectUnauthorized: false });
+
+	my.send = function (type, data) {
+		if (!data) data = {};
 		data.type = type;
 
 		my.socket.send(JSON.stringify(data));
 	};
-	my.socket.on('open', function(){
+	my.socket.on('open', function () {
 		JLog.info(`Game server #${my.id} connected`);
 	});
-	my.socket.on('error', function(err){
+	my.socket.on('error', function (err) {
 		JLog.warn(`Game server #${my.id} has an error: ${err.toString()}`);
 	});
-	my.socket.on('close', function(code){
+	my.socket.on('close', function (code) {
 		JLog.error(`Game server #${my.id} closed: ${code}`);
 		my.socket.removeAllListeners();
 		delete my.socket;
 	});
-	my.socket.on('message', function(data){
+	my.socket.on('message', function (data) {
 		var _data = data;
 		var i;
 
 		data = JSON.parse(data);
 
-		switch(data.type){
+		switch (data.type) {
 			case "seek":
 				my.seek = data.value;
 				break;
 			case "narrate-friend":
-				for(i in data.list){
+				for (i in data.list) {
 					gameServers[i].send('narrate-friend', { id: data.id, s: data.s, stat: data.stat, list: data.list[i] });
 				}
 				break;
@@ -192,28 +191,28 @@ function GameClient(id, url){
 		}
 	});
 }
-for(var i of Object.values(ROUTES)) i.run(Server, WebInit.page);
-Server.get("/", function(req, res){
+for (var i of Object.values(ROUTES)) i.run(Server, WebInit.page);
+Server.get("/", function (req, res) {
 	var server = req.query.server;
-	
+
 	//볕뉘 수정 구문삭제(220~229, 240)
-	DB.session.findOne([ '_id', req.session.id ]).on(function($ses){
+	DB.session.findOne(['_id', req.session.id]).on(function ($ses) {
 		// var sid = (($ses || {}).profile || {}).sid || "NULL";
-		if(global.isPublic){
+		if (global.isPublic) {
 			onFinish($ses);
 			// DB.jjo_session.findOne([ '_id', sid ]).limit([ 'profile', true ]).on(onFinish);
-		}else{
-			if($ses) $ses.profile.sid = $ses._id;
+		} else {
+			if ($ses) $ses.profile.sid = $ses._id;
 			onFinish($ses);
 		}
 	});
-	function onFinish($doc){
+	function onFinish($doc) {
 		var id = req.session.id;
 
-		if($doc){
+		if ($doc) {
 			req.session.profile = $doc.profile;
 			id = $doc.profile.sid;
-		}else{
+		} else {
 			delete req.session.profile;
 		}
 		page(req, res, Const.MAIN_PORTS[server] ? "kkutu" : "portal", {
@@ -244,10 +243,10 @@ Server.get("/", function(req, res){
 	}
 });
 
-Server.get("/servers", function(req, res){
+Server.get("/servers", function (req, res) {
 	var list = [];
 
-	gameServers.forEach(function(v, i){
+	gameServers.forEach(function (v, i) {
 		list[i] = v.seek;
 	});
 	res.send({ list: list, max: Const.KKUTU_MAX });
@@ -255,6 +254,6 @@ Server.get("/servers", function(req, res){
 
 //볕뉘 수정 구문 삭제(274~353)
 
-Server.get("/legal/:page", function(req, res){
-	page(req, res, "legal/"+req.params.page);
+Server.get("/legal/:page", function (req, res) {
+	page(req, res, "legal/" + req.params.page);
 });
