@@ -238,6 +238,13 @@ exports.submit = function (client, text) {
 			return;
 		}
 	}
+	if (my.opts.dodoli) {
+		if (text.length >= 2 && text.charAt(0) === text.charAt(text.length - 1)) {
+			client.publish('turnError', { code: 413, value: text }, true);
+			if (client.robot) my.readyRobot(client);
+			return;
+		}
+	}
 
 	l = my.rule.lang;
 	my.game.loading = true;
@@ -594,10 +601,17 @@ function getAuto(char, subc, type) {
 		}
 		DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(bool ? 1 : 2000).on(function ($md) {
 			forManner($md);
+			var filteredList = $md;
 			if (my.game.chain) {
-				aft($md.filter(function (item) { return !my.game.chain.includes(item._id); }));
+				filteredList = filteredList.filter(function (item) { return !my.game.chain.includes(item._id); });
 			}
-			else aft($md);
+			if (my.opts.dodoli) {
+				filteredList = filteredList.filter(function (item) {
+					var w = item._id;
+					return w.length < 2 || w.charAt(0) !== w.charAt(w.length - 1);
+				});
+			}
+			aft(filteredList);
 		});
 		function forManner(list) {
 			lst = list;
