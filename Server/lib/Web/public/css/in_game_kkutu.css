@@ -2002,6 +2002,64 @@ iframe {
 	padding-left: 131px;
 }
 
+#wardrobe-grid {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+	padding: 10px;
+}
+
+.wardrobe-slot {
+	flex: 1;
+	border: 1px solid #ccc;
+	background: #f9f9f9;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border-radius: 5px;
+	min-width: 100px;
+}
+
+.wardrobe-slot.selected {
+	border: 2px solid #8EC0F3;
+	background: #eef7ff;
+}
+
+.wardrobe-view {
+	border: 1px inset #eee;
+	background: #fff;
+	margin-bottom: 8px;
+}
+
+.wardrobe-meta {
+	width: 100%;
+	text-align: center;
+}
+
+.wardrobe-label {
+	font-size: 11px;
+	color: #666;
+	margin: 5px 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wardrobe-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	width: 100%;
+}
+
+.wardrobe-actions button {
+	width: 100%;
+	font-size: 11px;
+	padding: 3px 0;
+	cursor: pointer;
+}
+
 @keyframes RoundEffect {
 	0% {
 		font-size: 16px;

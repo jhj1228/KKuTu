@@ -498,20 +498,30 @@ block Middle
 			button#dress-ok= L('OK')
 			button#dress-cf= L('charFactory')
 			button#dress-wardrobe= L('wardrobe')
-	+Dialog('WardrobeDiag', 540, 600, L('wardrobe'))
-		div.dialog-bar
-			h4= L('wardrobe')
-		div.dialog-bar
-			div#wardrobe-grid
-				- for(var i=0;i<5;i++)
-					div.wardrobe-slot(data-index=i)
-						div.moremi.wardrobe-view(style='width: 80px; height: 80px;')
-						div.wardrobe-meta
-							h5.wardrobe-label= L('empty')
-							div.wardrobe-actions
-								button.wardrobe-load= L('load')
-								button.wardrobe-save-slot= L('save')
-								button.wardrobe-delete= L('delete')
+	+Dialog('WardrobeDiag', 660, 290, L('wardrobe'))
+		style.
+			.wardrobe-view {
+				position: relative;
+				overflow: hidden;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			.wardrobe-view > div {
+				transform: scale(0.6);
+				transform-origin: center center;
+			}
+		div.dialog-bar(style='padding: 10px;')
+			div#wardrobe-grid(style='display: flex; justify-content: space-between; gap: 5px;')
+				- for(var i=0; i<5; i++)
+					div.wardrobe-slot(data-index=i, style='width: 120px; border: 1px solid #ccc; padding: 5px; background: #f9f9f9; text-align: center; border-radius: 4px;')
+						div.moremi.wardrobe-view(style='width: 80px; height: 80px; margin: 0 auto; background: #fff; border: 1px inset #eee;')
+						div.wardrobe-meta(style='margin-top: 5px;')
+							div.wardrobe-label(style='font-size: 11px; height: 15px; overflow: hidden; margin-bottom: 5px;')= L('empty')
+							div.wardrobe-actions(style='display: flex; justify-content: center; gap: 2px;')
+								button.wardrobe-load(data-index=i, style='width: 30px; font-size: 10px; padding: 2px;') 로드
+								button.wardrobe-save-slot(data-index=i, style='width: 30px; font-size: 10px; padding: 2px;') 저장
+								button.wardrobe-delete(data-index=i, style='width: 30px; font-size: 10px; padding: 2px;') 삭제
 		div.dialog-bar.tail-button
 			button#wardrobe-save= L('save')
 			button#wardrobe-close= L('NO')

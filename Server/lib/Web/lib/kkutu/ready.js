@@ -848,24 +848,27 @@ $(document).ready(function () {
 	$("#dress-wardrobe").on('click', function (e) {
 		if ($data.guest) return fail(421);
 		if ($data._gaming) return fail(438);
-		if (showDialog($("#WardrobeDiag"))) openWardrobe();
+		showDialog($("#WardrobeDiag"));
+		openWardrobe();
 	});
-
+	$('#wardrobe-save').on('click', function (e) {
+		$('#WardrobeDiag').hide();
+	});
 	$(document).on('click', '.wardrobe-slot', function (e) {
 		$('.wardrobe-slot.selected').removeClass('selected');
 		$(this).addClass('selected');
 	});
-
 	$('#wardrobe-save').on('click', function (e) {
 		var key = 'wardrobe_' + $data.id;
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		while (slots.length < 5) slots.push(null);
 		var idx = $('.wardrobe-slot.selected').data('index') || 0;
+		var wasEmpty = !slots[idx] || !slots[idx].equip;
 		slots[idx] = { equip: $.extend(true, {}, $data.users[$data.id].equip), time: Date.now() };
 		localStorage.setItem(key, JSON.stringify(slots));
 		openWardrobe();
-		alert(L['wardrobeSaved'] || L['save']);
-		$('#WardrobeDiag').hide();
+		alert(L['wardrobeSaved']);
+		if (!wasEmpty) $('#WardrobeDiag').hide();
 	});
 
 
@@ -877,48 +880,54 @@ $(document).ready(function () {
 		var key = 'wardrobe_' + $data.id;
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		while (slots.length < 5) slots.push(null);
-		var $grid = $('#wardrobe-grid');
-		$grid.empty();
-		for (var i = 0; i < 5; i++) {
-			var slot = slots[i];
-			var $slot = $('<div>').addClass('wardrobe-slot').attr('data-index', i);
-			var $view = $('<div>').addClass('moremi wardrobe-view').css({ width: '80px', height: '80px' });
-			var $meta = $('<div>').addClass('wardrobe-meta');
-			var $label = $('<div>').addClass('wardrobe-label');
-			var $actions = $('<div>').addClass('wardrobe-actions');
-			var $loadBtn = $('<button>').addClass('wardrobe-load').text(L['load']).data('index', i);
-			var $saveSlotBtn = $('<button>').addClass('wardrobe-save-slot').text(L['save']).data('index', i);
-			var $delBtn = $('<button>').addClass('wardrobe-delete').text(L['delete']).data('index', i);
-			$actions.append($loadBtn).append($saveSlotBtn).append($delBtn);
-			if (!slot || !slot.equip) {
+
+		$('.wardrobe-slot').each(function (index) {
+			var slot = slots[index];
+			var $me = $(this);
+			var $view = $me.find('.wardrobe-view');
+			var $label = $me.find('.wardrobe-label');
+			var $loadBtn = $me.find('.wardrobe-load');
+			var $delBtn = $me.find('.wardrobe-delete');
+
+			$view.empty();
+
+			if (slot && slot.equip) {
+				$label.text(new Date(slot.time).toLocaleDateString());
+				$loadBtn.prop('disabled', false);
+				$delBtn.prop('disabled', false);
+				renderMoremi($view, slot.equip);
+			} else {
+				$label.text(L['empty'] || '비어있음');
 				$loadBtn.prop('disabled', true);
 				$delBtn.prop('disabled', true);
 			}
-
-			if (slot && slot.equip) {
-				$label.text(new Date(slot.time).toLocaleString());
-				$meta.append($label).append($actions);
-				$slot.append($view).append($meta);
-				$grid.append($slot);
-				renderMoremi($view, slot.equip);
-			} else {
-				$label.text(L['empty'] || '(empty)');
-				$meta.append($label).append($actions);
-				$slot.append($view).append($meta);
-				$grid.append($slot);
-			}
-		}
-
-		$('.wardrobe-slot').first().addClass('selected');
+		});
 	}
+	$(document).on('click', '.wardrobe-save-slot', function (e) {
+		var idx = $(e.currentTarget).data('index');
+		var key = 'wardrobe_' + $data.id;
+		var slots = JSON.parse(localStorage.getItem(key) || '[]');
+		while (slots.length < 5) slots.push(null);
+
+		if (!confirm('슬롯 ' + (idx + 1) + '번에 현재 코디를 저장할까요?')) return;
+
+		slots[idx] = {
+			equip: $.extend(true, {}, $data.users[$data.id].equip),
+			time: Date.now()
+		};
+		localStorage.setItem(key, JSON.stringify(slots));
+		openWardrobe();
+		alert('저장되었습니다.');
+	});
 
 	$(document).on('click', '.wardrobe-load', function (e) {
 		var idx = $(e.currentTarget).data('index');
 		var key = 'wardrobe_' + $data.id;
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		var slot = slots[idx];
-		if (!slot || !slot.equip) return alert(L['empty']);
-		if (!confirm(L['confirmLoad'] || L['load'] + '?')) return;
+
+		if (!slot || !slot.equip) return alert('비어있는 슬롯입니다.');
+		if (!confirm('이 코디를 착용하시겠습니까?')) return;
 
 		var saved = slot.equip;
 		var calls = [];
@@ -927,28 +936,24 @@ $(document).ready(function () {
 			if (!id) continue;
 			(function (group, itemId) {
 				calls.push(function (done) {
-					if (group == 'Mlhand' || group == 'Mrhand') {
-						$.post('/equip/' + itemId, { isLeft: (group == 'Mlhand') }, function (res) {
-							if (res.error) { fail(res.error); done(); return; }
+					var isLeft = (group == 'Mlhand');
+					var url = (group == 'Mlhand' || group == 'Mrhand') ? ('/equip/' + itemId) : ('/equip/' + itemId);
+					var data = (group == 'Mlhand' || group == 'Mrhand') ? { isLeft: isLeft } : {};
+
+					$.post(url, data, function (res) {
+						if (!res.error) {
 							$data.box = res.box;
 							$data.users[$data.id].equip = res.equip;
-							done();
-						});
-					} else {
-						$.post('/equip/' + itemId, {}, function (res) {
-							if (res.error) { fail(res.error); done(); return; }
-							$data.box = res.box;
-							$data.users[$data.id].equip = res.equip;
-							done();
-						});
-					}
+						}
+						done();
+					});
 				});
 			})(g, id);
 		}
 		(function run(i) {
 			if (i >= calls.length) {
 				drawMyDress($data._avGroup);
-				alert(L['loaded'] || L['load']);
+				alert('코디가 적용되었습니다.');
 				return;
 			}
 			calls[i](function () { run(i + 1); });
@@ -959,9 +964,10 @@ $(document).ready(function () {
 		var idx = $(e.currentTarget).data('index');
 		var key = 'wardrobe_' + $data.id;
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
-		while (slots.length < 5) slots.push(null);
-		if (!slots[idx]) return alert(L['empty']);
-		if (!confirm(L['confirmDelete'] || L['delete'] + '?')) return;
+
+		if (!slots[idx]) return;
+		if (!confirm('정말 삭제하시겠습니까?')) return;
+
 		slots[idx] = null;
 		localStorage.setItem(key, JSON.stringify(slots));
 		openWardrobe();
@@ -972,11 +978,12 @@ $(document).ready(function () {
 		var key = 'wardrobe_' + $data.id;
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		while (slots.length < 5) slots.push(null);
+		var wasEmpty = !slots[idx] || !slots[idx].equip;
 		slots[idx] = { equip: $.extend(true, {}, $data.users[$data.id].equip), time: Date.now() };
 		localStorage.setItem(key, JSON.stringify(slots));
 		openWardrobe();
-		alert(L['wardrobeSaved'] || L['save']);
-		$('#WardrobeDiag').hide();
+		alert(L['wardrobeSaved']);
+		if (!wasEmpty) $('#WardrobeDiag')();
 	});
 	$stage.dialog.cfCompose.on('click', function (e) {
 		if (!$stage.dialog.cfCompose.hasClass("cf-composable")) return fail(436);
