@@ -181,11 +181,16 @@ exports.submit = function (client, text, data) {
 						my.game.mission = getMission(my.game.theme);
 					}
 					setTimeout(function () {
+						if (!my.game || !my.game.seq) {
+							if (my.turnNext) my.turnNext();
+							return;
+						}
 						if (my.opts.randomturn) {
 							if (my.game.roundTime <= 0) {
 								my.roundEnd();
 								return;
 							}
+
 							var len = my.game.seq.length;
 							if (len > 0) {
 								my.game.turn = Math.floor(Math.random() * len);
