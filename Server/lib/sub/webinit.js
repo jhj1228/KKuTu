@@ -60,11 +60,7 @@ function getLanguage(locale, page, shop) {
 }
 function page(req, res, file, data) {
 	if (data == undefined) data = {};
-	if (req.session.createdAt) {
-		if (new Date() - req.session.createdAt > 3600000) {
-			delete req.session.profile;
-		}
-	} else {
+	if (!req.session.createdAt) {
 		req.session.createdAt = new Date();
 	}
 	var addr = req.ip || "";

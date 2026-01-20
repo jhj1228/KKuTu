@@ -16,48 +16,48 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-const MainDB	 = require("../db");
-const JLog	 = require("../../sub/jjlog");
+const MainDB = require("../db");
+const JLog = require("../../sub/jjlog");
 // const Ajae	 = require("../../sub/ajaejs").checkAjae;
 const passport = require('passport');
 const glob = require('glob-promise');
-const GLOBAL	 = require("../../sub/global.json");
+const GLOBAL = require("../../sub/global.json");
 const config = require('../../sub/auth.json');
 const path = require('path')
 
 function process(req, accessToken, MainDB, $p, done) {
-    $p.token = accessToken;
-    $p.sid = req.session.id;
+	$p.token = accessToken;
+	$p.sid = req.session.id;
 
 	const now = Date.now();
-    $p.sid = req.session.id;
-    req.session.admin = GLOBAL.ADMIN.includes($p.id);
-    req.session.authType = $p.authType;
-    MainDB.users.findOne([ '_id', $p.id ]).on(($body) => {
+	$p.sid = req.session.id;
+	req.session.admin = GLOBAL.ADMIN.includes($p.id);
+	req.session.authType = $p.authType;
+	MainDB.users.findOne(['_id', $p.id]).on(($body) => {
 		$p.nickname = $p.title = $p.name = $body ? $body.nickname : $p.title || $p.name;
 		req.session.profile = $p;
-		MainDB.session.upsert([ '_id', req.session.id ]).set({
+		MainDB.session.upsert(['_id', req.session.id]).set({
 			'profile': $p,
 			'createdAt': now
 		}).on();
-        MainDB.users.update([ '_id', $p.id ]).set([ 'lastLogin', now ]).on();
-    });
+		MainDB.users.update(['_id', $p.id]).set(['lastLogin', now]).on();
+	});
 
-    done(null, $p);
+	done(null, $p);
 }
 
 exports.run = (Server, page) => {
-    //passport configure
-    passport.serializeUser((user, done) => {
-        done(null, user);
-    });
+	//passport configure
+	passport.serializeUser((user, done) => {
+		done(null, user);
+	});
 
-    passport.deserializeUser((obj, done) => {
-        done(null, obj);
-    });
+	passport.deserializeUser((obj, done) => {
+		done(null, obj);
+	});
 
-    const strategyList = {};
-    
+	const strategyList = {};
+
 	for (let i in config) {
 		try {
 			let auth = require(path.resolve(__dirname, '..', 'auth', 'auth_' + i + '.js'))
@@ -80,21 +80,21 @@ exports.run = (Server, page) => {
 			JLog.error(error.message)
 		}
 	}
-	
+
 	Server.get("/login", (req, res) => {
-		if(global.isPublic){
-			page(req, res, "login", { '_id': req.session.id, 'text': req.query.desc, 'loginList': strategyList});
-		}else{
+		if (global.isPublic) {
+			page(req, res, "login", { '_id': req.session.id, 'text': req.query.desc, 'loginList': strategyList });
+		} else {
 			let now = Date.now();
 			let id = req.query.id || "ADMIN";
 			let lp = {
 				id: id,
 				title: "LOCAL #" + id,
-				birth: [ 4, 16, 0 ],
+				birth: [4, 16, 0],
 				_age: { min: 20, max: undefined }
 			};
-			MainDB.session.upsert([ '_id', req.session.id ]).set([ 'profile', JSON.stringify(lp) ], [ 'createdAt', now ]).on(function($res){
-				MainDB.users.update([ '_id', id ]).set([ 'lastLogin', now ]).on();
+			MainDB.session.upsert(['_id', req.session.id]).set(['profile', JSON.stringify(lp)], ['createdAt', now]).on(function ($res) {
+				MainDB.users.update(['_id', id]).set(['lastLogin', now]).on();
 				req.session.admin = true;
 				req.session.profile = lp;
 				res.redirect("/");
@@ -103,7 +103,7 @@ exports.run = (Server, page) => {
 	});
 
 	Server.get("/logout", (req, res) => {
-		if(!req.session.profile){
+		if (!req.session.profile) {
 			return res.redirect("/");
 		} else {
 			req.session.destroy();

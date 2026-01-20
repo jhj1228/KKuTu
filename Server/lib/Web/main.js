@@ -24,8 +24,6 @@
 var WS = require("ws");
 var Express = require("express");
 var Exession = require("express-session");
-var Redission = require("connect-redis")(Exession);
-var Redis = require("redis");
 var Parser = require("body-parser");
 var DDDoS = require("dddos");
 var Server = Express();
@@ -62,16 +60,63 @@ Server.set('views', __dirname + "/views");
 Server.set('view engine', "pug");
 Server.use(Express.static(__dirname + "/public"));
 Server.use(Parser.urlencoded({ extended: true }));
-Server.use(Exession({
-	/* use only for redis-installed
 
-	store: new Redission({
-		client: Redis.createClient(),
-		ttl: 3600 * 12
-	}),*/
+class PgSessionStore extends Exession.Store {
+	constructor(db) {
+		super();
+		this.db = db;
+	}
+
+	get(sid, callback) {
+		this.db.session.findOne(['_id', sid]).on(function ($ses) {
+			if ($ses && $ses.profile) {
+				try {
+					const profile = typeof $ses.profile === 'string' ? JSON.parse($ses.profile) : $ses.profile;
+					const sessionData = {
+						profile: profile,
+						createdAt: $ses.createdAt,
+						cookie: { maxAge: 3600000 * 24 * 7 }
+					};
+					callback(null, sessionData);
+				} catch (err) {
+					callback(err);
+				}
+			} else {
+				callback(null, null);
+			}
+		});
+	}
+
+	set(sid, sessionData, callback) {
+		const now = Date.now();
+		this.db.session.upsert(['_id', sid]).set({
+			'_id': sid,
+			'profile': sessionData.profile || {},
+			'createdAt': now
+		}).on(function () {
+			if (callback) callback(null);
+		});
+	}
+
+	destroy(sid, callback) {
+		this.db.session.remove(['_id', sid]).on(function () {
+			if (callback) callback(null);
+		});
+	}
+
+	touch(sid, sessionData, callback) {
+		if (callback) callback(null);
+	}
+}
+
+Server.use(Exession({
+	store: new PgSessionStore(DB),
 	secret: 'kkutu',
 	resave: false,
-	saveUninitialized: true
+	saveUninitialized: true,
+	cookie: {
+		maxAge: 3600000 * 24 * 7 // 7일
+	}
 }));
 //볕뉘 수정
 Server.use(passport.initialize());
@@ -119,8 +164,9 @@ Object.keys(ROUTES).forEach((v) => {
 	ROUTES[v] = require(`./routes/${v}`);
 });
 DB.ready = function () {
+	// 오래된 세션 정리 (7일 이상 미사용 세션)
 	setInterval(function () {
-		var q = ['createdAt', { $lte: Date.now() - 3600000 * 12 }];
+		var q = ['createdAt', { $lte: Date.now() - 3600000 * 24 * 7 }];
 
 		DB.session.remove(q).on();
 	}, 600000);
@@ -195,26 +241,27 @@ for (var i of Object.values(ROUTES)) i.run(Server, WebInit.page);
 Server.get("/", function (req, res) {
 	var server = req.query.server;
 
-	//볕뉘 수정 구문삭제(220~229, 240)
+	// 세션 ID가 있으면 DB에서 세션 데이터 조회
 	DB.session.findOne(['_id', req.session.id]).on(function ($ses) {
-		// var sid = (($ses || {}).profile || {}).sid || "NULL";
 		if (global.isPublic) {
 			onFinish($ses);
-			// DB.jjo_session.findOne([ '_id', sid ]).limit([ 'profile', true ]).on(onFinish);
 		} else {
 			if ($ses) $ses.profile.sid = $ses._id;
 			onFinish($ses);
 		}
 	});
+
 	function onFinish($doc) {
 		var id = req.session.id;
 
-		if ($doc) {
+		if ($doc && $doc.profile) {
+			// DB에서 저장된 프로필 정보를 세션에 복원
 			req.session.profile = $doc.profile;
-			id = $doc.profile.sid;
+			id = $doc.profile.sid || $doc.profile.id;
 		} else {
 			delete req.session.profile;
 		}
+
 		page(req, res, Const.MAIN_PORTS[server] ? "kkutu" : "portal", {
 			'_page': "kkutu",
 			'_id': id,
