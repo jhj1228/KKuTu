@@ -238,7 +238,7 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
-	//- "SCP", // SCP 재단
+	"SCP", // SCP 재단
 	"IMS", // THE iDDOLM@STER
 	"VOC", // VOCALOID
 	"GNT", // 가디언 테일즈
@@ -276,7 +276,7 @@ exports.KO_INJEONG = [
 	//- "GOV", // 승리의 여신: 니케 (단어없음)
 	"APT", // 아파트
 	"ESB", // 앙상블 스타즈!
-	//- "APP", // 애플리케이션 (단어없음)
+	"APP", // 애플리케이션 (단어없음)
 	"UND", // 언더테일
 	"KMV", // 영화
 	"ELW", // 엘소드

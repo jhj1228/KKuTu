@@ -180,7 +180,21 @@ exports.submit = function (client, text, data) {
 					if (my.game.mission === true || (my.opts.mission && my.opts.randommission)) {
 						my.game.mission = getMission(my.game.theme);
 					}
-					setTimeout(my.turnNext, my.game.turnTime / 6);
+					setTimeout(function () {
+						if (my.opts.randomturn) {
+							if (my.game.roundTime <= 0) {
+								my.roundEnd();
+								return;
+							}
+							var len = my.game.seq.length;
+							if (len > 0) {
+								my.game.turn = Math.floor(Math.random() * len);
+								my.turnStart();
+								return;
+							}
+						}
+						my.turnNext();
+					}, my.game.turnTime / 6);
 					if (!client.robot) {
 						client.invokeWordPiece(text, 1);
 					}
