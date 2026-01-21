@@ -241,8 +241,13 @@ for (var i of Object.values(ROUTES)) i.run(Server, WebInit.page);
 Server.get("/", function (req, res) {
 	var server = req.query.server;
 
-	// 세션 ID가 있으면 DB에서 세션 데이터 조회
-	DB.session.findOne(['_id', req.session.id]).on(function ($ses) {
+	if (!req.sessionID) {
+		req.session.guestSession = true;
+	}
+
+	const sessionID = req.sessionID;
+
+	DB.session.findOne(['_id', sessionID]).on(function ($ses) {
 		if (global.isPublic) {
 			onFinish($ses);
 		} else {
@@ -252,14 +257,25 @@ Server.get("/", function (req, res) {
 	});
 
 	function onFinish($doc) {
-		var id = req.session.id;
+		var id = sessionID;
 
 		if ($doc && $doc.profile) {
-			// DB에서 저장된 프로필 정보를 세션에 복원
 			req.session.profile = $doc.profile;
-			id = $doc.profile.sid || $doc.profile.id;
+			var profileId = $doc.profile.sid || $doc.profile.id;
+			if (profileId) {
+				id = profileId;
+			}
 		} else {
 			delete req.session.profile;
+			req.session.profile = { id: sessionID, guest: true };
+			const now = Date.now();
+			DB.session.upsert(['_id', sessionID]).set({
+				'profile': { id: sessionID, guest: true },
+				'createdAt': now
+			}).on();
+		}
+		if (!id || typeof id !== 'string' || id.length === 0) {
+			id = sessionID || 'guest_' + Date.now();
 		}
 
 		page(req, res, Const.MAIN_PORTS[server] ? "kkutu" : "portal", {

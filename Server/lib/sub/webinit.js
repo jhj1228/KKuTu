@@ -64,7 +64,7 @@ function page(req, res, file, data) {
 		req.session.createdAt = new Date();
 	}
 	var addr = req.ip || "";
-	var sid = req.session.id || "";
+	var sid = req.sessionID || "";
 
 	data.published = global.isPublic;
 	data.lang = req.query.locale || "ko_KR";

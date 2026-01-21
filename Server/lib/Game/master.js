@@ -418,11 +418,29 @@ exports.init = function (_SID, CHAN) {
 				return;
 			}
 			MainDB.session.findOne(['_id', key]).limit(['profile', true]).on(function ($body) {
-				$c = new KKuTu.Client(socket, $body ? $body.profile : null, key);
+				let profile = null;
+				let isGuest = false;
+
+				if ($body && $body.profile) {
+					profile = $body.profile;
+					isGuest = (profile.guest === true) || (profile.id === key);
+				} else {
+					profile = { id: key, guest: true };
+					isGuest = true;
+				}
+
+				$c = new KKuTu.Client(socket, profile, key);
 				$c.admin = GLOBAL.ADMIN.indexOf($c.id) != -1;
 				/* Enhanced User Block System [S] */
 				$c.remoteAddress = GLOBAL.USER_BLOCK_OPTIONS.USE_X_FORWARDED_FOR ? info.connection.remoteAddress : (info.headers['x-forwarded-for'] || info.connection.remoteAddress);
 				/* Enhanced User Block System [E] */
+
+				if (!$c.id || typeof $c.id !== 'string' || $c.id.length === 0 || $c.id.includes('undefined')) {
+					JLog.warn(`Invalid client ID detected: id="${$c.id}", key="${key}", profile=${$body ? 'found' : 'not found'}`);
+					$c.sendError(409);
+					$c.socket.close();
+					return;
+				}
 
 				if (DIC[$c.id]) {
 					DIC[$c.id].sendError(408);
@@ -439,11 +457,6 @@ exports.init = function (_SID, CHAN) {
 						$c.socket.close();
 						return;
 					}
-					/*if(KKuTu.NIGHT){
-						$c.sendError(440);
-						$c.socket.close();
-						return;
-					}*/
 				} else {
 					if (SID == "0" && !$c.admin) {
 						$c.sendError(601);
@@ -494,9 +507,8 @@ exports.init = function (_SID, CHAN) {
 					if (ref.result == 200 || isBlockRelease) {
 						/* Enhanced User Block System [E] */
 						DIC[$c.id] = $c;
-						DNAME[($c.profile.title || $c.profile.name).replace(/\s/g, "")] = $c.id;
-						MainDB.users.update(['_id', $c.id]).set(['server', SID]).on();
-
+						const displayName = ($c.profile.title || $c.profile.name || $c.id);
+						DNAME[displayName.replace(/\s/g, "")] = $c.id;
 						if (($c.guest && GLOBAL.GOOGLE_RECAPTCHA_TO_GUEST) || GLOBAL.GOOGLE_RECAPTCHA_TO_USER) {
 							$c.socket.send(JSON.stringify({
 								type: 'recaptcha',

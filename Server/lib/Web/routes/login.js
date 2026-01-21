@@ -27,16 +27,16 @@ const path = require('path')
 
 function process(req, accessToken, MainDB, $p, done) {
 	$p.token = accessToken;
-	$p.sid = req.session.id;
+	$p.sid = req.sessionID;
 
 	const now = Date.now();
-	$p.sid = req.session.id;
+	$p.sid = req.sessionID;
 	req.session.admin = GLOBAL.ADMIN.includes($p.id);
 	req.session.authType = $p.authType;
 	MainDB.users.findOne(['_id', $p.id]).on(($body) => {
 		$p.nickname = $p.title = $p.name = $body ? $body.nickname : $p.title || $p.name;
 		req.session.profile = $p;
-		MainDB.session.upsert(['_id', req.session.id]).set({
+		MainDB.session.upsert(['_id', req.sessionID]).set({
 			'profile': $p,
 			'createdAt': now
 		}).on();
@@ -83,7 +83,7 @@ exports.run = (Server, page) => {
 
 	Server.get("/login", (req, res) => {
 		if (global.isPublic) {
-			page(req, res, "login", { '_id': req.session.id, 'text': req.query.desc, 'loginList': strategyList });
+			page(req, res, "login", { '_id': req.sessionID, 'text': req.query.desc, 'loginList': strategyList });
 		} else {
 			let now = Date.now();
 			let id = req.query.id || "ADMIN";
@@ -93,7 +93,7 @@ exports.run = (Server, page) => {
 				birth: [4, 16, 0],
 				_age: { min: 20, max: undefined }
 			};
-			MainDB.session.upsert(['_id', req.session.id]).set(['profile', JSON.stringify(lp)], ['createdAt', now]).on(function ($res) {
+			MainDB.session.upsert(['_id', req.sessionID]).set(['profile', JSON.stringify(lp)], ['createdAt', now]).on(function ($res) {
 				MainDB.users.update(['_id', id]).set(['lastLogin', now]).on();
 				req.session.admin = true;
 				req.session.profile = lp;

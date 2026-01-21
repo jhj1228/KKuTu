@@ -157,7 +157,7 @@ exports.run = function (Server, page) {
 
 				MainDB.users.update(['_id', req.session.profile.id]).set(['nickname', nickname], ['nickChanged', now]).on();
 				req.session.profile = { ...req.session.profile, name: nickname, title: nickname, nickname };
-				MainDB.session.update(['_id', req.session.id]).set(['profile', req.session.profile]).on();
+				MainDB.session.update(['_id', req.sessionID]).set(['profile', req.session.profile]).on();
 				return res.send({ result: 200 });
 			});
 		});

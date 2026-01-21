@@ -212,7 +212,9 @@ exports.Client = function (socket, profile, sid) {
 	var my = this;
 	var gp, okg;
 
-	if (profile) {
+	const isGuest = !profile || !profile.id || profile.guest === true || profile.id === sid;
+
+	if (profile && profile.id && !isGuest) {
 		my.id = profile.id;
 		my.profile = profile;
 		/* 망할 셧다운제
@@ -230,7 +232,7 @@ exports.Client = function (socket, profile, sid) {
 		delete my.profile.sid;
 
 	} else {
-		gp = guestProfiles[Math.floor(Math.random() * guestProfiles.length)];
+		gp = guestProfiles.length > 0 ? guestProfiles[Math.floor(Math.random() * guestProfiles.length)] : null;
 
 		my.id = "guest__" + sid;
 		my.guest = true;
