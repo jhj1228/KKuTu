@@ -1,6 +1,6 @@
 {
 	"GLOBAL": {
-		"Copyright": "<a href='legal/agreement.pug' target='_blank'>서비스 이용 약관</a><a href='legal/privacy.pug' target='_blank'>개인정보 취급 방침</a><a href='legal/copyright.pug' target='_blank'>저작권 안내</a><br><label style='color: #777777;'>글자로 놀자! 레전드끄투 Copyright (C) 2025-2026 정희정(wjdgmlwjd3102@gmail.com)</label>",
+		"Copyright": "<a href='legal/agreement.pug' target='_blank'>서비스 이용 약관</a><a href='legal/privacy.pug' target='_blank'>개인정보 취급 방침</a><a href='legal/copyright.pug' target='_blank'>저작권 안내</a><a href='https://daldal.so/w/%EB%81%84%ED%88%AC/%EB%A0%88%EC%A0%84%EB%93%9C%EB%81%84%ED%88%AC' target='_blank'>게시판</a><br><label style='color: #777777;'>글자로 놀자! 레전드끄투 Copyright (C) 2025-2026 정희정(wjdgmlwjd3102@gmail.com)</label>",
 		"Dictionary": "사전 정보 제공:<a href='https://stdict.korean.go.kr' target='_blank'>국립국어원 표준국어대사전</a><a href='http://wordnet.princeton.edu' target='_blank'>WordNet</a><br><label style='color: #777777;'>WordNet 3.0 Copyright 2006 by Princeton University. All rights reserved.</label>",
 		"License": "<label style='color: #666;'>본 소프트웨어는 어떠한 형태의 보증도 제공되지 않는 자유 소프트웨어이며 배포 규정을 만족시키는 조건 아래 자유롭게 재배포할 수 있습니다.<br>이에 대한 자세한 사항은 본 소프트웨어의 구현을 담은 다음 레포지토리에서 확인하십시오: <a target='_blank' href='https://github.com/jhj1228/KKuTu'>https://github.com/jhj1228/KKuTu</a></label>",
 		"HOME": "FA{home}",
@@ -393,6 +393,9 @@
 		"theme_ESY": "에세이",
 		"theme_KEM": "카카오톡 이모티콘",
 		"theme_DNF": "던전앤파이터",
+		"theme_CNT": "중국 철도역",
+		"theme_OIJ": "유행어",
+		"theme_HSR": "붕괴: 스타레일",
 		"class_1": "명",
 		"class_2": "대명",
 		"class_3": "수",

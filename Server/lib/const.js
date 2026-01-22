@@ -243,9 +243,9 @@ exports.KO_INJEONG = [
 	"VOC", // VOCALOID
 	"GNT", // 가디언 테일즈
 	"RAG", // 간식
-	"GGC", // 개그콘서트 (단어없음)
+	"GGC", // 개그콘서트
 	"NEX", // 게임
-	//- "GAD", // 겟앰프드 (단어없음)
+	//- "GAD", // 겟앰프드
 	"AIR", // 공항
 	"GGJ", // 관광지
 	"KTV", // 국내 방송 프로그램
@@ -253,7 +253,7 @@ exports.KO_INJEONG = [
 	"TBC", // 냥코대전쟁
 	"NFX", // 넷플릭스
 	"KOT", // 대한민국 철도역
-	// "DNF", // 던전앤파이터 (단어없음)
+	// "DNF", // 던전앤파이터
 	"DOT", // 도타 2
 	"THP", // 동방 프로젝트
 	"JLN", // 라이트 노벨
@@ -263,18 +263,19 @@ exports.KO_INJEONG = [
 	"MMM", // 마법소녀 마도카☆마기카
 	"MIN", // 마인크래프트
 	"MAF", // 마피아42
-	//- "WWS", // 명조: 위더링 웨이브 (단어없음)
+	//- "WWS", // 명조: 위더링 웨이브
 	"CTH", // 문화재
 	"JAN", // 만화/애니메이션
 	"MAP", // 메이플스토리
 	"BGP", // 뱅드림! 걸즈 밴드 파티!
 	"BUT", // 버스정류장
 	"BUS", // 버스터미널
+	"HSR", // 붕괴: 스타레일
 	"BLA", // 블루 아카이브
 	"CYP", // 사이퍼즈
 	"NVL", // 소설
 	"STA", // 스타크래프트
-	//- "GOV", // 승리의 여신: 니케 (단어없음)
+	//- "GOV", // 승리의 여신: 니케
 	"APT", // 아파트
 	"ESB", // 앙상블 스타즈!
 	"APP", // 애플리케이션
@@ -286,17 +287,19 @@ exports.KO_INJEONG = [
 	"YKW", // 요괴워치
 	"COK", // 요리
 	"UMM", // 우마무스메 프리티 더비
-	"GEN", // 원신 (단어없음)
+	"GEN", // 원신
 	"WOW", // 월드 오브 워크래프트
 	"WEB", // 웹툰
 	"KPO", // 유명인
+	"OIJ", // 유행어
 	"JPT", // 일본 철도역
 	"CFE", // 자격/면허
 	"ZZZ", // 젠레스 존 제로
 	"ZEL", // 젤다의 전설
 	"ZBH", // 좀비고등학교
+	// "CNT", // 중국 철도역
 	"JOB", // 직업
-	// "KEM", // 카카오톡 이모티콘 (단어없음)
+	// "KEM", // 카카오톡 이모티콘
 	"CKR", // 쿠키런
 	"CLO", // 클로저스
 	"KRF", // 키라라 판타지아
@@ -325,7 +328,6 @@ exports.EN_THEME = [
 	"e18", "e20", "e43"
 ];
 exports.IJP_EXCEPT = [
-	"OIJ"
 ];
 exports.KO_IJP = exports.KO_INJEONG.concat(exports.KO_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
 exports.EN_IJP = exports.EN_INJEONG.concat(exports.EN_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
