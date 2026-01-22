@@ -24,7 +24,6 @@ var DIC;
 const ROBOT_START_DELAY = [1200, 800, 400, 200, 100, 0];
 const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 150, 0];
 const ROBOT_THINK_COEF = [4, 2, 1, 0, 0, 0];
-const ROBOT_HIT_LIMIT = [4, 2, 1, 0, 0, 0];
 
 exports.init = function (_DB, _DIC) {
 	DB = _DB;
@@ -237,10 +236,9 @@ exports.readyRobot = function (robot) {
 
 	getAuto.call(my, my.game.theme, 2).then(function (list) {
 		if (list.length) {
-			list.sort(function (a, b) { return b.hit - a.hit; });
+			list.sort(function () { return Math.random() - 0.5; });
 
-			if (ROBOT_HIT_LIMIT[level] > list[0].hit) denied();
-			else pickList(list);
+			pickList(list);
 		} else denied();
 	});
 	function denied() {

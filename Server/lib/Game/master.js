@@ -381,7 +381,6 @@ exports.init = function (_SID, CHAN) {
 	SID = _SID;
 	MainDB = require('../Web/db');
 
-	// Load language file
 	try {
 		LANGUAGE = JSON.parse(File.readFileSync(__dirname + '/../Web/lang/ko_KR.json', 'utf8'));
 		JLog.info(`Loaded ${LANGUAGE.TIPS ? LANGUAGE.TIPS.length : 0} tips`);
@@ -555,7 +554,6 @@ exports.init = function (_SID, CHAN) {
 };
 
 function joinNewUser($c) {
-	// Prevent duplicate calls
 	if ($c._joinedNewUser) return;
 	$c._joinedNewUser = true;
 
@@ -575,7 +573,6 @@ function joinNewUser($c) {
 		caj: $c._checkAjae ? true : false
 	});
 
-	// Send random tip on first connection (with delay)
 	if (LANGUAGE && LANGUAGE.TIPS && LANGUAGE.TIPS.length > 0) {
 		var randomTip = LANGUAGE.TIPS[Math.floor(Math.random() * LANGUAGE.TIPS.length)];
 		$c.send('notice', { value: randomTip });
