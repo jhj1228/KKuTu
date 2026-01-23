@@ -185,7 +185,7 @@ exports.run = function (Server, page) {
 				var means = $doc.mean.split(/＂[0-9]+＂/g).slice(1);
 				var len = means.length;
 
-				if ($doc.theme.indexOf(theme) == -1) {
+				if (($doc.theme || "").indexOf(theme) == -1) {
 					$doc.type += ",INJEONG";
 					$doc.theme += "," + theme;
 					$doc.mean += `＂${len + 1}＂`;
