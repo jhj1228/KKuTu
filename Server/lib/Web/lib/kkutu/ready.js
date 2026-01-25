@@ -174,6 +174,8 @@ $(document).ready(function () {
 		{ key: "k", value: "/media/kkutu/k.mp3" },
 		{ key: "lobby", value: "/media/kkutu/LobbyBGM.mp3" },
 		{ key: "lobbyseol", value: "/media/kkutu/LobbySeolBGM.mp3" },
+		{ key: "ending", value: "/media/kkutu/LobbyBGMending.mp3" },
+		{ key: "museum", value: "/media/kkutu/LobbyMuseum.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
 		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },

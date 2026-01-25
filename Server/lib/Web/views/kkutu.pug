@@ -103,7 +103,7 @@ block JS
 			}
 			function updateUnknownWordState() {
 				var $unknown = $('#room-unknownword');
-				var targets = ['#room-manner', '#room-gentle', '#room-injeong', '#room-loanword', '#room-strict', '#room-dueum'];
+				var targets = ['#room-manner', '#room-gentle', '#room-injeong', '#room-loanword', '#room-strict', '#room-dueum', '#room-dodoli'];
 				
 				if ($unknown.length === 0) return;
 
@@ -211,7 +211,9 @@ block Middle
 			select#bgm-select
 				optgroup(label='끄투 BGM')
 					option(value='lobby', selected) 기본
-					option(value='lobbyseol') 명절
+					//- option(value='lobbyseol') 명절
+					option(value='ending') 끄투 엔딩
+					option(value='museum') 끄투 박물관
 				optgroup(label='기타 BGM')
 					option(value='inthepool') IN THE SEA x IN THE POOL
 					option(value='enchanted') Enchanted Love
