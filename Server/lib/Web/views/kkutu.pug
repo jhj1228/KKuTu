@@ -306,7 +306,8 @@ block Middle
 			h4#game-mode-expl.dialog-bar-value(style='width: 100%; font-size: 11px;')
 		div.dialog-bar(style='overflow: hidden;')
 			h4 라운드 설정
-			input#room-round(type='number', min=1, max=10, step=1, value=5, style="float: left; width: 75px;")
+			- var maxRounds = isAdmin ? 20 : 10;
+			input#room-round(type='number', min=1, max=maxRounds, step=1, value=5, style="float: left; width: 75px;")
 			select#room-time(style="float: left; width: 95px; margin-left: 5px;")
 				option(value=5, style='color: #FF4444')
 				option(value=10, style='color: #FF8000')

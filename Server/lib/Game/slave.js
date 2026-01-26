@@ -266,7 +266,8 @@ KKuTu.onClientMessage = function ($c, msg) {
 					stable = false;
 				}
 				if (msg.mode < 0 || msg.mode >= MODE_LENGTH) stable = false;
-				if (msg.round < 1 || msg.round > 10) {
+				var maxRound = $c.admin ? 20 : 10;
+				if (msg.round < 1 || msg.round > maxRound) {
 					msg.code = 433;
 					stable = false;
 				}
