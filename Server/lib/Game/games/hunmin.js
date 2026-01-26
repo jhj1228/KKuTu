@@ -37,7 +37,7 @@ exports.getTitle = function () {
 
 	my.game.done = [];
 	setTimeout(function () {
-		R.go("①②③④⑤⑥⑦⑧⑨⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
+		R.go("①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
 	}, 500);
 	return R;
 };

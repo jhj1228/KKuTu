@@ -78,7 +78,7 @@ exports.getTitle = function () {
 			data.push(arr);
 		}
 		my.game.lists = data;
-		R.go("①②③④⑤⑥⑦⑧⑨⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
+		R.go("①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
 	}
 	traverse.call(my, function (o) {
 		o.game.spl = 0;

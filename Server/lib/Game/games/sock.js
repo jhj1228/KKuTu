@@ -43,7 +43,7 @@ exports.getTitle = function () {
 	var my = this;
 
 	setTimeout(function () {
-		R.go("①②③④⑤⑥⑦⑧⑨⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
+		R.go("①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
 	}, 500);
 	return R;
 };
