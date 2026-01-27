@@ -985,7 +985,6 @@ exports.Room = function (room, channel) {
 			return client.sendError(409);
 		}
 
-		// 게임 중 퇴장 페널티 부여
 		if (my.gaming && !client.admin) {
 			if (!PENALTY[client.id]) {
 				PENALTY[client.id] = { count: 0, until: 0 };
@@ -1537,6 +1536,9 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 			break;
 		case 'KRH':
 			rw.score += score * 0.58;
+			break;
+		case 'KAT':
+			rw.score += score * 1.65;
 			break;
 		default:
 			break;

@@ -218,6 +218,15 @@ exports.RULE = {
 		ai: true,
 		big: false,
 		ewq: true
+	},
+	'KAT': { // 앞말쿵쿵따
+		lang: "ko",
+		rule: "Classic",
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "ddl"],
+		time: 1,
+		ai: true,
+		big: false,
+		ewq: true
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
@@ -248,12 +257,14 @@ exports.KO_INJEONG = [
 	"AIR", // 공항
 	"GGJ", // 관광지
 	"KTV", // 국내 방송 프로그램
+	"SSR", // 귀혼
 	"CPY", // 기업
 	"TBC", // 냥코대전쟁
 	"NFX", // 넷플릭스
 	"LAW", // 대한민국 법률
 	"KOT", // 대한민국 철도역
 	"DNF", // 던전앤파이터
+	"DRM", // 도라에몽
 	"DOT", // 도타 2
 	"THP", // 동방 프로젝트
 	"JLN", // 라이트 노벨
@@ -293,6 +304,7 @@ exports.KO_INJEONG = [
 	"WEB", // 웹툰
 	"KPO", // 유명인
 	"OIJ", // 유행어
+	"ERT", // 이터널 리턴
 	"JPT", // 일본 철도역
 	"CFE", // 자격/면허
 	"ZZZ", // 젠레스 존 제로

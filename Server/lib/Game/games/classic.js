@@ -57,6 +57,7 @@ exports.getTitle = function () {
 		case 'ESH':
 			eng = "^" + String.fromCharCode(97 + Math.floor(Math.random() * 26));
 			break;
+		case 'KAT':
 		case 'KKT':
 			my.game.wordLength = 3;
 		case 'KMH':
@@ -385,7 +386,7 @@ exports.submit = function (client, text) {
 		if (!text) return false;
 		if (text.length <= l) return false;
 		if (my.game.wordLength && text.length != my.game.wordLength) return false;
-		if (type == "KAP") return (text.slice(-1) == char) || (text.slice(-1) == subChar);
+		if (type == "KAP" || type == "KAT") return (text.slice(-1) == char) || (text.slice(-1) == subChar);
 		switch (l) {
 			case 1: return (text[0] == char) || (text[0] == subChar);
 			case 2: return (text.substr(0, 2) == char);
@@ -419,7 +420,7 @@ exports.readyRobot = function (robot) {
 	var ended = {};
 	var w, text, i;
 	var lmax;
-	var isRev = Const.GAME_TYPE[my.mode] == "KAP";
+	var isRev = (Const.GAME_TYPE[my.mode] == "KAP" || Const.GAME_TYPE[my.mode] == "KAT");
 	if (my.opts.unknownword) {
 		const LEN_LIMITS = [4, 7, 10, 15, 20, 50];
 		var maxLen = LEN_LIMITS[level] || 50;
@@ -572,6 +573,9 @@ function getAuto(char, subc, type) {
 		case 'KKT':
 			adv = `^(${adc}).{${my.game.wordLength - 1}}$`;
 			break;
+		case 'KAT':
+			adv = `^.{${my.game.wordLength - 1}}(${adc})$`;
+			break;
 		case 'KAP':
 			adv = `.(${adc})$`;
 			break;
@@ -669,6 +673,7 @@ function getChar(text) {
 		case 'ESH':
 		case 'KKT':
 		case 'KSH': return text.slice(-1);
+		case 'KAT':
 		case 'KAP': return text.charAt(0);
 		case 'KMH': return (text.length % 2) ? text.charAt((text.length - 1) / 2) : text.charAt(((text.length - 1) / 2) + (Math.random() < 0.5 ? 0.5 : -0.5));
 		case 'KRH': return text.charAt(Math.floor(Math.random() * text.length));
@@ -690,7 +695,7 @@ function getSubChar(char) {
 				r = char.slice(1);
 				break;
 			}
-		case "KKT": case "KSH": case "KAP": case "KMH": case "KRH":
+		case "KKT": case "KSH": case "KAP": case "KMH": case "KRH": case "KAT":
 			if (my.opts.dueum) break;
 
 			k = c - 0xAC00;
