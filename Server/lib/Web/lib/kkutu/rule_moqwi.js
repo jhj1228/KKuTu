@@ -42,7 +42,7 @@ $lib.Moqwi.turnStart = function (data) {
     $data._tTime = addInterval(turnGoing, TICK);
     playBGM('jaqwi');
 };
-$lib.Moiqwi.turnGoing = function () {
+$lib.Moqwi.turnGoing = function () {
     var $rtb = $stage.game.roundBar;
     var bRate;
     var tt;
