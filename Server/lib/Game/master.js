@@ -383,7 +383,6 @@ exports.init = function (_SID, CHAN) {
 
 	try {
 		LANGUAGE = JSON.parse(File.readFileSync(__dirname + '/../Web/lang/ko_KR.json', 'utf8'));
-		JLog.info(`Loaded ${LANGUAGE.TIPS ? LANGUAGE.TIPS.length : 0} tips`);
 	} catch (e) {
 		JLog.warn('Failed to load language file: ' + e.message);
 		LANGUAGE = { TIPS: [] };
