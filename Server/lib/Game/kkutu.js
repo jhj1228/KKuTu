@@ -284,18 +284,6 @@ exports.Client = function (socket, profile, sid) {
 		};
 	}
 	socket.on('close', function (code) {
-		var r = ROOM[my.place];
-		if (r && r.gaming && r.opts.noleave) {
-			if (my.form == 'J' && !my.admin) {
-				if (!PENALTY[my.id]) {
-					PENALTY[my.id] = { count: 0, until: 0 };
-				}
-				PENALTY[my.id].count++;
-				var banTime = PENALTY[my.id].count * 60 * 1000;
-				PENALTY[my.id].until = Date.now() + banTime;
-			}
-		}
-
 		if (ROOM[my.place]) ROOM[my.place].go(my);
 		if (my.subPlace) my.pracRoom.go(my);
 		exports.onClientClosed(my, code);
@@ -996,6 +984,17 @@ exports.Room = function (room, channel) {
 			if (my.players.length < 1) delete ROOM[my.id];
 			return client.sendError(409);
 		}
+
+		// 게임 중 퇴장 페널티 부여
+		if (my.gaming && !client.admin) {
+			if (!PENALTY[client.id]) {
+				PENALTY[client.id] = { count: 0, until: 0 };
+			}
+			PENALTY[client.id].count++;
+			var banTime = PENALTY[client.id].count * 60 * 1000;
+			PENALTY[client.id].until = Date.now() + banTime;
+		}
+
 		my.players.splice(x, 1);
 		client.game = {};
 		if (client.id == my.master) {

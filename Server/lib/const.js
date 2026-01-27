@@ -52,7 +52,6 @@ exports.OPTIONS = {
 	'wpk': { name: "Wordpick" }, // 워드픽
 	'ulm': { name: "Unlimited" }, // 무제한
 	'due': { name: "Dueum" }, // 두음법칙 금지
-	'nol': { name: "Noleave" }, // 중퇴금지
 	'thw': { name: "Threeword" }, // 3글자
 	'ddl': { name: "Dodoli" } // 도돌이 금지
 };
@@ -87,7 +86,7 @@ exports.RULE = {
 	'KKT': { // 쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "nol", "ddl"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "ddl"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -96,7 +95,7 @@ exports.RULE = {
 	'KSH': { // 끝말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "nol", "ddl"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "ddl"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -105,7 +104,7 @@ exports.RULE = {
 	'CSQ': { // 자음퀴즈
 		lang: "ko",
 		rule: "Jaqwi",
-		opts: ["ijp", "ulm", "nol"],
+		opts: ["ijp", "ulm"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -114,7 +113,7 @@ exports.RULE = {
 	'KCW': { // 십자말풀이
 		lang: "ko",
 		rule: "Crossword",
-		opts: ["nol"],
+		opts: [],
 		time: 2,
 		ai: false,
 		big: true,
@@ -123,7 +122,7 @@ exports.RULE = {
 	'KTY': { // 타자대결
 		lang: "ko",
 		rule: "Typing",
-		opts: ["prv", "ulm", "nol"],
+		opts: ["prv", "ulm"],
 		time: 1,
 		ai: false,
 		big: false,
@@ -132,7 +131,7 @@ exports.RULE = {
 	'KAP': { // 앞말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "nol", "ddl"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "ddl"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -142,7 +141,7 @@ exports.RULE = {
 	'HUN': { // 훈민정음
 		lang: "ko",
 		rule: "Hunmin",
-		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "nol", "thw"],
+		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "thw"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -151,7 +150,7 @@ exports.RULE = {
 	'KDA': { // 단어대결
 		lang: "ko",
 		rule: "Daneo",
-		opts: ["ijp", "mis", "rdm", "rtn", "rdt", "nol"],
+		opts: ["ijp", "mis", "rdm", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -160,7 +159,7 @@ exports.RULE = {
 	'KSS': { // 솎솎
 		lang: "ko",
 		rule: "Sock",
-		opts: ["no2", "wpk", "nol"],
+		opts: ["no2", "wpk"],
 		time: 1,
 		ai: false,
 		big: true,
@@ -169,7 +168,7 @@ exports.RULE = {
 	'KMH': { // 가운뎃말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "nol", "ddl"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "ddl"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -178,7 +177,7 @@ exports.RULE = {
 	'KKK': { // 끄투
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "due", "nol", "ddl"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "due", "ddl"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -187,7 +186,7 @@ exports.RULE = {
 	'MOQ': { // 모음퀴즈
 		lang: "ko",
 		rule: "Moqwi",
-		opts: ["ijp", "ulm", "nol"],
+		opts: ["ijp", "ulm"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -196,7 +195,7 @@ exports.RULE = {
 	'ALL': { // 전체
 		lang: "ko",
 		rule: "All",
-		opts: ["mis", "rdm", "rtn", "rdt", "nol"],
+		opts: ["mis", "rdm", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -205,7 +204,7 @@ exports.RULE = {
 	'KTT': { // 주제타자대결
 		lang: "ko",
 		rule: "Typing",
-		opts: ["ijp", "ulm", "nol"],
+		opts: ["ijp", "ulm"],
 		time: 1,
 		ai: false,
 		big: false,
@@ -214,7 +213,7 @@ exports.RULE = {
 	'KRH': { // 랜덤잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "nol", "ddl"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "ddl"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -245,7 +244,7 @@ exports.KO_INJEONG = [
 	"RAG", // 간식
 	"GGC", // 개그콘서트
 	"NEX", // 게임
-	//- "GAD", // 겟앰프드
+	"GAD", // 겟앰프드
 	"AIR", // 공항
 	"GGJ", // 관광지
 	"KTV", // 국내 방송 프로그램
@@ -254,20 +253,21 @@ exports.KO_INJEONG = [
 	"NFX", // 넷플릭스
 	"LAW", // 대한민국 법률
 	"KOT", // 대한민국 철도역
-	// "DNF", // 던전앤파이터
+	"DNF", // 던전앤파이터
 	"DOT", // 도타 2
 	"THP", // 동방 프로젝트
 	"JLN", // 라이트 노벨
 	"LVL", // 러브 라이브!
+	"LKT", // 레전드끄투
 	"LOA", // 로스트아크
 	"LOL", // 리그 오브 레전드
 	"MMM", // 마법소녀 마도카☆마기카
 	"MIN", // 마인크래프트
 	"MAF", // 마피아42
 	"JAN", // 만화/애니메이션
-	//- "WWS", // 명조: 위더링 웨이브
-	"CTH", // 문화재
 	"MAP", // 메이플스토리
+	"WWS", // 명조: 위더링 웨이브
+	"CTH", // 문화재
 	"BGP", // 뱅드림! 걸즈 밴드 파티!
 	"BUT", // 버스정류장
 	"BUS", // 버스터미널
@@ -276,7 +276,7 @@ exports.KO_INJEONG = [
 	"CYP", // 사이퍼즈
 	"NVL", // 소설
 	"STA", // 스타크래프트
-	//- "GOV", // 승리의 여신: 니케
+	"GOV", // 승리의 여신: 니케
 	"APT", // 아파트
 	"ESB", // 앙상블 스타즈!
 	"APP", // 애플리케이션
@@ -298,7 +298,7 @@ exports.KO_INJEONG = [
 	"ZZZ", // 젠레스 존 제로
 	"ZEL", // 젤다의 전설
 	"ZBH", // 좀비고등학교
-	// "CNT", // 중국 철도역
+	"CNT", // 중국 철도역
 	"JOB", // 직업
 	"KEM", // 카카오톡 이모티콘
 	"CKR", // 쿠키런
