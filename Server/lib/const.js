@@ -53,7 +53,8 @@ exports.OPTIONS = {
 	'ulm': { name: "Unlimited" }, // 무제한
 	'due': { name: "Dueum" }, // 두음법칙 금지
 	'thw': { name: "Threeword" }, // 3글자
-	'ddl': { name: "Dodoli" } // 도돌이 금지
+	'ddl': { name: "Dodoli" }, // 도돌이 금지
+	'fre': { name: "Free" } // 자유
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -195,7 +196,7 @@ exports.RULE = {
 	'ALL': { // 전체
 		lang: "ko",
 		rule: "All",
-		opts: ["mis", "rdm", "rtn", "rdt", "bom"],
+		opts: ["mis", "rdm", "rtn", "rdt", "bom", "fre"],
 		time: 1,
 		ai: true,
 		big: false,

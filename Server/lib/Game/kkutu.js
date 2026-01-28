@@ -1289,7 +1289,7 @@ exports.Room = function (room, channel) {
 			rw = getRewards(my.mode, o.game.score / res[i].dim, o.game.bonus, res[i].rank, rl, sumScore);
 			rw.playTime = now - o.playAt;
 			o.applyEquipOptions(rw); // 착용 아이템 보너스 적용
-			if (my.opts.unknownword) {
+			if (my.opts.unknownword || my.opts.free) {
 				rw.score = 0;
 				rw.money = 0;
 			}

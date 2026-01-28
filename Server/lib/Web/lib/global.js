@@ -101,37 +101,9 @@
 
 			$("#Middle").css('margin-left', Math.max(0, size[0] * 0.5 - 500));
 			$("#Bottom").width(size[0]);
-		});
-
-		var explMovePending = false;
-
-		$(window).on('mousemove', function (e) {
-			var $active = $(".expl-active");
-			if (!$active.length) return;
-
-			var explW = $active.outerWidth();
-			var explH = $active.outerHeight();
-			var winW = window.innerWidth || document.documentElement.clientWidth;
-			var winH = window.innerHeight || document.documentElement.clientHeight;
-
-			var scrollX = window.scrollX || window.pageXOffset || 0;
-			var scrollY = window.scrollY || window.pageYOffset || 0;
-
-			var x = e.clientX + 5;
-			var y = e.clientY + 23;
-
-			if (x + explW > winW) x = winW - explW - 5;
-			if (y + explH > winH) y = winH - explH - 5;
-			if (x < 5) x = 5;
-			if (y < 5) y = 5;
-
-			if (!explMovePending) {
-				explMovePending = true;
-				requestAnimationFrame(function () {
-					$active.css({ 'left': x + 'px', 'top': y + 'px' });
-					explMovePending = false;
-				});
-			}
+		}).on('mousemove', function (e) {
+			if (explSize == null) return;
+			$(".expl-active").css({ 'left': Math.min(e.clientX + 5, size[0] - explSize[0] - 12), 'top': Math.min(e.clientY + 23, size[1] - explSize[1] - 12) });
 		}).trigger('resize');
 
 		$("#quick-search-btn").on('click', function (e) {
@@ -169,8 +141,8 @@
 
 			$q.parent().addClass("expl-mother").on('mouseenter', function (e) {
 				var $e = $(e.currentTarget).children(".expl");
-				if (!$e.length) return;
 
+				explSize = [$e.width(), $e.height()];
 				$(".expl-active").removeClass("expl-active");
 				$e.addClass("expl-active");
 			}).on('mouseleave', function (e) {

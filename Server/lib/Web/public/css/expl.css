@@ -336,32 +336,3 @@ aura {
 #eGlyph .eRuneCaseTitle {
 	color: #BBBBFF;
 }
-
-.expl {
-	position: fixed !important;
-	background-color: #1a1a1a;
-	border: 1px solid #555555;
-	border-radius: 4px;
-	padding: 8px 12px;
-	font-size: 12px;
-	color: #CCCCCC;
-	max-width: 300px;
-	z-index: 99999;
-	pointer-events: none;
-	display: none !important;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-	word-wrap: break-word;
-	white-space: normal;
-	margin: 0 !important;
-	width: auto;
-	height: auto;
-	transform: none !important;
-}
-
-.expl-active {
-	display: block !important;
-}
-
-.expl-mother {
-	position: static !important;
-}

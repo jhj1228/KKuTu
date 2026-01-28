@@ -190,7 +190,8 @@ exports.submit = function (client, text, data) {
 					}
 					my.turnNext();
 				}, my.game.turnTime / 6);
-				if (!client.robot) {
+
+				if (!client.robot && $doc.type !== 'unknown') {
 					client.invokeWordPiece(text, 1);
 					DB.kkutu[l].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
 				}
@@ -199,10 +200,37 @@ exports.submit = function (client, text, data) {
 				my.game.loading = false;
 				client.publish('turnError', { code: code || 404, value: text }, true);
 			}
+
 			if ($doc) {
 				preApproved();
 			} else {
-				denied()
+				if (my.opts.free) {
+					// [수정] XSS 방지용 블랙리스트 방식 적용
+					// ASCII 특수문자 범위:
+					// 33-47: ! " # $ % & ' ( ) * + , - . /
+					// 58-64: : ; < = > ? @
+					// 91-96: [ \ ] ^ _ `
+					// 123-126: { | } ~
+					// \s: 공백 문자
+
+					// 위 특수문자가 하나라도 포함되어 있으면 차단합니다.
+					// 숫자(0-9), 영문(a-z), 한글, 한자, 일본어 등 그 외 모든 유니코드 문자는 통과됩니다.
+					if (/[!-\/:-@\[-`{-~\s]/.test(text)) {
+						denied(411); // 올바르지 않은 문자열
+						return;
+					}
+
+					$doc = {
+						mean: "",
+						theme: "",
+						type: "unknown",
+						hit: 0,
+						baby: 0
+					};
+					preApproved();
+				} else {
+					denied();
+				}
 			}
 		}
 		DB.kkutu[l].findOne(['_id', text]).on(onDB);
