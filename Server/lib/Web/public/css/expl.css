@@ -337,7 +337,6 @@ aura {
 	color: #BBBBFF;
 }
 
-/* Tooltip 설명 스타일 - 전역 레이아웃에 영향 없게 */
 .expl {
 	position: fixed !important;
 	background-color: #1a1a1a;
@@ -363,7 +362,6 @@ aura {
 	display: block !important;
 }
 
-/* 부모가 positioning context가 되지 않도록 */
 .expl-mother {
 	position: static !important;
 }
