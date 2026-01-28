@@ -46,7 +46,7 @@ exports.roundReady = function () {
 	if (my.game.round <= my.round) {
 		my.game.theme = my.opts.injpick[Math.floor(Math.random() * ijl)];
 		my.game.chain = [];
-		if (my.opts.mission) my.game.mission = getMission(my.rule.lang);
+		if (my.opts.mission) my.game.mission = getMission(my);
 		my.byMaster('roundReady', {
 			round: my.game.round,
 			theme: 'ALL',
@@ -115,7 +115,7 @@ exports.turnEnd = function () {
 	clearTimeout(my.game.robotTimer);
 };
 exports.submit = function (client, text, data) {
-	var score, l, t;
+	var score, t;
 	var my = this;
 	var tv = (new Date()).getTime();
 	var mgt = my.game.seq[my.game.turn];
@@ -138,8 +138,13 @@ exports.submit = function (client, text, data) {
 	}
 
 	if (isAllowed) {
-		l = my.rule.lang;
+		var searchLang = 'ko';
+		if (/^[a-zA-Z]+$/.test(text)) {
+			searchLang = 'en';
+		}
+
 		my.game.loading = true;
+
 		function onDB($doc) {
 			function preApproved() {
 				if (my.game.late) return;
@@ -167,8 +172,9 @@ exports.submit = function (client, text, data) {
 					bonus: (my.game.mission === true) ? score - my.getScore(text, t, true) : 0,
 					baby: $doc.baby
 				}, true);
+
 				if (my.game.mission === true || (my.opts.mission && my.opts.randommission)) {
-					my.game.mission = getMission(my.rule.lang);
+					my.game.mission = getMission(my);
 				}
 				setTimeout(function () {
 					if (!my.game || !my.game.seq) {
@@ -193,9 +199,10 @@ exports.submit = function (client, text, data) {
 
 				if (!client.robot && $doc.type !== 'unknown') {
 					client.invokeWordPiece(text, 1);
-					DB.kkutu[l].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
+					DB.kkutu[searchLang].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
 				}
 			}
+
 			function denied(code) {
 				my.game.loading = false;
 				client.publish('turnError', { code: code || 404, value: text }, true);
@@ -205,18 +212,8 @@ exports.submit = function (client, text, data) {
 				preApproved();
 			} else {
 				if (my.opts.free) {
-					// [수정] XSS 방지용 블랙리스트 방식 적용
-					// ASCII 특수문자 범위:
-					// 33-47: ! " # $ % & ' ( ) * + , - . /
-					// 58-64: : ; < = > ? @
-					// 91-96: [ \ ] ^ _ `
-					// 123-126: { | } ~
-					// \s: 공백 문자
-
-					// 위 특수문자가 하나라도 포함되어 있으면 차단합니다.
-					// 숫자(0-9), 영문(a-z), 한글, 한자, 일본어 등 그 외 모든 유니코드 문자는 통과됩니다.
 					if (/[!-\/:-@\[-`{-~\s]/.test(text)) {
-						denied(411); // 올바르지 않은 문자열
+						denied(411);
 						return;
 					}
 
@@ -233,7 +230,8 @@ exports.submit = function (client, text, data) {
 				}
 			}
 		}
-		DB.kkutu[l].findOne(['_id', text]).on(onDB);
+
+		DB.kkutu[searchLang].findOne(['_id', text]).on(onDB);
 	} else {
 		client.publish('turnError', { code: 409, value: text }, true);
 	}
@@ -256,7 +254,9 @@ exports.readyRobot = function (robot) {
 	var delay = ROBOT_START_DELAY[level];
 	var w, text;
 
-	getAuto.call(my, 2).then(function (list) {
+	var targetLang = (Math.random() < 0.5) ? 'en' : 'ko';
+
+	getAuto.call(my, 2, targetLang).then(function (list) {
 		if (list.length) {
 			list.sort(function (a, b) { return b.hit - a.hit; });
 			if (ROBOT_HIT_LIMIT[level] > list[0].hit) denied();
@@ -282,13 +282,15 @@ exports.readyRobot = function (robot) {
 		setTimeout(my.turnRobot, delay, robot, text);
 	}
 };
-function getMission(l) {
-	var arr = (l == "ko") ? Const.MISSION_ko : Const.MISSION_en;
+function getMission(my) {
+	var arrKo = Const.MISSION_ko || [];
+	var arrEn = Const.MISSION_en || [];
+	var arr = arrKo.concat(arrEn);
 
-	if (!arr) return "-";
+	if (!arr || arr.length === 0) return "-";
 	return arr[Math.floor(Math.random() * arr.length)];
 }
-function getAuto(type) {
+function getAuto(type, targetLang) {
 	/* type
 		0 무작위 단어 하나
 		1 존재 여부
@@ -298,13 +300,17 @@ function getAuto(type) {
 	var R = new Lizard.Tail();
 	var bool = type == 1;
 
+	var searchLang = targetLang || my.rule.lang;
+
 	var aqs = [];
 	var aft;
 	var raiser;
 	var lst = false;
 
 	if (my.game.chain) aqs.push(['_id', { '$nin': my.game.chain }]);
-	raiser = DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(bool ? 1 : 123);
+
+	raiser = DB.kkutu[searchLang].find.apply(this, aqs).limit(bool ? 1 : 123);
+
 	switch (type) {
 		case 0:
 		default:

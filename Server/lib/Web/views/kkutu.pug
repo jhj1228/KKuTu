@@ -168,10 +168,6 @@ block Jungle
 	div#Yell
 	div#Loading= L('LOADING')
 	div#Balloons(style='position: absolute;')
-	-
-		LANG['explInjeong'] = `<h5>${L('explInjeong')}</h5>\
-			<h5 style='margin-top: 2px; border-top: 1px dashed #444444; padding-top: 2px; color: #BBBBBB;'>${L('explInjeongListTitle')}</h5>\
-			<h5>${locals.KO_INJEONG.map(function(item){ return L('theme_' + item); })}</h5>`;
 
 block Middle
 	- var nick = SESSION.profile && SESSION.profile.nickname;
@@ -301,10 +297,10 @@ block Middle
 					option(value=10)= L('modeKKK')
 					option(value=14)= L("modeKRH")
 					option(value=15)= L("modeKAT")
-					option(value=12)= L('modeALL')
 					option(value=2)= L('modeCSQ')
 					option(value=11)= L('modeMOQ')
 					option(value=6)= L('modeHUN')
+					option(value=12)= L('modeALL')
 		div.dialog-bar(style='margin-top: -5px; height: 50px;')
 			h4
 			h4#game-mode-expl.dialog-bar-value(style='width: 100%; font-size: 11px;')
