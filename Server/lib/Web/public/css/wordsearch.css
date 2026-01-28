@@ -204,6 +204,32 @@
     font-weight: 500;
 }
 
+.downloadBtn {
+    padding: 12px 25px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 20px;
+}
+
+.downloadBtn:hover {
+    background-color: #0b7dda;
+}
+
+.downloadBtn:active {
+    background-color: #0056b3;
+}
+
+.downloadBtn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
     #wordSearchContainer {
         padding: 20px 10px;

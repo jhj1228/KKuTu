@@ -108,4 +108,48 @@ exports.run = function (Server, page) {
             total: themeList.length
         });
     });
+
+    Server.get("/api/wordsearch/:theme/download", function (req, res) {
+        var theme = req.params.theme;
+
+        if (!theme) {
+            return res.send({ error: 400, message: "주제를 찾을 수 없습니다." });
+        }
+
+        MainDB.kkutu['ko'].find()
+            .on(function ($body) {
+                if (!$body || $body.length === 0) {
+                    return res.send({ error: 404, message: "해당 주제에 단어가 없습니다." });
+                }
+
+                var filteredWords = $body.filter(function (word) {
+                    if (!word.theme) return false;
+
+                    var themes = word.theme.toString().split(',').map(function (t) {
+                        return t.trim();
+                    });
+                    return themes.indexOf(theme) !== -1;
+                });
+
+                if (filteredWords.length === 0) {
+                    return res.send({ error: 404, message: "해당 주제에 단어가 없습니다." });
+                }
+
+                var sortedWords = filteredWords.sort(function (a, b) {
+                    return a._id.localeCompare(b._id, 'ko');
+                });
+
+                var content = sortedWords.map(function (word) {
+                    return word._id;
+                }).join('\n');
+
+                var langData = Language['ko_KR']['kkutu'];
+                var themeName = langData['theme_' + theme] || theme;
+                var filename = encodeURI(themeName + '.txt');
+
+                res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+                res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
+                res.send(content);
+            });
+    });
 };

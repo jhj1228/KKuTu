@@ -18,7 +18,7 @@
 extends layout
 
 block Subject
-	title 레전드끄투 - 단어장
+	title 레전드끄투 - DB 검색
 
 block CSS
 	link(rel='stylesheet', href='/css/wordsearch.css')
@@ -28,7 +28,7 @@ block JS
 
 block Middle
 	div#wordSearchContainer
-		div.wordSearch-header
+		//- div.wordSearch-header
 			h1 단어장
 			p 주제를 선택하면 DB에 등록된 단어를 확인할 수 있습니다.<br>단어장 보면서 게임플레이 하다 적발 시 제재될 수 있습니다. 본 사이트는 참고용으로만 확인해 주세요.
 
@@ -43,6 +43,6 @@ block Middle
 				p 로딩 중...
 
 			div#wordList.wordList
-				// 검색 결과가 여기에 표시됩니다
+			//- button#downloadBtn.downloadBtn(style='display: none;') TXT 파일로 다운로드
 block Bottom
 	div.bottom-legal!= L('License')
