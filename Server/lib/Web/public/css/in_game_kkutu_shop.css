@@ -80,7 +80,11 @@
 .x-gm .users-name::before,
 .chat-item>.x-gm::before,
 .room-user-title>.x-gm::before {
-	/* content: "[GM]"; */
+	/* content: "[GM]";*/
+	background: none;
+	-webkit-background-clip: border-box;
+	background-clip: border-box;
+	-webkit-text-fill-color: #2F77D9;
 	color: #2F77D9;
 	text-shadow: 0px 0px 2px #2AF;
 }

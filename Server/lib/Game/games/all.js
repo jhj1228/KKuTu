@@ -139,7 +139,7 @@ exports.submit = function (client, text, data) {
 
 	if (isAllowed) {
 		var searchLang = 'ko';
-		if (/^[a-zA-Z]+$/.test(text)) {
+		if (/^[a-zA-Z\s]+$/.test(text)) {
 			searchLang = 'en';
 		}
 
@@ -212,7 +212,7 @@ exports.submit = function (client, text, data) {
 				preApproved();
 			} else {
 				if (my.opts.free) {
-					if (/[!-\/:-@\[-`{-~\s]/.test(text)) {
+					if (/[!-\/:-@\[-`{-~]/.test(text)) {
 						denied(411);
 						return;
 					}

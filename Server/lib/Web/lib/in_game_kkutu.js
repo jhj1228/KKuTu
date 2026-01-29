@@ -252,6 +252,7 @@ $(document).ready(function () {
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
 		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
 		{ key: "itpmusicbox", value: "/media/kkutu/Lobbymusicbox.mp3" },
+		{ key: "memory", value: "/media/kkutu/LobbyMemory.mp3" },
 		//- { key: "kickback", value: "/media/kkutu/Lobbykickback.mp3" },
 		//- { key: "flandres", value: "/media/kkutu/LobbyFlandreS.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },
@@ -2330,9 +2331,8 @@ $lib.Wordstack.roundReady = function (data, spec) {
     $data._roundTime = $data.room.time * 1000;
     $data._chars = data.chars;
     $data._pairs = data.pairs || [];
-    $data._round = data.round;  // 라운드 정보 저장
+    $data._round = data.round;
 
-    // 본인의 페어 찾기
     $data._myPair = null;
     $data._opponentId = null;
     for (var i = 0; i < $data._pairs.length; i++) {
@@ -2347,7 +2347,6 @@ $lib.Wordstack.roundReady = function (data, spec) {
         }
     }
 
-    // 제시어 표시
     $stage.game.display.html(getCharDisplayText(data.chars));
     $stage.game.chain.show().html($data.chain = 0);
     $stage.game.items.hide();
@@ -2358,10 +2357,8 @@ $lib.Wordstack.roundReady = function (data, spec) {
 };
 
 $lib.Wordstack.turnStart = function (data) {
-    // 제시어 표시
     $stage.game.display.html(getCharDisplayText($data._chars));
 
-    // 상대방 페어에 있는 경우만 현재 플레이어 표시
     if ($data._myPair) {
         $("#game-user-" + $data._myPair.player1).addClass("game-user-current");
         $("#game-user-" + $data._myPair.player2).addClass("game-user-current");
@@ -2369,7 +2366,7 @@ $lib.Wordstack.turnStart = function (data) {
 
     if (!$data._replay) {
         $stage.game.here.css('display', "block");
-        $stage.game.hereText.prop('readonly', false);  // readonly 제거
+        $stage.game.hereText.prop('readonly', false);
         if (mobile) $stage.game.hereText.val("").focus();
         else $stage.talk.focus();
     }
@@ -2402,7 +2399,6 @@ $lib.Wordstack.turnGoing = function () {
 
     if (!$stage.game.roundBar.hasClass("round-extreme")) if ($data._roundTime <= 5000) $stage.game.roundBar.addClass("round-extreme");
 
-    // jaqwiFastBGM 전환 (10초 이하)
     if ($data._roundTime <= 10000 && $data.bgm && $data.bgm.key === "jaqwi") {
         var currentTime = $data.bgm.audio ? $data.bgm.audio.currentTime : (audioContext.currentTime - $data.bgm.startedAt);
         stopBGM();
@@ -2411,7 +2407,6 @@ $lib.Wordstack.turnGoing = function () {
         else $data.bgm.startedAt = audioContext.currentTime - currentTime;
     }
 
-    // 제시어 개수에 따라 jjo-turn-time 바 표시 (1/8씩 증가)
     if ($data._chars) {
         var charCount = $data._chars.length;
         var barWidth = (charCount / 8) * 100;
@@ -2433,45 +2428,35 @@ $lib.Wordstack.turnEnd = function (id, data) {
     var $uc = $("#game-user-" + id);
 
     if (data.status === 1) {
-        // 성공
         if ($data.id == id) {
-            // 자신이 입력한 경우
             $data.chain++;
             playSound('mission');
             pushHistory(data.text, "");
 
-            // 입력창 비우기
             if (mobile) $stage.game.hereText.val("");
             else $stage.talk.val("");
 
-            // 자신의 제시어 업데이트
             if (data.playerChars) {
                 $data._chars = data.playerChars.slice();
             }
         } else if (data.opponentId === $data.id) {
-            // 상대방이 입력했고 자신이 글자를 받은 경우
             if (data.opponentChars) {
                 $data._chars = data.opponentChars.slice();
             }
         }
 
-        // 제시어 다시 표시
         if ($data._chars && $data._chars.length > 0) {
             $stage.game.display.html(getCharDisplayText($data._chars));
         }
 
-        // 점수 반영
         addScore(id, data.score);
         drawObtainedScore($uc, $sc);
         updateScore(id, getScore(id));
 
-        // chain 업데이트
         $stage.game.chain.html($data.chain);
 
-        // 실패 콤보 초기화
         checkFailCombo();
     } else {
-        // 실패 (시간 초과, 잘못된 단어 등)
         clearInterval($data._tTime);
         $stage.game.here.hide();
         stopBGM();
@@ -2501,7 +2486,6 @@ $lib.Wordstack.submit = function (text) {
 
     var firstChar = text.charAt(0);
 
-    // 플레이어의 제시어 중 하나로 시작하는지 확인
     if (!$data._chars.includes(firstChar)) {
         return false;
     }
@@ -2512,7 +2496,7 @@ $lib.Wordstack.submit = function (text) {
 $lib.Wordstack.roundEnd = function () {
     clearInterval($data._tTime);
     stopBGM();
-    $stage.game.hereText.prop('readonly', true);  // readonly 복원
+    $stage.game.hereText.prop('readonly', true);
 };
 
 $lib.Wordstack.turnHint = function (data) {
@@ -2528,7 +2512,6 @@ $lib.Wordstack.turnError = function (code, text) {
     playSound('fail');
     clearTimeout($data._errorTimeout);
     $data._errorTimeout = addTimeout(function () {
-        // 1.8초 후 제시어 다시 표시
         if ($data._chars && $data._chars.length > 0) {
             $stage.game.display.html(getCharDisplayText($data._chars));
         }
@@ -5255,7 +5238,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "itpmusicbox" /*|| key === "flandres" || key === "kickback"*/ ? "lobby" : key;
+	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "itpmusicbox" || key === "memory" /*|| key === "flandres" || key === "kickback"*/ ? "lobby" : key;
 
 	src.start();
 

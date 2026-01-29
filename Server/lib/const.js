@@ -228,7 +228,7 @@ exports.RULE = {
 		ai: true,
 		big: false,
 		ewq: true
-	},
+	}/* ,
 	'WSK': { // 워드스택
 		lang: "ko",
 		rule: "Wordstack",
@@ -237,7 +237,7 @@ exports.RULE = {
 		ai: false,
 		big: false,
 		ewq: true
-	}
+	} */
 };
 exports.getPreScore = function (text, chain, tr) {
 	return 2 * (Math.pow(5 + 7 * (text || "").length, 0.74) + 0.88 * (chain || []).length) * (0.5 + 0.5 * tr) * 3.5;
