@@ -228,6 +228,15 @@ exports.RULE = {
 		ai: true,
 		big: false,
 		ewq: true
+	},
+	'WSK': { // 워드스택
+		lang: "ko",
+		rule: "Wordstack",
+		opts: ["man", "ext"],
+		time: 1,
+		ai: false,
+		big: false,
+		ewq: true
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
@@ -254,17 +263,18 @@ exports.KO_INJEONG = [
 	"RAG", // 간식
 	"GGC", // 개그콘서트
 	"NEX", // 게임
-	"GAD", // 겟앰프드
+	// "GAD", // 겟앰프드
 	"AIR", // 공항
 	"GGJ", // 관광지
 	"KTV", // 국내 방송 프로그램
 	"SSR", // 귀혼
-	"CPY", // 기업
+	// "CPY", // 기업
 	"TBC", // 냥코대전쟁
 	"NFX", // 넷플릭스
 	"LAW", // 대한민국 법률
 	"KOT", // 대한민국 철도역
-	"DNF", // 던전앤파이터
+	// "DNF", // 던전앤파이터
+	// "DBD", // 데드 바이 데이라이트
 	"DRM", // 도라에몽
 	"DOT", // 도타 2
 	"THP", // 동방 프로젝트
@@ -278,7 +288,7 @@ exports.KO_INJEONG = [
 	"MAF", // 마피아42
 	"JAN", // 만화/애니메이션
 	"MAP", // 메이플스토리
-	"WWS", // 명조: 위더링 웨이브
+	// "WWS", // 명조: 위더링 웨이브
 	"CTH", // 문화재
 	"BGP", // 뱅드림! 걸즈 밴드 파티!
 	"BUT", // 버스정류장
@@ -288,7 +298,7 @@ exports.KO_INJEONG = [
 	"CYP", // 사이퍼즈
 	"NVL", // 소설
 	"STA", // 스타크래프트
-	"GOV", // 승리의 여신: 니케
+	// "GOV", // 승리의 여신: 니케
 	"APT", // 아파트
 	"ESB", // 앙상블 스타즈!
 	"APP", // 애플리케이션
@@ -311,7 +321,7 @@ exports.KO_INJEONG = [
 	"ZZZ", // 젠레스 존 제로
 	"ZEL", // 젤다의 전설
 	"ZBH", // 좀비고등학교
-	"CNT", // 중국 철도역
+	// "CNT", // 중국 철도역
 	"JOB", // 직업
 	"KEM", // 카카오톡 이모티콘
 	"CKR", // 쿠키런
@@ -325,6 +335,7 @@ exports.KO_INJEONG = [
 	"HAK", // 학교
 	"KMU", // 한국 대중음악
 	"KRP", // 한국 라디오 프로그램
+	"KAD", // 한국 행정구역
 	"HOS" // 히어로즈 오브 더 스톰
 ];
 exports.EN_INJEONG = [
