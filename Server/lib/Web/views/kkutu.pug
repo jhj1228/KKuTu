@@ -103,7 +103,7 @@ block JS
 			}
 			function updateUnknownWordState() {
 				var $unknown = $('#room-unknownword');
-				var targets = ['#room-manner', '#room-gentle', '#room-injeong', '#room-loanword', '#room-strict', '#room-dueum', '#room-dodoli'];
+				var targets = ['#room-manner', '#room-gentle', '#room-injeong', '#room-loanword', '#room-strict', '#room-dueum', '#room-dodoli', '#room-moreword'];
 				
 				if ($unknown.length === 0) return;
 
@@ -179,7 +179,7 @@ block Middle
 	div.kkutu-menu
 		//- button#HelpBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #BBBBBB;')!= L('help')
 		button#SettingBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #CCCCCC;')!= L('settings')
-		button#CommunityBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #DAA9FF;')!= L('community')
+		//- button#CommunityBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #DAA9FF;')!= L('community')
 		button#SpectateBtn.for-master.for-normal(style='display: none; background-color: #D19DFF;')= L('spectate')
 		button#SetRoomBtn.for-master(style='display: none; background-color: #B0D2F3;')= L('setRoom')
 		button#NewRoomBtn.for-lobby(style='display: none; background-color: #8EC0F3;')= L('newRoom')
@@ -393,7 +393,7 @@ block Middle
 			a(href='/wordsearch', target='_blank')
 				button#dict-search(type='button')= L('WORDSEARCH')
 			a(href='https://buly.kr/9tCCKUe', target='_blank')
-				button#dict-search(type='button')= '단어 추가'
+				button#dict-search(type='button')= '추가 요청'
 	+Dialog('InviteDiag', 300, 420, L('invite'))
 		div.invite-board(style='height: 355px; overflow-y: scroll;')
 		div.dialog-bar.tail-button

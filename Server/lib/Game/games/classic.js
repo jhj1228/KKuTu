@@ -74,12 +74,17 @@ exports.getTitle = function () {
 			R.go(EXAMPLE);
 			return;
 		}
-		DB.kkutu[l.lang].find(
-			['_id', new RegExp(eng + ".{" + Math.max(1, my.round - 1) + "}$")],
-			// [ 'hit', { '$lte': h } ],
-			(l.lang == "ko") ? ['type', Const.KOR_GROUP] : ['_id', Const.ENG_ID]
-			// '$where', eng+"this._id.length == " + Math.max(2, my.round) + " && this.hit <= " + h
-		).limit(20).on(function ($md) {
+		var findArgs = [
+			['_id', new RegExp(eng + ".{" + Math.max(1, my.round - 1) + "}$")]
+		];
+
+		if (l.lang == "ko") {
+			if (!my.opts.moreword) findArgs.push(['type', Const.KOR_GROUP]);
+		} else {
+			findArgs.push(['_id', Const.ENG_ID]);
+		}
+
+		DB.kkutu[l.lang].find.apply(DB.kkutu[l.lang], findArgs).limit(20).on(function ($md) {
 			var list;
 
 			if ($md.length) {
@@ -394,9 +399,14 @@ exports.submit = function (client, text) {
 			default: return false;
 		}
 	}
-	DB.kkutu[l].findOne(['_id', text],
-		(l == "ko") ? ['type', Const.KOR_GROUP] : ['_id', Const.ENG_ID]
-	).on(onDB);
+	var queryArgs = [['_id', text]];
+	if (l == "ko") {
+		if (!my.opts.moreword) queryArgs.push(['type', Const.KOR_GROUP]);
+	} else {
+		queryArgs.push(['_id', Const.ENG_ID]);
+	}
+
+	DB.kkutu[l].findOne.apply(DB.kkutu[l], queryArgs).on(onDB);
 };
 exports.getScore = function (text, delay, ignoreMission) {
 	var my = this;
@@ -600,7 +610,7 @@ function getAuto(char, subc, type) {
 		if (my.rule.lang == "ko") {
 			if (my.opts.loanword) aqs.push(['flag', { '$nand': Const.KOR_FLAG.LOANWORD }]);
 			if (my.opts.strict) aqs.push(['type', Const.KOR_STRICT], ['flag', { $lte: 3 }]);
-			else aqs.push(['type', Const.KOR_GROUP]);
+			else if (!my.opts.moreword) aqs.push(['type', Const.KOR_GROUP]);
 		} else {
 			aqs.push(['_id', Const.ENG_ID]);
 		}
@@ -651,6 +661,7 @@ function getAuto(char, subc, type) {
 function keyByOptions(opts) {
 	var arr = [];
 
+	if (opts.moreword) arr.push('M');
 	if (opts.injeong) arr.push('X');
 	if (opts.loanword) arr.push('L');
 	if (opts.strict) arr.push('S');

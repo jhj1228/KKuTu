@@ -21,9 +21,9 @@ var Lizard = require('../../sub/lizard');
 var DB;
 var DIC;
 
-var ROBOT_SEEK_DELAY = [5000, 3000, 1500, 700, 100];
-var ROBOT_CATCH_RATE = [0.05, 0.2, 0.4, 0.6, 0.99];
-var ROBOT_TYPE_COEF = [2000, 1200, 800, 300, 0];
+var ROBOT_SEEK_DELAY = [5000, 3000, 1500, 700, 300, 100];
+var ROBOT_CATCH_RATE = [0.05, 0.2, 0.4, 0.6, 0.88, 0.99];
+var ROBOT_TYPE_COEF = [2000, 1200, 800, 300, 100, 0];
 
 exports.init = function (_DB, _DIC) {
 	DB = _DB;
@@ -202,36 +202,36 @@ exports.getScore = function (text, delay) {
 
 	return Math.round(score * my.game.themeBonus);
 };
-/*exports.readyRobot = function(robot){
+exports.readyRobot = function (robot) {
 	var my = this;
 	var level = robot.level;
 	var delay, text;
 	var board, data, obj;
 	var i;
-	
-	if(my.game.late) return;
+
+	if (my.game.late) return;
 	clearTimeout(robot._timerSeek);
 	clearTimeout(robot._timerCatch);
-	if(robot._board == undefined) changeBoard();
+	if (robot._board == undefined) changeBoard();
 	delay = ROBOT_SEEK_DELAY[level];
-	if(Math.random() < ROBOT_CATCH_RATE[level]){
+	if (Math.random() < ROBOT_CATCH_RATE[level]) {
 		robot._timerCatch = false;
 		board = my.game.boards[robot._board];
-		for(i in board){
+		for (i in board) {
 			data = board[i];
 			key = `${robot._board},${data[0]},${data[1]},${data[2]}`;
-			if(obj = my.game.answers[key]){
+			if (obj = my.game.answers[key]) {
 				delay += obj.length * ROBOT_TYPE_COEF[level];
 				robot._timerCatch = setTimeout(my.turnRobot, delay, robot, obj, key.split(','));
 				break;
 			}
 		}
-		if(!robot._timerCatch) changeBoard();
-	}else if(Math.random() < 0.05){
+		if (!robot._timerCatch) changeBoard();
+	} else if (Math.random() < 0.05) {
 		changeBoard();
 	}
 	robot._timerSeek = setTimeout(my.readyRobot, delay, robot);
-	function changeBoard(){
+	function changeBoard() {
 		robot._board = Math.floor(Math.random() * my.game.boards.length);
 	}
-};*/
+};
