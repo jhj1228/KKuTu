@@ -741,6 +741,7 @@ exports.Client = function (socket, profile, sid) {
 		my.pracRoom.limit = 1;
 		my.pracRoom.password = "";
 		my.pracRoom.practice = true;
+		my.pracRoom.isPractice = true;
 		my.subPlace = my.pracRoom.id;
 		my.pracRoom.come(my);
 		my.pracRoom.start(level);
@@ -856,6 +857,7 @@ exports.Room = function (room, channel) {
 
 	my.gaming = false;
 	my.game = {};
+	my.isPractice = false;
 
 	my.getData = function () {
 		var i, readies = {};
@@ -986,12 +988,24 @@ exports.Room = function (room, channel) {
 		}
 
 		if (my.gaming && !client.admin) {
-			if (!PENALTY[client.id]) {
-				PENALTY[client.id] = { count: 0, until: 0 };
+			var hasRobots = false;
+			var hasHuman = false;
+			for (var i in my.players) {
+				if (my.players[i] && my.players[i].robot) {
+					hasRobots = true;
+				}
+				if (my.players[i] && !my.players[i].robot) {
+					hasHuman = true;
+				}
 			}
-			PENALTY[client.id].count++;
-			var banTime = PENALTY[client.id].count * 60 * 1000;
-			PENALTY[client.id].until = Date.now() + banTime;
+			if (hasHuman && !hasRobots) {
+				if (!PENALTY[client.id]) {
+					PENALTY[client.id] = { count: 0, until: 0 };
+				}
+				PENALTY[client.id].count++;
+				var banTime = PENALTY[client.id].count * 60 * 1000;
+				PENALTY[client.id].until = Date.now() + banTime;
+			}
 		}
 
 		my.players.splice(x, 1);
