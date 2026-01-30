@@ -1156,6 +1156,13 @@ exports.Room = function (room, channel) {
 		if (len < (DIC[my.master].admin ? 1 : 2)) return DIC[my.master].sendError(411);
 		if (i = my.preReady(teams)) return DIC[my.master].sendError(i);
 		if (all) {
+			for (i in my.players) {
+				var $client = DIC[my.players[i]];
+				if ($client && $client.subPlace) {
+					$client.pracRoom.go($client);
+					$client.subPlace = 0;
+				}
+			}
 			my._teams = teams;
 			my.start();
 		} else DIC[my.master].sendError(412);
