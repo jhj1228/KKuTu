@@ -232,7 +232,7 @@ exports.RULE = {
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
-	return 2 * (Math.pow(5 + 7 * (text || "").length, 0.74) + 0.88 * (chain || []).length) * (0.5 + 0.5 * tr) * 3.5;
+	return 2 * (Math.pow(5 + 7 * (text || "").length, 0.74) + 0.88 * (chain || []).length) * (0.5 + 0.5 * tr) * 5;
 };
 exports.getPenalty = function (chain, score) {
 	return -1 * Math.round(Math.min(10 + (chain || []).length * 2.1 + score * 0.15, score));
@@ -259,8 +259,8 @@ exports.KO_INJEONG = [
 	"AIR", // 공항
 	"GGJ", // 관광지
 	"KTV", // 국내 방송 프로그램
-	"SSR", // 귀혼
-	// "CPY", // 기업
+	// "SSR", // 귀혼
+	"CPY", // 기업
 	"TBC", // 냥코대전쟁
 	"NFX", // 넷플릭스
 	"LAW", // 대한민국 법률

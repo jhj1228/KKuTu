@@ -79,15 +79,8 @@ function page(req, res, file, data) {
 	data.session = req.session;
 	if ((/mobile/i).test(req.get('user-agent')) || req.query.mob) {
 		data.mobile = true;
-		if (req.query.pc) {
-			data.as_pc = true;
-			data.page = file;
-		} else if (exports.MOBILE_AVAILABLE && exports.MOBILE_AVAILABLE.includes(file)) {
-			data.page = 'm_' + file;
-		} else {
-			data.mobile = false;
-			data.page = file;
-		}
+		data.as_pc = true;
+		data.page = file;
 	} else {
 		data.page = file;
 	}
