@@ -425,13 +425,7 @@ function onMessage(data) {
 			route("turnStart", data);
 			break;
 		case 'turnError':
-			if (!$data.room) break;
-			var r = RULE[MODE[$data.room.mode]];
-			if (r && $lib[r.rule].turnError) {
-				$lib[r.rule].turnError(data.code, data.value);
-			} else {
-				turnError(data.code, data.value);
-			}
+			turnError(data.code, data.value);
 			break;
 		case 'turnHint':
 			route("turnHint", data);
@@ -2718,7 +2712,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "itpmusicbox" || key === "memory" /*|| key === "flandres" || key === "kickback"*/ ? "lobby" : key;
+	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "itpmusicbox" ? "lobby" : key;
 
 	src.start();
 
