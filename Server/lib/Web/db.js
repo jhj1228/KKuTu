@@ -101,6 +101,12 @@ Pub.ready = function (isPub) {
 			DB.ip_block = new mainAgent.Table("ip_block");
 			/* Enhanced User Block System [E] */
 
+			DB.community_categories = new mainAgent.Table("community_categories");
+			DB.community_posts = new mainAgent.Table("community_posts");
+			DB.community_comments = new mainAgent.Table("community_comments");
+			DB.community_post_likes = new mainAgent.Table("community_post_likes");
+			DB.community_comment_likes = new mainAgent.Table("community_comment_likes");
+
 			if (exports.ready) exports.ready(Redis, Pg);
 			else JLog.warn("DB.onReady was not defined yet.");
 		});

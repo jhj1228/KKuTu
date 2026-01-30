@@ -332,7 +332,8 @@ exports.KO_INJEONG = [
 	"HOS" // 히어로즈 오브 더 스톰
 ];
 exports.EN_INJEONG = [
-	"LOL"
+	"LOL", // 리그 오브 레전드
+	"GTD" // Geometry Dash
 ];
 exports.KO_THEME = [
 	"10", "20", "30", "50", "40", "60", "70", "80", "90", "100",

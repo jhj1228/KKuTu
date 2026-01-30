@@ -704,7 +704,7 @@ $(document).ready(function () {
 		var fileName = "KKuTu" + (
 			date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " "
 			+ date.getHours() + "-" + date.getMinutes() + "-" + date.getSeconds()
-		) + ".kkt";
+		) + ".lkt";
 		var $a = $("<a>").attr({
 			'download': fileName,
 			'href': url
