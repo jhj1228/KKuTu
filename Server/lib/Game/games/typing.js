@@ -53,7 +53,6 @@ exports.getTitle = function () {
 			case "KTT":
 				getAuto.call(my, my.game.theme).then(function (list) {
 					if (list.length) pick(list, true);
-					else pick(['Undefined']);
 				});
 				break;
 			default:
@@ -120,6 +119,7 @@ exports.turnStart = function () {
 		o.game.miss = 0;
 		o.game.index = 0;
 		o.game.semi = 0;
+		o.game.score = 0;
 	});
 	my.game.qTimer = setTimeout(my.turnEnd, my.game.roundTime);
 	my.byMaster('turnStart', { roundTime: my.game.roundTime }, true);
@@ -162,8 +162,27 @@ exports.submit = function (client, text) {
 		}, true);
 	} else {
 		client.game.miss++;
-		client.send('turnEnd', { error: true });
+
+		score = my.getScore(my.game.clist[client.game.index]);
+
+		if (score > 10) score = 10;
+		if (!score) score = 0;
+
+		// 현재 점수가 0 이상일 때만 차감
+		var actualDeduction = 0;
+		if (client.game.score > 0) {
+			actualDeduction = Math.min(client.game.score, score);
+			client.game.score -= actualDeduction;
+		}
+
+		client.publish('turnEnd', {
+			error: true,
+			target: client.id,
+			cs: client.game.score,
+			score: -actualDeduction
+		});
 	}
+
 	if (!my.game.clist[++client.game.index]) client.game.index = 0;
 };
 exports.getScore = function (text) {

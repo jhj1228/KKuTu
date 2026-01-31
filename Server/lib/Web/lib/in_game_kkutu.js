@@ -1702,13 +1702,17 @@ $lib.Typing.turnGoing = $lib.Jaqwi.turnGoing;
 $lib.Typing.turnEnd = function (id, data) {
 	var $sc = $("<div>")
 		.addClass("deltaScore")
-		.html("+" + data.score);
+		.html((data.score > 0 ? "+" : "") + data.score)
+		.addClass(data.score < 0 ? "lost" : "");
 	var $uc = $("#game-user-" + id);
 
 	if (data.error) {
 		$data.chain++;
 		drawList();
 		playSound('fail');
+		addScore(id, data.score);
+		drawObtainedScore($uc, $sc);
+		updateScore(id, getScore(id));
 	} else if (data.ok) {
 		if ($data.id == id) {
 			$data.chain++;

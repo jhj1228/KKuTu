@@ -92,6 +92,15 @@
     font-size: 1.2em;
 }
 
+.category-list .name {
+    color: inherit;
+    font-size: 0.95em;
+}
+
+.category-list a.active .name {
+    color: black;
+}
+
 /* Posts Section */
 .posts-section {
     background: white;

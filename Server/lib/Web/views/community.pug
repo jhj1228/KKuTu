@@ -1,24 +1,24 @@
 //-
-	Rule the words! KKuTu Online
-	Copyright (C) 2017 JJoriping(op@jjo.kr)
-	
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-	
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-	
-	You should have received a copy of the GNU General Public License
-	along with this program. If not, see <http://www.gnu.org/licenses/>.
+  Rule the words! KKuTu Online
+  Copyright (C) 2017 JJoriping(op@jjo.kr)
+  
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
     
 extends layout
 
 block Subject
-  title= L('COMMUNITY') + " - " + L('TITLE_NAME')
+  title= L('TITLE_NAME') + " - " + L('COMMUNITY')
 
 block CSS
   link(rel='stylesheet', href='/css/community.css')
@@ -37,7 +37,7 @@ block Middle
           ul.category-list
             each category in categories
               li
-                a(href=`/community?categoryId=${category._id}`, class=category._id === currentCategory ? 'active' : '')
+                a(href=`/community?categoryId=${category._id}`, class=category._id === currentCategory ? 'active' : '', data-id=category._id)
                   span.icon= category.icon
                   span.name= category.name
 
@@ -45,8 +45,7 @@ block Middle
         .posts-section
           .posts-header
             h3= currentCategoryName || '카테고리'
-            if user
-              a.btn.btn-primary.btn-sm(href='/community/write') 글쓰기
+            a.btn.btn-primary.btn-sm(href='#', onclick='goToWrite(event)') 글쓰기
 
           if posts && posts.length > 0
             .posts-list
@@ -73,4 +72,7 @@ block Middle
             .empty-message
               p 아직 게시글이 없습니다.
               if user
-                a.btn.btn-primary.btn-sm(href='/community/write') 첫 번째 글 작성하기
+                a.btn.btn-primary.btn-sm(href='#', onclick='goToWrite(event)') 첫 번째 글 작성하기
+
+block Bottom
+  div.bottom-legal!= L('License')
