@@ -118,6 +118,8 @@ exports.run = function (Server, page) {
 		if (!checkAdmin(req, res)) return;
 
 		File.readFile(GLOBAL.KKUTUHOT_PATH, function (err, file) {
+			if (err || !file) return res.sendStatus(400);
+
 			var data = JSON.parse(file.toString());
 
 			parseKKuTuHot().then(function ($kh) {

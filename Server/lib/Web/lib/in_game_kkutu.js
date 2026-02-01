@@ -121,7 +121,7 @@ $(document).ready(function () {
 			userList: $(".UserListBox .product-body"),
 			roomListTitle: $(".RoomListBox .product-title"),
 			roomList: $(".RoomListBox .product-body"),
-			createBanner: $("<div>").addClass("rooms-item rooms-create").append($("<div>").html(L['newRoom']))
+			createBanner: $("<div>").addClass("rooms-item rooms-create").append($("<div>").html(L['createRoom']))
 		},
 		chat: $("#Chat"),
 		chatLog: $("#chat-log-board"),
@@ -145,6 +145,7 @@ $(document).ready(function () {
 			exit: $("#ExitBtn"),
 			notice: $("#NoticeBtn"),
 			replay: $("#ReplayBtn"),
+			roomRefresh: $("#RoomRefreshBtn"),
 			leaderboard: $("#LeaderboardBtn")
 		},
 		dialog: {
@@ -680,6 +681,9 @@ $(document).ready(function () {
 		if ($stage.dialog.replay.is(':visible')) {
 			$("#replay-file").trigger('change');
 		}
+	});
+	$stage.menu.roomRefresh.on('click', function (e) {
+		updateRoomList(true);
 	});
 	$stage.menu.leaderboard.on('click', function (e) {
 		$data._lbpage = 0;

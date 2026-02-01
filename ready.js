@@ -48,7 +48,7 @@ $(document).ready(function () {
 			userList: $(".UserListBox .product-body"),
 			roomListTitle: $(".RoomListBox .product-title"),
 			roomList: $(".RoomListBox .product-body"),
-			createBanner: $("<div>").addClass("rooms-item rooms-create").append($("<div>").html(L['createRoom']))
+			createBanner: $("<div>").addClass("rooms-item rooms-create").append($("<div>").html(L['newRoom']))
 		},
 		chat: $("#Chat"),
 		chatLog: $("#chat-log-board"),
@@ -72,7 +72,6 @@ $(document).ready(function () {
 			exit: $("#ExitBtn"),
 			notice: $("#NoticeBtn"),
 			replay: $("#ReplayBtn"),
-			roomRefresh: $("#RoomRefreshBtn"),
 			leaderboard: $("#LeaderboardBtn")
 		},
 		dialog: {
@@ -259,7 +258,7 @@ $(document).ready(function () {
 		}
 	};
 
-	// 객체 설정
+	// 媛앹껜 ?ㅼ젙
 	/*addTimeout(function(){
 		$("#intro-start").hide();
 		$("#intro").show();
@@ -373,7 +372,7 @@ $(document).ready(function () {
 	$(".result-me-gauge")
 		.append($("<div>").addClass("graph-bar result-me-current-bar"))
 		.append($("<div>").addClass("graph-bar result-me-bonus-bar"));
-	// 메뉴 버튼
+	// 硫붾돱 踰꾪듉
 	for (i in $stage.dialog) {
 		if ($stage.dialog[i].children(".dialog-head").hasClass("no-close")) continue;
 
@@ -609,9 +608,6 @@ $(document).ready(function () {
 			$("#replay-file").trigger('change');
 		}
 	});
-	$stage.menu.roomRefresh.on('click', function (e) {
-		updateRoomList(true);
-	});
 	$stage.menu.leaderboard.on('click', function (e) {
 		$data._lbpage = 0;
 		if ($stage.dialog.leaderboard.is(":visible")) {
@@ -753,7 +749,7 @@ $(document).ready(function () {
 		var t;
 		if ($stage.dialog.wordPlusOK.hasClass("searching")) return;
 		if (!(t = $("#wp-input").val())) return;
-		t = t.replace(/[^a-z가-힣]/g, "");
+		t = t.replace(/[^a-z媛-??/g, "");
 		if (t.length < 2) return;
 
 		$("#wp-input").val("");
@@ -904,7 +900,7 @@ $(document).ready(function () {
 				$delBtn.prop('disabled', false);
 				renderMoremi($view, slot.equip);
 			} else {
-				$label.text(L['empty'] || '비어있음');
+				$label.text(L['empty'] || '鍮꾩뼱?덉쓬');
 				$loadBtn.prop('disabled', true);
 				$delBtn.prop('disabled', true);
 			}
@@ -916,7 +912,7 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		while (slots.length < 5) slots.push(null);
 
-		if (!confirm('슬롯 ' + (idx + 1) + '번에 현재 코디를 저장할까요?')) return;
+		if (!confirm('?щ’ ' + (idx + 1) + '踰덉뿉 ?꾩옱 肄붾뵒瑜???ν븷源뚯슂?')) return;
 
 		slots[idx] = {
 			equip: $.extend(true, {}, $data.users[$data.id].equip),
@@ -924,7 +920,7 @@ $(document).ready(function () {
 		};
 		localStorage.setItem(key, JSON.stringify(slots));
 		openWardrobe();
-		alert('저장되었습니다.');
+		alert('??λ릺?덉뒿?덈떎.');
 	});
 
 	$(document).on('click', '.wardrobe-load', function (e) {
@@ -933,8 +929,8 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		var slot = slots[idx];
 
-		if (!slot || !slot.equip) return alert('비어있는 슬롯입니다.');
-		if (!confirm('이 코디를 착용하시겠습니까?')) return;
+		if (!slot || !slot.equip) return alert('鍮꾩뼱?덈뒗 ?щ’?낅땲??');
+		if (!confirm('??肄붾뵒瑜?李⑹슜?섏떆寃좎뒿?덇퉴?')) return;
 
 		var saved = slot.equip;
 		var calls = [];
@@ -960,7 +956,7 @@ $(document).ready(function () {
 		(function run(i) {
 			if (i >= calls.length) {
 				drawMyDress($data._avGroup);
-				alert('코디가 적용되었습니다.');
+				alert('肄붾뵒媛 ?곸슜?섏뿀?듬땲??');
 				return;
 			}
 			calls[i](function () { run(i + 1); });
@@ -973,7 +969,7 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 
 		if (!slots[idx]) return;
-		if (!confirm('정말 삭제하시겠습니까?')) return;
+		if (!confirm('?뺣쭚 ??젣?섏떆寃좎뒿?덇퉴?')) return;
 
 		slots[idx] = null;
 		localStorage.setItem(key, JSON.stringify(slots));
@@ -1085,7 +1081,7 @@ $(document).ready(function () {
 
 		send('team', { value: $(e.currentTarget).attr('id').slice(5) });
 	}
-	// 리플레이
+	// 由ы뵆?덉씠
 	function initReplayDialog() {
 		$stage.dialog.replayView.attr('disabled', true);
 	}
@@ -1130,13 +1126,13 @@ $(document).ready(function () {
 		replayReady();
 	});
 
-	// 스팸
+	// ?ㅽ뙵
 	addInterval(function () {
 		if (spamCount > 0) spamCount = 0;
 		else if (spamWarning > 0) spamWarning -= 0.03;
 	}, 1000);
 
-	// 웹소켓 연결
+	// ?뱀냼耳??곌껐
 	function connect() {
 		ws = new _WebSocket($data.URL);
 		ws.onopen = function (e) {

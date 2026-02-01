@@ -168,7 +168,6 @@ exports.submit = function (client, text) {
 		if (score > 10) score = 10;
 		if (!score) score = 0;
 
-		// 현재 점수가 0 이상일 때만 차감
 		var actualDeduction = 0;
 		if (client.game.score > 0) {
 			actualDeduction = Math.min(client.game.score, score);
