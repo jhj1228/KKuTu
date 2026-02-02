@@ -236,9 +236,16 @@ block Middle
 			+SettingOption('only-unlock', L('onlyUnlock'), "width: 200px;")
 		div.dialog-bar.tail-button
 			button#setting-ok= L('save')
-	+Dialog('CommunityDiag', 300, 300)
-		div.dialog-bar(style='height: 225px; overflow-y: scroll;')
-			div#comm-friends
+	+Dialog('CommunityDiag', 300, 330)
+		div.dialog-bar(style='height: 225px;'): table#Community(style='text-align: center;')
+			thead(style='font-weight: bold; background-color: #DDDDDD;'): tr
+				td(width=10)= '#'
+				td(width=40)= '서버'
+				td(width=60)= '닉네임'
+				td(width=155)= '메모'
+				td(width=40)= '관리'
+			tbody
+		div.dialog-bar: h4(style='width: 100%;')#comm-friends
 		div.dialog-bar.tail-button
 			button#comm-friend-add= L('friendAdd')
 	+Dialog('LeaderboardDiag', 300, 450, L('leaderboard'))

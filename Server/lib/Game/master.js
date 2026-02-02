@@ -41,7 +41,6 @@ var T_USER = {};
 
 var SID;
 var WDIC = {};
-var LANGUAGE = {};
 
 const DEVELOP = exports.DEVELOP = global.test || false;
 const GUEST_PERMISSION = exports.GUEST_PERMISSION = {
@@ -381,13 +380,6 @@ exports.init = function (_SID, CHAN) {
 	SID = _SID;
 	MainDB = require('../Web/db');
 
-	try {
-		LANGUAGE = JSON.parse(File.readFileSync(__dirname + '/../Web/lang/ko_KR.json', 'utf8'));
-	} catch (e) {
-		JLog.warn('Failed to load language file: ' + e.message);
-		LANGUAGE = { TIPS: [] };
-	}
-
 	MainDB.ready = function () {
 		JLog.success("Master DB is ready.");
 
@@ -553,9 +545,6 @@ exports.init = function (_SID, CHAN) {
 };
 
 function joinNewUser($c) {
-	if ($c._joinedNewUser) return;
-	$c._joinedNewUser = true;
-
 	$c.send('welcome', {
 		id: $c.id,
 		guest: $c.guest,
@@ -571,11 +560,6 @@ function joinNewUser($c) {
 		test: global.test,
 		caj: $c._checkAjae ? true : false
 	});
-
-	if (LANGUAGE && LANGUAGE.TIPS && LANGUAGE.TIPS.length > 0) {
-		var randomTip = LANGUAGE.TIPS[Math.floor(Math.random() * LANGUAGE.TIPS.length)];
-		$c.send('notice', { value: randomTip });
-	}
 
 	narrateFriends($c.id, $c.friends, "on");
 	KKuTu.publish('conn', { user: $c.getData() });

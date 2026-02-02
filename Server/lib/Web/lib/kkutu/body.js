@@ -1566,7 +1566,7 @@ function updateCommunity() {
 		$stage.dialog.commFriends.append($("<div>").addClass("cf-item").attr('id', "cfi-" + i)
 			.append($("<div>").addClass("cfi-status cfi-stat-" + (o.server ? 'on' : 'off')))
 			.append($("<div>").addClass("cfi-server").html(o.server ? L['server_' + o.server] : "-"))
-			.append($("<div>").addClass("cfi-name ellipse").text(p ? (p.title || p.name) : L['hidden']))
+			.append($("<div>").addClass("cfi-name ellipse").html(p ? (p.title || p.name) : L['hidden']))
 			.append($("<div>").addClass("cfi-memo ellipse").text(memo))
 			.append($("<div>").addClass("cfi-menu")
 				.append($("<i>").addClass("fa fa-pencil").on('click', requestEditMemo))
@@ -1574,6 +1574,7 @@ function updateCommunity() {
 			)
 		);
 	}
+
 	function requestEditMemo(e) {
 		var id = $(e.currentTarget).parent().parent().attr('id').slice(4);
 		var _memo = $data.friends[id];
