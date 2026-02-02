@@ -1081,7 +1081,6 @@ exports.Room = function (room, channel) {
 				my.opts.injeong = false;
 				my.opts.loanword = false;
 				my.opts.strict = false;
-				my.opts.boom = false;
 			} else {
 				if (my.opts.manner) {
 					my.opts.gentle = false;
@@ -1097,7 +1096,7 @@ exports.Room = function (room, channel) {
 			if (!my.opts.mission) {
 				my.opts.randommission = false;
 			}
-			if (!my.opts.free) {
+			if (!my.opts.free && !my.opts.unknownword) {
 				my.opts.boom = false;
 			}
 			if (ijc = my.rule.opts.includes("ijp")) {

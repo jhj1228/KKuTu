@@ -68,10 +68,10 @@ block JS
 
 				if ($boom.length === 0) return;
 
-				var isUnknown = $unknown.length > 0 && $unknown.is(':checked');
-				var isFree = $free.length > 0 && $free.is(':checked');
+				var isUnknownActive = $unknown.length > 0 && $unknown.is(':checked') && $unknown.is(':visible');
+				var isFreeActive = $free.length > 0 && $free.is(':checked') && $free.is(':visible');
 
-				if (isUnknown || isFree) {
+				if (isUnknownActive || isFreeActive) {
 					$boom.prop('disabled', false);
 					$boom.parent().css('opacity', '1');
 				} else {
@@ -156,6 +156,9 @@ block JS
 			
 			$(document).on('change', '#room-randomturn', updateRandomReverseState);
 			$(document).on('change', '#room-reverse', updateRandomReverseState);
+			$(document).on('change', '#room-mode', function() {
+				setTimeout(updateBoomState, 100);
+			});
 
 			var initFunc = function() {
 				updateUnknownWordState();
