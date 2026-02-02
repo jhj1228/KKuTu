@@ -119,7 +119,6 @@ exports.turnStart = function () {
 		o.game.miss = 0;
 		o.game.index = 0;
 		o.game.semi = 0;
-		o.game.score = 0;
 	});
 	my.game.qTimer = setTimeout(my.turnEnd, my.game.roundTime);
 	my.byMaster('turnStart', { roundTime: my.game.roundTime }, true);
@@ -148,6 +147,8 @@ exports.submit = function (client, text) {
 
 	if (!client.game) return;
 
+	text = text.trim();
+
 	if (my.game.clist[client.game.index] == text) {
 		score = my.getScore(text);
 
@@ -163,23 +164,7 @@ exports.submit = function (client, text) {
 	} else {
 		client.game.miss++;
 
-		score = my.getScore(my.game.clist[client.game.index]);
-
-		if (score > 10) score = 10;
-		if (!score) score = 0;
-
-		var actualDeduction = 0;
-		if (client.game.score > 0) {
-			actualDeduction = Math.min(client.game.score, score);
-			client.game.score -= actualDeduction;
-		}
-
-		client.publish('turnEnd', {
-			error: true,
-			target: client.id,
-			cs: client.game.score,
-			score: -actualDeduction
-		});
+		client.send('turnEnd', { error: true });
 	}
 
 	if (!my.game.clist[++client.game.index]) client.game.index = 0;

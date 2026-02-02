@@ -61,13 +61,30 @@ block JS
 					$random.parent().css('opacity', '1');
 				}
 			}
+			function updateBoomState() {
+				var $boom = $('#room-boom');
+				var $unknown = $('#room-unknownword');
+				var $free = $('#room-free');
+
+				if ($boom.length === 0) return;
+
+				var isUnknown = $unknown.length > 0 && $unknown.is(':checked');
+				var isFree = $free.length > 0 && $free.is(':checked');
+
+				if (isUnknown || isFree) {
+					$boom.prop('disabled', false);
+					$boom.parent().css('opacity', '1');
+				} else {
+					$boom.prop('checked', false);
+					$boom.prop('disabled', true);
+					$boom.parent().css('opacity', '1');
+				}
+			}
 			function updateMannerGentleState() {
 				var $manner = $('#room-manner');
 				var $gentle = $('#room-gentle');
 				
 				if ($manner.length === 0 || $gentle.length === 0) return;
-			
-				if ($('#room-unknownword').is(':checked')) return;
 
 				if ($manner.is(':checked')) {
 					$gentle.prop('checked', false);
@@ -129,11 +146,13 @@ block JS
 					updateMissionState();
 					updateMannerGentleState();
 				}
+				updateBoomState();
 			}
 			$(document).on('change', '#room-mission', updateMissionState);
 			$(document).on('change', '#room-manner', updateMannerGentleState);
 			$(document).on('change', '#room-gentle', updateMannerGentleState);
 			$(document).on('change', '#room-unknownword', updateUnknownWordState);
+			$(document).on('change', '#room-free', updateBoomState);
 			
 			$(document).on('change', '#room-randomturn', updateRandomReverseState);
 			$(document).on('change', '#room-reverse', updateRandomReverseState);
@@ -142,6 +161,7 @@ block JS
 				updateUnknownWordState();
 				updateMissionState();
 				updateRandomReverseState();
+				updateBoomState();
 				if (!$('#room-unknownword').is(':checked')) {
 					updateMannerGentleState();
 				}
@@ -214,7 +234,7 @@ block Middle
 				optgroup(label='기타 BGM')
 					option(value='inthepool') IN THE SEA x IN THE POOL
 					option(value='enchanted') Enchanted Love
-					option(value='itpmusicbox') in the pool Music Box
+					option(value='lydia') Lydia
 		div.dialog-bar
 			h4= L('denyReq')
 			+SettingOption('deny-invite', L('denyInvite'))

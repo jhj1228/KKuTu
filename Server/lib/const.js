@@ -53,7 +53,7 @@ exports.OPTIONS = {
 	'ulm': { name: "Unlimited" }, // 무제한
 	'due': { name: "Dueum" }, // 두음법칙 금지
 	'thw': { name: "Threeword" }, // 3글자
-	'ddl': { name: "Dodoli" }, // 도돌이 금지
+	// 'ddl': { name: "Dodoli" }, // 도돌이 금지
 	'fre': { name: "Free" }, // 자유
 	'mwd': { name: "Moreword" } // 특수 단어 허용
 };
@@ -88,7 +88,7 @@ exports.RULE = {
 	'KKT': { // 쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "ddl", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -97,7 +97,7 @@ exports.RULE = {
 	'KSH': { // 끝말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "ddl", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "bom", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -133,7 +133,7 @@ exports.RULE = {
 	'KAP': { // 앞말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "ddl", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "bom", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -152,7 +152,7 @@ exports.RULE = {
 	'KDA': { // 단어대결
 		lang: "ko",
 		rule: "Daneo",
-		opts: ["ijp", "mis", "rdm", "rtn", "rdt", "bom"],
+		opts: ["ijp", "mis", "rdm", "rtn", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -170,7 +170,7 @@ exports.RULE = {
 	'KMH': { // 가운뎃말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "ddl", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "bom", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -179,7 +179,7 @@ exports.RULE = {
 	'KKK': { // 끄투
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "due", "ddl", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "due", "bom", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -215,7 +215,7 @@ exports.RULE = {
 	'KRH': { // 랜덤잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "ddl", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "bom", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -224,7 +224,7 @@ exports.RULE = {
 	'KAT': { // 앞말쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "ddl", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
