@@ -47,7 +47,7 @@ exports.OPTIONS = {
 	'rtn': { name: "Return" }, // 리턴
 	'rdt': { name: "Randomturn" }, // 랜덤턴
 	'unw': { name: "Unknownword" }, // 언노운워드
-	'bom': { name: "Boom" }, // 폭탄
+	// 'bom': { name: "Boom" }, // 폭탄
 	// 'rvs': { name: "Reverse" }, // 리버스
 	'wpk': { name: "Wordpick" }, // 워드픽
 	'ulm': { name: "Unlimited" }, // 무제한
@@ -97,7 +97,7 @@ exports.RULE = {
 	'KSH': { // 끝말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -133,7 +133,7 @@ exports.RULE = {
 	'KAP': { // 앞말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -143,7 +143,7 @@ exports.RULE = {
 	'HUN': { // 훈민정음
 		lang: "ko",
 		rule: "Hunmin",
-		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "thw", "bom"],
+		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "thw"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -170,7 +170,7 @@ exports.RULE = {
 	'KMH': { // 가운뎃말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -179,7 +179,7 @@ exports.RULE = {
 	'KKK': { // 끄투
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "due", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -197,7 +197,7 @@ exports.RULE = {
 	'ALL': { // 전체
 		lang: "ko",
 		rule: "All",
-		opts: ["mis", "rdm", "rtn", "rdt", "bom", "fre"],
+		opts: ["mis", "rdm", "rtn", "rdt", "fre"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -215,7 +215,7 @@ exports.RULE = {
 	'KRH': { // 랜덤잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "bom", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -263,6 +263,7 @@ exports.KO_INJEONG = [
 	"CPY", // 기업
 	"TBC", // 냥코대전쟁
 	"NFX", // 넷플릭스
+	"KRW", // 대한민국 관내 로
 	"LAW", // 대한민국 법률
 	"KOT", // 대한민국 철도역
 	// "DNF", // 던전앤파이터

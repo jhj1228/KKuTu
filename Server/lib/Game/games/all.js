@@ -258,9 +258,9 @@ exports.readyRobot = function (robot) {
 
 	getAuto.call(my, 2, targetLang).then(function (list) {
 		if (list.length) {
-			list.sort(function (a, b) { return b.hit - a.hit; });
-			if (ROBOT_HIT_LIMIT[level] > list[0].hit) denied();
-			else pickList(list);
+			list.sort(function () { return Math.random() - 0.5; });
+
+			pickList(list);
 		} else denied();
 	});
 	function denied() {
