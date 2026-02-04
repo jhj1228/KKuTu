@@ -139,7 +139,8 @@ exports.submit = function (client, text, data) {
 
 	if (isAllowed) {
 		var searchLang = 'ko';
-		if (/^[a-zA-Z\s]+$/.test(text)) {
+
+		if (/^[a-zA-Z0-9\s']+$/.test(text)) {
 			searchLang = 'en';
 		}
 
@@ -212,7 +213,8 @@ exports.submit = function (client, text, data) {
 				preApproved();
 			} else {
 				if (my.opts.free) {
-					if (/[!-\/:-@\[-`{-~]/.test(text)) {
+
+					if (/[!-\&(-\/:-@\[-`{-~]/.test(text)) {
 						denied(411);
 						return;
 					}
@@ -256,27 +258,60 @@ exports.readyRobot = function (robot) {
 
 	var targetLang = (Math.random() < 0.5) ? 'en' : 'ko';
 
-	getAuto.call(my, 2, targetLang).then(function (list) {
-		if (list.length) {
-			list.sort(function () { return Math.random() - 0.5; });
+	var skipCount = Math.floor(Math.random() * 10000);
 
-			pickList(list);
-		} else denied();
-	});
+	function trySearch(sv) {
+		getAuto.call(my, 2, targetLang, sv).then(function (list) {
+			if (list && list.length > 0) {
+				processList(list);
+			} else {
+				if (sv > 0) {
+					trySearch(0);
+				} else {
+					denied();
+				}
+			}
+		});
+	}
+
+	trySearch(skipCount);
+
 	function denied() {
 		text = "... T.T";
 		after();
 	}
+
+	function processList(list) {
+		list.sort(function (a, b) { return b.hit - a.hit; });
+		if (ROBOT_HIT_LIMIT[level] > list[0].hit) denied();
+		else pickList(list);
+	}
+
 	function pickList(list) {
-		if (list) do {
-			if (!(w = list.shift())) break;
-		} while (false);
+		w = null;
+		if (list) {
+			while (list.length > 0) {
+				var item = list.shift();
+				if (!item) break;
+
+				if (/[!-\&(-\/:-@\[-`{-~]/.test(item._id)) {
+					continue;
+				}
+
+				w = item;
+				break;
+			}
+		}
+
 		if (w) {
 			text = w._id;
 			delay += 500 * ROBOT_THINK_COEF[level] * Math.random() / Math.log(1.1 + w.hit);
 			after();
-		} else denied();
+		} else {
+			denied();
+		}
 	}
+
 	function after() {
 		delay += text.length * ROBOT_TYPE_COEF[level];
 		setTimeout(my.turnRobot, delay, robot, text);
@@ -290,7 +325,7 @@ function getMission(my) {
 	if (!arr || arr.length === 0) return "-";
 	return arr[Math.floor(Math.random() * arr.length)];
 }
-function getAuto(type, targetLang) {
+function getAuto(type, targetLang, skipVal) {
 	/* type
 		0 무작위 단어 하나
 		1 존재 여부
@@ -309,7 +344,13 @@ function getAuto(type, targetLang) {
 
 	if (my.game.chain) aqs.push(['_id', { '$nin': my.game.chain }]);
 
-	raiser = DB.kkutu[searchLang].find.apply(this, aqs).limit(bool ? 1 : 123);
+	var query = DB.kkutu[searchLang].find.apply(this, aqs);
+
+	if (skipVal && skipVal > 0 && typeof query.skip === 'function') {
+		query = query.skip(skipVal);
+	}
+
+	raiser = query.limit(bool ? 1 : 123);
 
 	switch (type) {
 		case 0:
