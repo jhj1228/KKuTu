@@ -650,10 +650,20 @@ function getAuto(char, subc, type) {
 			lst = list;
 			MAN.upsert(['_id', char]).set([key, lst.length ? true : false]).on(null, null, onFail);
 		}
-		function onFail() {
-			MAN.createColumn(key, "boolean").on(function () {
+		function onFail(err) {
+			var errStr = err ? err.toString() : "";
+			if (errStr.includes("이미 있습니다") || errStr.includes("already exists")) {
 				forManner(lst);
-			});
+			} else {
+				MAN.createColumn(key, "boolean").on(function () {
+					forManner(lst);
+				}, null, function (createErr) {
+					var createErrStr = createErr ? createErr.toString() : "";
+					if (createErrStr.includes("이미 있습니다") || createErrStr.includes("already exists")) {
+						forManner(lst);
+					}
+				});
+			}
 		}
 	}
 	return R;

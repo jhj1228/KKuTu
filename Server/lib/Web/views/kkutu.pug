@@ -300,7 +300,7 @@ block Middle
 			h4(style='width: 100%; height: 20px;')#quick-queue
 		div.dialog-bar.tail-button
 			button#quick-ok= L('OK')
-	+Dialog('RoomDiag', 300, 445)
+	+Dialog('RoomDiag', 300, 475)
 		div.dialog-bar
 			h4= L('roomTitle')
 			input#room-title(placeholder=(nick || L('guest'))+L('roomDefault'), maxlength=20)
@@ -333,20 +333,22 @@ block Middle
 		div.dialog-bar(style='margin-top: -5px; height: 50px;')
 			h4
 			h4#game-mode-expl.dialog-bar-value(style='width: 100%; font-size: 11px;')
-		div.dialog-bar(style='overflow: hidden;')
-			h4 라운드 설정
+		div.dialog-bar
+			h4= L('numRound')
 			- var maxRounds = isAdmin ? 20 : 10;
-			input#room-round(type='number', min=1, max=maxRounds, step=1, value=5, style="float: left; width: 75px;")
-			select#room-time(style="float: left; width: 95px; margin-left: 5px;")
+			input#room-round(type='number', min=1, max=maxRounds, step=1, value=5)
+		div.dialog-bar
+			h4= L('roundTime')
+			select#room-time
 				option(value=5, style='color: #FF4444')
-				option(value=10, style='color: #FF8000')
+				option(value=10, style='color: #FF4444')
 				option(value=30)
 				option(value=60, selected)
 				option(value=90)
 				option(value=120)
 				option(value=150)
 		div.dialog-bar(style='height: 170px;')
-			h4(style='height: 135px;')= L('misc')
+			h4(style='height: 105px;')= L('misc')
 			- for(var i in locals.OPTIONS)
 				+GameOption(i, 'room')
 			div.dialog-opt#room-injpick-panel
