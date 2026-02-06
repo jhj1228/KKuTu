@@ -152,6 +152,7 @@ $(document).ready(function () {
 			setting: $("#SettingDiag"),
 			settingServer: $("#setting-server"),
 			settingOK: $("#setting-ok"),
+			settingReset: $("#setting-reset"),
 			community: $("#CommunityDiag"),
 			commFriends: $("#comm-friends"),
 			commFriendAdd: $("#comm-friend-add"),
@@ -720,6 +721,11 @@ $(document).ready(function () {
 			saveLocalSettings();
 		}
 		$stage.dialog.setting.hide();
+	});
+	$stage.dialog.settingReset.on('click', function (e) {
+		if (typeof resetLocalSettings === "function") {
+			resetLocalSettings();
+		}
 	});
 	$stage.dialog.profileLevel.on('click', function (e) {
 		$("#PracticeDiag .dialog-title").html(L['robot']);
@@ -5304,6 +5310,26 @@ function saveLocalSettings() {
 		ou: $("#only-unlock").is(':checked'),
 		bs: $("#bgm-select").val(),
 		nf: $("#no-filter").is(':checked')
+	};
+	applyOptions(opt);
+	localStorage.setItem('kkutu_settings', JSON.stringify(opt));
+}
+function resetLocalSettings() {
+	var opt = {
+		mb: false,
+		me: false,
+		bv: 0.5,
+		ev: 0.5,
+		dv: false,
+		di: false,
+		dw: false,
+		df: false,
+		ar: false,
+		su: false,
+		ow: false,
+		ou: false,
+		bs: "lobby",
+		nf: false
 	};
 	applyOptions(opt);
 	localStorage.setItem('kkutu_settings', JSON.stringify(opt));

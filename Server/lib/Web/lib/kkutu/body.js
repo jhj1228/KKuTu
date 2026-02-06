@@ -2997,6 +2997,26 @@ function saveLocalSettings() {
 	applyOptions(opt);
 	localStorage.setItem('kkutu_settings', JSON.stringify(opt));
 }
+function resetLocalSettings() {
+	var opt = {
+		mb: false,
+		me: false,
+		bv: 0.5,
+		ev: 0.5,
+		dv: false,
+		di: false,
+		dw: false,
+		df: false,
+		ar: false,
+		su: false,
+		ow: false,
+		ou: false,
+		bs: "lobby",
+		nf: false
+	};
+	applyOptions(opt);
+	localStorage.setItem('kkutu_settings', JSON.stringify(opt));
+}
 function loadLocalSettings() {
 	var saved = localStorage.getItem('kkutu_settings');
 	var opt = null;

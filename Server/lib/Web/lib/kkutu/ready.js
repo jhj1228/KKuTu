@@ -79,6 +79,7 @@ $(document).ready(function () {
 			setting: $("#SettingDiag"),
 			settingServer: $("#setting-server"),
 			settingOK: $("#setting-ok"),
+			settingReset: $("#setting-reset"),
 			community: $("#CommunityDiag"),
 			commFriends: $("#comm-friends"),
 			commFriendAdd: $("#comm-friend-add"),
@@ -647,6 +648,11 @@ $(document).ready(function () {
 			saveLocalSettings();
 		}
 		$stage.dialog.setting.hide();
+	});
+	$stage.dialog.settingReset.on('click', function (e) {
+		if (typeof resetLocalSettings === "function") {
+			resetLocalSettings();
+		}
 	});
 	$stage.dialog.profileLevel.on('click', function (e) {
 		$("#PracticeDiag .dialog-title").html(L['robot']);
