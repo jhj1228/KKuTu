@@ -259,7 +259,7 @@ exports.KO_INJEONG = [
 	"KRP", "KAD", "HOS"
 ];
 exports.EN_INJEONG = [
-	"LOL", "GTD"
+	"LOL", "GTD", "e50"
 ];
 exports.KO_THEME = [
 	"30", "40", "60", "80", "90",

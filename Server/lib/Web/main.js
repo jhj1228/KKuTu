@@ -44,7 +44,7 @@ var Language = {
 	'ko_KR': require("./lang/ko_KR.json"),
 };
 //볕뉘 수정
-var ROUTES = { major: {}, consume: {}, admin: {}, login: {}, wordsearch: {}, community: {} };
+var ROUTES = { major: {}, consume: {}, admin: {}, login: {}, wordsearch: {} };
 //볕뉘 수정 끝
 var page = WebInit.page;
 var gameServers = [];
