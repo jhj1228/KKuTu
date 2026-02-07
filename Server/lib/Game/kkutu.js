@@ -987,7 +987,7 @@ exports.Room = function (room, channel) {
 			return client.sendError(409);
 		}
 
-		if (my.gaming && !client.admin) {
+		if (my.gaming && !client.admin && !my.practice && !my.isPractice) {
 			var hasRobots = false;
 			var hasHuman = false;
 			for (var i in my.players) {
