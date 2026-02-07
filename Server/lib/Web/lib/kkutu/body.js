@@ -1730,11 +1730,15 @@ function gameReady() {
 
 	for (i in $data.room.players) {
 		if ($data._replay) {
-			u = $rec.users[$data.room.players[i]] || $data.room.players[i];
+			var playerId = typeof $data.room.players[i] === 'string' ? $data.room.players[i] : $data.room.players[i].id;
+			u = $rec.users[playerId];
+			if (!u) u = { game: { score: 0 } };
 		} else {
 			u = $data.users[$data.room.players[i]] || $data.robots[$data.room.players[i].id];
 		}
-		u.game.score = 0;
+		if (u && u.game) {
+			u.game.score = 0;
+		}
 		delete $data["_s" + $data.room.players[i]];
 	}
 	delete $data.lastFail;
@@ -1757,31 +1761,43 @@ function gameReady() {
 function replayPrevInit() {
 	var i;
 
-	for (i in $data.room.game.seq) {
-		if ($data.room.game.seq[i].robot) {
-			$data.room.game.seq[i].game.score = 0;
+	$data.room.players = [];
+
+	if (!$data.room.game) $data.room.game = {};
+	if (!$data.room.game.seq) {
+		$data.room.game.seq = [];
+		$data.room.game.title = [];
+		for (i in $rec.players) {
+			$data.room.game.seq.push($rec.players[i].id);
 		}
 	}
+
+	for (i in $data.room.game.seq) {
+		var seqItem = $data.room.game.seq[i];
+		if (typeof seqItem === 'object' && seqItem.game) {
+			seqItem.game.score = 0;
+		}
+	}
+
 	$rec.users = {};
 	for (i in $rec.players) {
 		var id = $rec.players[i].id;
 		var rd = $rec.readies[id] || {};
-		var u = $data.users[id] || $data.robots[id];
 		var po = id;
+		var u;
 
 		if ($rec.players[i].robot) {
-			u = $rec.users[id] = { robot: true };
+			u = $rec.users[id] = { robot: true, game: { score: 0, team: rd.t } };
 			po = $rec.players[i];
-			po.game = {};
+			po.game = { score: 0, team: rd.t };
 		} else {
-			u = $rec.users[id] = {};
+			u = $rec.users[id] = { game: { score: 0, team: rd.t } };
 		}
 		$data.room.players.push(po);
 		u.id = po;
 		u.profile = $rec.players[i];
 		u.data = u.profile.data;
 		u.equip = u.profile.equip;
-		u.game = { score: 0, team: rd.t };
 	}
 	$data._rf = 0;
 }
@@ -1939,7 +1955,10 @@ function startRecord(title) {
 		round: $data.room.round,
 		mode: $data.room.mode,
 		limit: $data.room.limit,
-		game: $data.room.game,
+		game: $data.room.game ? {
+			seq: ($data.room.game.seq ? ($data.room.game.seq.slice ? $data.room.game.seq.slice(0) : Object.assign([], $data.room.game.seq)) : []),
+			title: ($data.room.game.title ? ($data.room.game.title.slice ? $data.room.game.title.slice(0) : Object.assign([], $data.room.game.title)) : [])
+		} : { seq: [], title: [] },
 		opts: $data.room.opts,
 		readies: $data.room.readies,
 		time: (new Date()).getTime()
@@ -2031,11 +2050,20 @@ function turnError(code, text) {
 	}, 1800);
 }
 function getScore(id) {
-	if ($data._replay) return $rec.users[id].game.score;
+	if ($data._replay) {
+		if ($rec.users && $rec.users[id] && $rec.users[id].game) {
+			return $rec.users[id].game.score;
+		}
+		return 0;
+	}
 	else return ($data.users[id] || $data.robots[id]).game.score;
 }
 function addScore(id, score) {
-	if ($data._replay) $rec.users[id].game.score += score;
+	if ($data._replay) {
+		if ($rec.users && $rec.users[id] && $rec.users[id].game) {
+			$rec.users[id].game.score += score;
+		}
+	}
 	else ($data.users[id] || $data.robots[id]).game.score += score;
 }
 function drawObtainedScore($uc, $sc) {
