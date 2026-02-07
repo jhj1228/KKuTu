@@ -148,7 +148,7 @@ function sqlWhere(q) {
 }
 function sqlSet(q, inc) {
 	if (!q) {
-		JLog.warn("[sqlSet] Invalid query.");
+		JLog.warn("[sqlSet] 쿼리가 잘못되었습니다.");
 		return null;
 	}
 	var doN = inc ? function (k, v) {
@@ -156,7 +156,7 @@ function sqlSet(q, inc) {
 	} : function (k, v) {
 		return Escape("%K=%V", k, v);
 	}, doJ = inc ? function (k, p, ok, v) {
-		JLog.warn("[sqlSet] Cannot increase a value in JSON object.");
+		JLog.warn("[sqlSet] JSON 객체 내부의 값을 증가시킬 수 없습니다.");
 		return null; //Escape("%K=jsonb_set(%K,%V,CAST(CAST(%k AS bigint)+%V AS text),true)", k, k, p, ok, Number(v));
 	} : function (k, p, ok, v) {
 		return Escape("%K=jsonb_set(%K,%V,%V,true)", k, k, p, v);
@@ -282,10 +282,10 @@ exports.Agent = function (type, origin) {
 
 				function preCB(err, res) {
 					if (err) {
-						JLog.error("Error when querying: " + sql);
-						JLog.error("Context: " + err.toString());
+						JLog.error("쿼리 중 오류: " + sql);
+						JLog.error("상황: " + err.toString());
 						if (onFail) {
-							JLog.log("onFail calling...");
+							JLog.log("onFail 호출 중...");
 							onFail(err);
 						}
 						return;
@@ -311,7 +311,7 @@ exports.Agent = function (type, origin) {
 							else {
 								if (onFail) onFail(doc);
 								else if (DEBUG) throw new Error("The data from " + mode + "[" + JSON.stringify(q) + "] was not available.");
-								else JLog.warn("The data from [" + JSON.stringify(q) + "] was not available. Callback has been canceled.");
+								else JLog.warn("[" + JSON.stringify(q) + "]의 데이터를 사용할 수 없었습니다. 콜백이 취소되었습니다.");
 							}
 						} else f(doc);
 					}
@@ -353,9 +353,9 @@ exports.Agent = function (type, origin) {
 						sql = Escape("ALTER TABLE %I ADD COLUMN %K %I", col, q[0], q[1]);
 						break;
 					default:
-						JLog.warn("Unhandled mode: " + mode);
+						JLog.warn("처리되지 않은 모드: " + mode);
 				}
-				if (!sql) return JLog.warn("SQL is undefined. This call will be ignored.");
+				if (!sql) return JLog.warn("SQL이 정의되지 않았습니다. 이 호출은 무시됩니다.");
 				// JLog.log("Query: " + sql.slice(0, 100));
 				origin.query(sql, preCB);
 				/*if(_my.findLimit){
@@ -420,7 +420,7 @@ exports.Agent = function (type, origin) {
 			return new pointer("createColumn", [name, type]);
 		};
 		my.direct = function (q, f) {
-			JLog.warn("Direct query: " + q);
+			JLog.warn("직접 쿼리: " + q);
 			origin.query(q, f);
 		};
 	};

@@ -193,7 +193,7 @@ exports.run = function (Server, page) {
 					$doc.mean += `＂${len + 1}＂`;
 					TABLE.update(['_id', item]).set(['type', $doc.type], ['theme', $doc.theme], ['mean', $doc.mean]).on();
 				} else {
-					JLog.warn(`Word '${item}' already has the theme '${theme}'!`);
+					JLog.warn(`단어 '${item}'에는 이미 '${theme}'라는 주제가 있습니다!`);
 				}
 			});
 		});
@@ -264,7 +264,7 @@ exports.run = function (Server, page) {
 
 };
 function noticeAdmin(req, ...args) {
-	JLog.info(`[ADMIN] ${req.originalUrl} ${req.ip} | ${args.join(' | ')}`);
+	JLog.info(`[운영자] ${req.originalUrl} ${req.ip} | ${args.join(' | ')}`);
 }
 function checkAdmin(req, res) {
 	if (global.isPublic) {

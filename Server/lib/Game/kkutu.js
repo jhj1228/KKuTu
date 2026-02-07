@@ -290,7 +290,7 @@ exports.Client = function (socket, profile, sid) {
 	});
 	socket.on('message', function (msg) {
 		var data, room = ROOM[my.place];
-		JLog.log(`Chan @${channel} Msg #${my.id}: ${msg}`);
+		JLog.log(`채널 @${channel} 메시지 #${my.id}: ${msg}`);
 		if (!my) return;
 		if (!msg) return;
 
@@ -509,7 +509,7 @@ exports.Client = function (socket, profile, sid) {
 		).on(function (__res) {
 			DB.redis.getGlobal(my.id).then(function (_res) {
 				DB.redis.putGlobal(my.id, my.data.score).then(function (res) {
-					JLog.log(`FLUSHED [${my.id}] PTS=${my.data.score} MNY=${my.money}`);
+					JLog.log(`플러시됨 [${my.id}] 점수=${my.data.score} 핑=${my.money}`);
 					R.go({ id: my.id, prev: _res });
 				});
 			});
@@ -543,7 +543,7 @@ exports.Client = function (socket, profile, sid) {
 
 		if (my.place) {
 			my.send('roomStuck');
-			JLog.warn(`Enter the room ${room.id} in the place ${my.place} by ${my.id}!`);
+			JLog.warn(`방 ${room.id}에 이미 있는 장소 ${my.place}에서 ${my.id}가 들어가려고 함!`);
 			return;
 		} else if (room.id) {
 			// 이미 있는 방에 들어가기... 여기서 유효성을 검사한다.
@@ -1463,9 +1463,9 @@ exports.Room = function (room, channel) {
 	my.checkRoute = function (func) {
 		var c;
 
-		if (!my.rule) return JLog.warn("Unknown mode: " + my.mode), false;
-		if (!(c = Rule[my.rule.rule])) return JLog.warn("Unknown rule: " + my.rule.rule), false;
-		if (!c[func]) return JLog.warn("Unknown function: " + func), false;
+		if (!my.rule) return JLog.warn("알 수 없는 모드: " + my.mode), false;
+		if (!(c = Rule[my.rule.rule])) return JLog.warn("알 수 없는 규칙: " + my.rule.rule), false;
+		if (!c[func]) return JLog.warn("알 수 없는 함수: " + func), false;
 		return c[func];
 	};
 	my.set(room);

@@ -55,7 +55,7 @@ WebInit.MOBILE_AVAILABLE = [
 
 require("../sub/checkpub");
 
-JLog.info("<< KKuTu Web >>");
+JLog.info("<< 끄투 웹 >>");
 Server.set('views', __dirname + "/views");
 Server.set('view engine', "pug");
 Server.use(Express.static(__dirname + "/public"));
@@ -176,7 +176,7 @@ DB.ready = function () {
 			else v.seek = undefined;
 		});
 	}, 4000);
-	JLog.success("DB is ready.");
+	JLog.success("DB가 준비되었습니다.");
 
 	DB.kkutu_shop_desc.refreshLanguage(Language);
 	Server.listen(80);
@@ -208,13 +208,13 @@ function GameClient(id, url) {
 		my.socket.send(JSON.stringify(data));
 	};
 	my.socket.on('open', function () {
-		JLog.info(`Game server #${my.id} connected`);
+		JLog.info(`게임 서버 #${my.id} 연결됨`);
 	});
 	my.socket.on('error', function (err) {
-		JLog.warn(`Game server #${my.id} has an error: ${err.toString()}`);
+		JLog.warn(`게임 서버 #${my.id} 오류 발생: ${err.toString()}`);
 	});
 	my.socket.on('close', function (code) {
-		JLog.error(`Game server #${my.id} closed: ${code}`);
+		JLog.error(`게임 서버 #${my.id} 종료됨: ${code}`);
 		my.socket.removeAllListeners();
 		delete my.socket;
 	});

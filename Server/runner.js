@@ -89,8 +89,8 @@ exports.send = (...argv) => {
 	// override this
 };
 
-class ChildProcess{
-	constructor(id, cmd, ...argv){
+class ChildProcess {
+	constructor(id, cmd, ...argv) {
 		this.process = Spawn(cmd, argv);
 		this.process.stdout.on('data', msg => {
 			const lines = msg.toString().split(/(\r?\n)/g);
@@ -109,37 +109,37 @@ class ChildProcess{
 			let msg;
 
 			this.process.removeAllListeners();
-			JLog.error(msg = `${id}: CLOSED WITH CODE ${code}`);
+			JLog.error(msg = `${id}: 코드로 닫힘 ${code}`);
 			this.process = null;
 
 			exports.send('log', 'e', msg);
 			exports.send('server-status', getServerStatus());
 		});
 	}
-	kill(sig){
-		if(this.process) this.process.kill(sig || 'SIGINT');
+	kill(sig) {
+		if (this.process) this.process.kill(sig || 'SIGINT');
 	}
 }
 let webServer, gameServers;
 
-function startServer(){
+function startServer() {
 	stopServer();
-	if(SETTINGS['server-name']) process.env['KKT_SV_NAME'] = SETTINGS['server-name'];
-	
+	if (SETTINGS['server-name']) process.env['KKT_SV_NAME'] = SETTINGS['server-name'];
+
 	webServer = new ChildProcess('W', "node", `${__dirname}/lib/Web/cluster.js`, SETTINGS['web-num-cpu']);
 	gameServers = [];
-	
-	for(let i=0; i<SETTINGS['game-num-inst']; i++){
+
+	for (let i = 0; i < SETTINGS['game-num-inst']; i++) {
 		gameServers.push(new ChildProcess('G', "node", `${__dirname}/lib/Game/cluster.js`, i, SETTINGS['game-num-cpu']));
 	}
 	exports.send('server-status', getServerStatus());
 }
-function stopServer(){
-	if(webServer) webServer.kill();
-	if(gameServers) gameServers.forEach(v => v.kill());
+function stopServer() {
+	if (webServer) webServer.kill();
+	if (gameServers) gameServers.forEach(v => v.kill());
 }
-function getServerStatus(){
-	if(!webServer || !gameServers) return 0;
-	if(webServer.process && gameServers.every(v => v.process)) return 2;
+function getServerStatus() {
+	if (!webServer || !gameServers) return 0;
+	if (webServer.process && gameServers.every(v => v.process)) return 2;
 	return 1;
 }

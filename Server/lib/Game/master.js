@@ -65,7 +65,7 @@ process.on('uncaughtException', function (err) {
 	var text = `:${PORT} [${new Date().toLocaleString()}] ERROR: ${err.toString()}\n${err.stack}\n`;
 
 	File.appendFile("/jjolol/KKUTU_ERROR.log", text, function (res) {
-		JLog.error(`ERROR OCCURRED ON THE MASTER!`);
+		JLog.error(`마스터에서 오류가 발생했습니다!`);
 		console.log(text);
 	});
 });
@@ -230,7 +230,7 @@ function sendReportToDiscord(reporter, targetId, reason) {
 	});
 
 	req.on('error', (e) => {
-		JLog.error(`Discord Webhook Error: ${e.message}`);
+		JLog.error(`디스코드 웹훅 오류: ${e.message}`);
 	});
 
 	req.write(payload);
@@ -312,14 +312,14 @@ Cluster.on('message', function (worker, msg) {
 			if (ROOM[msg.id] && DIC[msg.target]) {
 				ROOM[msg.id].come(DIC[msg.target]);
 			} else {
-				JLog.warn(`Wrong room-come id=${msg.id}&target=${msg.target}`);
+				JLog.warn(`잘못된 방 접속 id=${msg.id}&target=${msg.target}`);
 			}
 			break;
 		case "room-spectate":
 			if (ROOM[msg.id] && DIC[msg.target]) {
 				ROOM[msg.id].spectate(DIC[msg.target], msg.pw);
 			} else {
-				JLog.warn(`Wrong room-spectate id=${msg.id}&target=${msg.target}`);
+				JLog.warn(`잘못된 방 연습 id=${msg.id}&target=${msg.target}`);
 			}
 			break;
 		case "room-go":
@@ -327,14 +327,14 @@ Cluster.on('message', function (worker, msg) {
 				ROOM[msg.id].go(DIC[msg.target]);
 			} else {
 				// 나가기 말고 연결 자체가 끊겼을 때 생기는 듯 하다.
-				JLog.warn(`Wrong room-go id=${msg.id}&target=${msg.target}`);
+				JLog.warn(`잘못된 방 퇴장 id=${msg.id}&target=${msg.target}`);
 				if (ROOM[msg.id] && ROOM[msg.id].players) {
 					// 이 때 수동으로 지워준다.
 					var x = ROOM[msg.id].players.indexOf(msg.target);
 
 					if (x != -1) {
 						ROOM[msg.id].players.splice(x, 1);
-						JLog.warn(`^ OK`);
+						JLog.warn(`^ 확인됨`);
 					}
 				}
 				if (msg.removed) delete ROOM[msg.id];
@@ -373,7 +373,7 @@ Cluster.on('message', function (worker, msg) {
 			sendReportToDiscord(msg.data.reporter, msg.data.target, msg.data.reason);
 			break;
 		default:
-			JLog.warn(`Unhandled IPC message type: ${msg.type}`);
+			JLog.warn(`처리되지 않은 IPC 메시지 유형: ${msg.type}`);
 	}
 });
 exports.init = function (_SID, CHAN) {
@@ -381,7 +381,7 @@ exports.init = function (_SID, CHAN) {
 	MainDB = require('../Web/db');
 
 	MainDB.ready = function () {
-		JLog.success("Master DB is ready.");
+		JLog.success("마스터 DB가 준비되었습니다.");
 
 		MainDB.users.update(['server', SID]).set(['server', ""]).on();
 		if (Const.IS_SECURED) {
@@ -400,15 +400,15 @@ exports.init = function (_SID, CHAN) {
 			var $c;
 
 			socket.on('error', function (err) {
-				JLog.warn("Error on #" + key + " on ws: " + err.toString());
+				JLog.warn("ws #" + key + "에서 오류 발생: " + err.toString());
 			});
 			// 웹 서버
 			if (info.headers.host.startsWith(GLOBAL.GAME_SERVER_HOST + ":")) {
 				if (WDIC[key]) WDIC[key].socket.close();
 				WDIC[key] = new KKuTu.WebServer(socket);
-				JLog.info(`New web server #${key}`);
+				JLog.info(`새 웹 서버 #${key}`);
 				WDIC[key].socket.on('close', function () {
-					JLog.alert(`Exit web server #${key}`);
+					JLog.alert(`웹 서버 종료 #${key}`);
 					WDIC[key].socket.removeAllListeners();
 					delete WDIC[key];
 				});
@@ -437,7 +437,7 @@ exports.init = function (_SID, CHAN) {
 				/* Enhanced User Block System [E] */
 
 				if (!$c.id || typeof $c.id !== 'string' || $c.id.length === 0 || $c.id.includes('undefined')) {
-					JLog.warn(`Invalid client ID detected: id="${$c.id}", key="${key}", profile=${$body ? 'found' : 'not found'}`);
+					JLog.warn(`잘못된 클라이언트 ID 감지: id="${$c.id}", key="${key}", profile=${$body ? '발견됨' : '발견되지 않음'}`);
 					$c.sendError(409);
 					$c.socket.close();
 					return;
@@ -538,7 +538,7 @@ exports.init = function (_SID, CHAN) {
 			});
 		});
 		Server.on('error', function (err) {
-			JLog.warn("Error on ws: " + err.toString());
+			JLog.warn("ws에서 오류 발생: " + err.toString());
 		});
 		KKuTu.init(MainDB, DIC, ROOM, GUEST_PERMISSION, CHAN);
 	};
@@ -564,7 +564,7 @@ function joinNewUser($c) {
 	narrateFriends($c.id, $c.friends, "on");
 	KKuTu.publish('conn', { user: $c.getData() });
 
-	JLog.info("New user #" + $c.id);
+	JLog.info("새 사용자 #" + $c.id);
 }
 
 KKuTu.onClientMessage = function ($c, msg) {
@@ -582,7 +582,7 @@ KKuTu.onClientMessage = function ($c, msg) {
 
 					processClientRequest($c, msg);
 				} else {
-					JLog.warn(`Recaptcha failed from IP ${$c.remoteAddress}`);
+					JLog.warn(`IP ${$c.remoteAddress}에서 Recaptcha 실패`);
 
 					$c.sendError(447);
 					$c.socket.close();
@@ -778,5 +778,5 @@ KKuTu.onClientClosed = function ($c, code) {
 	if ($c.friends) narrateFriends($c.id, $c.friends, "off");
 	KKuTu.publish('disconn', { id: $c.id });
 
-	JLog.alert("Exit #" + $c.id);
+	JLog.alert("퇴장 #" + $c.id);
 };

@@ -74,9 +74,9 @@ exports.run = (Server, page) => {
 				fontColor: auth.config.fontColor
 			};
 
-			JLog.info(`OAuth Strategy ${i} loaded successfully.`)
+			JLog.info(`OAuth ${i}가 성공적으로 로드되었습니다.`)
 		} catch (error) {
-			JLog.error(`OAuth Strategy ${i} is not loaded`)
+			JLog.error(`OAuth ${i}가 로드되지 않았습니다.`)
 			JLog.error(error.message)
 		}
 	}

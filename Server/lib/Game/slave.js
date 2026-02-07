@@ -54,7 +54,7 @@ const ENABLE_ROUND_TIME = Master.ENABLE_ROUND_TIME;
 const ENABLE_FORM = Master.ENABLE_FORM;
 const MODE_LENGTH = Master.MODE_LENGTH;
 
-JLog.info(`<< KKuTu Server:${Server.options.port} >>`);
+JLog.info(`<< 끄투 서버:${Server.options.port} >>`);
 
 process.on('uncaughtException', function (err) {
 	var text = `:${process.env['KKUTU_PORT']} [${new Date().toLocaleString()}] ERROR: ${err.toString()}\n${err.stack}`;
@@ -63,7 +63,7 @@ process.on('uncaughtException', function (err) {
 		DIC[i].send('dying');
 	}
 	File.appendFile("../KKUTU_ERROR.log", text, function (res) {
-		JLog.error(`ERROR OCCURRED! This worker will die in 10 seconds.`);
+		JLog.error(`오류 발생! 이 작업자는 10초 후 종료됩니다.`);
 		console.log(text);
 	});
 	setTimeout(function () {
@@ -95,11 +95,11 @@ process.on('message', function (msg) {
 			delete ROOM[msg.room.id];
 			break;
 		default:
-			JLog.warn(`Unhandled IPC message type: ${msg.type}`);
+			JLog.warn(`처리되지 않은 IPC 메시지 유형: ${msg.type}`);
 	}
 });
 MainDB.ready = function () {
-	JLog.success("DB is ready.");
+	JLog.success("DB가 준비되었습니다.");
 	KKuTu.init(MainDB, DIC, ROOM, GUEST_PERMISSION);
 };
 Server.on('connection', function (socket, info) {
@@ -109,10 +109,10 @@ Server.on('connection', function (socket, info) {
 	var $c;
 
 	socket.on('error', function (err) {
-		JLog.warn("Error on #" + key + " on ws: " + err.toString());
+		JLog.warn("ws #" + key + "에서 오류 발생: " + err.toString());
 	});
 	if (CHAN != Number(chunk[1])) {
-		JLog.warn(`Wrong channel value ${chunk[1]} on @${CHAN}`);
+		JLog.warn(`잘못된 채널 값 ${chunk[1]} @${CHAN}`);
 		socket.close();
 		return;
 	}
@@ -125,7 +125,7 @@ Server.on('connection', function (socket, info) {
 		delete reserve._expiration;
 		delete RESERVED[key];
 	} else {
-		JLog.warn(`Not reserved from ${key} on @${CHAN}`);
+		JLog.warn(`예약되지 않음: ${key} @${CHAN}`);
 		socket.close();
 		return;
 	}
@@ -170,7 +170,7 @@ Server.on('connection', function (socket, info) {
 				} else { // 입장 실패
 					$c.socket.close();
 				}
-				JLog.info(`Chan @${CHAN} New #${$c.id}`);
+				JLog.info(`채널 @${CHAN} 새 사용자 #${$c.id}`);
 			} else {
 				$c.send('error', {
 					code: ref.result, message: ref.black
@@ -182,7 +182,7 @@ Server.on('connection', function (socket, info) {
 	});
 });
 Server.on('error', function (err) {
-	JLog.warn("Error on ws: " + err.toString());
+	JLog.warn("ws에서 오류 발생: " + err.toString());
 });
 KKuTu.onClientMessage = function ($c, msg) {
 	var stable = true;
@@ -433,5 +433,5 @@ KKuTu.onClientClosed = function ($c, code) {
 	if ($c.socket) $c.socket.removeAllListeners();
 	KKuTu.publish('disconnRoom', { id: $c.id });
 
-	JLog.alert(`Chan @${CHAN} Exit #${$c.id}`);
+	JLog.alert(`채널 @${CHAN} 퇴장 #${$c.id}`);
 };

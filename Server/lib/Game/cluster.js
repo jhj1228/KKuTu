@@ -50,7 +50,7 @@ if (Cluster.isMaster) {
 				break;
 			}
 		}
-		JLog.error(`Worker @${chan} ${w.process.pid} died`);
+		JLog.error(`워커 @${chan} ${w.process.pid} 종료됨`);
 		channels[chan] = Cluster.fork({ SERVER_NO_FORK: true, KKUTU_PORT: Const.MAIN_PORTS[SID] + 416 + (chan - 1), CHANNEL: chan });
 	});
 	process.env['KKUTU_PORT'] = Const.MAIN_PORTS[SID];

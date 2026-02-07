@@ -16,39 +16,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var DB	 = require("../Web/db");
+var DB = require("../Web/db");
 var File = require("fs");
 var JLog = require("../sub/jjlog");
 
 /* 상품 group 명세
 NIK	이름 스킨; 이름의 색상을 변경합니다.
 */
-JLog.info("KKuTu Goods Manager");
-DB.ready = function(){
+JLog.info("끄투 굿즈 매니저");
+DB.ready = function () {
 	var data = {
 		type: process.argv[2],
 		url: process.argv[3]
 	};
-	
-	File.readFile(data.url, function(err, _file){
-		if(err){
-			JLog.error("URL not found: " + data.url);
+
+	File.readFile(data.url, function (err, _file) {
+		if (err) {
+			JLog.error("URL을 찾을 수 없습니다: " + data.url);
 			process.exit();
-		}else{
+		} else {
 			var i, dv = _file.toString();
-			
+
 			dv = JSON.parse(dv);
-			
+
 			data.list = dv.list;
 			run(data);
 		}
 	});
-	JLog.success("DB is ready.");
+	JLog.success("DB가 준비되었습니다.");
 };
-function run(data){
+function run(data) {
 	var i, o;
-	
-	switch(data.type){
+
+	switch (data.type) {
 		case "A":
 			/* 추가/수정
 {
@@ -60,25 +60,25 @@ function run(data){
 	"desc":		설명
 }
 			*/
-			for(i in data.list){
+			for (i in data.list) {
 				o = data.list[i];
-				
+
 				JLog.log(i);
-				DB.kkutu_shop.upsert([ '_id', Number(o.id) ]).set(
-					[ 'group', o.group ],
-					[ 'title', o.title ],
-					[ 'cost', Number(o.cost) ],
-					[ 'term', Number(o.term) ],
-					[ 'desc', o.desc ],
-					[ 'updatedAt', new Date() ]
+				DB.kkutu_shop.upsert(['_id', Number(o.id)]).set(
+					['group', o.group],
+					['title', o.title],
+					['cost', Number(o.cost)],
+					['term', Number(o.term)],
+					['desc', o.desc],
+					['updatedAt', new Date()]
 				).soi(
-					[ 'hit', 0 ]
+					['hit', 0]
 				).on();
 			}
 			break;
 		default:
-			JLog.error("Unhandled type " + data.type);
-			JLog.log("Avails: A");
+			JLog.error("처리되지 않은 타입 " + data.type);
+			JLog.log("사용 가능: A");
 			process.exit();
 	}
 }

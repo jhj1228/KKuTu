@@ -51,15 +51,15 @@ Pub.ready = function (isPub) {
 		connectPg();
 	});
 	Redis.on('error', function (err) {
-		JLog.error("Error from Redis: " + err);
-		JLog.alert("Run with no-redis mode.");
+		JLog.error("레디스 오류: " + err);
+		JLog.alert("레디스 없이 실행됩니다.");
 		Redis.quit();
 		connectPg(true);
 	});
 	function connectPg(noRedis) {
 		Pg.connect(function (err, pgMain) {
 			if (err) {
-				JLog.error("Error when connect to PostgreSQL server: " + err.toString());
+				JLog.error("PostgreSQL 서버 연결 오류: " + err.toString());
 				return;
 			}
 			var redisAgent = noRedis ? null : new Collection.Agent("Redis", Redis);
@@ -102,7 +102,7 @@ Pub.ready = function (isPub) {
 			/* Enhanced User Block System [E] */
 
 			if (exports.ready) exports.ready(Redis, Pg);
-			else JLog.warn("DB.onReady was not defined yet.");
+			else JLog.warn("DB.onReady가 아직 정의되지 않았습니다.");
 		});
 	}
 };
