@@ -298,6 +298,7 @@ Server.get("/", function (req, res) {
 			'KO_THEME': Const.KO_THEME,
 			'EN_THEME': Const.EN_THEME,
 			'IJP_EXCEPT': Const.IJP_EXCEPT,
+			'SPEEDQUIZ_TOPIC': Const.SPEEDQUIZ_TOPIC,
 			'ogImage': "http://kkutu.kr/img/kkutu/logo.png",
 			'ogURL': "http://kkutu.kr/",
 			'ogTitle': "글자로 놀자! 레전드끄투",

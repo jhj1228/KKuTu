@@ -77,7 +77,7 @@ module.exports = {
 				resolve(gameSourcePath, "rule_sock.js"),
 				resolve(gameSourcePath, "rule_moqwi.js"),
 				resolve(gameSourcePath, "rule_all.js"),
-				resolve(gameSourcePath, "rule_wordstack.js"),
+				resolve(gameSourcePath, "rule_speedquiz.js"),
 				resolve(gameSourcePath, "body.js"),
 				resolve(gameSourcePath, "tail.js"),
 			],

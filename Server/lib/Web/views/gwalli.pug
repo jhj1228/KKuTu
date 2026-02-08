@@ -112,3 +112,14 @@ block Middle
 			input#db-theme(placeholder='주제 (~부터 적으면 검색)')
 			textarea#db-list(rows=20, cols=100)
 			button#db-ok 확인
+	fieldset
+		legend 스피드퀴즈 DB에 문제 추가하기
+		div
+			label 카테고리:
+			select#quiz-topic
+				option(value='') -- 선택 --
+				option(value='COOK') 요리
+			textarea#quiz-question(rows=2, cols=60, placeholder='질문')
+			input#quiz-answer(type='text', placeholder='정답', style='width: 400px;')
+			input#quiz-aliases(type='text', placeholder='별칭, 예: 계란,달걀', style='width: 400px;')
+			button#quiz-add 질문 추가

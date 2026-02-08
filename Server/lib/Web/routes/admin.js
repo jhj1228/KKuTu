@@ -262,6 +262,83 @@ exports.run = function (Server, page) {
 		MainDB.kkutu_shop_desc.refreshLanguage(Language);
 	});
 
+	// 스피드퀴즈 질문 추가
+	Server.post("/gwalli/quiz/add", function (req, res) {
+		console.log('[Admin] Quiz add requested:', req.body);
+		if (!checkAdmin(req, res)) {
+			console.log('[Admin] Admin check failed');
+			return;
+		}
+
+		var topic = req.body.topic;
+		var difficulty = parseInt(req.body.difficulty) || 1;
+		var question = req.body.question;
+		var answer_ko = req.body.answer_ko;
+		var aliases_ko = req.body.aliases_ko || '';
+
+		console.log('[Admin] Adding quiz:', { topic, difficulty, question: question.substring(0, 30) });
+
+		if (!topic || !question || !answer_ko) {
+			console.log('[Admin] Validation failed - missing required fields');
+			return res.send({ success: false, message: '필수 항목이 누락되었습니다.' });
+		}
+
+		MainDB.kkutu.speedquiz.insert({
+			topic: topic,
+			difficulty: difficulty,
+			question: question,
+			answer_ko: answer_ko,
+			aliases_ko: aliases_ko,
+			created_at: new Date(),
+			updated_at: new Date()
+		}, function (err) {
+			if (err) {
+				console.error('[Admin] Quiz insert error:', err);
+				JLog.error('Quiz insert error: ' + err.toString());
+				return res.send({ success: false, message: '데이터베이스 오류' });
+			}
+			console.log('[Admin] Quiz successfully added - Topic:', topic);
+			JLog.info('[Admin] Quiz added - Topic: ' + topic + ', Question: ' + question.substring(0, 30) + '...');
+			noticeAdmin(req, '[QUIZ] 질문 추가:', question);
+			res.send({ success: true });
+		});
+	});
+
+	// 스피드퀴즈 질문 목록 조회
+	Server.get("/gwalli/quiz/list", function (req, res) {
+		if (!checkAdmin(req, res)) return;
+
+		var topic = req.query.topic;
+
+		if (!topic) {
+			return res.send({ data: [] });
+		}
+
+		MainDB.kkutu.speedquiz.find(['topic', topic]).on(function ($docs) {
+			res.send({ data: $docs || [] });
+		});
+	});
+
+	// 스피드퀴즈 질문 삭제
+	Server.post("/gwalli/quiz/delete", function (req, res) {
+		if (!checkAdmin(req, res)) return;
+
+		var _id = req.body._id;
+
+		if (!_id) {
+			return res.send({ success: false, message: '삭제할 항목을 찾을 수 없습니다.' });
+		}
+
+		MainDB.kkutu.speedquiz.delete(['_id', _id], function (err) {
+			if (err) {
+				JLog.error('Quiz delete error: ' + err.toString());
+				return res.send({ success: false, message: '데이터베이스 오류' });
+			}
+			noticeAdmin(req, '[QUIZ] 질문 삭제:', _id);
+			res.send({ success: true });
+		});
+	});
+
 };
 function noticeAdmin(req, ...args) {
 	JLog.info(`[운영자] ${req.originalUrl} ${req.ip} | ${args.join(' | ')}`);

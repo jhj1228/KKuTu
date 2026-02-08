@@ -55,7 +55,7 @@ exports.OPTIONS = {
 	'thw': { name: "Threeword" }, // 3글자
 	// 'ddl': { name: "Dodoli" }, // 도돌이 금지
 	'fre': { name: "Free" }, // 자유
-	'mwd': { name: "Moreword" } // 특수 단어 허용
+	'mwd': { name: "Moreword" }, // 특수 단어 허용
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -229,6 +229,15 @@ exports.RULE = {
 		ai: true,
 		big: false,
 		ewq: true
+	},
+	'KSQ': {
+		lang: "ko",
+		rule: "Speedquiz",
+		opts: ["sqj"],
+		time: 0.1,
+		ai: true,
+		big: false,
+		ewq: false
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
@@ -257,6 +266,9 @@ exports.KO_INJEONG = [
 	"KPO", "VOC", "ERT", "JPT", "ZEL",
 	"CKR", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
+];
+exports.SPEEDQUIZ_TOPIC = [
+	"COOK"
 ];
 exports.EN_INJEONG = [
 	"LOL", "GTD", "e50"

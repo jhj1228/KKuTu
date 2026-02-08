@@ -184,6 +184,8 @@ block Middle
 				+GameOption(i, 'room')
 			div.dialog-opt#room-injpick-panel
 				button#room-injeong-pick(style='font-size: 11px;')= L('pickInjeong')
+			div.dialog-opt#room-speedquizpick-panel(style='display: none;')
+				button#room-speedquiz-pick(style='font-size: 11px;')= L('pickSpeedquizTopic')
 		div.dialog-bar.tail-button
 			button#room-ok= L('OK')
 	+Dialog('InjPickDiag', 200, 400, L('pickInjeong'))
@@ -210,6 +212,20 @@ block Middle
 				- });
 		div.dialog-bar.tail-button
 			button#injpick-ok= L('OK')
+	+Dialog('SpeedquizPickDiag', 300, 300, L('pickSpeedquizTopic'))
+		h4= L('explSpeedquizPick')
+		div.dialog-bar
+			button#speedquizpick-all= L('injpickAll')
+			button#speedquizpick-no= L('injpickNo')
+		div.dialog-bar#speedquizpick-list(style='height: 180px; overflow-y: scroll;')
+			- locals.SPEEDQUIZ_TOPIC.forEach(function(item){
+				- var name = "speedquiz-pick-" + item;
+				div(style='float: left; width: 100%;')
+					input(id=name, type='checkbox', style='width: auto;')
+					label(for=name)= LANG['speedquiz_' + item]
+			- });
+		div.dialog-bar.tail-button
+			button#speedquizpick-ok= L('OK')
 	+Dialog('PracticeDiag', 300, 135)
 		div.dialog-bar
 			h4= L('selectLevel')

@@ -134,6 +134,10 @@ $(document).ready(function () {
 			injPickAll: $("#injpick-all"),
 			injPickNo: $("#injpick-no"),
 			injPickOK: $("#injpick-ok"),
+			speedquizPick: $("#SpeedquizPickDiag"),
+			speedquizPickAll: $("#speedquizpick-all"),
+			speedquizPickNo: $("#speedquizpick-no"),
+			speedquizPickOK: $("#speedquizpick-ok"),
 			chatLog: $("#ChatLogDiag"),
 			obtain: $("#ObtainDiag"),
 			obtainOK: $("#obtain-ok"),
@@ -525,9 +529,12 @@ $(document).ready(function () {
 
 		updateGameOptions(rule.opts, 'room');
 
-		$data._injpick = [];
+		if (!$data._injpick) $data._injpick = [];
+		if (!$data._quizpick) $data._quizpick = [];
 		if (rule.opts.indexOf("ijp") != -1) $("#room-injpick-panel").show();
 		else $("#room-injpick-panel").hide();
+		if (rule.opts.indexOf("sqj") != -1) $("#room-speedquizpick-panel").show();
+		else $("#room-speedquizpick-panel").hide();
 		if (rule.rule == "Typing") $("#room-round").val(3);
 		$("#room-time").children("option").each(function (i, o) {
 			$(o).html(Number($(o).val()) * rule.time + L['SECOND']);
@@ -672,7 +679,8 @@ $(document).ready(function () {
 	});
 	$stage.dialog.roomOK.on('click', function (e) {
 		var i, k, opts = {
-			injpick: $data._injpick
+			injpick: $data._injpick,
+			speedquizpick: $data._speedquizpick
 		};
 		for (i in OPTIONS) {
 			k = OPTIONS[i].name.toLowerCase();
@@ -1053,6 +1061,34 @@ $(document).ready(function () {
 		});
 		$data._injpick = list;
 		$stage.dialog.injPick.hide();
+	});
+	$("#room-speedquiz-pick, #room-speedquiz-pick-flat").on('click', function (e) {
+		var i;
+
+		$("#speedquizpick-no").trigger('click');
+		for (i in $data._speedquizpick) {
+			$("#speedquiz-pick-" + $data._speedquizpick[i]).prop('checked', true);
+		}
+		showDialog($stage.dialog.speedquizPick);
+	});
+	$stage.dialog.speedquizPickAll.on('click', function (e) {
+		$("#speedquizpick-list input").prop('checked', true);
+	});
+	$stage.dialog.speedquizPickNo.on('click', function (e) {
+		$("#speedquizpick-list input").prop('checked', false);
+	});
+	$stage.dialog.speedquizPickOK.on('click', function (e) {
+		var list = [];
+
+		$("#speedquizpick-list").find("input").each(function (i, o) {
+			var $o = $(o);
+			var id = $o.attr('id').slice(14);
+
+			if ($o.is(':checked')) list.push(id);
+		});
+		$data._speedquizpick = list;
+		send('room', { opts: { speedquizpick: list } });
+		$stage.dialog.speedquizPick.hide();
 	});
 	$stage.dialog.kickVoteY.on('click', function (e) {
 		send('kickVote', { agree: true });

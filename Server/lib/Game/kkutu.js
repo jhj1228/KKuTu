@@ -1103,6 +1103,9 @@ exports.Room = function (room, channel) {
 				ij = Const[`${my.rule.lang.toUpperCase()}_IJP`];
 				my.opts.injpick = (room.opts.injpick || []).filter(function (item) { return ij.includes(item); });
 			} else my.opts.injpick = [];
+			if (my.rule.opts.includes("sqj")) {
+				my.opts.speedquizpick = room.opts.speedquizpick || [];
+			} else my.opts.speedquizpick = [];
 		}
 		if (!my.rule.ai) {
 			while (my.removeAI(false, true));
@@ -1141,6 +1144,10 @@ exports.Room = function (room, channel) {
 			if (!my.opts.injpick.every(function (item) {
 				return !Const.IJP_EXCEPT.includes(item);
 			})) return 414;
+		}
+		if (my.rule.opts.includes("sqj")) {
+			if (!my.opts.speedquizpick) return 400;
+			if (!my.opts.speedquizpick.length) return 413;
 		}
 		return false;
 	};
