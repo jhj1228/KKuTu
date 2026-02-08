@@ -2681,7 +2681,7 @@ function getAudio(k, url, cb) {
 	function done() {
 		if (--$data._lsRemain == 0) {
 			if (cb) cb();
-		} else loading(L['loadRemain'] + $data._lsRemain);
+		} else loading(L['loadRemain']);
 	}
 	function AudioSound(url) {
 		var my = this;
