@@ -315,7 +315,7 @@
 		"afterRun": "초 후 다음 라운드",
 		"kpm": "<label style='font-size: 11px;'>타/분</label>",
 		"theme_IMS": "THE iDOLM@STER",
-		"theme_VOC": "VOCALOID/UTAU",
+		"theme_VOC": "음성 합성 엔진",
 		"theme_KTV": "국내 방송 프로그램",
 		"theme_KOT": "대한민국 철도역",
 		"theme_DOT": "도타 2",

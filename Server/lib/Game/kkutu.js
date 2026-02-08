@@ -1523,13 +1523,13 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 			rw.score += score * 0.55;
 			break;
 		case "CSQ":
-			rw.score += score * 0.4;
+			rw.score += score * 0.6;
 			break;
 		case 'KCW':
 			rw.score += score * 1.0;
 			break;
 		case 'KTY':
-			rw.score += score * 0.3;
+			rw.score += score * 0.45;
 			break;
 		case 'KAP':
 			rw.score += score * 0.8;
@@ -1547,19 +1547,19 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 			rw.score += score * 0.8;
 			break;
 		case 'KKK':
-			rw.score += score * 1.85;
+			rw.score += score * 1.72;
 			break;
 		case 'MOQ':
 			rw.score += score * 0.68;
 			break;
 		case 'ALL':
-			rw.score += score * 0.4;
+			rw.score += score * 0.2;
 			break;
 		case 'KTT':
-			rw.score += score * 0.55;
+			rw.score += score * 0.47;
 			break;
 		case 'KRH':
-			rw.score += score * 0.58;
+			rw.score += score * 0.47;
 			break;
 		case 'KAT':
 			rw.score += score * 1.65;

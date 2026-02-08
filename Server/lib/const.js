@@ -248,13 +248,13 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
-	"IMS", "VOC", "RAG", "NEX",
+	"IMS", "RAG", "NEX",
 	"KTV", "CPY", "WOR", "NFX", "KOT", "DOT", "THP",
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
-	"MIN", "MAF", "CTH", "BGP", /*"BUT",*/ "BUS",
+	"MIN", "MAF", "JAN", "CTH", "BGP", /*"BUT",*/ "BUS",
 	"HSR", "BLA", "CYP", "NVL", "STA", "APT", "ESB",
 	"ELW", "KMV", "OVW", "GEN", "WOW", "WEB", "UWH",
-	"KPO", "ERT", "JPT", "ZEL",
+	"KPO", "VOC", "ERT", "JPT", "ZEL",
 	"CKR", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
 ];
