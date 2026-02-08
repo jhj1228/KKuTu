@@ -184,7 +184,7 @@
 
     <nav class="nav-header">
         <button class="nav-btn active" onclick="switchTab('tab-updates', this)">업데이트</button>
-        <!-- <button class="nav-btn" onclick="switchTab('tab-notices', this)">공지사항</button> -->
+        <button class="nav-btn" onclick="switchTab('tab-notices', this)">공지사항</button>
         <!-- <button class="nav-btn" onclick="switchTab('tab-events', this)">이벤트</button> -->
     </nav>
 
@@ -424,20 +424,11 @@
                     <span class="badge bg-red">중요</span>
                 </div>
                 <ul>
-                    <li>2026.01.23 기준 한국어 단어 뜻이 추가되었으나, 우리말샘으로 이관된 옛말, 북한어, 방언 등은 아직 뜻이 표기가 안될 수 있습니다.</li>
-                </ul>
-            </div>
-            <!-- <div class="card" style="border-left: 5px solid #ff5e57;">
-                <div class="card-header">
-                    <span class="header-title">단어 추가 요청</span>
-                </div>
-                <ul>
-                    <li><a href="https://docs.google.com/forms/d/1OrhGbDbWcknwkEcrgcRscObrLyWrWPQG3NPo1Lg13jQ" ,
-                            target="_blank">여기</a>를 통해 단어 추가 신청을 하실 수 있습니다.</li>
+                    <li>현재 스피드퀴즈 모드는 공사중이므로 이용할 수 없습니다.</li>
                 </ul>
             </div>
         </div>
-        <div id="tab-events" class="tab-content">
+        <!-- <div id="tab-events" class="tab-content">
 
             <div class="card" style="border-left: 5px solid #4a90e2;">
                 <div class="card-header">
@@ -448,23 +439,23 @@
                     <li>2026년 새해 맞이 기념 경험치/핑 2배 이벤트가 한 달 내내 진행 중!! 많은 참여 부탁드립니다.</li>
                 </ul>
             </div>
-        </div>
-    </div> -->
+        </div> -->
+    </div>
 
-            <script>
-                function switchTab(tabId, element) {
-                    var contents = document.getElementsByClassName('tab-content');
-                    for (var i = 0; i < contents.length; i++) {
-                        contents[i].classList.remove('active');
-                    }
-                    var buttons = document.getElementsByClassName('nav-btn');
-                    for (var i = 0; i < buttons.length; i++) {
-                        buttons[i].classList.remove('active');
-                    }
-                    document.getElementById(tabId).classList.add('active');
-                    element.classList.add('active');
-                }
-            </script>
+    <script>
+        function switchTab(tabId, element) {
+            var contents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
+            }
+            var buttons = document.getElementsByClassName('nav-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+    </script>
 </body>
 
 </html>
