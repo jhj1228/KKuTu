@@ -56,6 +56,7 @@ exports.OPTIONS = {
 	// 'ddl': { name: "Dodoli" }, // 도돌이 금지
 	'fre': { name: "Free" }, // 자유
 	'mwd': { name: "Moreword" }, // 특수 단어 허용
+	'nht': { name: "Nohint" } // 힌트 없음
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -106,7 +107,7 @@ exports.RULE = {
 	'CSQ': { // 자음퀴즈
 		lang: "ko",
 		rule: "Jaqwi",
-		opts: ["ijp", "ulm"],
+		opts: ["ijp", "ulm", "nht"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -188,7 +189,7 @@ exports.RULE = {
 	'MOQ': { // 모음퀴즈
 		lang: "ko",
 		rule: "Moqwi",
-		opts: ["ijp", "ulm"],
+		opts: ["ijp", "ulm", "nht"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -233,7 +234,7 @@ exports.RULE = {
 	'KSQ': {
 		lang: "ko",
 		rule: "Speedquiz",
-		opts: ["sqj"],
+		opts: ["nht", "sqj"],
 		time: 0.1,
 		ai: true,
 		big: false,

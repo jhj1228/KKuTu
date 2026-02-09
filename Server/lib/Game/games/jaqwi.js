@@ -83,8 +83,10 @@ exports.turnStart = function () {
 	my.game.meaned = 0;
 	my.game.primary = 0;
 	my.game.qTimer = setTimeout(my.turnEnd, my.game.roundTime);
-	my.game.hintTimer = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.333);
-	my.game.hintTimer2 = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.667);
+	if (!my.opts.nohint) {
+		my.game.hintTimer = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.333);
+		my.game.hintTimer2 = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.667);
+	}
 	my.byMaster('turnStart', {
 		char: my.game.conso,
 		roundTime: my.game.roundTime
@@ -150,8 +152,10 @@ exports.submit = function (client, text) {
 			bonus: 0
 		}, true);
 		client.invokeWordPiece(text, 0.9);
-		while (my.game.meaned < my.game.hint.length) {
-			turnHint.call(my);
+		if (!my.opts.nohint) {
+			while (my.game.meaned < my.game.hint.length) {
+				turnHint.call(my);
+			}
 		}
 	} else if (play && !gu && (text == "gg" || text == "ㅈㅈ")) {
 		my.game.giveup.push(client.id);

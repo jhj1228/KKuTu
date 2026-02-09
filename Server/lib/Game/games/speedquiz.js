@@ -97,7 +97,7 @@ exports.roundReady = function () {
 							console.error('Speedquiz: NO_QUESTION_FOUND error:', e);
 						}
 						clearTimeout(my.game._rrt);
-						my.game._rrt = setTimeout(function() {
+						my.game._rrt = setTimeout(function () {
 							exports.roundReady.call(my);
 						}, 2500);
 						return;
@@ -129,11 +129,13 @@ exports.turnStart = function () {
 		my.game.hintCount = 0;
 		my.game.primary = 0;
 		clearTimeout(my.game.qTimer);
-		my.game.qTimer = setTimeout(function() { exports.turnEnd.call(my); }, my.game.roundTime);
-		clearTimeout(my.game.hintTimer);
-		my.game.hintTimer = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.333);
-		clearTimeout(my.game.hintTimer2);
-		my.game.hintTimer2 = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.667);
+		my.game.qTimer = setTimeout(function () { exports.turnEnd.call(my); }, my.game.roundTime);
+		if (!my.opts.nohint) {
+			clearTimeout(my.game.hintTimer);
+			my.game.hintTimer = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.333);
+			clearTimeout(my.game.hintTimer2);
+			my.game.hintTimer2 = setTimeout(function () { turnHint.call(my); }, my.game.roundTime * 0.667);
+		}
 
 		my.byMaster('turnStart', {
 			question: my.game.question,
@@ -179,7 +181,7 @@ exports.turnEnd = function () {
 	}
 
 	clearTimeout(my.game._rrt);
-	my.game._rrt = setTimeout(function() {
+	my.game._rrt = setTimeout(function () {
 		exports.roundReady.call(my);
 	}, 2500);
 };
@@ -199,14 +201,14 @@ exports.submit = function (client, text) {
 		t = now - my.game.roundAt;
 		if (my.game.primary == 0) if (my.game.roundTime - t > 10000) {
 			clearTimeout(my.game.qTimer);
-			my.game.qTimer = setTimeout(function() { exports.turnEnd.call(my); }, 10000);
+			my.game.qTimer = setTimeout(function () { exports.turnEnd.call(my); }, 10000);
 			for (i in my.game.robots) {
 				if (my.game.roundTime > my.game.robots[i]._delay) {
 					clearTimeout(my.game.robots[i]._timer);
 					if (client != my.game.robots[i]) if (Math.random() < ROBOT_CATCH_RATE[my.game.robots[i].level]) {
 						var randomDelay = Math.floor(Math.random() * 90) + 10;
-						my.game.robots[i]._timer = setTimeout((function(robot, answer, level) {
-							return function() {
+						my.game.robots[i]._timer = setTimeout((function (robot, answer, level) {
+							return function () {
 								if (my.turnRobot) {
 									my.turnRobot(robot, answer);
 								}
@@ -240,8 +242,10 @@ exports.submit = function (client, text) {
 			totalScore: client.game.score
 		}, true);
 		client.invokeWordPiece(text, 0.9);
-		while (my.game.hintCount < my.game.hints.length) {
-			turnHint.call(my);
+		if (!my.opts.nohint) {
+			while (my.game.hintCount < my.game.hints.length) {
+				turnHint.call(my);
+			}
 		}
 	} else if (play && !gu && (text == "gg" || text == "ㅈㅈ")) {
 		my.game.giveup.push(client.id);
@@ -286,8 +290,8 @@ exports.readyRobot = function (robot) {
 		if (Math.random() < ROBOT_CATCH_RATE[level]) {
 			var randomDelay = Math.floor(Math.random() * 90) + 10;
 			delay = my.game.roundTime / 3 * i + my.game.answer.length * ROBOT_TYPE_COEF[level] + randomDelay;
-			robot._timer = setTimeout((function(r, answer) {
-				return function() {
+			robot._timer = setTimeout((function (r, answer) {
+				return function () {
 					if (my.turnRobot) {
 						my.turnRobot(r, answer);
 					}
@@ -307,7 +311,7 @@ function getQuestion(topics, ignoreDone) {
 		var questionList = SPEEDQUIZ_DATA[topics];
 
 		if (!questionList || !Array.isArray(questionList) || questionList.length === 0) {
-			setTimeout(function() { R.go(null); }, 5);
+			setTimeout(function () { R.go(null); }, 5);
 			return R;
 		}
 
@@ -323,21 +327,21 @@ function getQuestion(topics, ignoreDone) {
 		}
 
 		if (availableQuestions.length === 0) {
-			setTimeout(function() { R.go(null); }, 5);
+			setTimeout(function () { R.go(null); }, 5);
 			return R;
 		}
 
 		var pick = Math.floor(Math.random() * availableQuestions.length);
 		var q = availableQuestions[pick];
-		
+
 		if (!q || !q.question || !q.answer) {
-			setTimeout(function() { R.go(null); }, 5);
+			setTimeout(function () { R.go(null); }, 5);
 			return R;
 		}
 
 		var originalIndex = questionList.indexOf(q);
 
-		setTimeout(function() {
+		setTimeout(function () {
 			R.go({
 				topic: topics,
 				question: q.question,
@@ -348,7 +352,7 @@ function getQuestion(topics, ignoreDone) {
 
 	} catch (err) {
 		console.error('Speedquiz: getQuestion error:', err);
-		setTimeout(function() { R.go(null); }, 5);
+		setTimeout(function () { R.go(null); }, 5);
 	}
 
 	return R;
@@ -362,12 +366,12 @@ function processQuestion($q) {
 		console.error('Speedquiz: processQuestion - Invalid question object');
 		clearTimeout(my.game._pqTimer);
 		clearTimeout(my.game._rrt);
-		my.game._rrt = setTimeout(function() { 
-			exports.roundReady.call(my); 
+		my.game._rrt = setTimeout(function () {
+			exports.roundReady.call(my);
 		}, 2500);
 		return;
 	}
-	
+
 	my.game.late = false;
 	my.game.question = $q.question;
 	my.game.answer = $q.answer;
@@ -407,17 +411,17 @@ function processQuestion($q) {
 function getHints(answer, lang) {
 	var hints = [];
 	var h1, h2;
-	
+
 	if (lang === 'ko') {
 		try {
 			h1 = getConsonants(answer, Math.ceil(answer.length / 3));
-			
+
 			var attempts = 0;
 			do {
 				h2 = getConsonants(answer, Math.ceil(answer.length / 2));
 				attempts++;
 			} while (h1 == h2 && attempts < 10);
-			
+
 			hints.push(h1);
 			hints.push(h2);
 		} catch (err) {
@@ -428,7 +432,7 @@ function getHints(answer, lang) {
 		hints.push(answer.length + ' letters');
 		hints.push(answer.charAt(0).toUpperCase());
 	}
-	
+
 	return hints;
 }
 function getConsonants(word, lucky) {
