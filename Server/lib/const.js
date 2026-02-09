@@ -268,7 +268,7 @@ exports.KO_INJEONG = [
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
-	/* "GIHO", "ENWO",*/ "COOK", "HANJ"
+	"GIHO", "ENWO", "COOK", "HANJ"
 ];
 exports.EN_INJEONG = [
 	"LOL", "GTD", "e50"
