@@ -5114,6 +5114,13 @@ function setRoomHead($obj, room) {
 		}) + "</h5>"));
 		global.expl($obj);
 	}
+
+	if (rule.opts.indexOf("sqj") != -1) {
+		$rm.append($("<div>").addClass("expl").html("<h5>" + room.opts.speedquizpick.map(function (item) {
+			return L["speedquiz_" + item];
+		}) + "</h5>"));
+		global.expl($obj);
+	}
 }
 function loadSounds(list, callback) {
 	$data._lsRemain = list.length;
