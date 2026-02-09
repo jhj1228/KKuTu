@@ -2440,8 +2440,6 @@ $lib.Speedquiz.turnEnd = function (id, data) {
 	var $sc = $("<div>").addClass("deltaScore").html("+" + data.score);
 	var $uc = $("#game-user-" + id);
 
-	console.log('[Speedquiz Client] turnEnd called:', { id: id, data: data });
-
 	if (data.giveup) {
 		$uc.addClass("game-user-bomb");
 	} else if (data.answer) {
@@ -2451,11 +2449,8 @@ $lib.Speedquiz.turnEnd = function (id, data) {
 		stopBGM();
 		playSound('horr');
 	} else {
-		console.log('[Speedquiz Client] Correct answer! Adding score...');
 		if (id == $data.id) $stage.game.here.css('opacity', mobile ? 0.5 : 0);
-		console.log('[Speedquiz Client] Before addScore - getScore:', getScore(id));
 		addScore(id, data.score);
-		console.log('[Speedquiz Client] After addScore - getScore:', getScore(id));
 		if ($data._roundTime > 10000) $data._roundTime = 10000;
 		drawObtainedScore($uc, $sc);
 		updateScore(id, getScore(id)).addClass("game-user-current");

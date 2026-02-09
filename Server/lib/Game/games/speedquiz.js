@@ -31,13 +31,12 @@ exports.init = function (_DB, _DIC) {
 	DB = _DB;
 	DIC = _DIC;
 
-	// JSON 파일에서 문제 데이터 로드
 	try {
 		var filePath = path.join(__dirname, '../../data/speedquiz.json');
 		var rawData = fs.readFileSync(filePath, 'utf8');
 		SPEEDQUIZ_DATA = JSON.parse(rawData);
 	} catch (err) {
-		console.error('[Speedquiz] Failed to load speedquiz.json:', err.message);
+		console.error('speedquiz.json 파일을 읽을 수 없습니다.:', err.message);
 		SPEEDQUIZ_DATA = {};
 	}
 };
@@ -171,8 +170,6 @@ exports.submit = function (client, text) {
 
 	var isCorrect = checkAnswer(text, my.game.answer, my.game.aliases, my.game.topic, my.rule.lang);
 
-	console.log('[Speedquiz] submit - text:', text, ', isCorrect:', isCorrect, ', answer:', my.game.answer);
-
 	if (my.game.winner.indexOf(client.id) == -1 && isCorrect && play && !gu) {
 		t = now - my.game.roundAt;
 		if (my.game.primary == 0) if (my.game.roundTime - t > 10000) {
@@ -203,7 +200,6 @@ exports.submit = function (client, text) {
 			client.game.score = 0;
 		}
 		client.game.score += score;
-		console.log('[Speedquiz Server] Publishing turnEnd - Score:', score, 'Total:', client.game.score);
 		client.publish('turnEnd', {
 			target: client.id,
 			ok: true,
@@ -285,7 +281,6 @@ function getQuestion(topics, ignoreDone) {
 		return R;
 	}
 
-	// JSON 파일에서 문제 가져오기
 	setTimeout(function () {
 		var questionList = SPEEDQUIZ_DATA[topics];
 
@@ -293,7 +288,6 @@ function getQuestion(topics, ignoreDone) {
 			return R.go(null);
 		}
 
-		// 이미 출제된 문제 제외
 		var availableQuestions = questionList.filter(function (q, idx) {
 			if (ignoreDone) return true;
 			if (!Array.isArray(my.game.done)) return true;
@@ -304,7 +298,6 @@ function getQuestion(topics, ignoreDone) {
 			return R.go(null);
 		}
 
-		// 랜덤하게 문제 선택
 		var pick = Math.floor(Math.random() * availableQuestions.length);
 		var q = availableQuestions[pick];
 		var originalIndex = questionList.indexOf(q);
