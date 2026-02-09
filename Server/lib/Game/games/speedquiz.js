@@ -168,7 +168,7 @@ exports.submit = function (client, text) {
 
 	if (!my.game.winner) return;
 
-	var isCorrect = checkAnswer(text, my.game.answer, my.game.aliases, my.game.topic, my.rule.lang);
+	var isCorrect = checkAnswer(text, my.game.answer, my.game.topic);
 
 	if (my.game.winner.indexOf(client.id) == -1 && isCorrect && play && !gu) {
 		t = now - my.game.roundAt;
@@ -267,20 +267,6 @@ function getQuestion(topics, ignoreDone) {
 	var R = new Lizard.Tail();
 	var lang = my.rule.lang;
 
-	if (topics === 'MATH') {
-		var problem = Const.generateCalcProblem(chain);
-
-		setTimeout(function () {
-			R.go({
-				topic: 'MATH',
-				question: problem.question,
-				answer: String(problem.answer),
-				aliases: null,
-			});
-		}, 10);
-		return R;
-	}
-
 	setTimeout(function () {
 		var questionList = SPEEDQUIZ_DATA[topics];
 
@@ -305,8 +291,7 @@ function getQuestion(topics, ignoreDone) {
 		R.go({
 			topic: topics,
 			question: q.question,
-			answer: q.answer_ko || q.answer,
-			aliases: q.aliases_ko || q.aliases,
+			answer: q.answer,
 			_id: originalIndex
 		});
 	}, 10);
@@ -321,7 +306,6 @@ function processQuestion($q) {
 	my.game.late = false;
 	my.game.question = $q.question;
 	my.game.answer = $q.answer;
-	my.game.aliases = $q.aliases ? $q.aliases.split(',').map(function (s) { return s.trim(); }) : [];
 	my.game.done.push($q._id);
 
 	my.game.hints = getHints($q.answer, lang);
@@ -378,16 +362,10 @@ function getConsonants(word, lucky) {
 	}
 	return R;
 }
-function checkAnswer(input, answer, aliases, topic) {
+function checkAnswer(input, answer, topic) {
 	if (!input || !answer) return false;
 
-	if (topic === 'MATH') {
-		return Number(input) === Number(answer);
-	}
-
-	if (input === answer) return true;
-	if (aliases && aliases.includes(input)) return true;
-	return false;
+	return input === answer;
 }
 function maskText(text, answer) {
 	if (!answer || answer.length === 0) return text;
