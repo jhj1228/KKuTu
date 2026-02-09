@@ -1082,7 +1082,7 @@ $(document).ready(function () {
 
 		$("#speedquizpick-list").find("input").each(function (i, o) {
 			var $o = $(o);
-			var id = $o.attr('id').slice(14);
+			var id = $o.attr('id').slice(15);
 
 			if ($o.is(':checked')) list.push(id);
 		});

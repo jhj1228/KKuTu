@@ -9,6 +9,7 @@ Server/lib/sub/global.json
 check_db.js
 delete_topic.js
 verify_deletion.js
+Server/lib/data/speedquiz.json
 KKUTU_ERROR.log
 db.sql
 Server/lib/Web/public/Ads.txt

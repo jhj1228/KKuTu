@@ -264,7 +264,7 @@ exports.KO_INJEONG = [
 	"HSR", "BLA", "CYP", "NVL", "STA", "APT", "ESB",
 	"ELW", "KMV", "OVW", "GEN", "WOW", "WEB", "UWH",
 	"KPO", "VOC", "ERT", "JPT", "ZEL",
-	"CKR", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
+	"CKR", /*"CKO,*/ "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [

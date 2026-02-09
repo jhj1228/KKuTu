@@ -1571,6 +1571,9 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 		case 'KAT':
 			rw.score += score * 1.65;
 			break;
+		case 'KSQ':
+			rw.score += score * 0.75;
+			break;
 		default:
 			break;
 	}

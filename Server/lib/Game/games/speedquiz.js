@@ -18,8 +18,11 @@
 
 var Const = require('../../const');
 var Lizard = require('../../sub/lizard');
+var fs = require('fs');
+var path = require('path');
 var DB;
 var DIC;
+var SPEEDQUIZ_DATA;
 
 var ROBOT_CATCH_RATE = [0.05, 0.1, 0.3, 0.5, 0.7, 1];
 var ROBOT_TYPE_COEF = [2000, 1200, 800, 300, 100, 0];
@@ -27,6 +30,16 @@ var ROBOT_TYPE_COEF = [2000, 1200, 800, 300, 100, 0];
 exports.init = function (_DB, _DIC) {
 	DB = _DB;
 	DIC = _DIC;
+
+	// JSON 파일에서 문제 데이터 로드
+	try {
+		var filePath = path.join(__dirname, '../../data/speedquiz.json');
+		var rawData = fs.readFileSync(filePath, 'utf8');
+		SPEEDQUIZ_DATA = JSON.parse(rawData);
+	} catch (err) {
+		console.error('[Speedquiz] Failed to load speedquiz.json:', err.message);
+		SPEEDQUIZ_DATA = {};
+	}
 };
 
 exports.getTitle = function () {
@@ -42,7 +55,7 @@ exports.getTitle = function () {
 
 exports.roundReady = function () {
 	var my = this;
-	var topics = my.opts.quizpick;
+	var topics = my.opts.speedquizpick;
 
 	if (!topics || !Array.isArray(topics) || topics.length === 0) {
 		return;
@@ -59,16 +72,23 @@ exports.roundReady = function () {
 	my.game.primary = 0;
 	my.game.round++;
 	my.game.roundTime = my.time * 1000;
+	my.game.hum = my.game.seq ? my.game.seq.length : 1;
+	my.game.themeBonus = 0.3 * Math.log(0.6 * ijl + 1);
 
 	if (my.game.round <= my.round) {
 		my.game.topic = topics[Math.floor(Math.random() * ijl)];
 
 		getQuestion.call(my, my.game.topic).then(function ($q) {
-			if (!my.game.done) return;
+
+			if (!my.game.done) {
+				return;
+			}
 
 			if (!$q) {
 				getQuestion.call(my, my.game.topic, true).then(function ($q2) {
-					if (!my.game.done) return;
+					if (!my.game.done) {
+						return;
+					}
 
 					if (!$q2) {
 						my.game.late = true;
@@ -93,7 +113,9 @@ exports.turnStart = function () {
 	var my = this;
 	var i;
 
-	if (!my.game.question) return;
+	if (!my.game.question) {
+		return;
+	}
 
 	my.game.roundAt = (new Date()).getTime();
 	my.game.hintCount = 0;
@@ -149,6 +171,8 @@ exports.submit = function (client, text) {
 
 	var isCorrect = checkAnswer(text, my.game.answer, my.game.aliases, my.game.topic, my.rule.lang);
 
+	console.log('[Speedquiz] submit - text:', text, ', isCorrect:', isCorrect, ', answer:', my.game.answer);
+
 	if (my.game.winner.indexOf(client.id) == -1 && isCorrect && play && !gu) {
 		t = now - my.game.roundAt;
 		if (my.game.primary == 0) if (my.game.roundTime - t > 10000) {
@@ -179,6 +203,7 @@ exports.submit = function (client, text) {
 			client.game.score = 0;
 		}
 		client.game.score += score;
+		console.log('[Speedquiz Server] Publishing turnEnd - Score:', score, 'Total:', client.game.score);
 		client.publish('turnEnd', {
 			target: client.id,
 			ok: true,
@@ -214,16 +239,11 @@ exports.submit = function (client, text) {
 
 exports.getScore = function (text, delay) {
 	var my = this;
-	var hum = (typeof my.game.hum === 'number') ? my.game.hum : 1;
-	var primary = (typeof my.game.primary === 'number') ? my.game.primary : 0;
-	var roundTime = (typeof my.game.roundTime === 'number' && my.game.roundTime > 0) ? my.game.roundTime : 1;
+	var rank = my.game.hum - my.game.primary + 3;
+	var tr = 1 - delay / my.game.roundTime;
+	var score = 6 * Math.pow(rank, 1.4) * (0.5 + 0.5 * tr);
 
-	var rank = Math.max(1, hum - primary + 3);
-	var tr = 1 - delay / roundTime;
-	if (isNaN(tr) || tr < 0) tr = 0;
-	if (tr > 1) tr = 1;
-
-	return 0;
+	return Math.round(score * my.game.themeBonus);
 };
 
 exports.readyRobot = function (robot) {
@@ -265,28 +285,38 @@ function getQuestion(topics, ignoreDone) {
 		return R;
 	}
 
-	var args = [];
+	// JSON 파일에서 문제 가져오기
+	setTimeout(function () {
+		var questionList = SPEEDQUIZ_DATA[topics];
 
-	args.push(['topic', topics]);
+		if (!questionList || !Array.isArray(questionList) || questionList.length === 0) {
+			return R.go(null);
+		}
 
-	if (!ignoreDone && Array.isArray(my.game.done) && my.game.done.length > 0) {
-		args.push(['_id', { $nin: my.game.done }]);
-	}
+		// 이미 출제된 문제 제외
+		var availableQuestions = questionList.filter(function (q, idx) {
+			if (ignoreDone) return true;
+			if (!Array.isArray(my.game.done)) return true;
+			return my.game.done.indexOf(idx) === -1;
+		});
 
-	DB.kkutu.speedquiz.find(...args).on(function ($res) {
-		if (!$res || $res.length === 0) return R.go(null);
+		if (availableQuestions.length === 0) {
+			return R.go(null);
+		}
 
-		var pick = Math.floor(Math.random() * $res.length);
-		var q = $res[pick];
+		// 랜덤하게 문제 선택
+		var pick = Math.floor(Math.random() * availableQuestions.length);
+		var q = availableQuestions[pick];
+		var originalIndex = questionList.indexOf(q);
 
 		R.go({
-			topic: q.topic,
+			topic: topics,
 			question: q.question,
 			answer: q.answer_ko || q.answer,
 			aliases: q.aliases_ko || q.aliases,
-			_id: q._id
+			_id: originalIndex
 		});
-	});
+	}, 10);
 
 	return R;
 }
@@ -306,16 +336,54 @@ function processQuestion($q) {
 	my.byMaster('roundReady', {
 		round: my.game.round,
 		topic: my.game.topic,
+		difficulty: 1
 	}, true);
-	setTimeout(my.turnStart, 2400);
+
+	var timer = setTimeout(function () {
+		my.turnStart();
+	}, 2400);
 }
 function getHints(answer, lang) {
 	var hints = [];
-
-	hints.push(answer.length + (lang === 'ko' ? '글자' : ' letters'));
-
-	hints.push(answer.charAt(0).toUpperCase());
+	var h1, h2;
+	
+	if (lang === 'ko') {
+		h1 = getConsonants(answer, Math.ceil(answer.length / 3));
+		do {
+			h2 = getConsonants(answer, Math.ceil(answer.length / 2));
+		} while (h1 == h2);
+		hints.push(h1);
+		hints.push(h2);
+	} else {
+		hints.push(answer.length + ' letters');
+		hints.push(answer.charAt(0).toUpperCase());
+	}
+	
 	return hints;
+}
+function getConsonants(word, lucky) {
+	var R = "";
+	var i, len = word.length;
+	var c;
+	var rv = [];
+
+	lucky = lucky || 0;
+	while (lucky > 0) {
+		c = Math.floor(Math.random() * len);
+		if (rv.includes(c)) continue;
+		rv.push(c);
+		lucky--;
+	}
+	for (i = 0; i < len; i++) {
+		c = word.charCodeAt(i) - 44032;
+
+		if (c < 0 || rv.includes(i)) {
+			R += word.charAt(i);
+			continue;
+		} else c = Math.floor(c / 588);
+		R += Const.INIT_SOUNDS[c];
+	}
+	return R;
 }
 function checkAnswer(input, answer, aliases, topic) {
 	if (!input || !answer) return false;

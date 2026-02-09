@@ -16,16 +16,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-$lib.Quiz = {};
+$lib.Speedquiz = {};
 
-$lib.Quiz.roundReady = function (data) {
+$lib.Speedquiz.roundReady = function (data) {
 	var tv = L['speedquiz_' + data.topic];
-	var dv = "(" + L['speedquiz_' + data.difficulty] + ")";
 
 	clearBoard();
 	$data._roundTime = $data.room.time * 1000;
 	$data._fastTime = 10000;
-	$stage.game.display.html(tv + dv);
+	$stage.game.display.html(tv);
 	$stage.game.items.hide();
 	$stage.game.hints.show();
 	$(".jjo-turn-time .graph-bar")
@@ -37,7 +36,7 @@ $lib.Quiz.roundReady = function (data) {
 	clearInterval($data._tTime);
 };
 
-$lib.Quiz.turnStart = function (data) {
+$lib.Speedquiz.turnStart = function (data) {
 	$(".game-user-current").removeClass("game-user-current");
 	$(".game-user-bomb").removeClass("game-user-bomb");
 	if ($data.room.game.seq.indexOf($data.id) >= 0) {
@@ -55,7 +54,7 @@ $lib.Quiz.turnStart = function (data) {
 	playBGM('jaqwi');
 };
 
-$lib.Quiz.turnGoing = function () {
+$lib.Speedquiz.turnGoing = function () {
 	var $rtb = $stage.game.roundBar;
 	var bRate;
 	var tt;
@@ -79,12 +78,12 @@ $lib.Quiz.turnGoing = function () {
 	}
 };
 
-$lib.Quiz.turnHint = function (data) {
+$lib.Speedquiz.turnHint = function (data) {
 	playSound('mission');
 	pushHint(data.hint);
 };
 
-$lib.Quiz.turnEnd = function (id, data) {
+$lib.Speedquiz.turnEnd = function (id, data) {
 	var $sc = $("<div>").addClass("deltaScore").html("+" + data.score);
 	var $uc = $("#game-user-" + id);
 
@@ -98,7 +97,7 @@ $lib.Quiz.turnEnd = function (id, data) {
 		playSound('horr');
 	} else {
 		if (id == $data.id) $stage.game.here.css('opacity', mobile ? 0.5 : 0);
-		addScore(id, data.score, data.totalScore);
+		addScore(id, data.score);
 		if ($data._roundTime > 10000) $data._roundTime = 10000;
 		drawObtainedScore($uc, $sc);
 		updateScore(id, getScore(id)).addClass("game-user-current");

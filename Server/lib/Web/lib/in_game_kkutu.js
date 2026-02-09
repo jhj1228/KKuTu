@@ -63,7 +63,7 @@ var $stage;
 var $sound = {};
 var $_sound = {}; // 현재 재생 중인 것들
 var $data = {};
-var $lib = { Classic: {}, Jaqwi: {}, Crossword: {}, Typing: {}, Hunmin: {}, Daneo: {}, Sock: {}, Moqwi: {}, All: {} };
+var $lib = { Classic: {}, Jaqwi: {}, Crossword: {}, Typing: {}, Hunmin: {}, Daneo: {}, Sock: {}, Moqwi: {}, All: {}, Speedquiz: {} };
 var $rec;
 var mobile;
 
@@ -1155,7 +1155,7 @@ $(document).ready(function () {
 
 		$("#speedquizpick-list").find("input").each(function (i, o) {
 			var $o = $(o);
-			var id = $o.attr('id').slice(14);
+			var id = $o.attr('id').slice(15);
 
 			if ($o.is(':checked')) list.push(id);
 		});
@@ -2369,16 +2369,15 @@ $lib.All.turnEnd = function (id, data) {
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-$lib.Quiz = {};
+$lib.Speedquiz = {};
 
-$lib.Quiz.roundReady = function (data) {
+$lib.Speedquiz.roundReady = function (data) {
 	var tv = L['speedquiz_' + data.topic];
-	var dv = "(" + L['speedquiz_' + data.difficulty] + ")";
 
 	clearBoard();
 	$data._roundTime = $data.room.time * 1000;
 	$data._fastTime = 10000;
-	$stage.game.display.html(tv + dv);
+	$stage.game.display.html(tv);
 	$stage.game.items.hide();
 	$stage.game.hints.show();
 	$(".jjo-turn-time .graph-bar")
@@ -2390,7 +2389,7 @@ $lib.Quiz.roundReady = function (data) {
 	clearInterval($data._tTime);
 };
 
-$lib.Quiz.turnStart = function (data) {
+$lib.Speedquiz.turnStart = function (data) {
 	$(".game-user-current").removeClass("game-user-current");
 	$(".game-user-bomb").removeClass("game-user-bomb");
 	if ($data.room.game.seq.indexOf($data.id) >= 0) {
@@ -2408,7 +2407,7 @@ $lib.Quiz.turnStart = function (data) {
 	playBGM('jaqwi');
 };
 
-$lib.Quiz.turnGoing = function () {
+$lib.Speedquiz.turnGoing = function () {
 	var $rtb = $stage.game.roundBar;
 	var bRate;
 	var tt;
@@ -2432,14 +2431,16 @@ $lib.Quiz.turnGoing = function () {
 	}
 };
 
-$lib.Quiz.turnHint = function (data) {
+$lib.Speedquiz.turnHint = function (data) {
 	playSound('mission');
 	pushHint(data.hint);
 };
 
-$lib.Quiz.turnEnd = function (id, data) {
+$lib.Speedquiz.turnEnd = function (id, data) {
 	var $sc = $("<div>").addClass("deltaScore").html("+" + data.score);
 	var $uc = $("#game-user-" + id);
+
+	console.log('[Speedquiz Client] turnEnd called:', { id: id, data: data });
 
 	if (data.giveup) {
 		$uc.addClass("game-user-bomb");
@@ -2450,8 +2451,11 @@ $lib.Quiz.turnEnd = function (id, data) {
 		stopBGM();
 		playSound('horr');
 	} else {
+		console.log('[Speedquiz Client] Correct answer! Adding score...');
 		if (id == $data.id) $stage.game.here.css('opacity', mobile ? 0.5 : 0);
-		addScore(id, data.score, data.totalScore);
+		console.log('[Speedquiz Client] Before addScore - getScore:', getScore(id));
+		addScore(id, data.score);
+		console.log('[Speedquiz Client] After addScore - getScore:', getScore(id));
 		if ($data._roundTime > 10000) $data._roundTime = 10000;
 		drawObtainedScore($uc, $sc);
 		updateScore(id, getScore(id)).addClass("game-user-current");
