@@ -366,6 +366,15 @@ block Middle
 			button#injpick-no= L('injpickNo')
 		div.dialog-bar#injpick-list(style='height: 280px; overflow-y: scroll;')
 			div.dialog-opt#ko-pick-list(style='width: 100%;')
+				- locals.KO_THEME.concat(locals.KO_INJEONG).forEach(function(item){
+					- var name = "ko-pick-" + item;
+					- if(locals.IJP_EXCEPT.indexOf(item) != -1) return;
+					div(style='float: left; width: 100%;')
+						input(id=name, type='checkbox', style='width: auto;')
+						label(for=name)= LANG['theme_' + item]
+				- });
+		//- div.dialog-bar#injpick-list(style='height: 280px; overflow-y: scroll;')
+			div.dialog-opt#ko-pick-list(style='width: 100%;')
 				div(style='width: 100%; font-weight: bold; color: #000; text-align: center; font-size: 15px;') 일반 주제
 				each item in locals.KO_THEME
 					if locals.IJP_EXCEPT.indexOf(item) == -1
@@ -439,7 +448,7 @@ block Middle
 			button#dict-search= L('SEARCH')
 			a(href='/wordsearch', target='_blank')
 				button#dict-search(type='button')= L('WORDSEARCH')
-			a(href='https://buly.kr/9tCCKUe', target='_blank')
+			a(href='https://naver.me/xIFoyWUI', target='_blank')
 				button#dict-search(type='button')= '추가 요청'
 	+Dialog('InviteDiag', 300, 420, L('invite'))
 		div.invite-board(style='height: 355px; overflow-y: scroll;')
@@ -646,7 +655,7 @@ block Middle
 				div.history
 		div.game-body
 		div.game-input
-			input#game-input(placeholder=L('yourTurn')+' '+L('inputChat'), readonly)
+			input#game-input(placeholder=L('yourTurn')+' '+L('inputChat'), readonly, maxlength=400)
 	+Product('Me')
 		div.moremi.my-image
 		div.my-stat
@@ -664,7 +673,7 @@ block Middle
 		div.bar-text.my-gauge-text
 	+Product('Chat')
 		div#Chat
-		input#Talk(maxlength=200)
+		input#Talk(maxlength=400)
 		button#ChatBtn= L('send')
 	//- +Product('AD')
 

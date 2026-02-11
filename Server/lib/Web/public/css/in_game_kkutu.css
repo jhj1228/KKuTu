@@ -1254,12 +1254,15 @@ iframe {
 	padding: 5px;
 	border-radius: 10px;
 	background-color: rgba(0, 0, 0, 0.7);
+	box-sizing: border-box;
 }
 
 #game-input {
 	width: 478px;
 	height: 40px;
 	font-size: 20px;
+	position: relative;
+	z-index: 1000;
 }
 
 .game-body {

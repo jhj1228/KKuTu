@@ -287,7 +287,13 @@ $(document).ready(function () {
 	RULE = JSON.parse($("#RULE").html());
 	OPTIONS = JSON.parse($("#OPTIONS").html());
 	MODE = Object.keys(RULE);
-	mobile = $("#mobile").html() == "true";
+	// Detect touch device even if UI is set to desktop mode
+	var isTouchDevice = function () {
+		return (('ontouchstart' in window) ||
+			(navigator.maxTouchPoints > 0) ||
+			(navigator.msMaxTouchPoints > 0));
+	};
+	mobile = $("#mobile").html() == "true" || isTouchDevice();
 	if (mobile) TICK = 200;
 	$data._timePercent = false ? function () {
 		return $data._turnTime / $data.turnTime * 100 + "%";
@@ -432,6 +438,27 @@ $(document).ready(function () {
 	$stage.talk.on('keyup', function (e) {
 		$stage.game.hereText.val($stage.talk.val());
 	});
+	if (mobile) {
+		$stage.game.hereText.on('blur', function (e) {
+			if ($stage.game.here.is(':visible') && $data.room && $data.room.gaming) {
+				var self = this;
+				setTimeout(function () {
+					$(self).focus();
+				}, 0);
+			}
+		});
+		$(window).on('resize', function () {
+			if ($stage.game.here.is(':visible') && $data.room && $data.room.gaming) {
+				$stage.game.hereText.focus();
+			}
+		});
+		$stage.game.here.on('touchend', function (e) {
+			if ($stage.game.here.is(':visible') && $data.room && $data.room.gaming) {
+				e.preventDefault();
+				$stage.game.hereText.focus();
+			}
+		});
+	}
 	$(window).on('beforeunload', function (e) {
 		if ($data.room) return L['sureExit'];
 	});
@@ -1344,8 +1371,15 @@ $lib.Classic.turnStart = function (data) {
 	if (!$data._replay) {
 		$stage.game.here.css('display', (data.id == $data.id) ? "block" : "none");
 		if (data.id == $data.id) {
-			if (mobile) $stage.game.hereText.val("").focus();
-			else $stage.talk.focus();
+			if (mobile) {
+				$stage.game.hereText.val("").focus();
+				// Use a small delay to ensure proper focus on mobile
+				setTimeout(function () {
+					$stage.game.hereText.focus();
+				}, 50);
+			} else {
+				$stage.talk.focus();
+			}
 		}
 	}
 	$stage.game.items.html($data.mission = data.mission);
@@ -1730,8 +1764,15 @@ $lib.Typing.spaceOff = function () {
 $lib.Typing.turnStart = function (data) {
 	if (!$data._spectate) {
 		$stage.game.here.show();
-		if (mobile) $stage.game.hereText.val("").focus();
-		else $stage.talk.val("").focus();
+		if (mobile) {
+			$stage.game.hereText.val("");
+			$stage.game.hereText.focus();
+			setTimeout(function () {
+				$stage.game.hereText.focus();
+			}, 50);
+		} else {
+			$stage.talk.val("").focus();
+		}
 		$lib.Typing.spaceOn();
 	}
 	ws.onmessage = _onMessage;
@@ -1809,90 +1850,97 @@ function drawSpeed(table) {
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-$lib.Hunmin.roundReady = function(data){
+$lib.Hunmin.roundReady = function (data) {
 	var i, len = $data.room.game.title.length;
 	var $l;
-	
+
 	clearBoard();
 	$data._roundTime = $data.room.time * 1000;
 	$stage.game.display.html($data._char = "&lt;" + data.theme + "&gt;");
 	$stage.game.chain.show().html($data.chain = 0);
-	if($data.room.opts.mission){
+	if ($data.room.opts.mission) {
 		$stage.game.items.show().css('opacity', 1).html($data.mission = data.mission);
 	}
 	drawRound(data.round);
 	playSound('round_start');
 	recordEvent('roundReady', { data: data });
 };
-$lib.Hunmin.turnStart = function(data){
+$lib.Hunmin.turnStart = function (data) {
 	$data.room.game.turn = data.turn;
-	if(data.seq) $data.room.game.seq = data.seq;
+	if (data.seq) $data.room.game.seq = data.seq;
 	$data._tid = $data.room.game.seq[data.turn];
-	if($data._tid.robot) $data._tid = $data._tid.id;
+	if ($data._tid.robot) $data._tid = $data._tid.id;
 	data.id = $data._tid;
-	
+
 	$stage.game.display.html($data._char);
-	$("#game-user-"+data.id).addClass("game-user-current");
-	if(!$data._replay){
+	$("#game-user-" + data.id).addClass("game-user-current");
+	if (!$data._replay) {
 		$stage.game.here.css('display', (data.id == $data.id) ? "block" : "none");
-		if(data.id == $data.id){
-			if(mobile) $stage.game.hereText.val("").focus();
-			else $stage.talk.focus();
+		if (data.id == $data.id) {
+			if (mobile) {
+				$stage.game.hereText.val("");
+				$stage.game.hereText.focus();
+				setTimeout(function () {
+					$stage.game.hereText.focus();
+				}, 50);
+			} else {
+				$stage.talk.focus();
+			}
 		}
 	}
 	$stage.game.items.html($data.mission = data.mission);
-	
+
 	ws.onmessage = _onMessage;
 	clearInterval($data._tTime);
 	clearTrespasses();
-	$data._chars = [ data.char, data.subChar ];
+	$data._chars = [data.char, data.subChar];
 	$data._speed = data.speed;
 	$data._tTime = addInterval(turnGoing, TICK);
 	$data.turnTime = data.turnTime;
 	$data._turnTime = data.turnTime;
 	$data._roundTime = data.roundTime;
-	$data._turnSound = playSound("T"+data.speed);
+	$data._turnSound = playSound("T" + data.speed);
 	recordEvent('turnStart', {
 		data: data
 	});
 };
 $lib.Hunmin.turnGoing = $lib.Classic.turnGoing;
-$lib.Hunmin.turnEnd = function(id, data){
+$lib.Hunmin.turnEnd = function (id, data) {
 	var $sc = $("<div>")
 		.addClass("deltaScore")
 		.html((data.score > 0) ? ("+" + (data.score - data.bonus)) : data.score);
 	var $uc = $(".game-user-current");
 	var hi;
-	
+
 	$data._turnSound.stop();
 	addScore(id, data.score);
 	clearInterval($data._tTime);
-	if(data.ok){
+	if (data.ok) {
 		clearTimeout($data._fail);
 		$stage.game.here.hide();
 		$stage.game.chain.html(++$data.chain);
 		pushDisplay(data.value, data.mean, data.theme, data.wc);
-	}else{
+	} else {
 		$sc.addClass("lost");
 		$(".game-user-current").addClass("game-user-bomb");
 		$stage.game.here.hide();
 		playSound('timeout');
 	}
-	if(data.hint){
+	if (data.hint) {
 		data.hint = data.hint._id;
 		hi = data.hint.indexOf($data._chars[0]);
-		if(hi == -1) hi = data.hint.indexOf($data._chars[1]);
-		
+		if (hi == -1) hi = data.hint.indexOf($data._chars[1]);
+
 		$stage.game.display.empty()
 			.append($("<label>").html(data.hint.slice(0, hi + 1)))
 			.append($("<label>").css('color', "#AAAAAA").html(data.hint.slice(hi + 1)));
 	}
-	if(data.bonus){
-		mobile ? $sc.html("+" + (b.score - b.bonus) + "+" + b.bonus) : addTimeout(function(){
+	if (data.bonus) {
+		mobile ? $sc.html("+" + (b.score - b.bonus) + "+" + b.bonus) : addTimeout(function () {
 			var $bc = $("<div>")
 				.addClass("deltaScore bonus")
 				.html("+" + data.bonus);
-			
+
 			drawObtainedScore($uc, $bc);
 		}, 500);
 	}
@@ -1918,90 +1966,97 @@ $lib.Hunmin.turnEnd = function(id, data){
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-$lib.Daneo.roundReady = function(data){
+$lib.Daneo.roundReady = function (data) {
 	var i, len = $data.room.game.title.length;
 	var $l;
-	
+
 	clearBoard();
 	$data._roundTime = $data.room.time * 1000;
 	$stage.game.display.html($data._char = "&lt;" + (L['theme_' + data.theme]) + "&gt;");
 	$stage.game.chain.show().html($data.chain = 0);
-	if($data.room.opts.mission){
+	if ($data.room.opts.mission) {
 		$stage.game.items.show().css('opacity', 1).html($data.mission = data.mission);
 	}
 	drawRound(data.round);
 	playSound('round_start');
 	recordEvent('roundReady', { data: data });
 };
-$lib.Daneo.turnStart = function(data){
+$lib.Daneo.turnStart = function (data) {
 	$data.room.game.turn = data.turn;
-	if(data.seq) $data.room.game.seq = data.seq;
+	if (data.seq) $data.room.game.seq = data.seq;
 	$data._tid = $data.room.game.seq[data.turn];
-	if($data._tid.robot) $data._tid = $data._tid.id;
+	if ($data._tid.robot) $data._tid = $data._tid.id;
 	data.id = $data._tid;
-	
+
 	$stage.game.display.html($data._char);
-	$("#game-user-"+data.id).addClass("game-user-current");
-	if(!$data._replay){
+	$("#game-user-" + data.id).addClass("game-user-current");
+	if (!$data._replay) {
 		$stage.game.here.css('display', (data.id == $data.id) ? "block" : "none");
-		if(data.id == $data.id){
-			if(mobile) $stage.game.hereText.val("").focus();
-			else $stage.talk.focus();
+		if (data.id == $data.id) {
+			if (mobile) {
+				$stage.game.hereText.val("");
+				$stage.game.hereText.focus();
+				setTimeout(function () {
+					$stage.game.hereText.focus();
+				}, 50);
+			} else {
+				$stage.talk.focus();
+			}
 		}
 	}
 	$stage.game.items.html($data.mission = data.mission);
-	
+
 	ws.onmessage = _onMessage;
 	clearInterval($data._tTime);
 	clearTrespasses();
-	$data._chars = [ data.char, data.subChar ];
+	$data._chars = [data.char, data.subChar];
 	$data._speed = data.speed;
 	$data._tTime = addInterval(turnGoing, TICK);
 	$data.turnTime = data.turnTime;
 	$data._turnTime = data.turnTime;
 	$data._roundTime = data.roundTime;
-	$data._turnSound = playSound("T"+data.speed);
+	$data._turnSound = playSound("T" + data.speed);
 	recordEvent('turnStart', {
 		data: data
 	});
 };
 $lib.Daneo.turnGoing = $lib.Classic.turnGoing;
-$lib.Daneo.turnEnd = function(id, data){
+$lib.Daneo.turnEnd = function (id, data) {
 	var $sc = $("<div>")
 		.addClass("deltaScore")
 		.html((data.score > 0) ? ("+" + (data.score - data.bonus)) : data.score);
 	var $uc = $(".game-user-current");
 	var hi;
-	
+
 	$data._turnSound.stop();
 	addScore(id, data.score);
 	clearInterval($data._tTime);
-	if(data.ok){
+	if (data.ok) {
 		clearTimeout($data._fail);
 		$stage.game.here.hide();
 		$stage.game.chain.html(++$data.chain);
 		pushDisplay(data.value, data.mean, data.theme, data.wc);
-	}else{
+	} else {
 		$sc.addClass("lost");
 		$(".game-user-current").addClass("game-user-bomb");
 		$stage.game.here.hide();
 		playSound('timeout');
 	}
-	if(data.hint){
+	if (data.hint) {
 		data.hint = data.hint._id;
 		hi = data.hint.indexOf($data._chars[0]);
-		if(hi == -1) hi = data.hint.indexOf($data._chars[1]);
-		
+		if (hi == -1) hi = data.hint.indexOf($data._chars[1]);
+
 		$stage.game.display.empty()
 			.append($("<label>").html(data.hint.slice(0, hi + 1)))
 			.append($("<label>").css('color', "#AAAAAA").html(data.hint.slice(hi + 1)));
 	}
-	if(data.bonus){
-		mobile ? $sc.html("+" + (b.score - b.bonus) + "+" + b.bonus) : addTimeout(function(){
+	if (data.bonus) {
+		mobile ? $sc.html("+" + (b.score - b.bonus) + "+" + b.bonus) : addTimeout(function () {
 			var $bc = $("<div>")
 				.addClass("deltaScore bonus")
 				.html("+" + data.bonus);
-			
+
 			drawObtainedScore($uc, $bc);
 		}, 500);
 	}
@@ -2275,8 +2330,15 @@ $lib.All.turnStart = function (data) {
     if (!$data._replay) {
         $stage.game.here.css('display', (data.id == $data.id) ? "block" : "none");
         if (data.id == $data.id) {
-            if (mobile) $stage.game.hereText.val("").focus();
-            else $stage.talk.focus();
+            if (mobile) {
+                $stage.game.hereText.val("");
+                $stage.game.hereText.focus();
+                setTimeout(function () {
+                    $stage.game.hereText.focus();
+                }, 50);
+            } else {
+                $stage.talk.focus();
+            }
         }
     }
     $stage.game.items.html($data.mission = data.mission);

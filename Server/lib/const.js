@@ -235,7 +235,7 @@ exports.RULE = {
 		lang: "ko",
 		rule: "Speedquiz",
 		opts: ["nht", "sqj"],
-		time: 0.1,
+		time: 0.2,
 		ai: true,
 		big: false,
 		ewq: false
@@ -258,18 +258,18 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
-	"IMS", "RAG", "NEX",
+	"IMS", "VOC", "RAG", "NEX",
 	"KTV", "CPY", "WOR", "NFX", "KOT", "DOT", "THP",
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
 	"MIN", "MAF", "JAN", "CTH", "BGP", /*"BUT",*/ "BUS",
 	"HSR", "BLA", "CYP", "NVL", "STA", "APT", "ESB",
 	"ELW", "KMV", "OVW", "GEN", "WOW", "WEB", "UWH",
-	"KPO", "VOC", "ERT", "JPT", "ZEL",
-	"CKR", /*"CKO,*/ "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
+	"KPO", "ERT", "JPT", "ZEL",
+	"CKR", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
-	/*"GIHO", "ENWO",*/ "COOK", "HANJ"
+	"ANY", "SYM", "SIS", "CKE", "ENW", "HAN"
 ];
 exports.EN_INJEONG = [
 	"LOL", "GTD", "e50"

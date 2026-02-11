@@ -67,8 +67,15 @@ $lib.Typing.spaceOff = function () {
 $lib.Typing.turnStart = function (data) {
 	if (!$data._spectate) {
 		$stage.game.here.show();
-		if (mobile) $stage.game.hereText.val("").focus();
-		else $stage.talk.val("").focus();
+		if (mobile) {
+			$stage.game.hereText.val("");
+			$stage.game.hereText.focus();
+			setTimeout(function () {
+				$stage.game.hereText.focus();
+			}, 50);
+		} else {
+			$stage.talk.val("").focus();
+		}
 		$lib.Typing.spaceOn();
 	}
 	ws.onmessage = _onMessage;

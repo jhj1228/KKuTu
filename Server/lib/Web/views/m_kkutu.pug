@@ -392,10 +392,10 @@ block Middle
 				div.history
 		div.game-body
 		div.game-input
-			input#game-input(placeholder=L('yourTurn')+' '+L('inputHere'))
+			input#game-input(placeholder=L('yourTurn')+' '+L('inputHere'), maxlength=400)
 	+Product('Chat')
 		div#Chat
-		input#Talk(maxlength=200)
+		input#Talk(maxlength=400)
 		button#ChatBtn= L('send')
 	div#ad
 

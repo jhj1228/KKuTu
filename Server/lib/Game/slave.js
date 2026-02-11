@@ -208,7 +208,7 @@ KKuTu.onClientMessage = function ($c, msg) {
 				$c.send('error', { code: 401 });
 				return;
 			}
-			msg.value = msg.value.substr(0, 200);
+			msg.value = msg.value.substr(0, 400);
 			if (msg.relay) {
 				if ($c.subPlace) temp = $c.pracRoom;
 				else if (!(temp = ROOM[$c.place])) return;
