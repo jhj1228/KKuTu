@@ -231,13 +231,13 @@ block Middle
 			select#bgm-select
 				optgroup(label='끄투 BGM')
 					option(value='lobby', selected) 기본
+					option(value='original', selected) 끄투 오리지널
 					//- option(value='lobbyseol') 명절
 					option(value='ending') 끄투 엔딩
 					option(value='museum') 끄투 박물관
 				optgroup(label='기타 BGM')
 					option(value='inthepool') IN THE SEA x IN THE POOL
 					option(value='enchanted') Enchanted Love
-					option(value='lydia') Lydia
 		div.dialog-bar
 			h4= L('denyReq')
 			+SettingOption('deny-invite', L('denyInvite'))
@@ -485,11 +485,11 @@ block Middle
 			button#profile-whisper= L('whisper')
 			button#profile-shut= L('shut')
 			button#profile-kick= L('kick')
-			button#profile-report= L('profileReport')
+			//- button#profile-report= L('profileReport')
 			button#profile-level= L('aiSetting')
 			button#profile-dress= L('dress')
 			button#profile-handover= L('handover')
-	+Dialog('ReportDiag', 350, 265, L('profileReport'))
+	//- +Dialog('ReportDiag', 350, 265, L('profileReport'))
 		<b>1. 가장 적합한 신고 사유를 선택해 주세요.</b>
 		select#report-reason-select(style='width: 100%; margin-top:5px; padding: 5px;')
 			optgroup(label='신고 사유를 선택해 주세요.')

@@ -231,7 +231,7 @@ exports.RULE = {
 		big: false,
 		ewq: true
 	},
-	'KSQ': {
+	'KSQ': { // 스피드퀴즈
 		lang: "ko",
 		rule: "Speedquiz",
 		opts: ["nht", "sqj"],
