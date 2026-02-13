@@ -288,12 +288,7 @@ $(document).ready(function () {
 	RULE = JSON.parse($("#RULE").html());
 	OPTIONS = JSON.parse($("#OPTIONS").html());
 	MODE = Object.keys(RULE);
-	var isTouchDevice = function () {
-		return (('ontouchstart' in window) ||
-			(navigator.maxTouchPoints > 0) ||
-			(navigator.msMaxTouchPoints > 0));
-	};
-	mobile = $("#mobile").html() == "true" || isTouchDevice();
+	mobile = $("#mobile").html() == "true";
 	if (mobile) TICK = 200;
 	$data._timePercent = false ? function () {
 		return $data._turnTime / $data.turnTime * 100 + "%";
@@ -438,27 +433,6 @@ $(document).ready(function () {
 	$stage.talk.on('keyup', function (e) {
 		$stage.game.hereText.val($stage.talk.val());
 	});
-	if (mobile) {
-		$stage.game.hereText.on('blur', function (e) {
-			if ($stage.game.here.is(':visible') && $data.room && $data.room.gaming) {
-				var self = this;
-				setTimeout(function () {
-					$(self).focus();
-				}, 0);
-			}
-		});
-		$(window).on('resize', function () {
-			if ($stage.game.here.is(':visible') && $data.room && $data.room.gaming) {
-				$stage.game.hereText.focus();
-			}
-		});
-		$stage.game.here.on('touchend', function (e) {
-			if ($stage.game.here.is(':visible') && $data.room && $data.room.gaming) {
-				e.preventDefault();
-				$stage.game.hereText.focus();
-			}
-		});
-	}
 	$(window).on('beforeunload', function (e) {
 		if ($data.room) return L['sureExit'];
 	});
@@ -1381,14 +1355,8 @@ $lib.Classic.turnStart = function (data) {
 	if (!$data._replay) {
 		$stage.game.here.css('display', (data.id == $data.id) ? "block" : "none");
 		if (data.id == $data.id) {
-			if (mobile) {
-				$stage.game.hereText.val("").focus();
-				setTimeout(function () {
-					$stage.game.hereText.focus();
-				}, 50);
-			} else {
-				$stage.talk.focus();
-			}
+			if (mobile) $stage.game.hereText.val("").focus();
+			else $stage.talk.focus();
 		}
 	}
 	$stage.game.items.html($data.mission = data.mission);
@@ -1773,15 +1741,8 @@ $lib.Typing.spaceOff = function () {
 $lib.Typing.turnStart = function (data) {
 	if (!$data._spectate) {
 		$stage.game.here.show();
-		if (mobile) {
-			$stage.game.hereText.val("");
-			$stage.game.hereText.focus();
-			setTimeout(function () {
-				$stage.game.hereText.focus();
-			}, 50);
-		} else {
-			$stage.talk.val("").focus();
-		}
+		if (mobile) $stage.game.hereText.val("").focus();
+		else $stage.talk.val("").focus();
 		$lib.Typing.spaceOn();
 	}
 	ws.onmessage = _onMessage;
@@ -1886,15 +1847,8 @@ $lib.Hunmin.turnStart = function (data) {
 	if (!$data._replay) {
 		$stage.game.here.css('display', (data.id == $data.id) ? "block" : "none");
 		if (data.id == $data.id) {
-			if (mobile) {
-				$stage.game.hereText.val("");
-				$stage.game.hereText.focus();
-				setTimeout(function () {
-					$stage.game.hereText.focus();
-				}, 50);
-			} else {
-				$stage.talk.focus();
-			}
+			if (mobile) $stage.game.hereText.val("").focus();
+			else $stage.talk.focus();
 		}
 	}
 	$stage.game.items.html($data.mission = data.mission);
@@ -2002,15 +1956,8 @@ $lib.Daneo.turnStart = function (data) {
 	if (!$data._replay) {
 		$stage.game.here.css('display', (data.id == $data.id) ? "block" : "none");
 		if (data.id == $data.id) {
-			if (mobile) {
-				$stage.game.hereText.val("");
-				$stage.game.hereText.focus();
-				setTimeout(function () {
-					$stage.game.hereText.focus();
-				}, 50);
-			} else {
-				$stage.talk.focus();
-			}
+			if (mobile) $stage.game.hereText.val("").focus();
+			else $stage.talk.focus();
 		}
 	}
 	$stage.game.items.html($data.mission = data.mission);
@@ -2339,15 +2286,8 @@ $lib.All.turnStart = function (data) {
     if (!$data._replay) {
         $stage.game.here.css('display', (data.id == $data.id) ? "block" : "none");
         if (data.id == $data.id) {
-            if (mobile) {
-                $stage.game.hereText.val("");
-                $stage.game.hereText.focus();
-                setTimeout(function () {
-                    $stage.game.hereText.focus();
-                }, 50);
-            } else {
-                $stage.talk.focus();
-            }
+            if (mobile) $stage.game.hereText.val("").focus();
+            else $stage.talk.focus();
         }
     }
     $stage.game.items.html($data.mission = data.mission);
@@ -2567,11 +2507,9 @@ function send(type, data, toMaster) {
 		spamCount = 5;
 	}
 
-	// WebSocket이 OPEN 상태(readyState === 1)일 때만 메시지 전송
 	if (subj && subj.readyState === 1) {
 		subj.send(JSON.stringify(r));
 	} else if (subj && subj.readyState === 0) {
-		// 연결 중이면 큐에 추가
 		if (!$data._sendQueue) $data._sendQueue = [];
 		$data._sendQueue.push({ type: type, data: data, toMaster: toMaster });
 	}

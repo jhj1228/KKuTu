@@ -46,14 +46,8 @@ $lib.Classic.turnStart = function (data) {
 	if (!$data._replay) {
 		$stage.game.here.css('display', (data.id == $data.id) ? "block" : "none");
 		if (data.id == $data.id) {
-			if (mobile) {
-				$stage.game.hereText.val("").focus();
-				setTimeout(function () {
-					$stage.game.hereText.focus();
-				}, 50);
-			} else {
-				$stage.talk.focus();
-			}
+			if (mobile) $stage.game.hereText.val("").focus();
+			else $stage.talk.focus();
 		}
 	}
 	$stage.game.items.html($data.mission = data.mission);

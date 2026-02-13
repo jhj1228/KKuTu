@@ -37,11 +37,9 @@ function send(type, data, toMaster) {
 		spamCount = 5;
 	}
 
-	// WebSocket이 OPEN 상태(readyState === 1)일 때만 메시지 전송
 	if (subj && subj.readyState === 1) {
 		subj.send(JSON.stringify(r));
 	} else if (subj && subj.readyState === 0) {
-		// 연결 중이면 큐에 추가
 		if (!$data._sendQueue) $data._sendQueue = [];
 		$data._sendQueue.push({ type: type, data: data, toMaster: toMaster });
 	}

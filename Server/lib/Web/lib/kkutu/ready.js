@@ -215,12 +215,7 @@ $(document).ready(function () {
 	RULE = JSON.parse($("#RULE").html());
 	OPTIONS = JSON.parse($("#OPTIONS").html());
 	MODE = Object.keys(RULE);
-	var isTouchDevice = function () {
-		return (('ontouchstart' in window) ||
-			(navigator.maxTouchPoints > 0) ||
-			(navigator.msMaxTouchPoints > 0));
-	};
-	mobile = $("#mobile").html() == "true" || isTouchDevice();
+	mobile = $("#mobile").html() == "true";
 	if (mobile) TICK = 200;
 	$data._timePercent = false ? function () {
 		return $data._turnTime / $data.turnTime * 100 + "%";
@@ -365,27 +360,6 @@ $(document).ready(function () {
 	$stage.talk.on('keyup', function (e) {
 		$stage.game.hereText.val($stage.talk.val());
 	});
-	if (mobile) {
-		$stage.game.hereText.on('blur', function (e) {
-			if ($stage.game.here.is(':visible') && $data.room && $data.room.gaming) {
-				var self = this;
-				setTimeout(function () {
-					$(self).focus();
-				}, 0);
-			}
-		});
-		$(window).on('resize', function () {
-			if ($stage.game.here.is(':visible') && $data.room && $data.room.gaming) {
-				$stage.game.hereText.focus();
-			}
-		});
-		$stage.game.here.on('touchend', function (e) {
-			if ($stage.game.here.is(':visible') && $data.room && $data.room.gaming) {
-				e.preventDefault();
-				$stage.game.hereText.focus();
-			}
-		});
-	}
 	$(window).on('beforeunload', function (e) {
 		if ($data.room) return L['sureExit'];
 	});
