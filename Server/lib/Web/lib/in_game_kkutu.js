@@ -258,7 +258,7 @@ $(document).ready(function () {
 		{ key: "ending", value: "/media/kkutu/LobbyBGMending.mp3" },
 		{ key: "museum", value: "/media/kkutu/LobbyMuseum.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
-		{ key: "lydia", value: "/media/kkutu/LobbyLydia.mp3" },
+		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },
 		{ key: "jaqwiF", value: "/media/kkutu/JaqwiFastBGM.mp3" },
 		{ key: "game_start", value: "/media/kkutu/game_start.mp3" },
@@ -2752,7 +2752,7 @@ function onMessage(data) {
 		case 'recaptcha':
 			var $introText = $("#intro-text");
 			$introText.empty();
-			$introText.html('게스트는 캡챠 인증이 필요합니다.' +
+			$introText.html('GUEST는 캡챠 인증이 필요합니다.' +
 				'<br/>로그인을 하시면 캡챠 인증을 건너뛰실 수 있습니다.' +
 				'<br/><br/>');
 			$introText.append($('<div class="g-recaptcha" id="recaptcha" style="display: table; margin: 0 auto;"></div>'));
@@ -3472,8 +3472,8 @@ function updateUserList(refresh) {
 	var i, o, len = 0;
 	var arr;
 
-	// refresh = true;
-	// if(!$stage.box.userList.is(':visible')) return;
+	refresh = true;
+	if (!$stage.box.userList.is(':visible')) return;
 	if ($data.opts.su) {
 		arr = [];
 		for (i in $data.users) {

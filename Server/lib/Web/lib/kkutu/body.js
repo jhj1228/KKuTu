@@ -282,7 +282,7 @@ function onMessage(data) {
 		case 'recaptcha':
 			var $introText = $("#intro-text");
 			$introText.empty();
-			$introText.html('게스트는 캡챠 인증이 필요합니다.' +
+			$introText.html('GUEST는 캡챠 인증이 필요합니다.' +
 				'<br/>로그인을 하시면 캡챠 인증을 건너뛰실 수 있습니다.' +
 				'<br/><br/>');
 			$introText.append($('<div class="g-recaptcha" id="recaptcha" style="display: table; margin: 0 auto;"></div>'));
