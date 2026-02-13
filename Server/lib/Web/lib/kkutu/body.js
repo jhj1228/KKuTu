@@ -36,7 +36,15 @@ function send(type, data, toMaster) {
 		if (++spamWarning >= 3) return subj.close();
 		spamCount = 5;
 	}
-	subj.send(JSON.stringify(r));
+
+	// WebSocket이 OPEN 상태(readyState === 1)일 때만 메시지 전송
+	if (subj && subj.readyState === 1) {
+		subj.send(JSON.stringify(r));
+	} else if (subj && subj.readyState === 0) {
+		// 연결 중이면 큐에 추가
+		if (!$data._sendQueue) $data._sendQueue = [];
+		$data._sendQueue.push({ type: type, data: data, toMaster: toMaster });
+	}
 }
 function loading(text) {
 	if (text) {
@@ -209,6 +217,16 @@ function connectToRoom(chan, rid) {
 	});
 	rws.onopen = function (e) {
 		console.log("room-conn", chan, rid);
+
+		if ($data._sendQueue && $data._sendQueue.length > 0) {
+			var queue = $data._sendQueue;
+			$data._sendQueue = [];
+			for (var i = 0; i < queue.length; i++) {
+				if (queue[i].toMaster === false) {
+					send(queue[i].type, queue[i].data, false);
+				}
+			}
+		}
 	};
 	rws.onmessage = _onMessage;
 	rws.onclose = function (e) {

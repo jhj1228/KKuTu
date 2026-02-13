@@ -259,13 +259,13 @@ exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
 
 exports.KO_INJEONG = [
 	"IMS", "VOC", "RAG", "NEX",
-	"KTV", "CPY", "WOR", "NFX", "KOT", "DOT", "THP",
+	"KTV", "CPY", "WOR", "NFX", "KOT", "THP",
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
-	"MIN", "MAF", "JAN", "CTH", "BGP", /*"BUT",*/ "BUS",
-	"HSR", "BLA", "CYP", "NVL", "STA", "APT", "ESB",
+	"MIN", "MAF", "JAN", "CTH", "BGP", "BUS",
+	"HSR", "BLA", "NVL", "STA", "APT", "ESB",
 	"ELW", "KMV", "OVW", "GEN", "WOW", "WEB", "UWH",
 	"KPO", "ERT", "JPT", "ZEL",
-	"CKR", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
+	"CKR", "CRO", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
@@ -286,6 +286,7 @@ exports.EN_THEME = [
 	"e18", "e20", "e43"
 ];
 exports.IJP_EXCEPT = [
+	"BUT"
 ];
 exports.KO_IJP = exports.KO_INJEONG.concat(exports.KO_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
 exports.EN_IJP = exports.EN_INJEONG.concat(exports.EN_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
