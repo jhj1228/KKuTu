@@ -2403,10 +2403,10 @@ $lib.Speedquiz.roundReady = function (data) {
 $lib.Speedquiz.turnStart = function (data) {
 	$(".game-user-current").removeClass("game-user-current");
 	$(".game-user-bomb").removeClass("game-user-bomb");
+	$stage.game.here.css('display', ($data.room.game.seq.indexOf($data.id) >= 0) ? "block" : "none");
 	if ($data.room.game.seq.indexOf($data.id) >= 0) {
-		$stage.game.here.css('opacity', 1).show();
-	} else {
-		$stage.game.here.css('opacity', mobile ? 0.5 : 0).show();
+		if (mobile) $stage.game.hereText.val("").focus();
+		else $stage.talk.focus();
 	}
 
 	var qVal = data.question;
@@ -2454,13 +2454,13 @@ $lib.Speedquiz.turnEnd = function (id, data) {
 	if (data.giveup) {
 		$uc.addClass("game-user-bomb");
 	} else if (data.answer) {
-		$stage.game.here.css('opacity', mobile ? 0.5 : 0);
+		$stage.game.here.hide();
 		var ansColor = ($data.room.opts.drg) ? getRandomColor() : "#FFFF44";
 		$stage.game.display.html($("<label>").css('color', ansColor).html(data.answer));
 		stopBGM();
 		playSound('horr');
 	} else {
-		if (id == $data.id) $stage.game.here.css('opacity', mobile ? 0.5 : 0);
+		if (id == $data.id) $stage.game.here.hide();
 		addScore(id, data.score);
 		if ($data._roundTime > 10000) $data._roundTime = 10000;
 		drawObtainedScore($uc, $sc);
@@ -3472,8 +3472,8 @@ function updateUserList(refresh) {
 	var i, o, len = 0;
 	var arr;
 
-	refresh = true;
-	if (!$stage.box.userList.is(':visible')) return;
+	// refresh = true;
+	// if(!$stage.box.userList.is(':visible')) return;
 	if ($data.opts.su) {
 		arr = [];
 		for (i in $data.users) {
