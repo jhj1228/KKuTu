@@ -340,7 +340,7 @@ exports.submit = function (client, text) {
 			}
 			if (my.opts.gentle) {
 				getAuto.call(my, preChar, preSubChar, 2).then(function (list) {
-					if (list.length <= 5) {
+					if (list.length <= 7) {
 						my.game.loading = false;
 						client.publish('turnError', { code: 412, value: text }, true);
 					} else {
