@@ -2764,7 +2764,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "original" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" ? "lobby" : key;
+	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "evans" || key === "freedomdive" ? "lobby" : key;
 
 	src.start();
 

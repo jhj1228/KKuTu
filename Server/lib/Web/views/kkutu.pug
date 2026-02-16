@@ -231,13 +231,15 @@ block Middle
 			select#bgm-select
 				optgroup(label='끄투 BGM')
 					option(value='lobby', selected) 기본
-					option(value='original', selected) 끄투 오리지널
+					//- option(value='original', selected) 끄투 오리지널
 					//- option(value='lobbyseol') 명절
 					option(value='ending') 끄투 엔딩
 					option(value='museum') 끄투 박물관
 				optgroup(label='기타 BGM')
 					option(value='inthepool') IN THE SEA x IN THE POOL
 					option(value='enchanted') Enchanted Love
+					option(value='evans') Evans
+					option(value='freedomdive') FREEDOM DiVE↓
 		div.dialog-bar
 			h4= L('denyReq')
 			+SettingOption('deny-invite', L('denyInvite'))
@@ -292,7 +294,7 @@ block Middle
 				- for(var i in locals.MODE)
 					option(value=Number(i))= L('mode' + locals.MODE[i])
 		div.dialog-bar(style='height: 150px;')
-			h4(style='height: 155px;')= L('misc')
+			h4(style='height: 115px;')= L('misc')
 			- for(var i in locals.OPTIONS)
 				+GameOption(i, 'quick')
 		div.dialog-bar
@@ -301,7 +303,7 @@ block Middle
 			h4(style='width: 100%; height: 20px;')#quick-queue
 		div.dialog-bar.tail-button
 			button#quick-ok= L('OK')
-	+Dialog('RoomDiag', 300, 475)
+	+Dialog('RoomDiag', 300, 435)
 		div.dialog-bar
 			h4= L('roomTitle')
 			input#room-title(placeholder=(nick || L('guest'))+L('roomDefault'), maxlength=20)
@@ -349,7 +351,7 @@ block Middle
 				option(value=90)
 				option(value=120)
 				option(value=150)
-		div.dialog-bar(style='height: 170px;')
+		div.dialog-bar(style='height: 130px;')
 			h4(style='height: 105px;')= L('misc')
 			- for(var i in locals.OPTIONS)
 				+GameOption(i, 'room')

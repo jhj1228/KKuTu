@@ -434,31 +434,57 @@ exports.readyRobot = function (robot) {
 	if (my.opts.unknownword) {
 		const LEN_LIMITS = [4, 7, 10, 15, 20, 50];
 		var maxLen = LEN_LIMITS[level] || 50;
-		var randomLen = Math.floor(Math.random() * (maxLen - 2)) + 3;
-		if (level >= 5) {
-			randomLen = Math.floor(Math.random() * 10) + 40;
+		var loopCount;
+
+		if (my.game.wordLength) {
+			loopCount = my.game.wordLength - 1;
+		} else {
+			var randomLen = Math.floor(Math.random() * (maxLen - 2)) + 3;
+			if (level >= 5) {
+				randomLen = Math.floor(Math.random() * 10) + 40;
+			}
+			loopCount = randomLen - 1;
 		}
-		var body = "";
-		var loopCount = randomLen - 1;
+
+		function makeRandomBody() {
+			var b = "";
+			for (var k = 0; k < loopCount; k++) {
+				b += String.fromCharCode(0xAC00 + Math.floor(Math.random() * 11172));
+			}
+			return b;
+		}
+
+		function doTurn(bodyStr) {
+			if (isRev) text = bodyStr + my.game.char;
+			else text = my.game.char + bodyStr;
+
+			robot._done.push(text);
+			const DELAYS = [3000, 2000, 1500, 700, 100, 0];
+			setTimeout(my.turnRobot, DELAYS[level], robot, text);
+		}
 
 		if (my.game.mission && typeof my.game.mission === 'string') {
-			for (var k = 0; k < loopCount; k++) {
-				body += my.game.mission;
+			var missionBody = "";
+			for (var k = 0; k < loopCount; k++) missionBody += my.game.mission;
+
+			var tempText;
+			if (isRev) tempText = missionBody + my.game.char;
+			else tempText = my.game.char + missionBody;
+
+			if (my.game.chain && my.game.chain.includes(tempText)) {
+				doTurn(makeRandomBody());
+			} else {
+				DB.kkutu[my.rule.lang].findOne(['_id', tempText]).on(function (doc) {
+					if (doc) {
+						doTurn(makeRandomBody());
+					} else {
+						doTurn(missionBody);
+					}
+				});
 			}
 		} else {
-			for (var k = 0; k < loopCount; k++) {
-				var randomCode = 0xAC00 + Math.floor(Math.random() * 11172);
-				body += String.fromCharCode(randomCode);
-			}
+			doTurn(makeRandomBody());
 		}
-		if (isRev) {
-			text = body + my.game.char;
-		} else {
-			text = my.game.char + body;
-		}
-		robot._done.push(text);
-		const DELAYS = [3000, 2000, 1500, 700, 100, 0];
-		setTimeout(my.turnRobot, DELAYS[level], robot, text);
 		return;
 	}
 	getAuto.call(my, my.game.char, my.game.subChar, 2).then(function (list) {

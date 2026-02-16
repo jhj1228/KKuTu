@@ -44,7 +44,7 @@ exports.OPTIONS = {
 	'k32': { name: "Sami" }, // 3232
 	'no2': { name: "No2" }, // 2글자 금지
 	// 'sht': { name: "Short" }, // 짧음
-	'rtn': { name: "Return" }, // 리턴
+	// 'rtn': { name: "Return" }, // 리턴
 	'rdt': { name: "Randomturn" }, // 랜덤턴
 	'unw': { name: "Unknownword" }, // 언노운워드
 	// 'bom': { name: "Boom" }, // 폭탄
@@ -89,7 +89,7 @@ exports.RULE = {
 	'KKT': { // 쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -98,7 +98,7 @@ exports.RULE = {
 	'KSH': { // 끝말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -134,7 +134,7 @@ exports.RULE = {
 	'KAP': { // 앞말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -144,7 +144,7 @@ exports.RULE = {
 	'HUN': { // 훈민정음
 		lang: "ko",
 		rule: "Hunmin",
-		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "thw"],
+		opts: ["ext", "mis", "rdm", "loa", "str", "rdt", "thw"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -153,7 +153,7 @@ exports.RULE = {
 	'KDA': { // 단어대결
 		lang: "ko",
 		rule: "Daneo",
-		opts: ["ijp", "mis", "rdm", "rtn", "rdt"],
+		opts: ["ijp", "mis", "rdm", "rdt"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -171,7 +171,7 @@ exports.RULE = {
 	'KMH': { // 가운뎃말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -180,7 +180,7 @@ exports.RULE = {
 	'KKK': { // 끄투
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "due", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -198,7 +198,7 @@ exports.RULE = {
 	'ALL': { // 전체
 		lang: "ko",
 		rule: "All",
-		opts: ["mis", "rdm", "rtn", "rdt", "fre"],
+		opts: ["mis", "rdm", "rdt", "fre"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -216,7 +216,7 @@ exports.RULE = {
 	'KRH': { // 랜덤잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -225,7 +225,7 @@ exports.RULE = {
 	'KAT': { // 앞말쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rtn", "rdt", "due", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rdt", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -242,7 +242,7 @@ exports.RULE = {
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
-	return 2 * (Math.pow(5 + 7 * (text || "").length, 0.74) + 0.88 * (chain || []).length) * (0.5 + 0.5 * tr) * 5;
+	return 2 * (Math.pow(5 + 7 * (text || "").length, 0.74) + 0.88 * (chain || []).length) * (0.5 + 0.5 * tr) * 3.5;
 };
 exports.getPenalty = function (chain, score) {
 	return -1 * Math.round(Math.min(10 + (chain || []).length * 2.1 + score * 0.15, score));
