@@ -180,7 +180,7 @@ exports.RULE = {
 	'KKK': { // 끄투
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "due", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -225,7 +225,7 @@ exports.RULE = {
 	'KAT': { // 앞말쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rdt", "due", "mwd"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "k32", "rdt", "unw", "due", "mwd"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -235,7 +235,7 @@ exports.RULE = {
 		lang: "ko",
 		rule: "Speedquiz",
 		opts: ["nht", "sqj"],
-		time: 0.2,
+		time: 0.3,
 		ai: true,
 		big: false,
 		ewq: false
@@ -263,16 +263,16 @@ exports.KO_INJEONG = [
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
 	"MIN", "MAF", "JAN", "CTH", "BGP", "BUS",
 	"HSR", "BLA", "NVL", "STA", "APT", "ESB",
-	"ELW", "KMV", "OVW", "GEN", "WOW", "WEB", "UWH",
+	"ELW", "KMV", "OVW", "GEN", "WEB", "UWH",
 	"KPO", "ERT", "JPT", "ZEL",
-	"CKR", "CRO", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
+	"CKR", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
-	"ANY", "SYM", "SIS", "CKE", "ENW", "HAN"
+	"ANIM", "COOK", "FRUI"
 ];
 exports.EN_INJEONG = [
-	"LOL", "GTD", "e50"
+	"LOL", "GTD"
 ];
 exports.KO_THEME = [
 	"30", "40", "60", "80", "90",
@@ -286,7 +286,7 @@ exports.EN_THEME = [
 	"e18", "e20", "e43"
 ];
 exports.IJP_EXCEPT = [
-	"BUT"
+	"BUT", "WOW", "CRO"
 ];
 exports.KO_IJP = exports.KO_INJEONG.concat(exports.KO_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
 exports.EN_IJP = exports.EN_INJEONG.concat(exports.EN_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });

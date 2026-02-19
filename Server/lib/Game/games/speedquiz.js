@@ -22,7 +22,7 @@ var fs = require('fs');
 var path = require('path');
 var DB;
 var DIC;
-var SPEEDQUIZ_DATA;
+var SPEEDQUIZ_DATA_CACHE = {};
 
 var ROBOT_CATCH_RATE = [0.05, 0.1, 0.3, 0.5, 0.7, 1];
 var ROBOT_TYPE_COEF = [2000, 1200, 800, 300, 100, 0];
@@ -30,16 +30,31 @@ var ROBOT_TYPE_COEF = [2000, 1200, 800, 300, 100, 0];
 exports.init = function (_DB, _DIC) {
 	DB = _DB;
 	DIC = _DIC;
+};
+
+function loadQuestionData(topic) {
+	if (SPEEDQUIZ_DATA_CACHE[topic]) {
+		return SPEEDQUIZ_DATA_CACHE[topic];
+	}
 
 	try {
-		var filePath = path.join(__dirname, '../../data/speedquiz.json');
+		var filePath = path.join(__dirname, '../../data/speedquiz', topic + '.json');
+
+		if (!fs.existsSync(filePath)) {
+			console.warn('Speedquiz: ' + topic + '.json 파일이 없습니다.');
+			return [];
+		}
+
 		var rawData = fs.readFileSync(filePath, 'utf8');
-		SPEEDQUIZ_DATA = JSON.parse(rawData);
+		var questionData = JSON.parse(rawData);
+
+		SPEEDQUIZ_DATA_CACHE[topic] = Array.isArray(questionData) ? questionData : [];
+		return SPEEDQUIZ_DATA_CACHE[topic];
 	} catch (err) {
-		console.error('speedquiz.json 파일을 읽을 수 없습니다.:', err.message);
-		SPEEDQUIZ_DATA = {};
+		console.error('Speedquiz: ' + topic + '.json 파일을 읽을 수 없습니다:', err.message);
+		return [];
 	}
-};
+}
 
 exports.getTitle = function () {
 	var R = new Lizard.Tail();
@@ -308,7 +323,7 @@ function getQuestion(topics, ignoreDone) {
 	var R = new Lizard.Tail();
 
 	try {
-		var questionList = SPEEDQUIZ_DATA[topics];
+		var questionList = loadQuestionData(topics);
 
 		if (!questionList || !Array.isArray(questionList) || questionList.length === 0) {
 			setTimeout(function () { R.go(null); }, 5);

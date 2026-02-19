@@ -11,7 +11,7 @@
             padding: 0;
             overflow: hidden;
             background-color: #f0f2f5;
-            font-family: '나눔바른고딕', '맑은 고딕', sans-serif;
+            font-family: NBGothic;
             display: flex;
             flex-direction: column;
         }
@@ -38,7 +38,7 @@
             cursor: pointer;
             position: relative;
             transition: color 0.2s;
-            font-family: inherit;
+            font-family: NBGothic;
         }
 
         .nav-btn:hover {
@@ -80,6 +80,11 @@
         .tab-content.active {
             display: block;
             animation: fadeIn 0.3s ease;
+        }
+
+        @font-face {
+            font-family: 'NBGothic';
+            src: url('../media/IBMPlexSansKR-Regular.woff') format('woff');
         }
 
         @keyframes fadeIn {
