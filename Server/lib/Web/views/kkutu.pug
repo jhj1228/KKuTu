@@ -203,6 +203,7 @@ block Middle
 		button#HelpBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #BBBBBB;')!= L('help')
 		button#SettingBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #CCCCCC;')!= L('settings')
 		button#CommunityBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #DAA9FF;')!= L('community')
+		button#BlacklistBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #FFB6C1;')!= L('blacklist')
 		button#RoomRefreshBtn.tiny-menu.for-lobby(style='display: none; background-color: #FFD4E5;')!= L('room_refresh')
 		button#SpectateBtn.for-master.for-normal(style='display: none; background-color: #D19DFF;')!= L('spectate')
 		button#SetRoomBtn.for-master(style='display: none; background-color: #B0D2F3;')!= L('settingRoom')
@@ -262,18 +263,14 @@ block Middle
 		div.dialog-bar.tail-button
 			button#setting-ok= L('save')
 			button#setting-reset= L('initialize')
-	+Dialog('CommunityDiag', 300, 330)
-		div.dialog-bar(style='height: 225px;'): table#Community(style='text-align: center;')
-			thead(style='font-weight: bold; background-color: #DDDDDD;'): tr
-				td(width=10)= '#'
-				td(width=40)= '서버'
-				td(width=60)= '닉네임'
-				td(width=155)= '메모'
-				td(width=40)= '관리'
-			tbody
-		div.dialog-bar: h4(style='width: 100%;')#comm-friends
+	+Dialog('CommunityDiag', 300, 300)
+		div.dialog-bar(style='height: 225px; overflow-y: scroll;')
+			div#comm-friends
 		div.dialog-bar.tail-button
 			button#comm-friend-add= L('friendAdd')
+	+Dialog('BlacklistDiag', 300, 255)
+		div.dialog-bar(style='height: 225px; overflow-y: scroll;')
+			div#blacklist-items
 	+Dialog('LeaderboardDiag', 300, 450, L('leaderboard'))
 		div.dialog-bar(style='height: 350px;'): table#ranking(style='text-align: center;')
 			thead(style='font-weight: bold; background-color: #DDDDDD;'): tr

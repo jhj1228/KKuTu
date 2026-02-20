@@ -106,7 +106,7 @@ $(document).ready(function () {
 	$data._timers = [];
 	$data._obtain = [];
 	$data._wblock = {};
-	$data._shut = {};
+	$data._shut = JSON.parse(localStorage.getItem('_shut') || '{}');
 	$data.usersR = {};
 	$data._sendQueue = [];
 	EXP.push(getRequiredScore(1));
@@ -132,6 +132,7 @@ $(document).ready(function () {
 			help: $("#HelpBtn"),
 			setting: $("#SettingBtn"),
 			community: $("#CommunityBtn"),
+			blacklist: $("#BlacklistBtn"),
 			newRoom: $("#NewRoomBtn"),
 			setRoom: $("#SetRoomBtn"),
 			quickRoom: $("#QuickRoomBtn"),
@@ -157,6 +158,9 @@ $(document).ready(function () {
 			community: $("#CommunityDiag"),
 			commFriends: $("#comm-friends"),
 			commFriendAdd: $("#comm-friend-add"),
+			blacklist: $("#BlacklistDiag"),
+			blacklistItems: $("#blacklist-items"),
+			blacklistClear: $("#blacklist-clear"),
 			room: $("#RoomDiag"),
 			roomOK: $("#room-ok"),
 			quick: $("#QuickDiag"),
@@ -473,6 +477,13 @@ $(document).ready(function () {
 		if ($data.guest) return fail(451);
 		showDialog($stage.dialog.community);
 	});
+	$stage.menu.blacklist.on('click', function (e) {
+		if ($stage.dialog.blacklist.is(':visible')) {
+			$stage.dialog.blacklist.hide();
+		} else {
+			showBlacklist();
+		}
+	});
 	$stage.dialog.commFriendAdd.on('click', function (e) {
 		var id = prompt(L['friendAddNotice']);
 
@@ -480,6 +491,12 @@ $(document).ready(function () {
 		if (!$data.users[id]) return fail(450);
 
 		send('friendAdd', { target: id }, true);
+	});
+	$stage.dialog.blacklistClear.on('click', function (e) {
+		if (!confirm(L['blacklistClearConfirm'])) return;
+		$data._shut = {};
+		localStorage.setItem('_shut', JSON.stringify($data._shut));
+		showBlacklist();
 	});
 	$stage.menu.newRoom.on('click', function (e) {
 		var $d;
@@ -868,7 +885,7 @@ $(document).ready(function () {
 		send('kick', { robot: $data.robots.hasOwnProperty($data._profiled), target: $data._profiled });
 	});
 	$stage.dialog.profileShut.on('click', function (e) {
-		var o = $data.users[$data._profiled];
+		var o = $data.users[$data._profiled] || $data._profiled_obj;
 		if (!o) return;
 
 		var targetName = o.profile.title || o.profile.name;
@@ -3194,6 +3211,7 @@ function toggleShutBlock(target) {
 		$data._shut[target] = true;
 		notice(target + L['userShut']);
 	}
+	localStorage.setItem('_shut', JSON.stringify($data._shut));
 }
 function tryDict(text, callback) {
 	var text = text.replace(/[^\sa-zA-Zㄱ-ㅎ0-9가-힣]/g, "");
@@ -4122,9 +4140,24 @@ function requestProfile(id) {
 	var i;
 
 	if (!o) {
-		notice(L['error_405']);
+		// 온라인에 없으면 오프라인 유저의 정보를 요청
+		$.ajax({
+			url: '/user/' + id,
+			method: 'GET',
+			success: function (data) {
+				if (data.error) {
+					notice(L['error_405']);
+					return;
+				}
+				showOfflineProfile(data, id);
+			},
+			error: function () {
+				notice(L['error_405']);
+			}
+		});
 		return;
 	}
+
 	$("#ProfileDiag .dialog-title").text(getDisplayName(o) + L['sProfile']);
 	$(".profile-head").empty().append($pi = $("<div>").addClass("moremi profile-moremi"))
 		.append($("<div>").addClass("profile-head-item")
@@ -4182,6 +4215,65 @@ function requestProfile(id) {
 			if (!o.robot) $stage.dialog.profileReport.show();
 		}
 	}
+	showDialog($stage.dialog.profile);
+	$stage.dialog.profile.show();
+	global.expl($ex);
+}
+function showOfflineProfile(o, id) {
+	var $rec = $("#profile-record").empty();
+	var $pi, $ex;
+	var i;
+
+	$("#ProfileDiag .dialog-title").text(getDisplayName(o) + L['sProfile']);
+	$(".profile-head").empty().append($pi = $("<div>").addClass("moremi profile-moremi"))
+		.append($("<div>").addClass("profile-head-item")
+			.append(getImage(o.profile.image).addClass("profile-image"))
+			.append($("<div>").addClass("profile-title ellipse").text(getDisplayName(o))
+				.append($("<label>").addClass("profile-tag").html(" #" + o.id.toString().substr(0, 5)))
+			)
+		)
+		.append($("<div>").addClass("profile-head-item")
+			.append(getLevelImage(o.data.score).addClass("profile-level"))
+			.append($("<div>").addClass("profile-level-text").html(L['LEVEL'] + " " + (i = getLevel(o.data.score))))
+			.append($("<div>").addClass("profile-score-text").html(commify(o.data.score) + " / " + commify(EXP[i - 1]) + L['PTS']))
+		)
+		.append($ex = $("<div>").addClass("profile-head-item profile-exordial ellipse").text(badWords(o.exordial || ""))
+			.append($("<div>").addClass("expl").css({ 'white-space': "normal", 'width': 300, 'font-size': "11px" }).text(o.exordial))
+		);
+
+	$stage.dialog.profileLevel.hide();
+	// 오프라인 유저는 "오프라인" 텍스트로 표시
+	$("#profile-place").html(L['offline'] || "오프라인");
+
+	for (i in o.data.record) {
+		var r = o.data.record[i];
+		var winRate = r[0] > 0 ? ((r[1] / r[0]) * 100).toFixed(2) : "0.00";
+
+		$rec.append($("<div>").addClass("profile-record-field")
+			.append($("<div>").addClass("profile-field-name").html(L['mode' + i]))
+			.append($("<div>").addClass("profile-field-record").html(r[0] + L['P'] + " " + r[1] + L['W']))
+			.append($("<div>").addClass("profile-field-wr").html(winRate + "%"))
+			.append($("<div>").addClass("profile-field-score").html(commify(r[2]) + L['PTS']))
+		);
+	}
+	renderMoremi($pi, o.equip);
+
+	$data._profiled = id;
+	$data._profiled_obj = o;
+	$stage.dialog.profileKick.hide();
+	$stage.dialog.profileShut.hide();
+	$stage.dialog.profileDress.hide();
+	$stage.dialog.profileWhisper.hide();
+	$stage.dialog.profileHandover.hide();
+	$stage.dialog.profileReport.hide();
+
+	// 오프라인 유저는 whisper만 제외하고 shut은 표시
+	if ($data.id == id) {
+		$stage.dialog.profileDress.show();
+	} else {
+		$stage.dialog.profileShut.show();
+	}
+
 	showDialog($stage.dialog.profile);
 	$stage.dialog.profile.show();
 	global.expl($ex);
@@ -5604,6 +5696,31 @@ function submitReport() {
 	var finalReason = "[" + selectedReason + "] " + detail;
 	send('report', { target: $data._profiled, reason: finalReason });
 	$stage.dialog.report.hide();
+}
+
+function showBlacklist() {
+	var $items = $stage.dialog.blacklistItems.empty();
+	var count = 0;
+
+	for (var name in $data._shut) {
+		if ($data._shut.hasOwnProperty(name)) {
+			count++;
+			$items.append($("<div>").addClass("blacklist-friend")
+				.append($("<div>").addClass("blacklist-name ellipse").text(name))
+				.append($("<i>").addClass("fa fa-remove").on('click', function () {
+					var targetName = $(this).closest(".blacklist-friend").find(".blacklist-name").text();
+					if (!confirm(targetName + L['blacklistRemoveConfirm'])) return;
+					delete $data._shut[targetName];
+					localStorage.setItem('_shut', JSON.stringify($data._shut));
+					showBlacklist();
+				}))
+			);
+		}
+	}
+
+	$("#BlacklistDiag .dialog-title").html(L['blacklistText'] + " (" + count + " / 100)");
+	showDialog($stage.dialog.blacklist);
+	$stage.dialog.blacklist.show();
 }
 /**
  * Rule the words! KKuTu Online

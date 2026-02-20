@@ -118,6 +118,11 @@ block Middle
 			div#comm-friends
 		div.dialog-bar.tail-button
 			button#comm-friend-add= L('friendAdd')
+	+Dialog('BlacklistDiag', 300, 300)
+		div.dialog-bar(style='height: 225px; overflow-y: scroll;')
+			div#blacklist-items
+		div.dialog-bar.tail-button
+			button#blacklist-clear= L('blacklistClear')
 	+Dialog('LeaderboardDiag', 300, 450, L('leaderboard'))
 		div.dialog-bar(style='height: 350px;'): table#ranking(style='text-align: center;')
 			thead(style='font-weight: bold; background-color: #DDDDDD;'): tr

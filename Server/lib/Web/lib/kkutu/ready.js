@@ -33,7 +33,7 @@ $(document).ready(function () {
 	$data._timers = [];
 	$data._obtain = [];
 	$data._wblock = {};
-	$data._shut = {};
+	$data._shut = JSON.parse(localStorage.getItem('_shut') || '{}');
 	$data.usersR = {};
 	$data._sendQueue = [];
 	EXP.push(getRequiredScore(1));
@@ -59,6 +59,7 @@ $(document).ready(function () {
 			help: $("#HelpBtn"),
 			setting: $("#SettingBtn"),
 			community: $("#CommunityBtn"),
+			blacklist: $("#BlacklistBtn"),
 			newRoom: $("#NewRoomBtn"),
 			setRoom: $("#SetRoomBtn"),
 			quickRoom: $("#QuickRoomBtn"),
@@ -84,6 +85,9 @@ $(document).ready(function () {
 			community: $("#CommunityDiag"),
 			commFriends: $("#comm-friends"),
 			commFriendAdd: $("#comm-friend-add"),
+			blacklist: $("#BlacklistDiag"),
+			blacklistItems: $("#blacklist-items"),
+			blacklistClear: $("#blacklist-clear"),
 			room: $("#RoomDiag"),
 			roomOK: $("#room-ok"),
 			quick: $("#QuickDiag"),
@@ -400,6 +404,13 @@ $(document).ready(function () {
 		if ($data.guest) return fail(451);
 		showDialog($stage.dialog.community);
 	});
+	$stage.menu.blacklist.on('click', function (e) {
+		if ($stage.dialog.blacklist.is(':visible')) {
+			$stage.dialog.blacklist.hide();
+		} else {
+			showBlacklist();
+		}
+	});
 	$stage.dialog.commFriendAdd.on('click', function (e) {
 		var id = prompt(L['friendAddNotice']);
 
@@ -407,6 +418,12 @@ $(document).ready(function () {
 		if (!$data.users[id]) return fail(450);
 
 		send('friendAdd', { target: id }, true);
+	});
+	$stage.dialog.blacklistClear.on('click', function (e) {
+		if (!confirm(L['blacklistClearConfirm'])) return;
+		$data._shut = {};
+		localStorage.setItem('_shut', JSON.stringify($data._shut));
+		showBlacklist();
 	});
 	$stage.menu.newRoom.on('click', function (e) {
 		var $d;
@@ -795,7 +812,7 @@ $(document).ready(function () {
 		send('kick', { robot: $data.robots.hasOwnProperty($data._profiled), target: $data._profiled });
 	});
 	$stage.dialog.profileShut.on('click', function (e) {
-		var o = $data.users[$data._profiled];
+		var o = $data.users[$data._profiled] || $data._profiled_obj;
 		if (!o) return;
 
 		var targetName = o.profile.title || o.profile.name;

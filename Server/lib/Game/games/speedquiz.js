@@ -425,27 +425,18 @@ function processQuestion($q) {
 }
 function getHints(answer, lang) {
 	var hints = [];
-	var h1, h2;
 
 	if (lang === 'ko') {
 		try {
-			h1 = getConsonants(answer, Math.ceil(answer.length / 3));
+			var h1 = answer.length + '글자';
 
-			var attempts = 0;
-			do {
-				h2 = getConsonants(answer, Math.ceil(answer.length / 2));
-				attempts++;
-			} while (h1 == h2 && attempts < 10);
+			var h2 = getConsonants(answer, 0);
 
 			hints.push(h1);
 			hints.push(h2);
 		} catch (err) {
 			console.error('Speedquiz: Error generating Korean hints:', err);
-			hints = ['힌트1', '힌트2'];
 		}
-	} else {
-		hints.push(answer.length + ' letters');
-		hints.push(answer.charAt(0).toUpperCase());
 	}
 
 	return hints;

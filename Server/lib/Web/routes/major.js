@@ -132,6 +132,30 @@ exports.run = function (Server, page) {
 		});
 		// res.json({ error: 555 });
 	});
+	Server.get("/user/:id", function (req, res) {
+		var userId = req.params.id;
+
+		MainDB.users.findOne(['_id', userId]).limit(['nickname', true], ['exordial', true], ['kkutu', true], ['equip', true]).on(function ($user) {
+			if (!$user) return res.json({ error: 405 });
+
+			res.json({
+				id: $user._id,
+				nickname: $user.nickname,
+				profile: {
+					title: $user.nickname,
+					name: $user.nickname,
+					image: "/img/kkutu/guest.png"
+				},
+				exordial: $user.exordial || "",
+				data: {
+					score: ($user.kkutu && $user.kkutu.score) || 0,
+					record: ($user.kkutu && $user.kkutu.record) || {}
+				},
+				equip: $user.equip || {},
+				offline: true
+			});
+		});
+	});
 
 	// POST
 	Server.post("/profile", function (req, res) {

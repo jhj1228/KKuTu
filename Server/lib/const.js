@@ -269,7 +269,7 @@ exports.KO_INJEONG = [
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
-	"ANIM", "COOK", "FRUI"
+	"CPT", "KAD", "CTR"
 ];
 exports.EN_INJEONG = [
 	"LOL", "GTD"
