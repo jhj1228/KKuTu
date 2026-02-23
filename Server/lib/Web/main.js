@@ -281,6 +281,7 @@ Server.get("/", function (req, res) {
 		page(req, res, Const.MAIN_PORTS[server] ? "kkutu" : "portal", {
 			'_page': "kkutu",
 			'_id': id,
+			'admin': req.session.profile && GLOBAL.ADMIN.indexOf(req.session.profile.id) !== -1,
 			'PORT': Const.MAIN_PORTS[server],
 			'HOST': req.hostname,
 			'PROTOCOL': Const.IS_SECURED ? 'wss' : 'ws',

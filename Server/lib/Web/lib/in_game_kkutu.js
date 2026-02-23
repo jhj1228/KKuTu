@@ -94,6 +94,7 @@ $(document).ready(function () {
 
 	$data.PUBLIC = $("#PUBLIC").html() == "true";
 	$data.URL = $("#URL").html();
+	$data.admin = $("#isAdmin").html() == "true";
 	$data.NICKNAME_LIMIT = JSON.parse($("#NICKNAME_LIMIT").text());
 	$data.NICKNAME_LIMIT.REGEX.unshift(null);
 	$data.NICKNAME_LIMIT.REGEX = new (Function.prototype.bind.apply(RegExp, $data.NICKNAME_LIMIT.REGEX));
@@ -256,15 +257,13 @@ $(document).ready(function () {
 	}
 	$data._soundList = [
 		{ key: "k", value: "/media/kkutu/k.mp3" },
-		{ key: "lobby", value: "/media/kkutu/LobbyBGMOriginal.mp3" },
-		//- { key: "original", value: "/media/kkutu/LobbyBGMOriginal.mp3" },
+		{ key: "lobby", value: "/media/kkutu/LobbyBGM.mp3" },
+		//- { key: "lobby", value: "/media/kkutu/LobbyBGMOriginal.mp3" },
 		{ key: "lobbyseol", value: "/media/kkutu/LobbySeolBGM.mp3" },
 		{ key: "ending", value: "/media/kkutu/LobbyBGMending.mp3" },
 		{ key: "museum", value: "/media/kkutu/LobbyMuseum.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
 		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
-		{ key: "evans", value: "/media/kkutu/LobbyEvans.mp3" },
-		{ key: "freedomdive", value: "/media/kkutu/LobbyFreedomdive.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },
 		{ key: "jaqwiF", value: "/media/kkutu/JaqwiFastBGM.mp3" },
 		{ key: "game_start", value: "/media/kkutu/game_start.mp3" },
@@ -4140,7 +4139,6 @@ function requestProfile(id) {
 	var i;
 
 	if (!o) {
-		// 온라인에 없으면 오프라인 유저의 정보를 요청
 		$.ajax({
 			url: '/user/' + id,
 			method: 'GET',
@@ -4242,7 +4240,6 @@ function showOfflineProfile(o, id) {
 		);
 
 	$stage.dialog.profileLevel.hide();
-	// 오프라인 유저는 "오프라인" 텍스트로 표시
 	$("#profile-place").html(L['offline'] || "오프라인");
 
 	for (i in o.data.record) {
@@ -4267,7 +4264,6 @@ function showOfflineProfile(o, id) {
 	$stage.dialog.profileHandover.hide();
 	$stage.dialog.profileReport.hide();
 
-	// 오프라인 유저는 whisper만 제외하고 shut은 표시
 	if ($data.id == id) {
 		$stage.dialog.profileDress.show();
 	} else {
@@ -5192,11 +5188,12 @@ function getLevelImage(score) {
 	var lv = getLevel(score) - 1;
 	var lX = (lv % 25) * -100;
 	var lY = Math.floor(lv * 0.04) * -100;
+	var imagePath = $data.admin ? '/img/kkutu/test_lv/newlv.png' : '/img/kkutu/lv/newlv.png';
 
 	// return getImage("/img/kkutu/lv/lv" + zeroPadding(lv+1, 4) + ".png");
 	return $("<div>").css({
 		'float': "left",
-		'background-image': "url('/img/kkutu/lv/newlv.png')",
+		'background-image': "url('" + imagePath + "')",
 		'background-position': lX + "% " + lY + "%",
 		'background-size': "2560%"
 	});
@@ -5252,6 +5249,11 @@ function loadSounds(list, callback) {
 }
 function getAudio(k, url, cb) {
 	var req = new XMLHttpRequest();
+
+	// admin이면 test_kkutu 폴더에서 로드
+	if ($data.admin) {
+		url = url.replace("/media/kkutu/", "/media/test_kkutu/");
+	}
 
 	req.open("GET", /*($data.PUBLIC ? "http://jjo.kr" : "") +*/ url);
 	req.responseType = "arraybuffer";
@@ -5328,7 +5330,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "evans" || key === "freedomdive" ? "lobby" : key;
+	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" ? "lobby" : key;
 
 	src.start();
 
