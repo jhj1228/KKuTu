@@ -1651,7 +1651,6 @@ function requestProfile(id) {
 	var i;
 
 	if (!o) {
-		// 온라인에 없으면 오프라인 유저의 정보를 요청
 		$.ajax({
 			url: '/user/' + id,
 			method: 'GET',
@@ -1753,7 +1752,6 @@ function showOfflineProfile(o, id) {
 		);
 
 	$stage.dialog.profileLevel.hide();
-	// 오프라인 유저는 "오프라인" 텍스트로 표시
 	$("#profile-place").html(L['offline'] || "오프라인");
 
 	for (i in o.data.record) {
@@ -1778,7 +1776,6 @@ function showOfflineProfile(o, id) {
 	$stage.dialog.profileHandover.hide();
 	$stage.dialog.profileReport.hide();
 
-	// 오프라인 유저는 whisper만 제외하고 shut은 표시
 	if ($data.id == id) {
 		$stage.dialog.profileDress.show();
 	} else {

@@ -258,13 +258,13 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
-	"IMS", "VOC", "RAG", "NEX",
+	"IMS", "RAG", "NEX",
 	"KTV", "CPY", "WOR", "NFX", "KOT", "THP",
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
 	"MIN", "MAF", "JAN", "CTH", "BGP", "BUS",
-	"HSR", "BLA", "NVL", "STA", "APT", "ESB",
+	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB",
 	"ELW", "KMV", "OVW", "GEN", "WEB", "UWH",
-	"KPO", "ERT", "JPT", "ZEL",
+	"KPO", "VOC", "ERT", "JPT", "ZEL",
 	"CKR", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
 ];
@@ -286,7 +286,7 @@ exports.EN_THEME = [
 	"e18", "e20", "e43"
 ];
 exports.IJP_EXCEPT = [
-	"BUT", "WOW", "CRO"
+	"BUT", "WOW", "CRO", "PCR"
 ];
 exports.KO_IJP = exports.KO_INJEONG.concat(exports.KO_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
 exports.EN_IJP = exports.EN_INJEONG.concat(exports.EN_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
