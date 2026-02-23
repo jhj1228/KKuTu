@@ -2700,12 +2700,11 @@ function getLevelImage(score) {
 	var lv = getLevel(score) - 1;
 	var lX = (lv % 25) * -100;
 	var lY = Math.floor(lv * 0.04) * -100;
-	var imagePath = $data.admin ? '/img/kkutu/test_lv/newlv.png' : '/img/kkutu/lv/newlv.png';
 
 	// return getImage("/img/kkutu/lv/lv" + zeroPadding(lv+1, 4) + ".png");
 	return $("<div>").css({
 		'float': "left",
-		'background-image': "url('" + imagePath + "')",
+		'background-image': "url('/img/kkutu/lv/newlv.png')",
 		'background-position': lX + "% " + lY + "%",
 		'background-size': "2560%"
 	});
@@ -2761,11 +2760,6 @@ function loadSounds(list, callback) {
 }
 function getAudio(k, url, cb) {
 	var req = new XMLHttpRequest();
-
-	// admin이면 test_kkutu 폴더에서 로드
-	if ($data.admin) {
-		url = url.replace("/media/kkutu/", "/media/test_kkutu/");
-	}
 
 	req.open("GET", /*($data.PUBLIC ? "http://jjo.kr" : "") +*/ url);
 	req.responseType = "arraybuffer";

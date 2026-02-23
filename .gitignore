@@ -7,8 +7,6 @@ Server/lib/Web/public/js/**
 Server/lib/sub/auth.json
 Server/lib/sub/global.json
 Server/lib/data/speedquiz/**
-Server/lib/Web/public/img/kkutu/test_lv/**
-Server/lib/Web/public/media/test_kkutu/**
 KKUTU_ERROR.log
 db.sql
 Server/lib/Web/public/Ads.txt
