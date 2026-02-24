@@ -36,7 +36,7 @@
 	display: block;
 	float: left;
 	padding: 10px 5px;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin: 0px 3px;
 	width: 120px;
 	font-size: 15px;
@@ -51,8 +51,8 @@
 	font-size: 20px;
 	font-weight: bold;
 	border: none;
-	border-bottom-left-radius: inherit;
-	border-bottom-right-radius: inherit;
+	/* border-bottom-left-radius: inherit;
+	border-bottom-right-radius: inherit; */
 }
 
 #game-start:hover {
@@ -91,7 +91,7 @@
 }
 
 .server-status {
-	border-radius: 6px;
+	/* border-radius: 6px; */
 	margin: 2px;
 	width: 12px;
 	height: 12px;

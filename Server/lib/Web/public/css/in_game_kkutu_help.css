@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-body{
+body {
 	padding: 0px;
 	margin: 0px;
 	height: 375px;
@@ -24,70 +24,88 @@ body{
 	font-size: 13px;
 	font-family: 맑은 고딕, 돋움;
 }
-img{
+
+img {
 	cursor: pointer;
 }
-span{
+
+span {
 	display: none;
 }
-ol, ul{
+
+ol,
+ul {
 	margin: 2px 0px;
 	padding-left: 20px;
 }
-h4, h5{
+
+h4,
+h5 {
 	margin: 2px 0px;
 }
-h5{
+
+h5 {
 	font-weight: normal;
 }
-p{
+
+p {
 	margin: 3px 0px;
 	text-indent: 5px;
 }
-blockquote{
+
+blockquote {
 	padding: 3px 3px 3px 5px;
 	border-left: 5px solid #BBBBBB;
 	margin: 2px;
 }
-table{
+
+table {
 	width: 100%;
 }
-thead{
+
+thead {
 	text-align: center;
 	font-weight: bold;
 	background-color: rgba(0, 0, 0, 0.1);
 }
-word{
+
+word {
 	padding: 2px;
 	border-radius: 5px;
 	background-color: rgba(0, 0, 0, 0.05);
 }
-#index{
+
+#index {
 	float: left;
 	width: calc(30% - 1px);
 }
-#list{
+
+#list {
 	height: 350px;
 	overflow-y: scroll;
 }
-#contents{
+
+#contents {
 	float: left;
 	padding: 2px;
 	border-left: 1px solid #AAAAAA;
 	width: calc(70% - 5px);
 }
-#page-head{
+
+#page-head {
 	padding-left: 5px;
 	border-bottom: 1px solid #DDDDDD;
 	font-weight: bold;
 }
-.page-body{
+
+.page-body {
 	display: none;
 	padding: 3px;
 	height: 347px;
 	overflow-y: scroll;
 }
-.selected>label{
+
+.selected>label {
 	text-decoration: underline;
 	font-weight: bold;
 }

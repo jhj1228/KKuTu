@@ -139,8 +139,8 @@ iframe {
 .kkutu-menu button {
 	float: left;
 	border: none;
-	border-bottom-left-radius: 0px;
-	border-bottom-right-radius: 0px;
+	/* border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px; */
 	width: 98px;
 	height: 20px;
 }
@@ -164,7 +164,7 @@ iframe {
 	display: none;
 	position: fixed;
 	padding: 5px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	color: #111111;
 	box-shadow: 0px 1px 1px #141414;
 	background-color: #EEEEEE;
@@ -224,7 +224,7 @@ iframe {
 
 .dialog .closeBtn {
 	float: right;
-	border-radius: 6px;
+	/* border-radius: 6px; */
 	margin-top: 1px;
 	width: 12px;
 	height: 12px;
@@ -238,7 +238,7 @@ iframe {
 .dialog-head {
 	padding: 3px;
 	border-bottom: 1px solid #CCCCCC;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin-bottom: 5px;
 	height: 12px;
 	color: #222222;
@@ -311,7 +311,7 @@ iframe {
 }
 
 .Product {
-	border-radius: 0px;
+	/* border-radius: 0px; */
 	color: #111111;
 	box-shadow: 0px 2px 1px #DDDDDD;
 	background-color: #EEEEEE;
@@ -319,7 +319,7 @@ iframe {
 
 .product-title {
 	border-bottom-color: #CCCCCC;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	color: #222222;
 	background-color: #DDDDDD;
 }
@@ -342,7 +342,7 @@ iframe {
 }
 
 .cfi-status {
-	border-radius: 7px;
+	/* border-radius: 7px; */
 	margin-right: 2px;
 	width: 12px;
 	height: 12px;
@@ -564,7 +564,7 @@ iframe {
 
 .rooms-item {
 	padding: 5px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	margin: 3px;
 	width: 364px;
 	height: 64px;
@@ -590,7 +590,7 @@ iframe {
 	position: relative;
 	width: 10px;
 	height: 10px;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin-right: -10px;
 }
 
@@ -759,7 +759,7 @@ iframe {
 .team-button {
 	float: left;
 	padding-top: 20px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	margin: 2px 0px;
 	width: 100%;
 	height: 40px;
@@ -805,7 +805,7 @@ iframe {
 .room-user {
 	float: left;
 	padding: 3px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	margin: 3px;
 	width: 224px;
 	height: 151px;
@@ -926,7 +926,7 @@ iframe {
 
 .hint-item {
 	padding: 5px;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin: 1px 0px;
 	color: #EEEEEE;
 	font-size: 13px;
@@ -949,7 +949,7 @@ iframe {
 
 .bb-char {
 	padding: 2px;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin: 1px;
 	width: 10px;
 	text-align: center;
@@ -967,7 +967,7 @@ iframe {
 
 .cw-q-body {
 	padding: 5px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	margin-top: 5px;
 	color: #CCCCCC;
 	background-color: #111111;
@@ -1025,8 +1025,8 @@ iframe {
 .jjoDisplayBar {
 	padding: 20px 5px 5px 5px;
 	border: 2px solid #000000;
-	border-bottom-left-radius: 10px;
-	border-bottom-right-radius: 10px;
+	/* border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px; */
 	margin-top: -10px;
 	width: 486px;
 	height: 80px;
@@ -1041,9 +1041,9 @@ iframe {
 
 .jjo-display {
 	padding: 8px 5px;
-	border-radius: 10px;
+	/* border-radius: 10px;
 	border-bottom-left-radius: 0px;
-	border-bottom-right-radius: 0px;
+	border-bottom-right-radius: 0px; */
 	width: 476px;
 	height: 23px;
 	font-size: 20px;
@@ -1077,7 +1077,7 @@ iframe {
 
 .cw-bar {
 	position: absolute;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	cursor: pointer;
 	background-color: #C7C7C7;
 }
@@ -1099,7 +1099,7 @@ iframe {
 
 .cw-cell {
 	padding-top: 4px;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin: 3px;
 	width: 32.5px;
 	height: 28.5px;
@@ -1132,8 +1132,8 @@ iframe {
 
 .jjo-round-time {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.7);
-	border-bottom-left-radius: 10px;
-	border-bottom-right-radius: 10px;
+	/* border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px; */
 	background-color: #223C6C;
 }
 
@@ -1227,7 +1227,7 @@ iframe {
 .history-item {
 	height: 28px;
 	padding: 4px 0px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	margin: 3px;
 	color: #EEEEEE;
 	text-align: center;
@@ -1243,7 +1243,7 @@ iframe {
 
 .history-class {
 	padding: 1px;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin-left: 4px;
 	font-size: 11px;
 	color: #111111;
@@ -1306,7 +1306,7 @@ iframe {
 	top: -220px;
 	left: 244px;
 	padding: 5px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	background-color: rgba(0, 0, 0, 0.7);
 }
 
@@ -1332,7 +1332,7 @@ iframe {
 .game-user {
 	padding: 1px;
 	border: 3px solid #DDDDDD;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	margin: 13px 3px 3px 3px;
 	width: 110px;
 	height: 167px;
@@ -1381,7 +1381,7 @@ iframe {
 
 .game-user-score {
 	padding: 0px 5px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	width: 100px;
 	font-size: 30px;
 	font-weight: bold;
@@ -1408,7 +1408,7 @@ iframe {
 
 .result-board-item {
 	padding: 5px;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin: 1px;
 	width: 388px;
 	height: 20px;
@@ -1424,7 +1424,7 @@ iframe {
 
 .result-board-rank {
 	padding-top: 3px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	width: 45px;
 	height: 17px;
 	text-align: center;
@@ -1475,7 +1475,7 @@ iframe {
 .result-me {
 	padding: 3px;
 	border: 1px solid #CCCCCC;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin: 1px;
 	width: 390px;
 	height: 80px;
@@ -1518,7 +1518,7 @@ iframe {
 }
 
 .result-me-gauge {
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	margin-top: 5px;
 	width: 308px;
 	height: 49px;
@@ -1572,7 +1572,7 @@ iframe {
 #KickVoteDiag {}
 
 .kick-vote-time {
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	width: 100%;
 	height: 40px;
 	overflow: hidden;
@@ -1638,7 +1638,7 @@ iframe {
 }
 
 .my-okg {
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	margin-top: 3px;
 	width: 100%;
 	height: 20px;
@@ -1663,7 +1663,7 @@ iframe {
 }
 
 .my-gauge {
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	margin: 3px 0px;
 	width: 190px;
 	height: 30px;
@@ -1681,7 +1681,7 @@ iframe {
 }
 
 .category-filter {
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	text-align: center;
 	font-size: 11px;
 	cursor: pointer;
@@ -1870,7 +1870,7 @@ iframe {
 .chat-balloon h4 {
 	padding: 5px;
 	border: 1px solid #CCCCCC;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	width: 110px;
 	max-height: 100px;
 	overflow: hidden;
@@ -1899,8 +1899,8 @@ iframe {
 #Talk {
 	float: left;
 	border-right: none;
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
+	/* border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px; */
 	margin-top: 5px;
 	width: calc(100% - 82px);
 	height: 20px;
@@ -1909,8 +1909,8 @@ iframe {
 #ChatBtn {
 	float: left;
 	border-left: none;
-	border-top-left-radius: 0px;
-	border-bottom-left-radius: 0px;
+	/* border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px; */
 	margin-top: 5px;
 	width: 60px;
 	height: 20px;
@@ -2001,7 +2001,7 @@ iframe {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	min-width: 100px;
 }
 
