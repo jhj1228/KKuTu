@@ -221,7 +221,11 @@ $(document).ready(function () {
 			obtainOK: $("#obtain-ok"),
 			help: $("#HelpDiag"),
 			report: $("#ReportDiag"),
-			reportOK: $("#report-ok")
+			reportOK: $("#report-ok"),
+			alert: $("#AlertDiag"),
+			alertText: $("#alert-text"),
+			alertOK: $("#alert-ok"),
+			alertCancel: $("#alert-cancel"),
 		},
 		box: {
 			chat: $(".ChatBox"),
@@ -251,7 +255,7 @@ $(document).ready(function () {
 	};
 	if (_WebSocket == undefined) {
 		loading(L['websocketUnsupport']);
-		alert(L['websocketUnsupport']);
+		showAlert(L['websocketUnsupport']);
 		return;
 	}
 	$data._soundList = [
@@ -491,10 +495,11 @@ $(document).ready(function () {
 		send('friendAdd', { target: id }, true);
 	});
 	$stage.dialog.blacklistClear.on('click', function (e) {
-		if (!confirm(L['blacklistClearConfirm'])) return;
-		$data._shut = {};
-		localStorage.setItem('_shut', JSON.stringify($data._shut));
-		showBlacklist();
+		showConfirm(L['blacklistClearConfirm'], function () {
+			$data._shut = {};
+			localStorage.setItem('_shut', JSON.stringify($data._shut));
+			showBlacklist();
+		});
 	});
 	$stage.menu.newRoom.on('click', function (e) {
 		var $d;
@@ -689,12 +694,15 @@ $(document).ready(function () {
 		if ($data.room.gaming) {
 			if ($data.room.opts.noleave && $data.room.players.indexOf($data.id) !== -1) {
 				if (!$data.admin) {
-					return alert(L['AlertNoleave']);
+					return showAlert(L['AlertNoleave']);
 				}
 			}
 
-			if (!confirm(L['sureExit'])) return;
-			clearGame();
+			showConfirm(L['sureExit'], function () {
+				clearGame();
+				send('leave');
+			});
+			return;
 		}
 		send('leave');
 	});
@@ -876,8 +884,9 @@ $(document).ready(function () {
 		tryJoin($data._roominfo);
 	});
 	$stage.dialog.profileHandover.on('click', function (e) {
-		if (!confirm(L['sureHandover'])) return;
-		send('handover', { target: $data._profiled });
+		showConfirm(L['sureHandover'], function () {
+			send('handover', { target: $data._profiled });
+		});
 	});
 	$stage.dialog.profileKick.on('click', function (e) {
 		send('kick', { robot: $data.robots.hasOwnProperty($data._profiled), target: $data._profiled });
@@ -923,26 +932,44 @@ $(document).ready(function () {
 		if ($("#dress-nickname").val() && $("#dress-nickname").val() !== $data.nickname) data.nickname = $("#dress-nickname").val();
 		if ($("#dress-exordial").val() !== undefined && $("#dress-exordial").val() !== $data.exordial) data.exordial = $("#dress-exordial").val();
 
-		if (data.nickname && $data.NICKNAME_LIMIT.REGEX.test(data.nickname)) data.nickname = confirm(L.confirmNickPolicy) ? data.nickname.replace($data.NICKNAME_LIMIT.REGEX, "") : undefined;
-		if (!data.nickname && data.exordial === undefined) {
-			$stage.dialog.dressOK.attr("disabled", false);
-			$stage.dialog.dress.hide();
-			return;
+		if (data.nickname && $data.NICKNAME_LIMIT.REGEX.test(data.nickname)) {
+			showConfirm(L.confirmNickPolicy, function () {
+				data.nickname = data.nickname.replace($data.NICKNAME_LIMIT.REGEX, "");
+				processProfileChange(data);
+			}, function () {
+				data.nickname = undefined;
+				processProfileChange(data);
+			});
+		} else {
+			processProfileChange(data);
 		}
-		if (confirm($data.NICKNAME_LIMIT.TERM > 0 ? L.confirmNickChangeLimit.replace("{V1}", $data.NICKNAME_LIMIT.TERM) : L.confirmNickChange)) $.post("/profile", data, function (res) {
-			if (res.error) return fail(res.error);
-			const message = [];
-			if (data.nickname) {
-				$("#account-info").text($data.users[$data.id].nickname = $data.users[$data.id].profile.title = $data.users[$data.id].profile.name = $data.nickname = data.nickname);
-				message.push(L.nickChanged.replace("{V1}", data.nickname));
-			}
-			if (data.exordial !== undefined) message.push(L.exorChanged.replace("{V1}", $data.users[$data.id].exordial = $data.exordial = data.exordial));
 
-			send("updateProfile", data, true);
-			alert(message.join("\n"));
-		});
-		$stage.dialog.dressOK.attr("disabled", false);
-		$stage.dialog.dress.hide();
+		function processProfileChange(data) {
+			if (!data.nickname && data.exordial === undefined) {
+				$stage.dialog.dressOK.attr("disabled", false);
+				$stage.dialog.dress.hide();
+				return;
+			}
+			showConfirm($data.NICKNAME_LIMIT.TERM > 0 ? L.confirmNickChangeLimit.replace("{V1}", $data.NICKNAME_LIMIT.TERM) : L.confirmNickChange, function () {
+				$.post("/profile", data, function (res) {
+					if (res.error) return fail(res.error);
+					const message = [];
+					if (data.nickname) {
+						$("#account-info").text($data.users[$data.id].nickname = $data.users[$data.id].profile.title = $data.users[$data.id].profile.name = $data.nickname = data.nickname);
+						message.push(L.nickChanged.replace("{V1}", data.nickname));
+					}
+					if (data.exordial !== undefined) message.push(L.exorChanged.replace("{V1}", $data.users[$data.id].exordial = $data.exordial = data.exordial));
+
+					send("updateProfile", data, true);
+					showAlert(message.join("\n"));
+				});
+				$stage.dialog.dressOK.attr("disabled", false);
+				$stage.dialog.dress.hide();
+			}, function () {
+				$stage.dialog.dressOK.attr("disabled", false);
+				$stage.dialog.dress.hide();
+			});
+		}
 	});
 	$("#DressDiag .dress-type").on('click', function (e) {
 		var $target = $(e.currentTarget);
@@ -979,7 +1006,7 @@ $(document).ready(function () {
 		slots[idx] = { equip: $.extend(true, {}, $data.users[$data.id].equip), time: Date.now() };
 		localStorage.setItem(key, JSON.stringify(slots));
 		openWardrobe();
-		alert(L['wardrobeSaved']);
+		showAlert(L['wardrobeSaved']);
 		if (!wasEmpty) $('#WardrobeDiag').hide();
 	});
 
@@ -1021,15 +1048,15 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		while (slots.length < 5) slots.push(null);
 
-		if (!confirm('슬롯 ' + (idx + 1) + '번에 현재 코디를 저장할까요?')) return;
-
-		slots[idx] = {
-			equip: $.extend(true, {}, $data.users[$data.id].equip),
-			time: Date.now()
-		};
-		localStorage.setItem(key, JSON.stringify(slots));
-		openWardrobe();
-		alert('저장되었습니다.');
+		showConfirm('슬롯 ' + (idx + 1) + '번에 현재 코디를 저장할까요?', function () {
+			slots[idx] = {
+				equip: $.extend(true, {}, $data.users[$data.id].equip),
+				time: Date.now()
+			};
+			localStorage.setItem(key, JSON.stringify(slots));
+			openWardrobe();
+			showAlert(L['wardrobeSaved']);
+		});
 	});
 
 	$(document).on('click', '.wardrobe-load', function (e) {
@@ -1038,38 +1065,39 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		var slot = slots[idx];
 
-		if (!slot || !slot.equip) return alert('비어있는 슬롯입니다.');
-		if (!confirm('이 코디를 착용하시겠습니까?')) return;
+		if (!slot || !slot.equip) return showAlert(L['wardrobeEmpty']);
 
-		var saved = slot.equip;
-		var calls = [];
-		for (var g in saved) {
-			var id = saved[g];
-			if (!id) continue;
-			(function (group, itemId) {
-				calls.push(function (done) {
-					var isLeft = (group == 'Mlhand');
-					var url = (group == 'Mlhand' || group == 'Mrhand') ? ('/equip/' + itemId) : ('/equip/' + itemId);
-					var data = (group == 'Mlhand' || group == 'Mrhand') ? { isLeft: isLeft } : {};
+		showConfirm(L['wardrobeLoadConfirm'], function () {
+			var saved = slot.equip;
+			var calls = [];
+			for (var g in saved) {
+				var id = saved[g];
+				if (!id) continue;
+				(function (group, itemId) {
+					calls.push(function (done) {
+						var isLeft = (group == 'Mlhand');
+						var url = (group == 'Mlhand' || group == 'Mrhand') ? ('/equip/' + itemId) : ('/equip/' + itemId);
+						var data = (group == 'Mlhand' || group == 'Mrhand') ? { isLeft: isLeft } : {};
 
-					$.post(url, data, function (res) {
-						if (!res.error) {
-							$data.box = res.box;
-							$data.users[$data.id].equip = res.equip;
-						}
-						done();
+						$.post(url, data, function (res) {
+							if (!res.error) {
+								$data.box = res.box;
+								$data.users[$data.id].equip = res.equip;
+							}
+							done();
+						});
 					});
-				});
-			})(g, id);
-		}
-		(function run(i) {
-			if (i >= calls.length) {
-				drawMyDress($data._avGroup);
-				alert('코디가 적용되었습니다.');
-				return;
+				})(g, id);
 			}
-			calls[i](function () { run(i + 1); });
-		})(0);
+			(function run(i) {
+				if (i >= calls.length) {
+					drawMyDress($data._avGroup);
+					showAlert(L['wardrobeApplied']);
+					return;
+				}
+				calls[i](function () { run(i + 1); });
+			})(0);
+		});
 	});
 
 	$(document).on('click', '.wardrobe-delete', function (e) {
@@ -1078,11 +1106,12 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 
 		if (!slots[idx]) return;
-		if (!confirm('정말 삭제하시겠습니까?')) return;
 
-		slots[idx] = null;
-		localStorage.setItem(key, JSON.stringify(slots));
-		openWardrobe();
+		showConfirm(L['wardrobeDeleteConfirm'], function () {
+			slots[idx] = null;
+			localStorage.setItem(key, JSON.stringify(slots));
+			openWardrobe();
+		});
 	});
 
 	$(document).on('click', '.wardrobe-save-slot', function (e) {
@@ -1094,26 +1123,26 @@ $(document).ready(function () {
 		slots[idx] = { equip: $.extend(true, {}, $data.users[$data.id].equip), time: Date.now() };
 		localStorage.setItem(key, JSON.stringify(slots));
 		openWardrobe();
-		alert(L['wardrobeSaved']);
+		showAlert(L['wardrobeSaved']);
 		if (!wasEmpty) $('#WardrobeDiag')();
 	});
 	$stage.dialog.cfCompose.on('click', function (e) {
 		if (!$stage.dialog.cfCompose.hasClass("cf-composable")) return fail(436);
-		if (!confirm(L['cfSureCompose'])) return;
+		showConfirm(L['cfSureCompose'], function () {
+			$.post("/cf", { tray: $data._tray.join('|') }, function (res) {
+				var i;
 
-		$.post("/cf", { tray: $data._tray.join('|') }, function (res) {
-			var i;
+				if (res.error) return fail(res.error);
+				send('refresh');
+				showAlert(L['cfComposed']);
+				$data.users[$data.id].money = res.money;
+				$data.box = res.box;
+				for (i in res.gain) queueObtain(res.gain[i]);
 
-			if (res.error) return fail(res.error);
-			send('refresh');
-			alert(L['cfComposed']);
-			$data.users[$data.id].money = res.money;
-			$data.box = res.box;
-			for (i in res.gain) queueObtain(res.gain[i]);
-
-			drawMyDress($data._avGroup);
-			updateMe();
-			drawCharFactory();
+				drawMyDress($data._avGroup);
+				updateMe();
+				drawCharFactory();
+			});
 		});
 	});
 	$("#room-injeong-pick").on('click', function (e) {
@@ -1196,7 +1225,7 @@ $(document).ready(function () {
 			var my = $data.users[$data.id];
 
 			if (res.error) return fail(res.error);
-			alert(L['purchased']);
+			showAlert(L['purchased']);
 			my.money = res.money;
 			my.box = res.box;
 			updateMe();
@@ -1255,7 +1284,7 @@ $(document).ready(function () {
 				$stage.dialog.replayView.attr('disabled', false);
 			} catch (ex) {
 				console.warn(ex);
-				return alert(L['replayError']);
+				return showAlert(L['replayError']);
 			}
 		};
 	});
@@ -1268,6 +1297,16 @@ $(document).ready(function () {
 		if (spamCount > 0) spamCount = 0;
 		else if (spamWarning > 0) spamWarning -= 0.03;
 	}, 1000);
+
+	// 알림 메시지 표시
+	function showAlert(message) {
+		$stage.dialog.alertText.html(message);
+		$stage.dialog.alertCancel.hide().off('click');
+		$stage.dialog.alertOK.off('click').on('click', function (e) {
+			$stage.dialog.alert.hide();
+		});
+		showDialog($stage.dialog.alert);
+	}
 
 	// 웹소켓 연결
 	function connect() {
@@ -1304,7 +1343,7 @@ $(document).ready(function () {
 		ws.onmessage = _onMessage = function (e) {
 			var data = JSON.parse(e.data);
 			if (data.type === 'error' && data.code === 459) {
-				return alert(L['error_459'].replace("{V1}", data.time));
+				return showAlert(L['error_459'].replace("{V1}", data.time));
 			}
 
 			onMessage(data);
@@ -2507,6 +2546,51 @@ var spamWarning = 0;
 var spamCount = 0;
 // var smile = 94, tag = 35;
 
+function showAlert(message) {
+	$stage.dialog.alertText.html(message);
+	$stage.dialog.alertCancel.hide().off('click');
+	$stage.dialog.alertOK.off('click').on('click', function (e) {
+		$stage.dialog.alert.hide();
+	});
+	showDialog($stage.dialog.alert);
+}
+
+function showConfirm(message, onConfirm, onCancel) {
+	var isConfirmed = false;
+	var isCancelled = false;
+
+	$stage.dialog.alertText.html(message);
+
+	// OK 버튼 클릭
+	$stage.dialog.alertOK.off('click').on('click', function (e) {
+		isConfirmed = true;
+		$stage.dialog.alert.hide();
+		if (onConfirm) onConfirm(true);
+	});
+
+	// Cancel 버튼 클릭
+	$stage.dialog.alertCancel.show().off('click').on('click', function (e) {
+		isCancelled = true;
+		$stage.dialog.alert.hide();
+		if (onCancel) onCancel(false);
+	});
+
+	// 다이얼로그 닫기 이벤트 (ESC)
+	$stage.dialog.alert.off('hide').on('hide', function () {
+		if (!isConfirmed && !isCancelled && onCancel) {
+			onCancel(false);
+		}
+	});
+
+	showDialog($stage.dialog.alert);
+}
+
+function handleLinkWarning(url) {
+	showConfirm(L['linkWarning'], function () {
+		window.open(url);
+	});
+}
+
 function zeroPadding(num, len) { var s = num.toString(); return "000000000000000".slice(0, Math.max(0, len - s.length)) + s; }
 function send(type, data, toMaster) {
 	var i, r = { type: type };
@@ -2722,7 +2806,7 @@ function connectToRoom(chan, rid) {
 		console.warn(L['error'], e);
 	};
 }
-function checkAge() {
+/* function checkAge() {
 	if (!confirm(L['checkAgeAsk'])) return send('caj', { answer: "no" }, true);
 
 	while (true) {
@@ -2757,7 +2841,7 @@ function checkAge() {
 			if (confirm(L['checkAgeCancel'])) return send('caj', { answer: "no" }, true);
 		}
 	}
-}
+} */
 function onMessage(data) {
 	var i;
 	var $target;
@@ -2795,7 +2879,7 @@ function onMessage(data) {
 			$data.nickname = data.nickname;
 			$data.exordial = data.exordial;
 			$data.box = data.box;
-			if (data.test) alert(L['welcomeTestServer']);
+			if (data.test) showAlert(L['welcomeTestServer']);
 			if (location.hash[1]) tryJoin(location.hash.slice(1));
 			updateUI(undefined, true);
 			welcome();
@@ -2899,10 +2983,24 @@ function onMessage(data) {
 		case 'friendAdd':
 			$target = $data.users[data.from].profile;
 			i = ($target.title || $target.name) + "(#" + data.from.substr(0, 5) + ")";
-			send('friendAddRes', {
-				from: data.from,
-				res: $data.opts.df ? false : confirm(i + L['attemptFriendAdd'])
-			}, true);
+			if ($data.opts.df) {
+				send('friendAddRes', {
+					from: data.from,
+					res: false
+				}, true);
+			} else {
+				showConfirm(i + L['attemptFriendAdd'], function () {
+					send('friendAddRes', {
+						from: data.from,
+						res: true
+					}, true);
+				}, function () {
+					send('friendAddRes', {
+						from: data.from,
+						res: false
+					}, true);
+				});
+			}
 			break;
 		case 'friendAddRes':
 			$target = $data.users[data.target].profile;
@@ -2969,10 +3067,24 @@ function onMessage(data) {
 			notice(getKickText($data._kickTarget.profile, data));
 			break;
 		case 'invited':
-			send('inviteRes', {
-				from: data.from,
-				res: $data.opts.di ? false : confirm(data.from + L['invited'])
-			});
+			if ($data.opts.di) {
+				send('inviteRes', {
+					from: data.from,
+					res: false
+				});
+			} else {
+				showConfirm(data.from + L['invited'], function () {
+					send('inviteRes', {
+						from: data.from,
+						res: true
+					});
+				}, function () {
+					send('inviteRes', {
+						from: data.from,
+						res: false
+					});
+				});
+			}
 			break;
 		case 'inviteNo':
 			$target = $data.users[data.target];
@@ -3035,12 +3147,12 @@ function onMessage(data) {
 				i = L['server_' + i];
 			} else if (data.code == 416) {
 				// 게임 중
-				if (confirm(L['error_' + data.code])) {
+				showConfirm(L['error_' + data.code], function () {
 					stopBGM();
 					$data._spectate = true;
 					$data._gaming = true;
 					send('enter', { id: data.target, password: $data._pw, spectate: true }, true);
-				}
+				});
 				return;
 			} else if (data.code == 413) {
 				$stage.dialog.room.hide();
@@ -3058,7 +3170,7 @@ function onMessage(data) {
 			} else if (data.code == 444) {
 				i = data.message;
 				if (i.indexOf("생년월일") != -1) {
-					alert("생년월일이 올바르게 입력되지 않아 게임 이용이 제한되었습니다. 잠시 후 다시 시도해 주세요.");
+					showAlert("생년월일이 올바르게 입력되지 않아 게임 이용이 제한되었습니다. 잠시 후 다시 시도해 주세요.");
 					break;
 				}
 				/* Enhanced User Block System [S] */
@@ -3068,7 +3180,7 @@ function onMessage(data) {
 				var block = "\n제한 시점: " + blockedUntil.getFullYear() + "년 " + blockedUntil.getMonth() + 1 + "월 " +
 					blockedUntil.getDate() + "일 " + blockedUntil.getHours() + "시 " + blockedUntil.getMinutes() + "분까지";
 
-				alert("[#444] " + L['error_444'] + i + block);
+				showAlert("[#444] " + L['error_444'] + i + block);
 				break;
 			} else if (data.code == 446) {
 				i = data.reasonBlocked;
@@ -3078,14 +3190,14 @@ function onMessage(data) {
 				var block = "\n제한 시점: " + blockedUntil.getFullYear() + "년 " + blockedUntil.getMonth() + 1 + "월 " +
 					blockedUntil.getDate() + "일 " + blockedUntil.getHours() + "시 " + blockedUntil.getMinutes() + "분까지";
 
-				alert("[#446] " + L['error_446'] + i + block);
+				showAlert("[#446] " + L['error_446'] + i + block);
 				break;
 				/* Enhanced User Block System [E] */
 			} else if (data.code === 447) {
-				alert("자동화 봇 방지를 위한 캡챠 인증에 실패했습니다. 메인 화면에서 다시 시도해 주세요.");
+				showAlert("자동화 봇 방지를 위한 캡챠 인증에 실패했습니다. 메인 화면에서 다시 시도해 주세요.");
 				break;
 			}
-			alert("[#" + data.code + "] " + L['error_' + data.code] + i);
+			showAlert("[#" + data.code + "] " + L['error_' + data.code] + i);
 			break;
 		default:
 			break;
@@ -3226,7 +3338,7 @@ function processRoom(data) {
 		$target = $data.users[data.target];
 		if (data.kickVote) {
 			notice(getKickText($target.profile, data.kickVote));
-			if ($target.id == data.id) alert(L['hasKicked']);
+			if ($target.id == data.id) showAlert(L['hasKicked']);
 		}
 		if (data.room.players.indexOf($data.id) == -1) {
 			if ($data.room) if ($data.room.gaming) {
@@ -3730,7 +3842,7 @@ function onMasterSubJamsu() {
 	notice(L['subJamsu']);
 	$data._jamsu = addTimeout(function () {
 		send('leave');
-		alert(L['masterJamsu']);
+		showAlert(L['masterJamsu']);
 	}, 30000);
 }
 function updateScore(id, score) {
@@ -3874,33 +3986,40 @@ function drawMyGoods(avGroup) {
 
 		if (e.ctrlKey) {
 			if ($target.hasClass("dress-equipped")) return fail(426);
-			if (!confirm(L['surePayback'] + commify(Math.round((item.cost || 0) * 0.2)) + L['ping'])) return;
-			$.post("/payback/" + id, function (res) {
-				if (res.error) return fail(res.error);
-				alert(L['painback']);
-				$data.box = res.box;
-				$data.users[$data.id].money = res.money;
+			showConfirm(L['surePayback'] + commify(Math.round((item.cost || 0) * 0.2)) + L['ping'], function () {
+				$.post("/payback/" + id, function (res) {
+					if (res.error) return fail(res.error);
+					showAlert(L['painback']);
+					$data.box = res.box;
+					$data.users[$data.id].money = res.money;
 
-				drawMyDress($data._avGroup);
-				updateUI(false);
+					drawMyDress($data._avGroup);
+					updateUI(false);
+				});
 			});
 		} else if (AVAIL_EQUIP.indexOf(item.group) != -1) {
 			if (item.group == "Mhand") {
-				isLeft = confirm(L['dressWhichHand']);
+				showConfirm(L['dressWhichHand'], function () {
+					requestEquip(id, true); // OK = Left hand
+				}, function () {
+					requestEquip(id, false); // Cancel = Right hand
+				});
+			} else {
+				requestEquip(id, isLeft);
 			}
-			requestEquip(id, isLeft);
 		} else if (item.group == "CNS") {
-			if (!confirm(L['sureConsume'])) return;
-			$.post("/consume/" + id, function (res) {
-				if (res.exp) notice(L['obtainExp'] + ": " + commify(res.exp));
-				if (res.money) notice(L['obtainMoney'] + ": " + commify(res.money));
-				res.gain.forEach(function (item) { queueObtain(item); });
-				$data.box = res.box;
-				$data.users[$data.id].data = res.data;
-				send('refresh');
+			showConfirm(L['sureConsume'], function () {
+				$.post("/consume/" + id, function (res) {
+					if (res.exp) notice(L['obtainExp'] + ": " + commify(res.exp));
+					if (res.money) notice(L['obtainMoney'] + ": " + commify(res.money));
+					res.gain.forEach(function (item) { queueObtain(item); });
+					$data.box = res.box;
+					$data.users[$data.id].data = res.data;
+					send('refresh');
 
-				drawMyDress($data._avGroup);
-				updateMe();
+					drawMyDress($data._avGroup);
+					updateMe();
+				});
 			});
 		}
 	});
@@ -3912,7 +4031,7 @@ function requestEquip(id, isLeft) {
 	if (part.substr(0, 3) == "BDG") part = "BDG";
 	var already = my.equip[part] == id;
 
-	if (confirm(L[already ? 'sureUnequip' : 'sureEquip'] + ": " + L[id][0])) {
+	showConfirm(L[already ? 'sureUnequip' : 'sureEquip'] + ": " + L[id][0], function () {
 		$.post("/equip/" + id, { isLeft: isLeft }, function (res) {
 			if (res.error) return fail(res.error);
 			$data.box = res.box;
@@ -3922,7 +4041,7 @@ function requestEquip(id, isLeft) {
 			send('refresh');
 			updateUI(false);
 		});
-	}
+	});
 }
 function drawCharFactory() {
 	var $tray = $("#cf-tray");
@@ -4092,8 +4211,9 @@ function updateCommunity() {
 		var memo = $data.friends[id];
 
 		if ($data._friends[id] && $data._friends[id].server) return fail(455);
-		if (!confirm(memo + "(#" + id.substr(0, 5) + ")\n" + L['friendSureRemove'])) return;
-		send('friendRemove', { id: id }, true);
+		showConfirm(memo + "(#" + id.substr(0, 5) + ")\n" + L['friendSureRemove'], function () {
+			send('friendRemove', { id: id }, true);
+		});
 	}
 	$("#CommunityDiag .dialog-title").html(L['communityText'] + " (" + len + " / 100)");
 }
@@ -4278,9 +4398,12 @@ function requestInvite(id) {
 
 	if (id != "AI") {
 		nick = getDisplayName($data.users[id]);
-		if (!confirm(nick + L['sureInvite'])) return;
+		showConfirm(nick + L['sureInvite'], function () {
+			send('invite', { target: id });
+		});
+	} else {
+		send('invite', { target: id });
 	}
-	send('invite', { target: id });
 }
 function checkFailCombo(id) {
 	if (!$data._replay && $data.lastFail == $data.id && $data.id == id) {
@@ -5414,7 +5537,7 @@ function chat(profile, msg, from, timestamp) {
 	if (link = msg.match(/https?:\/\/[\w\.\?\/&#%=-_\+]+/g)) {
 		msg = $msg.html();
 		link.forEach(function (item) {
-			msg = msg.replace(item, "<a href='#' style='color: #2222FF;' onclick='if(confirm(\"" + L['linkWarning'] + "\")) window.open(\"" + item + "\");'>" + item + "</a>");
+			msg = msg.replace(item, "<a href='#' style='color: #2222FF;' onclick='handleLinkWarning(\"" + item + "\"); return false;'>" + item + "</a>");
 		});
 		$msg.html(msg);
 	}
@@ -5576,7 +5699,7 @@ function setLocation(place) {
 	else location.hash = "";
 }
 function fail(code) {
-	return alert(L['error_' + code]);
+	return showAlert(L['error_' + code]);
 }
 function yell(msg) {
 	$stage.yell.show().css('opacity', 1).text(msg);
@@ -5704,10 +5827,11 @@ function showBlacklist() {
 				.append($("<div>").addClass("blacklist-name ellipse").text(name))
 				.append($("<i>").addClass("fa fa-remove").on('click', function () {
 					var targetName = $(this).closest(".blacklist-friend").find(".blacklist-name").text();
-					if (!confirm(targetName + L['blacklistRemoveConfirm'])) return;
-					delete $data._shut[targetName];
-					localStorage.setItem('_shut', JSON.stringify($data._shut));
-					showBlacklist();
+					showConfirm(targetName + L['blacklistRemoveConfirm'], function () {
+						delete $data._shut[targetName];
+						localStorage.setItem('_shut', JSON.stringify($data._shut));
+						showBlacklist();
+					});
 				}))
 			);
 		}

@@ -611,6 +611,11 @@ block Middle
 			button#obtain-ok= L('OK')
 	+Dialog('HelpDiag', 550, 400, L('helpText'))
 		iframe#help-board(width=550, height=375)
+	+Dialog('AlertDiag', 300, 150, L('alert'), true)
+		div.dialog-bar#alert-text(style='text-align: center; height: 90px; padding: 10px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; box-sizing: border-box;')
+		div.dialog-bar.tail-button(style='position: absolute; bottom: 10px; right: 10px; width: calc(100% - 20px);')
+			button#alert-cancel(style='display: none; margin-right: 10px;')= L('NO')
+			button#alert-ok= L('OK')
 	+Product('UserList')
 		div 불러오는 중
 	+Product('RoomList')

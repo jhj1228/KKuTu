@@ -160,6 +160,10 @@ iframe {
 	width: 20px !important;
 }
 
+#AlertDiag {
+	z-index: 3000 !important;
+}
+
 .dialog {
 	display: none;
 	position: fixed;

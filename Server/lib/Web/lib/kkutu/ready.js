@@ -148,7 +148,11 @@ $(document).ready(function () {
 			obtainOK: $("#obtain-ok"),
 			help: $("#HelpDiag"),
 			report: $("#ReportDiag"),
-			reportOK: $("#report-ok")
+			reportOK: $("#report-ok"),
+			alert: $("#AlertDiag"),
+			alertText: $("#alert-text"),
+			alertOK: $("#alert-ok"),
+			alertCancel: $("#alert-cancel"),
 		},
 		box: {
 			chat: $(".ChatBox"),
@@ -178,7 +182,7 @@ $(document).ready(function () {
 	};
 	if (_WebSocket == undefined) {
 		loading(L['websocketUnsupport']);
-		alert(L['websocketUnsupport']);
+		showAlert(L['websocketUnsupport']);
 		return;
 	}
 	$data._soundList = [
@@ -418,10 +422,11 @@ $(document).ready(function () {
 		send('friendAdd', { target: id }, true);
 	});
 	$stage.dialog.blacklistClear.on('click', function (e) {
-		if (!confirm(L['blacklistClearConfirm'])) return;
-		$data._shut = {};
-		localStorage.setItem('_shut', JSON.stringify($data._shut));
-		showBlacklist();
+		showConfirm(L['blacklistClearConfirm'], function () {
+			$data._shut = {};
+			localStorage.setItem('_shut', JSON.stringify($data._shut));
+			showBlacklist();
+		});
 	});
 	$stage.menu.newRoom.on('click', function (e) {
 		var $d;
@@ -616,12 +621,15 @@ $(document).ready(function () {
 		if ($data.room.gaming) {
 			if ($data.room.opts.noleave && $data.room.players.indexOf($data.id) !== -1) {
 				if (!$data.admin) {
-					return alert(L['AlertNoleave']);
+					return showAlert(L['AlertNoleave']);
 				}
 			}
 
-			if (!confirm(L['sureExit'])) return;
-			clearGame();
+			showConfirm(L['sureExit'], function () {
+				clearGame();
+				send('leave');
+			});
+			return;
 		}
 		send('leave');
 	});
@@ -803,8 +811,9 @@ $(document).ready(function () {
 		tryJoin($data._roominfo);
 	});
 	$stage.dialog.profileHandover.on('click', function (e) {
-		if (!confirm(L['sureHandover'])) return;
-		send('handover', { target: $data._profiled });
+		showConfirm(L['sureHandover'], function () {
+			send('handover', { target: $data._profiled });
+		});
 	});
 	$stage.dialog.profileKick.on('click', function (e) {
 		send('kick', { robot: $data.robots.hasOwnProperty($data._profiled), target: $data._profiled });
@@ -850,26 +859,44 @@ $(document).ready(function () {
 		if ($("#dress-nickname").val() && $("#dress-nickname").val() !== $data.nickname) data.nickname = $("#dress-nickname").val();
 		if ($("#dress-exordial").val() !== undefined && $("#dress-exordial").val() !== $data.exordial) data.exordial = $("#dress-exordial").val();
 
-		if (data.nickname && $data.NICKNAME_LIMIT.REGEX.test(data.nickname)) data.nickname = confirm(L.confirmNickPolicy) ? data.nickname.replace($data.NICKNAME_LIMIT.REGEX, "") : undefined;
-		if (!data.nickname && data.exordial === undefined) {
-			$stage.dialog.dressOK.attr("disabled", false);
-			$stage.dialog.dress.hide();
-			return;
+		if (data.nickname && $data.NICKNAME_LIMIT.REGEX.test(data.nickname)) {
+			showConfirm(L.confirmNickPolicy, function () {
+				data.nickname = data.nickname.replace($data.NICKNAME_LIMIT.REGEX, "");
+				processProfileChange(data);
+			}, function () {
+				data.nickname = undefined;
+				processProfileChange(data);
+			});
+		} else {
+			processProfileChange(data);
 		}
-		if (confirm($data.NICKNAME_LIMIT.TERM > 0 ? L.confirmNickChangeLimit.replace("{V1}", $data.NICKNAME_LIMIT.TERM) : L.confirmNickChange)) $.post("/profile", data, function (res) {
-			if (res.error) return fail(res.error);
-			const message = [];
-			if (data.nickname) {
-				$("#account-info").text($data.users[$data.id].nickname = $data.users[$data.id].profile.title = $data.users[$data.id].profile.name = $data.nickname = data.nickname);
-				message.push(L.nickChanged.replace("{V1}", data.nickname));
-			}
-			if (data.exordial !== undefined) message.push(L.exorChanged.replace("{V1}", $data.users[$data.id].exordial = $data.exordial = data.exordial));
 
-			send("updateProfile", data, true);
-			alert(message.join("\n"));
-		});
-		$stage.dialog.dressOK.attr("disabled", false);
-		$stage.dialog.dress.hide();
+		function processProfileChange(data) {
+			if (!data.nickname && data.exordial === undefined) {
+				$stage.dialog.dressOK.attr("disabled", false);
+				$stage.dialog.dress.hide();
+				return;
+			}
+			showConfirm($data.NICKNAME_LIMIT.TERM > 0 ? L.confirmNickChangeLimit.replace("{V1}", $data.NICKNAME_LIMIT.TERM) : L.confirmNickChange, function () {
+				$.post("/profile", data, function (res) {
+					if (res.error) return fail(res.error);
+					const message = [];
+					if (data.nickname) {
+						$("#account-info").text($data.users[$data.id].nickname = $data.users[$data.id].profile.title = $data.users[$data.id].profile.name = $data.nickname = data.nickname);
+						message.push(L.nickChanged.replace("{V1}", data.nickname));
+					}
+					if (data.exordial !== undefined) message.push(L.exorChanged.replace("{V1}", $data.users[$data.id].exordial = $data.exordial = data.exordial));
+
+					send("updateProfile", data, true);
+					showAlert(message.join("\n"));
+				});
+				$stage.dialog.dressOK.attr("disabled", false);
+				$stage.dialog.dress.hide();
+			}, function () {
+				$stage.dialog.dressOK.attr("disabled", false);
+				$stage.dialog.dress.hide();
+			});
+		}
 	});
 	$("#DressDiag .dress-type").on('click', function (e) {
 		var $target = $(e.currentTarget);
@@ -906,7 +933,7 @@ $(document).ready(function () {
 		slots[idx] = { equip: $.extend(true, {}, $data.users[$data.id].equip), time: Date.now() };
 		localStorage.setItem(key, JSON.stringify(slots));
 		openWardrobe();
-		alert(L['wardrobeSaved']);
+		showAlert(L['wardrobeSaved']);
 		if (!wasEmpty) $('#WardrobeDiag').hide();
 	});
 
@@ -948,15 +975,15 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		while (slots.length < 5) slots.push(null);
 
-		if (!confirm('슬롯 ' + (idx + 1) + '번에 현재 코디를 저장할까요?')) return;
-
-		slots[idx] = {
-			equip: $.extend(true, {}, $data.users[$data.id].equip),
-			time: Date.now()
-		};
-		localStorage.setItem(key, JSON.stringify(slots));
-		openWardrobe();
-		alert('저장되었습니다.');
+		showConfirm('슬롯 ' + (idx + 1) + '번에 현재 코디를 저장할까요?', function () {
+			slots[idx] = {
+				equip: $.extend(true, {}, $data.users[$data.id].equip),
+				time: Date.now()
+			};
+			localStorage.setItem(key, JSON.stringify(slots));
+			openWardrobe();
+			showAlert(L['wardrobeSaved']);
+		});
 	});
 
 	$(document).on('click', '.wardrobe-load', function (e) {
@@ -965,38 +992,39 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		var slot = slots[idx];
 
-		if (!slot || !slot.equip) return alert('비어있는 슬롯입니다.');
-		if (!confirm('이 코디를 착용하시겠습니까?')) return;
+		if (!slot || !slot.equip) return showAlert(L['wardrobeEmpty']);
 
-		var saved = slot.equip;
-		var calls = [];
-		for (var g in saved) {
-			var id = saved[g];
-			if (!id) continue;
-			(function (group, itemId) {
-				calls.push(function (done) {
-					var isLeft = (group == 'Mlhand');
-					var url = (group == 'Mlhand' || group == 'Mrhand') ? ('/equip/' + itemId) : ('/equip/' + itemId);
-					var data = (group == 'Mlhand' || group == 'Mrhand') ? { isLeft: isLeft } : {};
+		showConfirm(L['wardrobeLoadConfirm'], function () {
+			var saved = slot.equip;
+			var calls = [];
+			for (var g in saved) {
+				var id = saved[g];
+				if (!id) continue;
+				(function (group, itemId) {
+					calls.push(function (done) {
+						var isLeft = (group == 'Mlhand');
+						var url = (group == 'Mlhand' || group == 'Mrhand') ? ('/equip/' + itemId) : ('/equip/' + itemId);
+						var data = (group == 'Mlhand' || group == 'Mrhand') ? { isLeft: isLeft } : {};
 
-					$.post(url, data, function (res) {
-						if (!res.error) {
-							$data.box = res.box;
-							$data.users[$data.id].equip = res.equip;
-						}
-						done();
+						$.post(url, data, function (res) {
+							if (!res.error) {
+								$data.box = res.box;
+								$data.users[$data.id].equip = res.equip;
+							}
+							done();
+						});
 					});
-				});
-			})(g, id);
-		}
-		(function run(i) {
-			if (i >= calls.length) {
-				drawMyDress($data._avGroup);
-				alert('코디가 적용되었습니다.');
-				return;
+				})(g, id);
 			}
-			calls[i](function () { run(i + 1); });
-		})(0);
+			(function run(i) {
+				if (i >= calls.length) {
+					drawMyDress($data._avGroup);
+					showAlert(L['wardrobeApplied']);
+					return;
+				}
+				calls[i](function () { run(i + 1); });
+			})(0);
+		});
 	});
 
 	$(document).on('click', '.wardrobe-delete', function (e) {
@@ -1005,11 +1033,12 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 
 		if (!slots[idx]) return;
-		if (!confirm('정말 삭제하시겠습니까?')) return;
 
-		slots[idx] = null;
-		localStorage.setItem(key, JSON.stringify(slots));
-		openWardrobe();
+		showConfirm(L['wardrobeDeleteConfirm'], function () {
+			slots[idx] = null;
+			localStorage.setItem(key, JSON.stringify(slots));
+			openWardrobe();
+		});
 	});
 
 	$(document).on('click', '.wardrobe-save-slot', function (e) {
@@ -1021,26 +1050,26 @@ $(document).ready(function () {
 		slots[idx] = { equip: $.extend(true, {}, $data.users[$data.id].equip), time: Date.now() };
 		localStorage.setItem(key, JSON.stringify(slots));
 		openWardrobe();
-		alert(L['wardrobeSaved']);
+		showAlert(L['wardrobeSaved']);
 		if (!wasEmpty) $('#WardrobeDiag')();
 	});
 	$stage.dialog.cfCompose.on('click', function (e) {
 		if (!$stage.dialog.cfCompose.hasClass("cf-composable")) return fail(436);
-		if (!confirm(L['cfSureCompose'])) return;
+		showConfirm(L['cfSureCompose'], function () {
+			$.post("/cf", { tray: $data._tray.join('|') }, function (res) {
+				var i;
 
-		$.post("/cf", { tray: $data._tray.join('|') }, function (res) {
-			var i;
+				if (res.error) return fail(res.error);
+				send('refresh');
+				showAlert(L['cfComposed']);
+				$data.users[$data.id].money = res.money;
+				$data.box = res.box;
+				for (i in res.gain) queueObtain(res.gain[i]);
 
-			if (res.error) return fail(res.error);
-			send('refresh');
-			alert(L['cfComposed']);
-			$data.users[$data.id].money = res.money;
-			$data.box = res.box;
-			for (i in res.gain) queueObtain(res.gain[i]);
-
-			drawMyDress($data._avGroup);
-			updateMe();
-			drawCharFactory();
+				drawMyDress($data._avGroup);
+				updateMe();
+				drawCharFactory();
+			});
 		});
 	});
 	$("#room-injeong-pick").on('click', function (e) {
@@ -1123,7 +1152,7 @@ $(document).ready(function () {
 			var my = $data.users[$data.id];
 
 			if (res.error) return fail(res.error);
-			alert(L['purchased']);
+			showAlert(L['purchased']);
 			my.money = res.money;
 			my.box = res.box;
 			updateMe();
@@ -1182,7 +1211,7 @@ $(document).ready(function () {
 				$stage.dialog.replayView.attr('disabled', false);
 			} catch (ex) {
 				console.warn(ex);
-				return alert(L['replayError']);
+				return showAlert(L['replayError']);
 			}
 		};
 	});
@@ -1195,6 +1224,15 @@ $(document).ready(function () {
 		if (spamCount > 0) spamCount = 0;
 		else if (spamWarning > 0) spamWarning -= 0.03;
 	}, 1000);
+
+	function showAlert(message) {
+		$stage.dialog.alertText.html(message);
+		$stage.dialog.alertCancel.hide().off('click');
+		$stage.dialog.alertOK.off('click').on('click', function (e) {
+			$stage.dialog.alert.hide();
+		});
+		showDialog($stage.dialog.alert);
+	}
 
 	// 웹소켓 연결
 	function connect() {
@@ -1231,7 +1269,7 @@ $(document).ready(function () {
 		ws.onmessage = _onMessage = function (e) {
 			var data = JSON.parse(e.data);
 			if (data.type === 'error' && data.code === 459) {
-				return alert(L['error_459'].replace("{V1}", data.time));
+				return showAlert(L['error_459'].replace("{V1}", data.time));
 			}
 
 			onMessage(data);
