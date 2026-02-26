@@ -1298,7 +1298,6 @@ $(document).ready(function () {
 		else if (spamWarning > 0) spamWarning -= 0.03;
 	}, 1000);
 
-	// 알림 메시지 표시
 	function showAlert(message) {
 		$stage.dialog.alertText.html(message);
 		$stage.dialog.alertCancel.hide().off('click');
@@ -2561,21 +2560,18 @@ function showConfirm(message, onConfirm, onCancel) {
 
 	$stage.dialog.alertText.html(message);
 
-	// OK 버튼 클릭
 	$stage.dialog.alertOK.off('click').on('click', function (e) {
 		isConfirmed = true;
 		$stage.dialog.alert.hide();
 		if (onConfirm) onConfirm(true);
 	});
 
-	// Cancel 버튼 클릭
 	$stage.dialog.alertCancel.show().off('click').on('click', function (e) {
 		isCancelled = true;
 		$stage.dialog.alert.hide();
 		if (onCancel) onCancel(false);
 	});
 
-	// 다이얼로그 닫기 이벤트 (ESC)
 	$stage.dialog.alert.off('hide').on('hide', function () {
 		if (!isConfirmed && !isCancelled && onCancel) {
 			onCancel(false);
@@ -5199,6 +5195,7 @@ function pushHistory(text, mean, theme, wc) {
 	var $v, $w, $x;
 	var wcs = wc ? wc.split(',') : [], wd = {};
 	var val;
+	var displayText = text.replace(/</g, '〈').replace(/>/g, '〉');
 
 	$stage.game.history.prepend($v = $("<div>")
 		.addClass("ellipse history-item")
@@ -5222,7 +5219,7 @@ function pushHistory(text, mean, theme, wc) {
 	});
 	$v.append($w = $("<div>").addClass("history-mean ellipse").append(val))
 		.append($x = $("<div>").addClass("expl").css({ 'width': 200, 'white-space': "normal" })
-			.html("<h5 style='color: #BBBBBB;'>" + val.html() + "</h5>")
+			.html("<h5 style='color: #FFFFFF; margin-bottom: 4px;'>" + displayText + "</h5><h5 style='color: #BBBBBB;'>" + val.html() + "</h5>")
 		);
 	global.expl($v);
 }

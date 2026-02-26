@@ -2670,6 +2670,7 @@ function pushHistory(text, mean, theme, wc) {
 	var $v, $w, $x;
 	var wcs = wc ? wc.split(',') : [], wd = {};
 	var val;
+	var displayText = text.replace(/</g, '〈').replace(/>/g, '〉');
 
 	$stage.game.history.prepend($v = $("<div>")
 		.addClass("ellipse history-item")
@@ -2693,7 +2694,7 @@ function pushHistory(text, mean, theme, wc) {
 	});
 	$v.append($w = $("<div>").addClass("history-mean ellipse").append(val))
 		.append($x = $("<div>").addClass("expl").css({ 'width': 200, 'white-space': "normal" })
-			.html("<h5 style='color: #BBBBBB;'>" + val.html() + "</h5>")
+			.html("<h5 style='color: #FFFFFF; margin-bottom: 4px;'>" + displayText + "</h5><h5 style='color: #BBBBBB;'>" + val.html() + "</h5>")
 		);
 	global.expl($v);
 }
