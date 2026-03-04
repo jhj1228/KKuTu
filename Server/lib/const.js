@@ -265,7 +265,7 @@ exports.KO_INJEONG = [
 	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB",
 	"ELW", "KMV", "OVW", "GEN", "WEB", "UWH",
 	"KPO", "VOC", "ERT", "JPT", "ZEL",
-	"CKR", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
+	"CKR", "CRO", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
@@ -286,7 +286,7 @@ exports.EN_THEME = [
 	"e18", "e20", "e43"
 ];
 exports.IJP_EXCEPT = [
-	"BUT", "WOW", "CRO", "PCR"
+	"BUT", "WOW", "PCR"
 ];
 exports.KO_IJP = exports.KO_INJEONG.concat(exports.KO_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
 exports.EN_IJP = exports.EN_INJEONG.concat(exports.EN_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });

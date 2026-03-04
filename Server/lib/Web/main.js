@@ -299,8 +299,8 @@ Server.get("/", function (req, res) {
 			'EN_THEME': Const.EN_THEME,
 			'IJP_EXCEPT': Const.IJP_EXCEPT,
 			'SPEEDQUIZ_TOPIC': Const.SPEEDQUIZ_TOPIC,
-			'ogImage': "http://kkutu.kr/img/kkutu/logo.png",
-			'ogURL': "http://kkutu.kr/",
+			'ogImage': "https://legendkkutu.kr/img/kkutu/logo.png",
+			'ogURL': "https://legendkkutu.kr/",
 			'ogTitle': "글자로 놀자! 레전드끄투",
 			'ogDescription': "레전드끄투에서 나만의 단어 실력을 뽐내보세요!"
 		});

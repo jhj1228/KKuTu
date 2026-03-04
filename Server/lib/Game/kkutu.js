@@ -509,7 +509,7 @@ exports.Client = function (socket, profile, sid) {
 		).on(function (__res) {
 			DB.redis.getGlobal(my.id).then(function (_res) {
 				DB.redis.putGlobal(my.id, my.data.score).then(function (res) {
-					JLog.log(`플러시됨 [${my.id}] 점수=${my.data.score} 핑=${my.money}`);
+					JLog.log(`정보 업데이트됨 [${my.id}] 점수=${my.data.score} 핑=${my.money}`);
 					R.go({ id: my.id, prev: _res });
 				});
 			});
@@ -1589,8 +1589,8 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 		rw.together = true;
 	}
 	rw.score += bonus;
-	rw.score = rw.score * 2 || 0;
-	rw.money = rw.money * 2 || 0;
+	rw.score = rw.score * 3 || 0;
+	rw.money = rw.money * 3 || 0;
 
 	// applyEquipOptions에서 반올림한다.
 	return rw;
