@@ -316,6 +316,7 @@ exports.Client = function (socket, profile, sid) {
 		var o = {
 			id: my.id,
 			guest: my.guest,
+			admin: my.admin,
 			game: {
 				ready: my.ready,
 				form: my.form,

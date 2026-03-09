@@ -361,7 +361,7 @@ block Middle
 		div.dialog-bar
 			button#injpick-all= L('injpickAll')
 			button#injpick-no= L('injpickNo')
-		div.dialog-bar#injpick-list(style='height: 280px; overflow-y: scroll;')
+		//- div.dialog-bar#injpick-list(style='height: 280px; overflow-y: scroll;')
 			div.dialog-opt#ko-pick-list(style='width: 100%;')
 				- locals.KO_THEME.concat(locals.KO_INJEONG).forEach(function(item){
 					- var name = "ko-pick-" + item;
@@ -370,7 +370,7 @@ block Middle
 						input(id=name, type='checkbox', style='width: auto;')
 						label(for=name)= LANG['theme_' + item]
 				- });
-		//- div.dialog-bar#injpick-list(style='height: 280px; overflow-y: scroll;')
+		div.dialog-bar#injpick-list(style='height: 280px; overflow-y: scroll;')
 			div.dialog-opt#ko-pick-list(style='width: 100%;')
 				div(style='width: 100%; font-weight: bold; color: #000; text-align: center; font-size: 15px;') 일반 주제
 				each item in locals.KO_THEME

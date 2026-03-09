@@ -96,10 +96,11 @@ exports.run = function (Server, page) {
 		if (!checkAdmin(req, res)) return;
 
 		var TABLE = MainDB.kkutu[req.query.lang];
+		var word = decodeURIComponent(req.params.word);
 
 		if (!TABLE) return res.sendStatus(400);
 		if (!TABLE.findOne) return res.sendStatus(400);
-		TABLE.findOne(['_id', req.params.word]).on(function ($doc) {
+		TABLE.findOne(['_id', word]).on(function ($doc) {
 			res.send($doc);
 		});
 	});
@@ -204,6 +205,7 @@ exports.run = function (Server, page) {
 		if (req.body.pw != GLOBAL.PASS) return res.sendStatus(400);
 		var TABLE = MainDB.kkutu[req.body.lang];
 		var data = JSON.parse(req.body.data);
+		var word = decodeURIComponent(req.params.word);
 
 		if (!TABLE) return res.sendStatus(400);
 		if (!TABLE.upsert) return res.sendStatus(400);

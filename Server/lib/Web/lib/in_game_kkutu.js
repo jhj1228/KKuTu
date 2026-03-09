@@ -3772,6 +3772,7 @@ function updateRoom(gaming) {
 			if (o.robot && !o.profile) {
 				o.profile = getAIProfile(o.level);
 				$data.robots[o.id] = o;
+				o.equip = { Mskin: "kkutubot" }
 			}
 			$r.append(renderer(o));
 			updateScore(o.id, o.game.score || 0);
@@ -3792,6 +3793,7 @@ function updateRoom(gaming) {
 			if (o.robot) {
 				o.profile = getAIProfile(o.level);
 				$data.robots[o.id] = o;
+				o.equip = { Mskin: "kkutubot" }
 			}
 			$r.append($("<div>").attr('id', "room-user-" + o.id).addClass("room-user")
 				.append($m = $("<div>").addClass("moremi room-user-image"))
@@ -4231,7 +4233,7 @@ function requestRoomInfo(id) {
 		p = $data.users[p] || NULL_USER;
 		if (o.players[i].robot) {
 			p.profile = { title: L['robot'] };
-			p.equip = { robot: true };
+			p.equip = { Mskin: "kkutubot" };
 		} else rd.t = rd.t || 0;
 
 		$pls.append($("<div>").addClass("ri-player")
@@ -4277,7 +4279,7 @@ function requestProfile(id) {
 		.append($("<div>").addClass("profile-head-item")
 			.append(getImage(o.profile.image).addClass("profile-image"))
 			.append($("<div>").addClass("profile-title ellipse").text(getDisplayName(o))
-				.append($("<label>").addClass("profile-tag").html(" #" + o.id.toString().substr(0, 5)))
+				.append($("<label>").addClass("profile-tag").html(o.admin ? " #ADMIN" : " #" + o.id.toString().substr(0, 5)))
 			)
 		)
 		.append($("<div>").addClass("profile-head-item")
@@ -4289,6 +4291,7 @@ function requestProfile(id) {
 			.append($("<div>").addClass("expl").css({ 'white-space': "normal", 'width': 300, 'font-size': "11px" }).text(o.exordial))
 		);
 	if (o.robot) {
+		o.equip = { Mskin: "kkutubot" }
 		$stage.dialog.profileLevel.show();
 		$stage.dialog.profileLevel.prop('disabled', $data.id != $data.room.master);
 		$("#profile-place").html($data.room.id + L['roomNumber']);

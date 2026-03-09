@@ -54,7 +54,8 @@
 		"GROUP_Mclothes": "모레미 옷",
 		"GROUP_Mshoes": "모레미 발",
 		"GROUP_Mback": "모레미 배경",
-		"GROUP_Mfront": "모레미 전경"
+		"GROUP_Mfront": "모레미 전경",
+		"GROUP_Mskin": "모레미 스킨"
 	},
 	"error": {
 		"title": "레전드끄투 - 오류!",

@@ -256,7 +256,7 @@
 
 		// 끄투 DB 다루기
 		$("#db-go").on('click', function (e) {
-			$.get("/gwalli/kkutudb/" + $("#db-word").val() + "?lang=" + $("#db-lang").val(), function (res) {
+			$.get("/gwalli/kkutudb/" + encodeURIComponent($("#db-word").val()) + "?lang=" + $("#db-lang").val(), function (res) {
 				var $table = $("#wd-data").empty();
 				var types = res.type ? res.type.split(',') : [];
 				var themes = res.theme ? res.theme.split(',') : [];
@@ -336,7 +336,7 @@
 				else return "＂" + (x1 + 1) + "＂" + m1;
 			}).join('');
 
-			$.post("/gwalli/kkutudb/" + $("#db-word").val(), {
+			$.post("/gwalli/kkutudb/" + encodeURIComponent($("#db-word").val()), {
 				pw: $("#db-password").val(),
 				lang: $("#db-lang").val(),
 				data: JSON.stringify(obj)

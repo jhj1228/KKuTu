@@ -62,11 +62,11 @@ exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhan
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
 exports.AVAIL_EQUIP = [
 	"NIK", "BDG1", "BDG2", "BDG3", "BDG4",
-	"Mhead", "Meye", "Mmouth", "Mhand", "Mclothes", "Mshoes", "Mback"
+	"Mhead", "Meye", "Mmouth", "Mhand", "Mclothes", "Mshoes", "Mback", "Mskin"
 ];
 exports.GROUPS = {
 	'spec': ["PIX", "PIY", "PIZ", "CNS"],
-	'skin': ["NIK"],
+	'skin': ["NIK", "Mskin"],
 	'badge': ["BDG1", "BDG2", "BDG3", "BDG4"],
 	'head': ["Mhead"],
 	'eye': ["Meye"],
@@ -245,7 +245,7 @@ exports.getPreScore = function (text, chain, tr) {
 	return 2 * (Math.pow(5 + 7 * (text || "").length, 0.74) + 0.88 * (chain || []).length) * (0.5 + 0.5 * tr) * 3.5;
 };
 exports.getPenalty = function (chain, score) {
-	return -1 * Math.round(Math.min(10 + (chain || []).length * 2.1 + score * 0.15, score));
+	return -1 * Math.round(Math.min(10 + (chain || []).length * 2.1 + score * 0.07, score));
 };
 exports.GAME_TYPE = Object.keys(exports.RULE);
 exports.EXAMPLE_TITLE = {
@@ -261,7 +261,7 @@ exports.KO_INJEONG = [
 	"IMS", "RAG", "NEX",
 	"KTV", "CPY", "WOR", "NFX", "KOT", "THP",
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
-	"MIN", "MAF", "JAN", "CTH", "BGP", "BUS",
+	"MIN", "MAF", "JAN", "CTH", "BGP", "BUT", "BUS",
 	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB",
 	"ELW", "KMV", "OVW", "GEN", "WEB", "UWH",
 	"KPO", "VOC", "ERT", "JPT", "ZEL",
@@ -286,7 +286,7 @@ exports.EN_THEME = [
 	"e18", "e20", "e43"
 ];
 exports.IJP_EXCEPT = [
-	"BUT", "WOW", "PCR"
+	"WOW", "PCR"
 ];
 exports.KO_IJP = exports.KO_INJEONG.concat(exports.KO_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
 exports.EN_IJP = exports.EN_INJEONG.concat(exports.EN_THEME).filter(function (item) { return !exports.IJP_EXCEPT.includes(item); });
