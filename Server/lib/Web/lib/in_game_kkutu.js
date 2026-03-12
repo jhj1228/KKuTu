@@ -3594,22 +3594,27 @@ function updateMe() {
 	$(".my-gauge .graph-bar").width((my.data.score - prev) / (goal - prev) * 190);
 	$(".my-gauge-text").html(commify(my.data.score) + " / " + commify(goal));
 
-	var buffText = '';
+	var buffMap = {};
 	for (var part in my.equip) {
 		var itemId = my.equip[part];
 		var item = $data.shop[itemId];
 		if (item && item.options) {
 			for (var opt in item.options) {
 				if (opt == 'gif') continue;
-				var k = opt.charAt(0);
-				var txt = item.options[opt];
-				if (k == 'g') txt = "+" + (txt * 100).toFixed(1) + "%p";
-				else if (k == 'h') txt = "+" + txt;
-				buffText += L['OPTS_' + opt] + " : " + txt + "<br>";
+				if (!buffMap[opt]) buffMap[opt] = 0;
+				buffMap[opt] += item.options[opt];
 			}
 		}
 	}
-	var fullText = L['LEVEL'] + " : " + lv + "<br>" + '다음 레벨업까지' + " : " + remainText + "<br>" + '현재 경험치' + " : " + percentText;
+	var buffText = '';
+	for (var opt in buffMap) {
+		var k = opt.charAt(0);
+		var txt = buffMap[opt];
+		if (k == 'g') txt = "+" + (txt * 100).toFixed(1) + "%p";
+		else if (k == 'h') txt = "+" + txt;
+		buffText += L['OPTS_' + opt] + " : " + txt + "<br>";
+	}
+	var fullText = '현재 레벨' + " : " + lv + "<br>" + '다음 레벨업까지' + " : " + remainText + "<br>" + '현재 경험치' + " : " + percentText;
 	if (buffText) fullText += "<br><br>" + buffText;
 	$("#my-gauge-expl").html(fullText);
 }
@@ -4213,15 +4218,17 @@ function updateCommunity() {
 		o = $data._friends[i] || {};
 		p = ($data.users[i] || {}).profile;
 
-		$stage.dialog.commFriends.append($("<div>").addClass("cf-item").attr('id', "cfi-" + i)
-			.append($("<div>").addClass("cfi-status cfi-stat-" + (o.server ? 'on' : 'off')))
-			.append($("<div>").addClass("cfi-server").html(o.server ? L['server_' + o.server] : "-"))
-			.append($("<div>").addClass("cfi-name ellipse").html(p ? (p.title || p.name) : L['hidden']))
-			.append($("<div>").addClass("cfi-memo ellipse").text(memo))
-			.append($("<div>").addClass("cfi-menu")
-				.append($("<i>").addClass("fa fa-pencil").on('click', requestEditMemo))
-				.append($("<i>").addClass("fa fa-remove").on('click', requestRemoveFriend))
-			)
+		$stage.dialog.commFriends.append(
+			$("<div>").addClass("cf-item").attr('id', "cfi-" + i)
+				.append($("<div>").addClass("cfi-status cfi-stat-" + (o.server ? 'on' : 'off')))
+				.append($("<div>").addClass("cfi-server").html(o.server ? L['server_' + o.server] : "-"))
+				.append($("<div>").addClass("cfi-name ellipse").html(p ? (p.title || p.name) : L['hidden']))
+				.append($("<div>").addClass("cfi-memo ellipse").text(memo))
+				.append(
+					$("<div>").addClass("cfi-menu")
+						.append($("<i>").addClass("fa fa-pencil").on('click', requestEditMemo))
+						.append($("<i>").addClass("fa fa-remove").on('click', requestRemoveFriend))
+				)
 		);
 	}
 
@@ -5857,16 +5864,27 @@ function showBlacklist() {
 	for (var name in $data._shut) {
 		if ($data._shut.hasOwnProperty(name)) {
 			count++;
-			$items.append($("<div>").addClass("blacklist-friend")
-				.append($("<div>").addClass("blacklist-name ellipse").text(name))
+			var userInfo = $data.users[name];
+			var displayId = userInfo && userInfo.id ? userInfo.id : '';
+			var displayName = userInfo && userInfo.profile ? (userInfo.profile.title || userInfo.profile.name) : name;
+			if (displayId) {
+				displayName += ' (' + displayId + ')';
+			}
+
+			var $menu = $("<div>").addClass("blacklist-menu")
 				.append($("<i>").addClass("fa fa-remove").on('click', function () {
-					var targetName = $(this).closest(".blacklist-friend").find(".blacklist-name").text();
+					var targetName = $(this).closest(".blacklist-item").find(".blacklist-name").text();
 					showConfirm(targetName + L['blacklistRemoveConfirm'], function () {
-						delete $data._shut[targetName];
+						delete $data._shut[name];
 						localStorage.setItem('_shut', JSON.stringify($data._shut));
 						showBlacklist();
 					});
-				}))
+				}));
+
+			$items.append(
+				$("<div>").addClass("blacklist-item")
+					.append($("<div>").addClass("blacklist-name ellipse").text(displayName))
+					.append($menu)
 			);
 		}
 	}

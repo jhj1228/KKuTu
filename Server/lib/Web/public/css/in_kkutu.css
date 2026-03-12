@@ -386,6 +386,32 @@ iframe {
 	background-color: #FFF;
 }
 
+#blacklist-items div {
+	float: left;
+}
+
+.blacklist-item {
+	margin: 2px 0px;
+	width: 100%;
+}
+
+.blacklist-name {
+	width: calc(100% - 30px);
+}
+
+.blacklist-menu {
+	width: 30px;
+}
+
+.blacklist-menu>i {
+	margin-right: 3px;
+	cursor: pointer;
+}
+
+.blacklist-menu>i:hover {
+	background-color: #FFF;
+}
+
 #ProfileDiag .dialog-body div {
 	float: left;
 }
