@@ -262,10 +262,8 @@ block Middle
 			button#setting-ok= L('save')
 			button#setting-reset= L('initialize')
 	+Dialog('CommunityDiag', 300, 300)
-		div.dialog-bar(style='height: 225px; overflow-y: scroll;')
+		div.dialog-bar(style='height: 270px; overflow-y: scroll;')
 			div#comm-friends
-		div.dialog-bar.tail-button
-			button#comm-friend-add= L('friendAdd')
 	+Dialog('BlacklistDiag', 300, 255)
 		div.dialog-bar(style='height: 225px; overflow-y: scroll;')
 			div#blacklist-items
@@ -479,6 +477,8 @@ block Middle
 				div.profile-field-score= L('recordScore')
 			div#profile-record
 		div.dialog-bar.tail-button
+			button#profile-friend(style="width:30px;")
+				+FA('user-plus')
 			button#profile-whisper= L('whisper')
 			button#profile-shut= L('shut')
 			button#profile-kick= L('kick')
@@ -671,8 +671,11 @@ block Middle
 				+Expl(true)
 					div(style='color: #CCCCCC;')!= L('okgExpl')
 		div.my-level
-		+GraphBar('my-gauge')
-		div.bar-text.my-gauge-text
+		div
+			+GraphBar('my-gauge')
+			div.bar-text.my-gauge-text
+			+Expl(true)
+				div#my-gauge-expl(style='color: #CCCCCC; white-space: pre-line;')
 	+Product('Chat')
 		div#Chat
 		input#Talk(maxlength=400)

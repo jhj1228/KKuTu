@@ -112,6 +112,7 @@ $(document).ready(function () {
 			profileHandover: $("#profile-handover"),
 			profileKick: $("#profile-kick"),
 			profileLevel: $("#profile-level"),
+			profileFriend: $("#profile-friend"),
 			profileDress: $("#profile-dress"),
 			profileWhisper: $("#profile-whisper"),
 			profileReport: $("#profile-report"),
@@ -841,6 +842,11 @@ $(document).ready(function () {
 	});
 	$stage.dialog.reportOK.on('click', function (e) {
 		submitReport();
+	});
+	$stage.dialog.profileFriend.on('click', function (e) {
+		if (!$data.users[$data._profiled]) return fail(450);
+
+		send('friendAdd', { target: $data._profiled }, true);
 	});
 	$stage.dialog.profileDress.on('click', function (e) {
 		// alert(L['error_555']);

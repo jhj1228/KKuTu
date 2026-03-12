@@ -1048,6 +1048,11 @@ function updateMe() {
 	for (i in my.data.record) gw += my.data.record[i][1];
 	renderMoremi(".my-image", my.equip);
 	// $(".my-image").css('background-image', "url('"+my.profile.image+"')");
+	var span = goal - prev;
+	var remainExp = Math.max(0, goal - my.data.score);
+	var expPercent = span > 0 && isFinite(span) ? (my.data.score - prev) / span * 100 : 100;
+	var remainText = isFinite(remainExp) ? commify(Math.round(remainExp)) : "MAX";
+	var percentText = isFinite(expPercent) ? Math.max(0, Math.min(100, expPercent)).toFixed(1) + "%" : "100.0%";
 	$(".my-stat-level").replaceWith(getLevelImage(my.data.score).addClass("my-stat-level"));
 	$(".my-stat-name").text(getDisplayName(my));
 	$(".my-stat-record").html(L['globalWin'] + " " + gw + L['W']);
@@ -1057,6 +1062,7 @@ function updateMe() {
 	$(".my-level").html(L['LEVEL'] + " " + lv);
 	$(".my-gauge .graph-bar").width((my.data.score - prev) / (goal - prev) * 190);
 	$(".my-gauge-text").html(commify(my.data.score) + " / " + commify(goal));
+	$("#my-gauge-expl").html(L['LEVEL'] + " : " + lv + "<br>" + '다음 레벨업까지' + " : " + remainText + "<br>" + '현재 경험치' + " : " + percentText);
 }
 function prettyTime(time) {
 	var min = Math.floor(time / 60000) % 60, sec = Math.floor(time * 0.001) % 60;
@@ -1247,7 +1253,6 @@ function updateRoom(gaming) {
 			if (o.robot && !o.profile) {
 				o.profile = getAIProfile(o.level);
 				$data.robots[o.id] = o;
-				o.equip = { Mskin: "kkutubot" }
 			}
 			$r.append(renderer(o));
 			updateScore(o.id, o.game.score || 0);
@@ -1268,7 +1273,6 @@ function updateRoom(gaming) {
 			if (o.robot) {
 				o.profile = getAIProfile(o.level);
 				$data.robots[o.id] = o;
-				o.equip = { Mskin: "kkutubot" }
 			}
 			$r.append($("<div>").attr('id', "room-user-" + o.id).addClass("room-user")
 				.append($m = $("<div>").addClass("moremi room-user-image"))
@@ -1708,7 +1712,7 @@ function requestRoomInfo(id) {
 		p = $data.users[p] || NULL_USER;
 		if (o.players[i].robot) {
 			p.profile = { title: L['robot'] };
-			p.equip = { Mskin: "robot" };
+			p.equip = { robot: true };
 		} else rd.t = rd.t || 0;
 
 		$pls.append($("<div>").addClass("ri-player")
@@ -1766,7 +1770,6 @@ function requestProfile(id) {
 			.append($("<div>").addClass("expl").css({ 'white-space': "normal", 'width': 300, 'font-size': "11px" }).text(o.exordial))
 		);
 	if (o.robot) {
-		o.equip = { Mskin: "robot" }
 		$stage.dialog.profileLevel.show();
 		$stage.dialog.profileLevel.prop('disabled', $data.id != $data.room.master);
 		$("#profile-place").html($data.room.id + L['roomNumber']);
@@ -1793,12 +1796,16 @@ function requestProfile(id) {
 	$stage.dialog.profileWhisper.hide();
 	$stage.dialog.profileHandover.hide();
 	$stage.dialog.profileReport.hide();
+	$stage.dialog.profileFriend.hide();
 
-	if ($data.id == id) $stage.dialog.profileDress.show();
+	if ($data.id == id) {
+		$stage.dialog.profileDress.show();
+	}
 	else if (!o.robot) {
 		$stage.dialog.profileShut.show();
 		$stage.dialog.profileWhisper.show();
 		$stage.dialog.profileReport.show();
+		$stage.dialog.profileFriend.show();
 	}
 	if ($data.room) {
 		if ($data.id != id && $data.id == $data.room.master) {
@@ -1857,11 +1864,13 @@ function showOfflineProfile(o, id) {
 	$stage.dialog.profileWhisper.hide();
 	$stage.dialog.profileHandover.hide();
 	$stage.dialog.profileReport.hide();
+	$stage.dialog.profileFriend.hide();
 
 	if ($data.id == id) {
 		$stage.dialog.profileDress.show();
 	} else {
 		$stage.dialog.profileShut.show();
+		$stage.dialog.profileFriend.show();
 	}
 
 	showDialog($stage.dialog.profile);
