@@ -1062,7 +1062,25 @@ function updateMe() {
 	$(".my-level").html(L['LEVEL'] + " " + lv);
 	$(".my-gauge .graph-bar").width((my.data.score - prev) / (goal - prev) * 190);
 	$(".my-gauge-text").html(commify(my.data.score) + " / " + commify(goal));
-	$("#my-gauge-expl").html(L['LEVEL'] + " : " + lv + "<br>" + '다음 레벨업까지' + " : " + remainText + "<br>" + '현재 경험치' + " : " + percentText);
+
+	var buffText = '';
+	for (var part in my.equip) {
+		var itemId = my.equip[part];
+		var item = $data.shop[itemId];
+		if (item && item.options) {
+			for (var opt in item.options) {
+				if (opt == 'gif') continue;
+				var k = opt.charAt(0);
+				var txt = item.options[opt];
+				if (k == 'g') txt = "+" + (txt * 100).toFixed(1) + "%p";
+				else if (k == 'h') txt = "+" + txt;
+				buffText += L['OPTS_' + opt] + " : " + txt + "<br>";
+			}
+		}
+	}
+	var fullText = '현재 레벨' + " : " + lv + "<br>" + '다음 레벨업까지' + " : " + remainText + "<br>" + '현재 경험치' + " : " + percentText;
+	if (buffText) fullText += "<br><br>" + buffText;
+	$("#my-gauge-expl").html(fullText);
 }
 function prettyTime(time) {
 	var min = Math.floor(time / 60000) % 60, sec = Math.floor(time * 0.001) % 60;
