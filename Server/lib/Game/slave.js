@@ -423,6 +423,9 @@ KKuTu.onClientMessage = function ($c, msg) {
 			$c._lastReport = now;
 			$c.send('notice', { value: "신고가 접수되었습니다." });
 			break;
+		case 'ping':
+			$c.send('pong', { t: msg.t });
+			break;
 		default:
 			break;
 	}

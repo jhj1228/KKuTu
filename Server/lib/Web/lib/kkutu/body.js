@@ -406,6 +406,9 @@ function onMessage(data) {
 				chat(data.profile || { title: L['robot'] }, data.value, data.from, data.timestamp);
 			}
 			break;
+		case 'pong':
+			notice((L['cmd_p_result'] || 'Ping: {V1}ms').replace('{V1}', Date.now() - data.t));
+			break;
 		case 'roomStuck':
 			rws.close();
 			break;
@@ -707,7 +710,8 @@ function runCommand(cmd) {
 		'/ㄷㄷ': L['cmd_ee'],
 		'/무시': L['cmd_wb'],
 		'/차단': L['cmd_shut'],
-		'/id': L['cmd_id']
+		'/id': L['cmd_id'],
+		'/ㅍ': L['cmd_p']
 	};
 
 	switch (cmd[0].toLowerCase()) {
@@ -762,6 +766,10 @@ function runCommand(cmd) {
 			} else {
 				notice(L['myId'] + $data.id);
 			}
+			break;
+		case "/p":
+		case "/ㅍ":
+			send('ping', { t: Date.now() });
 			break;
 		case "/help":
 		case "/ㄷㅇ":
