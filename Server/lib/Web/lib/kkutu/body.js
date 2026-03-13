@@ -763,8 +763,12 @@ function runCommand(cmd) {
 				notice(L['myId'] + $data.id);
 			}
 			break;
-		default:
+		case "/help":
+		case "/ㄷㅇ":
 			for (i in CMD) notice(CMD[i], i);
+			break;
+		default:
+			notice(L['cmd_nothing']);
 			break;
 	}
 }
@@ -1081,9 +1085,9 @@ function updateMe() {
 		var txt = buffMap[opt];
 		if (k == 'g') txt = "+" + (txt * 100).toFixed(1) + "%p";
 		else if (k == 'h') txt = "+" + txt;
-		buffText += L['OPTS_' + opt] + " : " + txt + "<br>";
+		buffText += L['OPTS_' + opt] + ": " + txt + "<br>";
 	}
-	var fullText = '현재 레벨' + " : " + lv + "<br>" + '다음 레벨업까지' + " : " + remainText + "<br>" + '현재 경험치' + " : " + percentText;
+	var fullText = '현재 레벨' + ": " + lv + "<br>" + '다음 레벨업까지' + ": " + remainText + "<br>" + '현재 경험치' + ": " + percentText;
 	if (buffText) fullText += "<br><br>" + buffText;
 	$("#my-gauge-expl").html(fullText);
 }
