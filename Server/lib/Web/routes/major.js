@@ -156,6 +156,19 @@ exports.run = function (Server, page) {
 			});
 		});
 	});
+	Server.get("/user-id", function (req, res) {
+		var nickname = (req.query.nickname || "").trim();
+
+		if (!nickname) return res.json({ error: 400 });
+		MainDB.users.findOne(['nickname', nickname]).limit(['nickname', true]).on(function ($user) {
+			if (!$user) return res.json({ error: 405 });
+
+			res.json({
+				id: $user._id,
+				nickname: $user.nickname
+			});
+		});
+	});
 
 	// POST
 	Server.post("/profile", function (req, res) {

@@ -3278,11 +3278,28 @@ function runCommand(cmd) {
 			break;
 		case "/무시":
 		case "/wb":
+			if (findOnlineUserIdByName(cmd[1]) == $data.id) {
+				onMessage({ type: 'error', code: 462 });
+				break;
+			}
+			if (!findOnlineUserIdByName(cmd[1])) {
+				onMessage({ type: 'error', code: 424, message: cmd[1] || '' });
+				break;
+			}
 			toggleWhisperBlock(cmd[1]);
 			break;
 		case "/차단":
 		case "/shut":
-			toggleShutBlock(cmd.slice(1).join(' '));
+			c = cmd.slice(1).join(' ');
+			if (findOnlineUserIdByName(c) == $data.id) {
+				onMessage({ type: 'error', code: 463 });
+				break;
+			}
+			if (!findOnlineUserIdByName(c)) {
+				onMessage({ type: 'error', code: 424, message: c || '' });
+				break;
+			}
+			toggleShutBlock(c);
 			break;
 		case "/id":
 			if (cmd[1]) {
@@ -3293,7 +3310,10 @@ function runCommand(cmd) {
 						notice("[" + (++c) + "] " + i);
 					}
 				}
-				if (!c) notice(L['error_405']);
+				if (!c) requestUserIdByName(cmd[1], function (res) {
+					if (res && res.id) notice("[1] " + res.id);
+					else notice(L['error_405']);
+				});
 			} else {
 				notice(L['myId'] + $data.id);
 			}
@@ -3317,6 +3337,21 @@ function sendWhisper(target, text) {
 		send('talk', { whisper: target, value: text }, true);
 		chat({ title: "→" + target }, text, true);
 	}
+}
+function requestUserIdByName(target, callback) {
+	if (!target) return callback({ error: 400 });
+	$.get("/user-id", { nickname: target }, callback).fail(function () {
+		callback({ error: 400 });
+	});
+}
+function findOnlineUserIdByName(target) {
+	var id;
+
+	if (!target) return null;
+	for (id in $data.users) {
+		if (getDisplayName($data.users[id]) == target) return id;
+	}
+	return null;
 }
 function toggleWhisperBlock(target) {
 	if ($data._wblock.hasOwnProperty(target)) {
