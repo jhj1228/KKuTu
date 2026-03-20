@@ -20,6 +20,7 @@
 -
 	const MENU = [
 		{ key: 'HOME', href: "/" },
+		{ key: 'KKUTU', href: "https://kkutu.site", target: "_blank" }
 	];
 	const PUBLIC = locals.published;
 	
@@ -49,7 +50,7 @@ mixin Menu()
 	div.Menu
 		- for(i in MENU)
 			- if(MENU[i].href)
-				button.menu-btn(id='menu-item-'+MENU[i].key, onclick='location.href = "'+MENU[i].href+'";')!= L(MENU[i].key)
+				button.menu-btn(id='menu-item-'+MENU[i].key, onclick=(MENU[i].target === '_blank' ? 'window.open("'+MENU[i].href+'", "_blank");' : 'location.href = "'+MENU[i].href+'";'))!= L(MENU[i].key)
 			- else if(MENU[i].sub)
 				div.menu-btn(id='menu-item-'+MENU[i].key)!= L(MENU[i].key)
 					div.menu-sub-separator
@@ -65,6 +66,7 @@ mixin MMenu()
 			+FA('bars')
 			+separator(10)
 			div.menu-sub-btn(onclick='location.href = "/";', style='margin: 7px 0px; height: 25px;')!= L('HOME')
+			div.menu-sub-btn(onclick='window.open("https://kkutu.site", "_blank");', style='margin: 7px 0px; height: 25px;')= L('KKUTU')
 		div#account
 			span#profile= SESSION.profile ? JSON.stringify(SESSION.profile) : '{}'
 			div#account-info

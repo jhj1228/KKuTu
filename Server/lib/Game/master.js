@@ -772,7 +772,7 @@ function processClientRequest($c, msg) {
 }
 KKuTu.onClientClosed = function ($c, code) {
 	delete DIC[$c.id];
-	if ($c._error != 409) MainDB.users.update(['_id', $c.id]).set(['server', ""]).on();
+	if ($c._error != 409 && !$c.admin) MainDB.users.update(['_id', $c.id]).set(['server', ""]).on();
 	if ($c.profile) delete DNAME[$c.profile.title || $c.profile.name];
 	if ($c.socket) $c.socket.removeAllListeners();
 	if ($c.friends) narrateFriends($c.id, $c.friends, "off");

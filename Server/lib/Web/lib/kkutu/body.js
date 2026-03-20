@@ -711,7 +711,8 @@ function runCommand(cmd) {
 		'/무시': L['cmd_wb'],
 		'/차단': L['cmd_shut'],
 		'/id': L['cmd_id'],
-		'/ㅍ': L['cmd_p']
+		'/ㅍ': L['cmd_p'],
+		'/ㅍㄹ': L['cmd_pro'],
 	};
 
 	switch (cmd[0].toLowerCase()) {
@@ -790,6 +791,23 @@ function runCommand(cmd) {
 		case "/p":
 		case "/ㅍ":
 			send('ping', { t: Date.now() });
+			break;
+		case "/ㅍㄹ":
+		case "/pro":
+			c = cmd.slice(1).join(' ').trim();
+			if (!c) {
+				notice(L['cmd_nothing']);
+				break;
+			}
+			i = findOnlineUserIdByName(c);
+			if (i) {
+				requestProfile(i);
+				break;
+			}
+			requestUserIdByName(c, function (res) {
+				if (res && res.id) requestProfile(res.id);
+				else onMessage({ type: 'error', code: 424, message: c });
+			});
 			break;
 		case "/help":
 		case "/ㄷㅇ":

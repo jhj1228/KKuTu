@@ -3322,6 +3322,23 @@ function runCommand(cmd) {
 		case "/ㅍ":
 			send('ping', { t: Date.now() });
 			break;
+		case "/ㅍㄹ":
+		case "/pro":
+			c = cmd.slice(1).join(' ').trim();
+			if (!c) {
+				notice(L['cmd_nothing']);
+				break;
+			}
+			i = findOnlineUserIdByName(c);
+			if (i) {
+				requestProfile(i);
+				break;
+			}
+			requestUserIdByName(c, function (res) {
+				if (res && res.id) requestProfile(res.id);
+				else onMessage({ type: 'error', code: 424, message: c });
+			});
+			break;
 		case "/help":
 		case "/ㄷㅇ":
 			for (i in CMD) notice(CMD[i], i);

@@ -9,5 +9,6 @@ Server/lib/sub/global.json
 Server/lib/data/speedquiz/**
 Server/lib/Web/public/img/kkutu/moremi/**
 KKUTU_ERROR.log
+/ssl
 db.sql
 .vscode
