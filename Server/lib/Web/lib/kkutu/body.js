@@ -712,7 +712,7 @@ function runCommand(cmd) {
 		'/차단': L['cmd_shut'],
 		'/id': L['cmd_id'],
 		'/ㅍ': L['cmd_p'],
-		'/ㅍㄹ': L['cmd_pro'],
+		'/ㅍㄹ': L['cmd_pro']
 	};
 
 	switch (cmd[0].toLowerCase()) {
@@ -806,7 +806,7 @@ function runCommand(cmd) {
 			}
 			requestUserIdByName(c, function (res) {
 				if (res && res.id) requestProfile(res.id);
-				else onMessage({ type: 'error', code: 424, message: c });
+				else onMessage({ type: 'error', code: 464, message: c });
 			});
 			break;
 		case "/help":

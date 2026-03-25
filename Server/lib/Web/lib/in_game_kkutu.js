@@ -998,22 +998,11 @@ $(document).ready(function () {
 	});
 	$('#wardrobe-save').on('click', function (e) {
 		$('#WardrobeDiag').hide();
+		showAlert(L['wardrobeSaved']);
 	});
 	$(document).on('click', '.wardrobe-slot', function (e) {
 		$('.wardrobe-slot.selected').removeClass('selected');
 		$(this).addClass('selected');
-	});
-	$('#wardrobe-save').on('click', function (e) {
-		var key = 'wardrobe_' + $data.id;
-		var slots = JSON.parse(localStorage.getItem(key) || '[]');
-		while (slots.length < 5) slots.push(null);
-		var idx = $('.wardrobe-slot.selected').data('index') || 0;
-		var wasEmpty = !slots[idx] || !slots[idx].equip;
-		slots[idx] = { equip: $.extend(true, {}, $data.users[$data.id].equip), time: Date.now() };
-		localStorage.setItem(key, JSON.stringify(slots));
-		openWardrobe();
-		showAlert(L['wardrobeSaved']);
-		if (!wasEmpty) $('#WardrobeDiag').hide();
 	});
 
 
@@ -1026,7 +1015,7 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		while (slots.length < 5) slots.push(null);
 
-		$('.wardrobe-slot').each(function (index) {
+		$('#wardrobe-grid .wardrobe-slot').each(function (index) {
 			var slot = slots[index];
 			var $me = $(this);
 			var $view = $me.find('.wardrobe-view');
@@ -1048,6 +1037,7 @@ $(document).ready(function () {
 			}
 		});
 	}
+	window.openWardrobe = openWardrobe;
 	$(document).on('click', '.wardrobe-save-slot', function (e) {
 		var idx = $(e.currentTarget).data('index');
 		var key = 'wardrobe_' + $data.id;
@@ -1061,7 +1051,6 @@ $(document).ready(function () {
 			};
 			localStorage.setItem(key, JSON.stringify(slots));
 			openWardrobe();
-			showAlert(L['wardrobeSaved']);
 		});
 	});
 
@@ -1069,11 +1058,12 @@ $(document).ready(function () {
 		var idx = $(e.currentTarget).data('index');
 		var key = 'wardrobe_' + $data.id;
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
+		while (slots.length < 5) slots.push(null);
 		var slot = slots[idx];
 
 		if (!slot || !slot.equip) return showAlert(L['wardrobeEmpty']);
 
-		showConfirm(L['wardrobeLoadConfirm'], function () {
+		showConfirm(L['confirmLoad'], function () {
 			var saved = slot.equip;
 			var calls = [];
 			for (var g in saved) {
@@ -1081,8 +1071,12 @@ $(document).ready(function () {
 				if (!id) continue;
 				(function (group, itemId) {
 					calls.push(function (done) {
+						if ($data.users[$data.id].equip[group] === itemId) {
+							done();
+							return;
+						}
 						var isLeft = (group == 'Mlhand');
-						var url = (group == 'Mlhand' || group == 'Mrhand') ? ('/equip/' + itemId) : ('/equip/' + itemId);
+						var url = '/equip/' + itemId;
 						var data = (group == 'Mlhand' || group == 'Mrhand') ? { isLeft: isLeft } : {};
 
 						$.post(url, data, function (res) {
@@ -1098,7 +1092,13 @@ $(document).ready(function () {
 			(function run(i) {
 				if (i >= calls.length) {
 					drawMyDress($data._avGroup);
-					showAlert(L['wardrobeApplied']);
+					$stage.dialog.alertText.html(L['loaded']);
+					$stage.dialog.alertCancel.hide().off('click');
+					$stage.dialog.alertOK.off('click').on('click', function () {
+						$stage.dialog.alert.hide();
+						location.reload();
+					});
+					showDialog($stage.dialog.alert);
 					return;
 				}
 				calls[i](function () { run(i + 1); });
@@ -1110,28 +1110,19 @@ $(document).ready(function () {
 		var idx = $(e.currentTarget).data('index');
 		var key = 'wardrobe_' + $data.id;
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
+		while (slots.length < 5) slots.push(null);
 
-		if (!slots[idx]) return;
+		if (!slots[idx] || !slots[idx].equip) {
+			return;
+		}
 
-		showConfirm(L['wardrobeDeleteConfirm'], function () {
+		showConfirm(L['confirmDelete'], function () {
 			slots[idx] = null;
 			localStorage.setItem(key, JSON.stringify(slots));
 			openWardrobe();
 		});
 	});
 
-	$(document).on('click', '.wardrobe-save-slot', function (e) {
-		var idx = $(e.currentTarget).data('index');
-		var key = 'wardrobe_' + $data.id;
-		var slots = JSON.parse(localStorage.getItem(key) || '[]');
-		while (slots.length < 5) slots.push(null);
-		var wasEmpty = !slots[idx] || !slots[idx].equip;
-		slots[idx] = { equip: $.extend(true, {}, $data.users[$data.id].equip), time: Date.now() };
-		localStorage.setItem(key, JSON.stringify(slots));
-		openWardrobe();
-		showAlert(L['wardrobeSaved']);
-		if (!wasEmpty) $('#WardrobeDiag')();
-	});
 	$stage.dialog.cfCompose.on('click', function (e) {
 		if (!$stage.dialog.cfCompose.hasClass("cf-composable")) return fail(436);
 		showConfirm(L['cfSureCompose'], function () {
@@ -3242,7 +3233,8 @@ function runCommand(cmd) {
 		'/무시': L['cmd_wb'],
 		'/차단': L['cmd_shut'],
 		'/id': L['cmd_id'],
-		'/ㅍ': L['cmd_p']
+		'/ㅍ': L['cmd_p'],
+		'/ㅍㄹ': L['cmd_pro']
 	};
 
 	switch (cmd[0].toLowerCase()) {
@@ -3336,7 +3328,7 @@ function runCommand(cmd) {
 			}
 			requestUserIdByName(c, function (res) {
 				if (res && res.id) requestProfile(res.id);
-				else onMessage({ type: 'error', code: 424, message: c });
+				else onMessage({ type: 'error', code: 464, message: c });
 			});
 			break;
 		case "/help":
