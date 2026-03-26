@@ -1542,7 +1542,11 @@ function drawMyGoods(avGroup) {
 
 	$data._avGroup = avGroup;
 	if (isAll) filter = true;
-	else filter = (avGroup || "").split(',');
+	else {
+		filter = (avGroup || "").split(',');
+		if (filter.indexOf('Mback') != -1 && filter.indexOf('Mfront') == -1) filter.push('Mfront');
+		if (filter.indexOf('Mfront') != -1 && filter.indexOf('Mback') == -1) filter.push('Mback');
+	}
 
 	renderGoods($("#dress-goods"), 'dress', filter, equip, function (e) {
 		var $target = $(e.currentTarget);
@@ -1848,7 +1852,7 @@ function requestProfile(id) {
 		.append($("<div>").addClass("profile-head-item")
 			.append(getImage(o.profile.image).addClass("profile-image"))
 			.append($("<div>").addClass("profile-title ellipse").text(getDisplayName(o))
-				.append($("<label>").addClass("profile-tag").html(o.admin ? " #ADMIN" : " #" + o.id.toString().substr(0, 5)))
+				.append($("<label>").addClass("profile-tag").html(o.admin ? " " : " #" + o.id.toString().substr(0, 5)))
 			)
 		)
 		.append($("<div>").addClass("profile-head-item")

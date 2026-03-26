@@ -951,14 +951,13 @@ $(document).ready(function () {
 			var $delBtn = $me.find('.wardrobe-delete');
 
 			$view.empty();
+			$label.text((index + 1) + '번 슬롯');
 
 			if (slot && slot.equip) {
-				$label.text(new Date(slot.time).toLocaleDateString());
 				$loadBtn.prop('disabled', false);
 				$delBtn.prop('disabled', false);
 				renderMoremi($view, slot.equip);
 			} else {
-				$label.text(L['empty'] || '비어있음');
 				$loadBtn.prop('disabled', true);
 				$delBtn.prop('disabled', true);
 			}
@@ -971,7 +970,7 @@ $(document).ready(function () {
 		var slots = JSON.parse(localStorage.getItem(key) || '[]');
 		while (slots.length < 5) slots.push(null);
 
-		showConfirm('슬롯 ' + (idx + 1) + '번에 현재 코디를 저장할까요?', function () {
+		showConfirm((idx + 1) + '번 슬롯에 현재 코디를 저장할까요?', function () {
 			slots[idx] = {
 				equip: $.extend(true, {}, $data.users[$data.id].equip),
 				time: Date.now()
@@ -991,45 +990,88 @@ $(document).ready(function () {
 		if (!slot || !slot.equip) return showAlert(L['wardrobeEmpty']);
 
 		showConfirm(L['confirmLoad'], function () {
-			var saved = slot.equip;
+			var rawSaved = slot.equip || {};
+			var current = $.extend({}, $data.users[$data.id].equip || {});
+			var owned = {};
 			var calls = [];
-			for (var g in saved) {
-				var id = saved[g];
-				if (!id) continue;
-				(function (group, itemId) {
-					calls.push(function (done) {
-						if ($data.users[$data.id].equip[group] === itemId) {
-							done();
-							return;
-						}
-						var isLeft = (group == 'Mlhand');
-						var url = '/equip/' + itemId;
-						var data = (group == 'Mlhand' || group == 'Mrhand') ? { isLeft: isLeft } : {};
+			var saved = {};
+			var hasMissingItem = false;
 
-						$.post(url, data, function (res) {
-							if (!res.error) {
-								$data.box = res.box;
-								$data.users[$data.id].equip = res.equip;
+			for (var itemId in ($data.box || {})) owned[itemId] = true;
+			for (var part in current) if (current[part]) owned[current[part]] = true;
+			for (var part in rawSaved) {
+				var targetId = rawSaved[part];
+				if (!targetId) continue;
+				if (!owned[targetId]) {
+					hasMissingItem = true;
+					continue;
+				}
+				saved[part] = targetId;
+			}
+
+			if (hasMissingItem) {
+				return showConfirm(L['notItem'], function () {
+					applySaved(saved);
+				});
+			}
+
+			applySaved(saved);
+
+			function applySaved(savedEquip) {
+				calls = [];
+
+				function getEquipData(part) {
+					if (part == 'Mlhand') return { isLeft: true };
+					if (part == 'Mrhand') return { isLeft: false };
+					return {};
+				}
+
+				function queueEquip(itemId, part) {
+					calls.push(function (done) {
+						$.post('/equip/' + itemId, getEquipData(part), function (res) {
+							if (res.error) {
+								showAlert('코디 적용 실패: ' + (L['error_' + res.error] || ('#' + res.error)));
+								done();
+								return;
 							}
+							$data.box = res.box;
+							$data.users[$data.id].equip = res.equip;
 							done();
 						});
 					});
-				})(g, id);
-			}
-			(function run(i) {
-				if (i >= calls.length) {
-					drawMyDress($data._avGroup);
-					$stage.dialog.alertText.html(L['loaded']);
-					$stage.dialog.alertCancel.hide().off('click');
-					$stage.dialog.alertOK.off('click').on('click', function () {
-						$stage.dialog.alert.hide();
-						location.reload();
-					});
-					showDialog($stage.dialog.alert);
-					return;
 				}
-				calls[i](function () { run(i + 1); });
-			})(0);
+
+				for (var part in current) {
+					var curId = current[part];
+					var targetId = savedEquip[part];
+					if (!curId) continue;
+					if (curId === targetId) continue;
+					queueEquip(curId, part);
+				}
+
+				for (var part in savedEquip) {
+					var targetId = savedEquip[part];
+					var curId = current[part];
+					if (!targetId) continue;
+					if (curId === targetId) continue;
+					queueEquip(targetId, part);
+				}
+				(function run(i) {
+					if (i >= calls.length) {
+						drawMyDress($data._avGroup);
+						send('refresh');
+						$stage.dialog.alertText.html(L['loaded']);
+						$stage.dialog.alertCancel.hide().off('click');
+						$stage.dialog.alertOK.off('click').on('click', function () {
+							$stage.dialog.alert.hide();
+							location.reload();
+						});
+						showDialog($stage.dialog.alert);
+						return;
+					}
+					calls[i](function () { run(i + 1); });
+				})(0);
+			}
 		});
 	});
 

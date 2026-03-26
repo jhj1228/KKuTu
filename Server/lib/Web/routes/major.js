@@ -243,7 +243,7 @@ exports.run = function (Server, page) {
 
 			MainDB.kkutu_shop.findOne(['_id', gid]).limit(['group', true]).on(function ($item) {
 				if (!$item) return res.json({ error: 430 });
-				if (!Const.AVAIL_EQUIP.includes($item.group)) return res.json({ error: 400 });
+				if (!Const.AVAIL_EQUIP.includes($item.group) && $item.group != "Mfront") return res.json({ error: 400 });
 
 				var part = $item.group;
 				if (part.substr(0, 3) == "BDG") part = "BDG";
