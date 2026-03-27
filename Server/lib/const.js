@@ -263,7 +263,7 @@ exports.KO_INJEONG = [
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
 	"MIN", "MAF", "JAN", "CTH", "BGP", "BUT", "BUS",
 	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB",
-	"ELW", "KMV", "OVW", "GEN", "WEB", "UWH",
+	"ELW", "KMV", "OVW", "GEN", "ONE", "WEB", "UWH",
 	"KPO", "VOC", "ERT", "JPT", "ZEL",
 	"CKR", "CRO", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"

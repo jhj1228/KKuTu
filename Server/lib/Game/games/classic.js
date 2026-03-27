@@ -261,26 +261,7 @@ exports.submit = function (client, text) {
 		var firstMove = my.game.chain.length < 1;
 
 		function preApproved() {
-			function approved() {
-				if (my.game.late) return;
-				if (!my.game.chain) return;
-				if (!my.game.dic) return;
-
-				my.game.loading = false;
-				my.game.late = true;
-				clearTimeout(my.game.turnTimer);
-				t = tv - my.game.turnAt;
-				if (my.opts.return && dupCount > 0) {
-					score = 0;
-				} else {
-					score = my.getScore(text, t);
-				}
-				my.game.dic[text] = (my.game.dic[text] || 0) + 1;
-				my.game.chain.push(text);
-				my.game.roundTime -= t;
-				my.game.char = preChar;
-				my.game.subChar = preSubChar;
-				client.game.score += score;
+			function publishTurnEnd(wordType) {
 				client.publish('turnEnd', {
 					ok: true,
 					value: text,
@@ -289,7 +270,8 @@ exports.submit = function (client, text) {
 					wc: $doc.type,
 					score: score,
 					bonus: (my.game.mission === true) ? score - my.getScore(text, t, true) : 0,
-					baby: $doc.baby
+					baby: $doc.baby,
+					wordtype: wordType
 				}, true);
 				if (my.game.mission === true || (my.opts.mission && my.opts.randommission)) {
 					my.game.mission = getMission(my.rule.lang);
@@ -320,6 +302,32 @@ exports.submit = function (client, text) {
 						DB.kkutu[l].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
 					}
 				}
+			}
+
+			function approved() {
+				if (my.game.late) return;
+				if (!my.game.chain) return;
+				if (!my.game.dic) return;
+
+				my.game.loading = false;
+				my.game.late = true;
+				clearTimeout(my.game.turnTimer);
+				t = tv - my.game.turnAt;
+				if (my.opts.return && dupCount > 0) {
+					score = 0;
+				} else {
+					score = my.getScore(text, t);
+				}
+				my.game.dic[text] = (my.game.dic[text] || 0) + 1;
+				my.game.chain.push(text);
+				my.game.roundTime -= t;
+				my.game.char = preChar;
+				my.game.subChar = preSubChar;
+				client.game.score += score;
+				getAuto.call(my, preChar, preSubChar, 3).then(function (attackCount) {
+					if (!my.game || !my.game.chain) return;
+					publishTurnEnd(attackCount <= 10 ? 'attack' : undefined);
+				});
 			}
 			function checkFinal() {
 				if (my.opts.unknownword) {
@@ -583,6 +591,7 @@ function getAuto(char, subc, type) {
 		0 ������ �ܾ� �ϳ�
 		1 ���� ����
 		2 �ܾ� ���
+		3 �̋� ���� ���
 	*/
 	var my = this;
 	var R = new Lizard.Tail();
@@ -592,6 +601,7 @@ function getAuto(char, subc, type) {
 	var key = gameType + "_" + keyByOptions(my.opts);
 	var MAN = DB.kkutu_manner[my.rule.lang];
 	var bool = type == 1;
+	var limit = bool ? 1 : (type == 3 ? 11 : 2000);
 
 	adc = char + (subc ? ("|" + subc) : "");
 	switch (gameType) {
@@ -657,8 +667,13 @@ function getAuto(char, subc, type) {
 					R.go($md);
 				};
 				break;
+			case 3:
+				aft = function ($md) {
+					R.go($md.length);
+				};
+				break;
 		}
-		DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(bool ? 1 : 2000).on(function ($md) {
+		DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(limit).on(function ($md) {
 			forManner($md);
 			var filteredList = $md;
 			if (my.game.chain) {

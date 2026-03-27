@@ -278,6 +278,8 @@ $(document).ready(function () {
 		{ key: "Al", value: "/media/kkutu/Al.mp3" },
 		{ key: "success", value: "/media/kkutu/success.mp3" },
 		{ key: "missing", value: "/media/kkutu/missing.mp3" },
+		{ key: "attack", value: "/media/kkutu/attack.mp3" },
+		{ key: "defence", value: "/media/kkutu/defence.mp3" },
 		{ key: "mission", value: "/media/kkutu/mission.mp3" },
 		{ key: "kung", value: "/media/kkutu/kung.mp3" },
 		{ key: "horr", value: "/media/kkutu/horr.mp3" },
@@ -1424,6 +1426,7 @@ $lib.Classic.roundReady = function (data) {
 	var $l;
 
 	clearBoard();
+	$data.wordtype = null;
 	$data._roundTime = $data.room.time * 1000;
 	$stage.game.display.html(getCharText(data.char, data.subChar));
 	$stage.game.chain.show().html($data.chain = 0);
@@ -1498,7 +1501,9 @@ $lib.Classic.turnEnd = function (id, data) {
 		clearTimeout($data._fail);
 		$stage.game.here.hide();
 		$stage.game.chain.html(++$data.chain);
-		pushDisplay(data.value, data.mean, data.theme, data.wc);
+		var defended = $data.wordtype == 'attack';
+		$data.wordtype = data.wordtype;
+		pushDisplay(data.value, data.mean, data.theme, data.wc, data.wordtype, defended);
 	} else {
 		checkFailCombo(id);
 		$sc.addClass("lost");
@@ -4846,6 +4851,7 @@ function recordEvent(data) {
 }
 function clearBoard() {
 	$data._relay = false;
+	$data.wordtype = null;
 	loading();
 	$stage.game.here.hide();
 	$stage.dialog.result.hide();
@@ -5231,7 +5237,7 @@ function vibrate(level) {
 		addTimeout(vibrate, 50, level * 0.7);
 	}, 50);
 }
-function pushDisplay(text, mean, theme, wc) {
+function pushDisplay(text, mean, theme, wc, wordtype, defended) {
 	var len;
 	var mode = MODE[$data.room.mode];
 	var isKKT = mode == "KKT" || mode == "KAT";
@@ -5266,47 +5272,67 @@ function pushDisplay(text, mean, theme, wc) {
 				.html(isRev ? text.charAt(len - j - 1) : text.charAt(j))
 			);
 			j++;
-			addTimeout(function ($l, snd) {
+			addTimeout(function ($l, snd, index) {
 				var anim = { 'margin-top': 0 };
 
 				playSound(snd);
-				if ($l.html() == $data.mission) {
+				if (defended && index == 1) {
+					playSound('defence');
+					$l.css({ 'color': "#5B5AFF" });
+					anim['font-size'] = 24;
+				} else if ($l.html() == $data.mission) {
 					playSound('mission');
 					$l.css({ 'color': "#66FF66" });
+					anim['font-size'] = 24;
+				} else if (wordtype == 'attack' && len == index) {
+					playSound('attack');
+					$l.css({ 'color': "#FF5A5A" });
 					anim['font-size'] = 24;
 				} else {
 					anim['font-size'] = 20;
 				}
 				$l.show().animate(anim, 100);
-			}, Number(i) * tick, $l, ta);
+			}, Number(i) * tick, $l, ta, j);
 		}
 		i = $stage.game.display.children("div").get(0);
 		$(i).css(isRev ? 'margin-right' : 'margin-left', ($stage.game.display.width() - 20 * len) * 0.5);
 	} else {
 		j = "";
 		if (isRev) for (i = 0; i < len; i++) {
-			addTimeout(function (t) {
+			addTimeout(function (t, index) {
 				playSound(ta);
-				if (t == $data.mission) {
+				if (defended && index == 1) {
+					playSound('defence');
+					j = "<label style='color: #5B5AFF;'>" + t + "</label>" + j;
+				} else if (t == $data.mission) {
 					playSound('mission');
 					j = "<label style='color: #66FF66;'>" + t + "</label>" + j;
+				} else if (wordtype == 'attack' && len == index) {
+					playSound('attack');
+					j = "<label style='color: #FF5A5A;'>" + t + "</label>" + j;
 				} else {
 					j = t + j;
 				}
 				$stage.game.display.html(j);
-			}, Number(i) * sg / len, text[len - i - 1]);
+			}, Number(i) * sg / len, text[len - i - 1], i + 1);
 		}
 		else for (i = 0; i < len; i++) {
-			addTimeout(function (t) {
+			addTimeout(function (t, index) {
 				playSound(ta);
-				if (t == $data.mission) {
+				if (defended && index == 1) {
+					playSound('defence');
+					j += "<label style='color: #5B5AFF;'>" + t + "</label>";
+				} else if (t == $data.mission) {
 					playSound('mission');
 					j += "<label style='color: #66FF66;'>" + t + "</label>";
+				} else if (wordtype == 'attack' && len == index) {
+					playSound('attack');
+					j += "<label style='color: #FF5A5A;'>" + t + "</label>";
 				} else {
 					j += t;
 				}
 				$stage.game.display.html(j);
-			}, Number(i) * sg / len, text[i]);
+			}, Number(i) * sg / len, text[i], i + 1);
 		}
 	}
 	addTimeout(function () {

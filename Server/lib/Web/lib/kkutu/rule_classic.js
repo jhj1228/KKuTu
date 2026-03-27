@@ -21,6 +21,7 @@ $lib.Classic.roundReady = function (data) {
 	var $l;
 
 	clearBoard();
+	$data.wordtype = null;
 	$data._roundTime = $data.room.time * 1000;
 	$stage.game.display.html(getCharText(data.char, data.subChar));
 	$stage.game.chain.show().html($data.chain = 0);
@@ -95,7 +96,9 @@ $lib.Classic.turnEnd = function (id, data) {
 		clearTimeout($data._fail);
 		$stage.game.here.hide();
 		$stage.game.chain.html(++$data.chain);
-		pushDisplay(data.value, data.mean, data.theme, data.wc);
+		var defended = $data.wordtype == 'attack';
+		$data.wordtype = data.wordtype;
+		pushDisplay(data.value, data.mean, data.theme, data.wc, data.wordtype, defended);
 	} else {
 		checkFailCombo(id);
 		$sc.addClass("lost");

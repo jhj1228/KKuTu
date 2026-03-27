@@ -205,6 +205,8 @@ $(document).ready(function () {
 		{ key: "Al", value: "/media/kkutu/Al.mp3" },
 		{ key: "success", value: "/media/kkutu/success.mp3" },
 		{ key: "missing", value: "/media/kkutu/missing.mp3" },
+		{ key: "attack", value: "/media/kkutu/attack.mp3" },
+		{ key: "defence", value: "/media/kkutu/defence.mp3" },
 		{ key: "mission", value: "/media/kkutu/mission.mp3" },
 		{ key: "kung", value: "/media/kkutu/kung.mp3" },
 		{ key: "horr", value: "/media/kkutu/horr.mp3" },
