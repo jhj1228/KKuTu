@@ -503,7 +503,11 @@ exports.readyRobot = function (robot) {
 			else {
 				if (level >= 3 && !robot._done.length) {
 					if (my.opts.manner || my.opts.gentle) {
-						list.sort(function (a, b) { return Math.random() - 0.5; });
+						if (level >= 5) {
+							list.sort(function (a, b) { return b._id.length - a._id.length; });
+						} else {
+							list.sort(function (a, b) { return Math.random() - 0.5; });
+						}
 						pickList(list);
 					} else {
 						if (level >= 5 || Math.random() < 0.5) {
