@@ -239,6 +239,15 @@ exports.RULE = {
 		ai: true,
 		big: false,
 		ewq: false
+	},
+	'KPQ': { // 그림퀴즈
+		lang: "ko",
+		rule: "PictureQuiz",
+		opts: ["ijp"],
+		time: 2,
+		ai: false,
+		big: true,
+		ewq: true
 	}
 };
 exports.getPreScore = function (text, chain, tr) {

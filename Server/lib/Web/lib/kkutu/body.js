@@ -66,6 +66,7 @@ function zeroPadding(num, len) { var s = num.toString(); return "000000000000000
 function send(type, data, toMaster) {
 	var i, r = { type: type };
 	var subj = toMaster ? ws : (rws || ws);
+	var isPictureQuizEvent = type === "pictureQuiz";
 
 	for (i in data) r[i] = data[i];
 
@@ -74,7 +75,7 @@ function send(type, data, toMaster) {
 	}else $data._sameTalk = 0;
 	$data._talkValue = r.value;*/
 
-	if (type != "test") if (spamCount++ > 10) {
+	if (type != "test" && !isPictureQuizEvent) if (spamCount++ > 10) {
 		if (++spamWarning >= 3) return subj.close();
 		spamCount = 5;
 	}
@@ -421,7 +422,7 @@ function onMessage(data) {
 			updateUI(data.myRoom);
 			if (data.modify && $data.room && data.myRoom) {
 				if ($data._rTitle != $data.room.title) animModified('.room-head-title');
-				if ($data._rMode != getOptions($data.room.mode, $data.room.opts, true)) animModified('.room-head-mode');
+				if ($data._rMode != getOptions($data.room.mode, $data.room.opts, $data.room.pq, true)) animModified('.room-head-mode');
 				if ($data._rLimit != $data.room.limit) animModified('.room-head-limit');
 				if ($data._rRound != $data.room.round) animModified('.room-head-round');
 				if ($data._rTime != $data.room.time) animModified('.room-head-time');
@@ -504,6 +505,9 @@ function onMessage(data) {
 			break;
 		case 'turnHint':
 			route("turnHint", data);
+			break;
+		case 'drawCanvas':
+			route("drawCanvas", data);
 			break;
 		case 'turnEnd':
 			data.score = Number(data.score);
@@ -914,7 +918,7 @@ function processRoom(data) {
 				$data._players = $data.room.players.toString();
 				$data._master = $data.room.master;
 				$data._rTitle = $data.room.title;
-				$data._rMode = getOptions($data.room.mode, $data.room.opts, true);
+				$data._rMode = getOptions($data.room.mode, $data.room.opts, $data.room.pq, true);
 				$data._rLimit = $data.room.limit;
 				$data._rRound = $data.room.round;
 				$data._rTime = $data.room.time;
@@ -1258,7 +1262,7 @@ function updateRoomList(refresh) {
 }
 function roomListBar(o) {
 	var $R, $ch;
-	var opts = getOptions(o.mode, o.opts);
+	var opts = getOptions(o.mode, o.opts, o.pq);
 
 	$R = $("<div>").attr('id', "room-" + o.id).addClass("rooms-item")
 		.append($ch = $("<div>").addClass("rooms-channel channel-" + o.channel).on('click', function (e) { requestRoomInfo(o.id); }))
@@ -2288,11 +2292,12 @@ function clearBoard() {
 	$stage.dialog.result.hide();
 	$stage.dialog.dress.hide();
 	$stage.dialog.charFactory.hide();
-	$(".jjoriping,.rounds,.game-body").removeClass("cw");
+	$(".jjoriping,.rounds,.game-body").removeClass("cw").removeClass("pq");
 	$stage.game.display.empty();
 	$stage.game.chain.hide();
 	$stage.game.hints.empty().hide();
 	$stage.game.cwcmd.hide();
+	$stage.game.pqcmd.hide();
 	$stage.game.bb.hide();
 	$stage.game.round.empty();
 	$stage.game.history.empty();
@@ -2922,7 +2927,7 @@ function getLevelImage(score) {
 function getImage(url) {
 	return $("<div>").addClass("jt-image").css('background-image', "url('" + url + "')");
 }
-function getOptions(mode, opts, hash) {
+function getOptions(mode, opts, pq, hash) {
 	var R = [L["mode" + MODE[mode]]];
 	var i, k;
 
@@ -2930,12 +2935,39 @@ function getOptions(mode, opts, hash) {
 		k = OPTIONS[i].name.toLowerCase();
 		if (opts[k]) R.push(L['opt' + OPTIONS[i].name]);
 	}
+	if (MODE[mode] == "KPQ") {
+		switch (pq.order) {
+			case "correct":
+				R.push("맞힌사람");
+				break;
+			case "order":
+				R.push("순서대로");
+				break;
+			case "random":
+				R.push("무작위로");
+				break;
+		}
+		switch (pq.wordlength) {
+			case "short":
+				R.push("짧음");
+				break;
+			case "normal":
+				R.push("보통");
+				break;
+			case "long":
+				R.push("긺");
+				break;
+			case "random":
+				R.push("랜덤");
+				break;
+		}
+	}
 	if (hash) R.push(opts.injpick.join('|'));
 
 	return hash ? R.toString() : R;
 }
 function setRoomHead($obj, room) {
-	var opts = getOptions(room.mode, room.opts);
+	var opts = getOptions(room.mode, room.opts, room.pq);
 	var rule = RULE[MODE[room.mode]];
 	var $rm;
 
@@ -3119,7 +3151,7 @@ function chat(profile, msg, from, timestamp) {
 	playSound('k');
 	stackChat();
 	if (!mobile && $data.room) {
-		$bar = ($data.room.gaming ? 2 : 0) + ($(".jjoriping").hasClass("cw") ? 1 : 0);
+		$bar = ($data.room.gaming ? 2 : 0) + ($(".jjoriping").hasClass("cw") || $(".jjoriping").hasClass("pq") ? 1 : 0);
 		chatBalloon(msg, profile.id, $bar);
 	}
 	$stage.chat.append($item = $("<div>").addClass("chat-item")

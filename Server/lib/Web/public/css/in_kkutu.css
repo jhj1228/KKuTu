@@ -1016,11 +1016,24 @@ iframe {
 	background-image: url('/img/kkutu/lefthand.png');
 }
 
+#PQBar {
+	width: 298px;
+	height: 46px;
+}
+
+#PQCanvas {
+	float: left;
+	width: 298px;
+	height: 250px;
+	cursor: crosshair;
+}
+
 .jjoriping {
 	width: 500px;
 }
 
-.cw.jjoriping {
+.cw.jjoriping,
+.pq.jjoriping {
 	margin-top: -10px;
 	width: 322px;
 }
@@ -1039,7 +1052,8 @@ iframe {
 	left: 181px;
 }
 
-.cw .jjoNose {
+.cw .jjoNose,
+.pq .jjoNose {
 	left: 94px;
 }
 
@@ -1048,7 +1062,8 @@ iframe {
 	left: 361px;
 }
 
-.cw .jjoEyeR {
+.cw .jjoEyeR,
+.pq .jjoEyeR {
 	left: 183px;
 }
 
@@ -1063,7 +1078,8 @@ iframe {
 	background-color: #DEAF56;
 }
 
-.cw .jjoDisplayBar {
+.cw .jjoDisplayBar,
+.pq .jjoDisplayBar {
 	width: 308px;
 	height: 330px;
 	transition: all 0.5s ease;
@@ -1087,7 +1103,8 @@ iframe {
 	font-size: 14px;
 }
 
-.cw .jjo-display {
+.cw .jjo-display,
+.pq .jjo-display {
 	position: relative;
 	padding: 5px;
 	width: 298px;
@@ -1179,11 +1196,13 @@ iframe {
 	background-color: #FF6D6D !important;
 }
 
-.cw .jjo-turn-time {
+.cw .jjo-turn-time,
+.pq .jjo-turn-time {
 	display: none;
 }
 
-.cw .jjo-round-time {
+.cw .jjo-round-time,
+.pq .jjo-round-time {
 	width: 306px;
 }
 
@@ -1218,7 +1237,8 @@ iframe {
 	text-shadow: 0px 1px 1px #141414;
 }
 
-.cw.rounds {
+.cw.rounds,
+.pq.rounds {
 	margin-top: -380px;
 }
 
@@ -1226,7 +1246,8 @@ iframe {
 	margin: 0px 3px;
 }
 
-.cw.rounds label {
+.cw.rounds label,
+.pq.rounds label {
 	cursor: pointer;
 }
 
@@ -1352,7 +1373,208 @@ iframe {
 	height: 180px;
 }
 
-.cw.game-body {
+.game-user-pqturn {
+	padding: 1px 6px;
+	margin: 1px 0px;
+	font-size: 15px;
+	text-align: center;
+	font-weight: bold;
+	background-color: #03d95d;
+}
+
+.pqcmd {
+	border: 2px solid #000000;
+	border-radius: 10px;
+	background-color: #DEAF56
+}
+
+.pqcmd>div {
+	background-color: rgba(0, 0, 0, 0.7);
+	width: 304px;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.pqcmd h3 {
+	color: #fff;
+	margin-bottom: 3px;
+}
+
+.pqColorList,
+.pqWidthList,
+.pqSpecialColorList,
+.pqNoSpecialColorList {
+	float: none !important;
+	padding: 3px;
+	border-radius: 5px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	margin-bottom: 5px;
+}
+
+.pqNoSpecialColorList {
+	height: 13px;
+	width: 196px;
+	background-color: #696969;
+	color: #a2a2a2;
+	border: 1px solid #696969;
+	float: left !important;
+	margin-left: 5px;
+}
+
+.pqSpecialColorList {
+	height: 13px;
+	width: 196px;
+	background-color: #f6ff00;
+	border: 1px solid #e4ed00;
+	float: left !important;
+	margin-left: 5px;
+}
+
+.pqSpecialColorList>.pqColor {
+	margin-right: 1px;
+}
+
+.pqColorList {
+	height: 13px;
+	width: 85px;
+	float: left !important;
+}
+
+.pqWidthList {
+	height: 25px;
+	width: 140px;
+}
+
+.pqColor {
+	border-radius: 5px;
+	border: 2px solid #000;
+	width: 9px;
+	height: 9px;
+	margin-right: 1px;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.pqColor[color="black"] {
+	background-color: #000;
+}
+
+.pqColor[color="white"] {
+	background-color: #fff;
+}
+
+.pqColor[color="red"] {
+	background-color: #f00;
+}
+
+.pqColor[color="yellow"] {
+	background-color: #ff0;
+}
+
+.pqColor[color="green"] {
+	background-color: #0f0;
+}
+
+.pqColor[color="blue"] {
+	background-color: #00f;
+}
+
+.pqColor[color="darkred"] {
+	background-color: #910000;
+}
+
+.pqColor[color="orange"] {
+	background-color: #ff9000;
+}
+
+.pqColor[color="aqua"] {
+	background-color: #00ffe4;
+}
+
+.pqColor[color="purple"] {
+	background-color: #d400f4;
+}
+
+.pqColor[color="brightred"] {
+	background-color: #ff2390;
+}
+
+.pqColor[color="brightorange"] {
+	background-color: #ffe0cd;
+}
+
+.pqColor[color="indiago"] {
+	background-color: #0a00fe;
+}
+
+.pqColor[color="slightlybrightorange"] {
+	background-color: #ffb2b2;
+}
+
+.pqColor[color="mint"] {
+	background-color: #3dff81;
+}
+
+.pqColor[color="brightgray"] {
+	background-color: #dbdbdb;
+}
+
+.pqColor[color="slightlybrightgray"] {
+	background-color: #b6b6b6;
+}
+
+.pqColor[color="gray"] {
+	background-color: #8d8d8d;
+}
+
+.pqColor[color="slightlydarkgray"] {
+	background-color: #5c5c5c;
+}
+
+.pqColor[color="darkgray"] {
+	background-color: #343434;
+}
+
+.pqWidth {
+	cursor: pointer;
+	border-radius: 5px;
+	border: 3px solid #000;
+	width: 20px;
+	height: 20px;
+	margin-right: 2px;
+	vertical-align: middle;
+	line-height: 22px;
+	text-align: center;
+	display: inline-block;
+}
+
+.pqWidth[width="1"] {}
+
+.pqWidth[width="2"] {
+	font-size: 40px;
+	line-height: 30px !important;
+	font-weight: bold;
+}
+
+.pqWidth[width="3"] {
+	font-size: 12px;
+}
+
+.pqWidth[width="4"] {
+	font-size: 17px;
+}
+
+.pqWidth[width="5"] {
+	font-size: 22px;
+}
+
+.pqSelected {
+	border-color: #f00;
+}
+
+.cw.game-body,
+.pq.game-body {
 	position: relative;
 	top: -378px;
 	left: 660px;
@@ -1371,7 +1593,8 @@ iframe {
 	transition: all 300ms ease;
 }
 
-.cw .game-user {
+.cw .game-user,
+.pq .game-user {
 	border: 2px solid #DDDDDD;
 	margin: 1px;
 	width: 330px;
@@ -1422,7 +1645,8 @@ iframe {
 	text-align: center;
 }
 
-.cw .game-user-score {
+.cw .game-user-score,
+.pq .game-user-score {
 	padding-top: 3px;
 	font-size: 15px;
 }

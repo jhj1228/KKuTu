@@ -168,6 +168,7 @@ $(document).ready(function () {
 			display: $(".jjo-display"),
 			hints: $(".GameBox .hints"),
 			cwcmd: $(".GameBox .cwcmd"),
+			pqcmd: $(".GameBox .pqcmd"),
 			bb: $(".GameBox .bb"),
 			items: $(".GameBox .items"),
 			chain: $(".GameBox .chain"),
@@ -565,6 +566,8 @@ $(document).ready(function () {
 		$("#room-time").children("option").each(function (i, o) {
 			$(o).html(Number($(o).val()) * rule.time + L['SECOND']);
 		});
+		if (rule.rule == "PictureQuiz") $(".pqoption").show();
+		else $(".pqoption").hide();
 	}).trigger('change');
 	$stage.menu.spectate.on('click', function (e) {
 		var mode = $stage.menu.spectate.hasClass("toggled");
@@ -723,6 +726,10 @@ $(document).ready(function () {
 			round: $("#room-round").val(),
 			time: $("#room-time").val(),
 			opts: opts,
+			pq: {
+				order: $("#room-pq-order").val(),
+				wordlength: $("#room-pq-wordlength").val()
+			}
 		});
 		$stage.dialog.room.hide();
 	});

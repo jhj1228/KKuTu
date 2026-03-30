@@ -290,12 +290,13 @@ exports.Client = function (socket, profile, sid) {
 	});
 	socket.on('message', function (msg) {
 		var data, room = ROOM[my.place];
-		JLog.log(`채널 @${channel} 메시지 #${my.id}: ${msg}`);
 		if (!my) return;
 		if (!msg) return;
 
 		try { data = JSON.parse(msg); } catch (e) { data = { error: 400 }; }
-		if (Cluster.isWorker) process.send({ type: "tail-report", id: my.id, chan: channel, place: my.place, msg: data.error ? msg : data });
+		var isPictureQuizMove = data && data.type === 'pictureQuiz' && data.eventtype === 'mousemove';
+		if (!isPictureQuizMove) JLog.log(`채널 @${channel} 메시지 #${my.id}: ${msg}`);
+		if (Cluster.isWorker && !isPictureQuizMove) process.send({ type: "tail-report", id: my.id, chan: channel, place: my.place, msg: data.error ? msg : data });
 
 		if (data && data.type === 'ping') {
 			my.send('pong', { t: data.t });
@@ -839,6 +840,7 @@ exports.Room = function (room, channel) {
 	my.id = room.id || _rid;
 	my.channel = channel;
 	my.opts = {};
+	my.pq = {};
 	my.title = room.title;
 	my.password = room.password;
 	my.limit = Math.round(room.limit);
@@ -902,7 +904,8 @@ exports.Room = function (room, channel) {
 				mission: my.game.mission
 			},
 			practice: my.practice ? true : false,
-			opts: my.opts
+			opts: my.opts,
+			pq: my.pq
 		};
 	};
 	my.addAI = function (caller) {
@@ -1076,6 +1079,7 @@ exports.Room = function (room, channel) {
 		my.rule = Const.getRule(room.mode);
 		my.round = Math.round(room.round);
 		my.time = room.time * my.rule.time;
+		my.pq = room.pq;
 		if (room.opts && my.opts) {
 			for (i in Const.OPTIONS) {
 				k = Const.OPTIONS[i].name.toLowerCase();
@@ -1579,6 +1583,9 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 			break;
 		case 'KSQ':
 			rw.score += score * 0.75;
+			break;
+		case 'KPQ':
+			rw.score += score * 0.41;
 			break;
 		default:
 			break;

@@ -45,6 +45,15 @@ block JS
 	script(src='https://www.google.com/recaptcha/api.js')
 	script.
 		$(function() {
+				function updateRoomDiagHeight() {
+					var $roomMode = $('#room-mode');
+					var $roomDiag = $('#RoomDiag');
+					if ($roomMode.length === 0 || $roomDiag.length === 0) return;
+
+					var isKpq = Number($roomMode.val()) === 17;
+					$roomDiag.css('height', isKpq ? '500px' : '435px');
+				}
+
 			function updateMissionState() {
 				var $mission = $('#room-mission');
 				var $random = $('#room-randommission');
@@ -157,10 +166,12 @@ block JS
 			$(document).on('change', '#room-randomturn', updateRandomReverseState);
 			$(document).on('change', '#room-reverse', updateRandomReverseState);
 			$(document).on('change', '#room-mode', function() {
+					updateRoomDiagHeight();
 				setTimeout(updateBoomState, 100);
 			});
 
 			var initFunc = function() {
+					updateRoomDiagHeight();
 				updateUnknownWordState();
 				updateMissionState();
 				updateRandomReverseState();
@@ -324,6 +335,7 @@ block Middle
 					option(value=15)= L("modeKAT")
 					option(value=2)= L('modeCSQ')
 					option(value=11)= L('modeMOQ')
+					option(value=17)= L('modeKPQ')
 					option(value=16)= L('modeKSQ')
 					option(value=6)= L('modeHUN')
 					option(value=12)= L('modeALL')
@@ -344,6 +356,19 @@ block Middle
 				option(value=90)
 				option(value=120)
 				option(value=150)
+		div.dialog-bar.pqoption(style='display:none;')
+			h4 제시 단어 길이
+			select#room-pq-wordlength
+				option(value="short", selected) 짧음 (1~3)
+				option(value="normal") 보통 (3~6)
+				option(value="long") 긺 (6~10)
+				option(value="random") 랜덤 (1~10)
+		div.dialog-bar.pqoption(style='display:none;')
+			h4 술래 순서
+			select#room-pq-order
+				option(value="correct", selected) 맞힌사람
+				option(value="order") 순서대로
+				option(value="random") 무작위로
 		div.dialog-bar(style='height: 130px;')
 			h4(style='height: 105px;')= L('misc')
 			- for(var i in locals.OPTIONS)
@@ -643,6 +668,42 @@ block Middle
 				div.cw-q-head
 				input#cw-q-input(placeholder=L('inputHere'), style='width: 313px; height: 20px; font-size: 15px;')
 				div.cw-q-body
+			div.b-left.pqcmd(style='display: none;')
+				div
+					h3 색상 선택
+					div.pqColorList
+						div.pqColor(color="black")
+						div.pqColor(color="white")
+						div.pqColor(color="red")
+						div.pqColor(color="yellow")
+						div.pqColor(color="green")
+						div.pqColor(color="blue")
+					div.pqNoSpecialColorList
+						h4 특별 팔레트 미해금
+					div.pqSpecialColorList(style='display: none;')
+						div.pqColor(color="darkred")
+						div.pqColor(color="orange")
+						div.pqColor(color="aqua")
+						div.pqColor(color="purple")
+						div.pqColor(color="brightred")
+						div.pqColor(color="brightorange")
+						div.pqColor(color="indiago")
+						div.pqColor(color="slightlybrightorange")
+						div.pqColor(color="mint")
+						div.pqColor(color="brightgray")
+						div.pqColor(color="slightlybrightgray")
+						div.pqColor(color="gray")
+						div.pqColor(color="slightlydarkgray")
+						div.pqColor(color="darkgray")
+					h3 굵기 선택
+					div.pqWidthList
+						div.pqWidth(width="1") ·
+						div.pqWidth(width="2") ·
+						div.pqWidth(width="3") ●
+						div.pqWidth(width="4") ●
+						div.pqWidth(width="5") ●
+					h3 기타 설정
+					button#pq_clear 모두 지우기
 			div.b-left.bb(style='display: none;')
 			div.jjoriping
 				img.jjoObj.jjoEyeL(src='/img/jjoeyeL.png')
@@ -650,6 +711,8 @@ block Middle
 				img.jjoObj.jjoEyeR(src='/img/jjoeyeR.png')
 				div.jjoDisplayBar
 					div.jjo-display.ellipse
+						div.pqdisplay.ellipse(style='display: none;')
+						canvas#PQCanvas.pqcanvas.ellipse(style='display: none;')
 					+GraphBar('jjo-turn-time')
 					+GraphBar('jjo-round-time')
 			div.chain

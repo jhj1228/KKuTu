@@ -53,6 +53,65 @@ const GUEST_PERMISSION = Master.GUEST_PERMISSION;
 const ENABLE_ROUND_TIME = Master.ENABLE_ROUND_TIME;
 const ENABLE_FORM = Master.ENABLE_FORM;
 const MODE_LENGTH = Master.MODE_LENGTH;
+const PQ_SERVER_MOVE_INTERVAL = 20;
+const PQ_SERVER_MOVE_DISTANCE = 1;
+
+function isValidPictureQuizPosition(pos) {
+	if (!pos) return false;
+	return typeof pos.X == 'number' && typeof pos.Y == 'number' && isFinite(pos.X) && isFinite(pos.Y);
+}
+
+function canRelayPictureQuizEvent(client, msg) {
+	var state = client._pictureQuizRelay || (client._pictureQuizRelay = {
+		drawing: false,
+		lastMoveAt: 0,
+		lastMovePos: null
+	});
+
+	switch (msg.eventtype) {
+		case 'mousedown':
+			if (!isValidPictureQuizPosition(msg.pos)) return false;
+			state.drawing = true;
+			state.lastMoveAt = 0;
+			state.lastMovePos = msg.pos;
+			return true;
+		case 'mousemove':
+			if (!state.drawing || !isValidPictureQuizPosition(msg.pos)) return false;
+
+			var now = Date.now();
+			if (state.lastMoveAt && now - state.lastMoveAt < PQ_SERVER_MOVE_INTERVAL) return false;
+			if (state.lastMovePos) {
+				var dx = Math.abs(msg.pos.X - state.lastMovePos.X);
+				var dy = Math.abs(msg.pos.Y - state.lastMovePos.Y);
+				if (dx + dy < PQ_SERVER_MOVE_DISTANCE) return false;
+			}
+
+			state.lastMoveAt = now;
+			state.lastMovePos = msg.pos;
+			return true;
+		case 'mouseup':
+			if (!state.drawing) return false;
+			state.drawing = false;
+			state.lastMoveAt = 0;
+			state.lastMovePos = null;
+			return true;
+		case 'clearall':
+		case 'setColor':
+		case 'setWidth':
+			return true;
+		default:
+			return false;
+	}
+}
+
+function broadcastPictureQuiz(place, data, excludeId) {
+	var id;
+
+	for (id in DIC) {
+		if (id == excludeId) continue;
+		if (DIC[id].place == place) DIC[id].send('drawCanvas', data);
+	}
+}
 
 JLog.info(`<< 끄투 서버:${Server.options.port} >>`);
 
@@ -237,6 +296,25 @@ KKuTu.onClientMessage = function ($c, msg) {
 				} else {
 					$c.chat(msg.value);
 				}
+			}
+			break;
+		case 'pictureQuiz':
+			try {
+				if (!(temp = ROOM[$c.place])) return;
+				if (!temp.gaming || !temp.game.turning) return;
+				if (temp.rule.rule != "PictureQuiz") return;
+				if (temp.game.seq[temp.game.turn] != $c.id) return;
+				if (["mousedown", "mousemove", "mouseup", "clearall", "setColor", "setWidth"].indexOf(msg.eventtype) == -1) return;
+				if (!canRelayPictureQuizEvent($c, msg)) return;
+
+				broadcastPictureQuiz($c.place, {
+					eventtype: msg.eventtype,
+					pos: msg.pos,
+					color: msg.color,
+					width: msg.width
+				}, $c.id);
+			} catch (err) {
+				JLog.warn("pictureQuiz 처리 실패: " + err.toString());
 			}
 			break;
 		case 'enter':
