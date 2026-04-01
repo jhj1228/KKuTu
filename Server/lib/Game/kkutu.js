@@ -294,9 +294,9 @@ exports.Client = function (socket, profile, sid) {
 		if (!msg) return;
 
 		try { data = JSON.parse(msg); } catch (e) { data = { error: 400 }; }
-		var isPictureQuizMove = data && data.type === 'pictureQuiz' && data.eventtype === 'mousemove';
-		if (!isPictureQuizMove) JLog.log(`채널 @${channel} 메시지 #${my.id}: ${msg}`);
-		if (Cluster.isWorker && !isPictureQuizMove) process.send({ type: "tail-report", id: my.id, chan: channel, place: my.place, msg: data.error ? msg : data });
+		var isPictureQuizEvent = data && data.type === 'pictureQuiz';
+		if (!isPictureQuizEvent) JLog.log(`채널 @${channel} 메시지 #${my.id}: ${msg}`);
+		if (Cluster.isWorker && !isPictureQuizEvent) process.send({ type: "tail-report", id: my.id, chan: channel, place: my.place, msg: data.error ? msg : data });
 
 		if (data && data.type === 'ping') {
 			my.send('pong', { t: data.t });

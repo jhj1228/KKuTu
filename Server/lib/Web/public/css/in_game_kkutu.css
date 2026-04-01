@@ -308,6 +308,7 @@ iframe {
 
 .moremi {
 	position: relative;
+	transform: scaleY(-1);
 }
 
 .moremi img {
@@ -1303,14 +1304,14 @@ iframe {
 
 .pqcmd {
 	border: 2px solid #000000;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	background-color: #DEAF56
 }
 
 .pqcmd>div {
 	background-color: rgba(0, 0, 0, 0.7);
 	width: 304px;
-	border-radius: 10px;
+	/* border-radius: 10px; */
 	padding: 10px;
 }
 
@@ -1325,7 +1326,7 @@ iframe {
 .pqNoSpecialColorList {
 	float: none !important;
 	padding: 3px;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	background-color: #fff;
 	border: 1px solid #ddd;
 	margin-bottom: 5px;
@@ -1366,7 +1367,7 @@ iframe {
 }
 
 .pqColor {
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	border: 2px solid #000;
 	width: 9px;
 	height: 9px;
@@ -1457,7 +1458,7 @@ iframe {
 
 .pqWidth {
 	cursor: pointer;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 	border: 3px solid #000;
 	width: 20px;
 	height: 20px;
