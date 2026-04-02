@@ -308,7 +308,6 @@ iframe {
 
 .moremi {
 	position: relative;
-	transform: scaleY(-1);
 }
 
 .moremi img {
