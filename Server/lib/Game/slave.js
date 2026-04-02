@@ -268,6 +268,17 @@ KKuTu.onClientMessage = function ($c, msg) {
 				return;
 			}
 			msg.value = msg.value.substr(0, 400);
+			if (!msg.relay && !msg.whisper) {
+				if ($c.subPlace) temp = $c.pracRoom;
+				else temp = ROOM[$c.place];
+				if (temp && temp.gaming && temp.rule && temp.rule.rule == "PictureQuiz" && temp.game && temp.game.turning) {
+					var surrenderText = msg.value.trim().toLowerCase();
+					if (surrenderText == "gg" || surrenderText == "ㅈㅈ") {
+						temp.submit($c, msg.value, msg.data);
+						return;
+					}
+				}
+			}
 			if (msg.relay) {
 				if ($c.subPlace) temp = $c.pracRoom;
 				else if (!(temp = ROOM[$c.place])) return;

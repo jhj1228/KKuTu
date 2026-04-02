@@ -2874,7 +2874,7 @@ $lib.PictureQuiz.turnStart = function (data) {
     $(".game-user-bomb").removeClass("game-user-bomb");
     $data._char = payload ? payload.char : "";
 
-    if (canPlay && !isDrawer) {
+    if (canPlay) {
         $stage.game.here.hide();
         $stage.talk.focus();
         $data._relay = true;
@@ -2922,7 +2922,7 @@ $lib.PictureQuiz.turnEnd = function (id, data) {
     var $uc = $("#game-user-" + id);
 
     if (data.giveup) {
-        $uc.addClass("game-user-bomb");
+        $uc.removeClass("game-user-current").addClass("game-user-bomb");
     } else if (data.answer) {
         $stage.game.here.hide();
         $stage.game.display.html($("<label>").css('color', "#FFFF44").html(data.answer));
@@ -3456,6 +3456,9 @@ function onMessage(data) {
 				$data._tid = data.target || $data.room.game.seq[$data.room.game.turn];
 				if ($data._tid) {
 					if ($data._tid.robot) $data._tid = $data._tid.id;
+					if (data.giveup) {
+						$("#game-user-" + $data._tid).removeClass("game-user-current").addClass("game-user-bomb");
+					}
 					turnEnd($data._tid, data);
 				}
 				if (data.baby) {

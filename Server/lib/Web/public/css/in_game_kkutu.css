@@ -1528,7 +1528,8 @@ iframe {
 }
 
 .game-user-bomb {
-	border-color: #FF6666;
+	border-color: #FF6666 !important;
+	animation: none !important;
 }
 
 .game-user-image {

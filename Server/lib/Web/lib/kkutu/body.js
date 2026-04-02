@@ -516,6 +516,9 @@ function onMessage(data) {
 				$data._tid = data.target || $data.room.game.seq[$data.room.game.turn];
 				if ($data._tid) {
 					if ($data._tid.robot) $data._tid = $data._tid.id;
+					if (data.giveup) {
+						$("#game-user-" + $data._tid).removeClass("game-user-current").addClass("game-user-bomb");
+					}
 					turnEnd($data._tid, data);
 				}
 				if (data.baby) {

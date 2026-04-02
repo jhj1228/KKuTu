@@ -298,7 +298,7 @@ $lib.PictureQuiz.turnStart = function (data) {
     $(".game-user-bomb").removeClass("game-user-bomb");
     $data._char = payload ? payload.char : "";
 
-    if (canPlay && !isDrawer) {
+    if (canPlay) {
         $stage.game.here.hide();
         $stage.talk.focus();
         $data._relay = true;
@@ -346,7 +346,7 @@ $lib.PictureQuiz.turnEnd = function (id, data) {
     var $uc = $("#game-user-" + id);
 
     if (data.giveup) {
-        $uc.addClass("game-user-bomb");
+        $uc.removeClass("game-user-current").addClass("game-user-bomb");
     } else if (data.answer) {
         $stage.game.here.hide();
         $stage.game.display.html($("<label>").css('color', "#FFFF44").html(data.answer));

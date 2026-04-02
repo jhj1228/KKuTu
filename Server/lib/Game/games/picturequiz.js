@@ -195,7 +195,7 @@ exports.submit = function (client, text) {
 			bonus: 0
 		}, true);
 		client.invokeWordPiece(inputText, 0.9);
-	} else if (play && !gu && surrender) {
+	} else if (play && !gu && (text == "gg" || text == "ㅈㅈ")) {
 		my.game.giveup.push(client.id);
 		client.publish('turnEnd', {
 			target: client.id,
