@@ -56,7 +56,8 @@ exports.OPTIONS = {
 	// 'ddl': { name: "Dodoli" }, // 도돌이 금지
 	'fre': { name: "Free" }, // 자유
 	'mwd': { name: "Moreword" }, // 특수 단어 허용
-	'nht': { name: "Nohint" } // 힌트 없음
+	'nht': { name: "Nohint" }, // 힌트 없음
+	'hrd': { name: "Hard" } // 어려움
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
@@ -234,7 +235,7 @@ exports.RULE = {
 	'KSQ': { // 스피드퀴즈
 		lang: "ko",
 		rule: "Speedquiz",
-		opts: ["nht", "sqj"],
+		opts: ["nht", "hrd", "sqj"],
 		time: 0.3,
 		ai: true,
 		big: false,
@@ -268,7 +269,7 @@ exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
 
 exports.KO_INJEONG = [
 	"IMS", "RAG", "NEX",
-	"KTV", "CPY", "WOR", "NFX", "KOT", "THP",
+	"KTV", "CPY", "WOR", "NFX", "KOT", "DRM", "THP",
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
 	"MIN", "MAF", "JAN", "CTH", "BGP", "BUT", "BUS",
 	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB",
@@ -278,7 +279,7 @@ exports.KO_INJEONG = [
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
-	"CPT", "KAD", "CTR"
+	"CPT", "PTE", "CTR"
 ];
 exports.EN_INJEONG = [
 	"LOL", "GTD"

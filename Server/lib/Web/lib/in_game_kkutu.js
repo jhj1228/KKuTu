@@ -2489,7 +2489,7 @@ $lib.All.turnEnd = function (id, data) {
 $lib.Speedquiz = {};
 
 $lib.Speedquiz.roundReady = function (data) {
-	var tv = L['speedquiz_' + data.topic];
+	var tv = L['sqTheme'] + ": " + L['speedquiz_' + data.topic];
 
 	clearBoard();
 	$data._roundTime = $data.room.time * 1000;

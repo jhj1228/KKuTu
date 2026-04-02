@@ -330,7 +330,12 @@ function getQuestion(topics, ignoreDone) {
 			return R;
 		}
 
+		var isHardMode = !!(my.opts && my.opts.hard);
 		var availableQuestions = questionList.filter(function (q, idx) {
+			var questionHard = !!(q && q.hard === true);
+			if (questionHard !== isHardMode) {
+				return false;
+			}
 			if (ignoreDone) return true;
 			if (!Array.isArray(my.game.done)) return true;
 			return my.game.done.indexOf(idx) === -1;
