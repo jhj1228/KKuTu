@@ -236,4 +236,12 @@
 	globalThis.onPopup = function (url) {
 		location.href = url;
 	};
+	globalThis.parseMarkdown = function (text) {
+		text = text.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+		text = text.replace(/\*(.+?)\*/g, '<i>$1</i>');
+		text = text.replace(/__(.+?)__/g, '<u>$1</u>');
+		text = text.replace(/~~(.+?)~~/g, '<s>$1</s>');
+
+		return text;
+	};
 })();

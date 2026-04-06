@@ -6091,6 +6091,7 @@ function chat(profile, msg, from, timestamp) {
 		if ($data._wblock[from]) return;
 	}
 	msg = badWords(msg);
+	msg = parseMarkdown(msg);
 	playSound('k');
 	stackChat();
 	if (!mobile && $data.room) {
@@ -6099,7 +6100,7 @@ function chat(profile, msg, from, timestamp) {
 	}
 	$stage.chat.append($item = $("<div>").addClass("chat-item")
 		.append($bar = $("<div>").addClass("chat-head ellipse").text(profile.title || profile.name))
-		.append($msg = $("<div>").addClass("chat-body").text(msg))
+		.append($msg = $("<div>").addClass("chat-body").html(msg))
 		.append($("<div>").addClass("chat-stamp").text(time.toLocaleTimeString()))
 	);
 	if (timestamp) $bar.prepend($("<i>").addClass("fa fa-video-camera"));
