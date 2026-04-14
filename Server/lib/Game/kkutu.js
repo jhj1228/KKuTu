@@ -846,6 +846,7 @@ exports.Room = function (room, channel) {
 	my.limit = Math.round(room.limit);
 	my.mode = room.mode;
 	my.rule = Const.getRule(room.mode);
+	my.connRule = room.rule;
 	my.round = Math.round(room.round);
 	my.time = room.time * my.rule.time;
 	my.opts = {
@@ -890,6 +891,7 @@ exports.Room = function (room, channel) {
 			password: my.password ? true : false,
 			limit: my.limit,
 			mode: my.mode,
+			rule: my.connRule,
 			round: my.round,
 			time: my.time,
 			master: my.master,
@@ -1077,6 +1079,7 @@ exports.Room = function (room, channel) {
 		my.limit = Math.max(Math.min(8, my.players.length), Math.round(room.limit));
 		my.mode = room.mode;
 		my.rule = Const.getRule(room.mode);
+		my.connRule = room.rule;
 		my.round = Math.round(room.round);
 		my.time = room.time * my.rule.time;
 		my.pq = room.pq;

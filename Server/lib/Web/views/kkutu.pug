@@ -50,8 +50,17 @@ block JS
 					var $roomDiag = $('#RoomDiag');
 					if ($roomMode.length === 0 || $roomDiag.length === 0) return;
 
-					var isKpq = Number($roomMode.val()) === 17;
-					$roomDiag.css('height', isKpq ? '500px' : '435px');
+					var modeVal = Number($roomMode.val());
+					var isKkt = modeVal === 0;
+					var isKkat = modeVal === 15;
+					var isKpq = modeVal === 17;
+					$roomDiag.css('height', isKpq ? '500px' : ((isKkt || isKkat) ? '470px' : '435px'));
+					
+					if (isKkt || isKkat) {
+						$("#RoomDiag").find("div.dialog-bar:has(select#room-rule)").show();
+					} else {
+						$("#RoomDiag").find("div.dialog-bar:has(select#room-rule)").hide();
+					}
 				}
 
 			function updateMissionState() {
@@ -342,6 +351,14 @@ block Middle
 		div.dialog-bar(style='margin-top: -5px; height: 50px;')
 			h4
 			h4#game-mode-expl.dialog-bar-value(style='width: 100%; font-size: 11px;')
+		div.dialog-bar(style='display: none;')
+			h4= '잇기 규칙'
+			select#room-rule
+				optgroup(label='잇기 규칙을 선택하세요.')
+					option(value="sasa")= '4-4'
+					option(value="samsam",selected)= '3-3 (기본)'
+					option(value="sami")= '3-2'
+					option(value="ii")= '2-2'
 		div.dialog-bar
 			h4= L('numRound')
 			- var maxRounds = isAdmin ? 20 : 10;

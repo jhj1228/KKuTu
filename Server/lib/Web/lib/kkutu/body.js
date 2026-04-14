@@ -2716,16 +2716,22 @@ function pushDisplay(text, mean, theme, wc, wordtype, defended) {
 
 				playSound(snd);
 				if (defended && index == 1) {
-					playSound('defence');
-					$l.css({ 'color': "#5B5AFF" });
+					if (!$data.opts.dv) {
+						playSound('defence');
+						$l.css({ 'color': "#5B5AFF" });
+					}
 					anim['font-size'] = 24;
 				} else if ($l.html() == $data.mission) {
-					playSound('mission');
-					$l.css({ 'color': "#66FF66" });
+					if (!$data.opts.dv) {
+						playSound('mission');
+						$l.css({ 'color': "#66FF66" });
+					}
 					anim['font-size'] = 24;
 				} else if (wordtype == 'attack' && len == index) {
-					playSound('attack');
-					$l.css({ 'color': "#FF5A5A" });
+					if (!$data.opts.dv) {
+						playSound('attack');
+						$l.css({ 'color': "#FF5A5A" });
+					}
 					anim['font-size'] = 24;
 				} else {
 					anim['font-size'] = 20;
@@ -2741,14 +2747,26 @@ function pushDisplay(text, mean, theme, wc, wordtype, defended) {
 			addTimeout(function (t, index) {
 				playSound(ta);
 				if (defended && index == 1) {
-					playSound('defence');
-					j = "<label style='color: #5B5AFF;'>" + t + "</label>" + j;
+					if (!$data.opts.dv) {
+						playSound('defence');
+						j = "<label style='color: #5B5AFF;'>" + t + "</label>" + j;
+					} else {
+						j = t + j;
+					}
 				} else if (t == $data.mission) {
-					playSound('mission');
-					j = "<label style='color: #66FF66;'>" + t + "</label>" + j;
+					if (!$data.opts.dv) {
+						playSound('mission');
+						j = "<label style='color: #66FF66;'>" + t + "</label>" + j;
+					} else {
+						j = t + j;
+					}
 				} else if (wordtype == 'attack' && len == index) {
-					playSound('attack');
-					j = "<label style='color: #FF5A5A;'>" + t + "</label>" + j;
+					if (!$data.opts.dv) {
+						playSound('attack');
+						j = "<label style='color: #FF5A5A;'>" + t + "</label>" + j;
+					} else {
+						j = t + j;
+					}
 				} else {
 					j = t + j;
 				}
@@ -2759,14 +2777,26 @@ function pushDisplay(text, mean, theme, wc, wordtype, defended) {
 			addTimeout(function (t, index) {
 				playSound(ta);
 				if (defended && index == 1) {
-					playSound('defence');
-					j += "<label style='color: #5B5AFF;'>" + t + "</label>";
+					if (!$data.opts.dv) {
+						playSound('defence');
+						j += "<label style='color: #5B5AFF;'>" + t + "</label>";
+					} else {
+						j += t;
+					}
 				} else if (t == $data.mission) {
-					playSound('mission');
-					j += "<label style='color: #66FF66;'>" + t + "</label>";
+					if (!$data.opts.dv) {
+						playSound('mission');
+						j += "<label style='color: #66FF66;'>" + t + "</label>";
+					} else {
+						j += t;
+					}
 				} else if (wordtype == 'attack' && len == index) {
-					playSound('attack');
-					j += "<label style='color: #FF5A5A;'>" + t + "</label>";
+					if (!$data.opts.dv) {
+						playSound('attack');
+						j += "<label style='color: #FF5A5A;'>" + t + "</label>";
+					} else {
+						j += t;
+					}
 				} else {
 					j += t;
 				}
@@ -2973,6 +3003,12 @@ function setRoomHead($obj, room) {
 	var opts = getOptions(room.mode, room.opts, room.pq);
 	var rule = RULE[MODE[room.mode]];
 	var $rm;
+
+	if ((room.mode === 0 || room.mode === 15) && room.rule) {
+		var ruleMap = { sasa: "4-4", samsam: "3-3", sami: "3-2", ii: "2-2" };
+		var ruleText = ruleMap[room.rule] || room.rule;
+		opts.push(ruleText);
+	}
 
 	$obj.empty()
 		.append($("<h5>").addClass("room-head-number").html("[" + (room.practice ? L['practice'] : room.id) + "]"))

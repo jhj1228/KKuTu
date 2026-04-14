@@ -452,6 +452,7 @@ $(document).ready(function () {
 		$("#room-mode").val($data.room.mode).trigger('change');
 		$("#room-round").val($data.room.round);
 		$("#room-time").val($data.room.time / rule.time);
+		$("#room-rule").val($data.room.rule || "samsam");
 		for (i in OPTIONS) {
 			k = OPTIONS[i].name.toLowerCase();
 			$("#room-" + k).attr('checked', $data.room.opts[k]);
@@ -725,6 +726,7 @@ $(document).ready(function () {
 			mode: $("#room-mode").val(),
 			round: $("#room-round").val(),
 			time: $("#room-time").val(),
+			rule: $("#room-rule").val(),
 			opts: opts,
 			pq: {
 				order: $("#room-pq-order").val(),

@@ -138,7 +138,15 @@ exports.roundReady = function () {
 		my.game.subChar = getSubChar.call(my, my.game.char);
 		my.game.chain = [];
 		if (my.opts.mission) my.game.mission = getMission(my.rule.lang);
-		if (my.opts.sami) my.game.wordLength = 2;
+		if (my.connRule === 'ii') {
+			my.game.wordLength = 2;
+		} else if (my.connRule === 'sasa') {
+			my.game.wordLength = 4;
+		} else if (my.connRule === 'sami') {
+			my.game.wordLength = 3;
+		} else {
+			my.game.wordLength = 3;
+		}
 
 		my.byMaster('roundReady', {
 			round: my.game.round,
@@ -164,7 +172,9 @@ exports.turnStart = function (force) {
 	my.game.late = false;
 	my.game.turnTime = 15000 - 1400 * speed;
 	my.game.turnAt = (new Date()).getTime();
-	if (my.opts.sami) my.game.wordLength = (my.game.wordLength == 3) ? 2 : 3;
+	if (my.connRule === 'sami') {
+		my.game.wordLength = (my.game.wordLength == 3) ? 2 : 3;
+	}
 
 	my.byMaster('turnStart', {
 		turn: my.game.turn,
