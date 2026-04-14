@@ -143,7 +143,7 @@ exports.roundReady = function () {
 		} else if (my.connRule === 'sasa') {
 			my.game.wordLength = 4;
 		} else if (my.connRule === 'sami') {
-			my.game.wordLength = 3;
+			my.game.wordLength = 2;
 		} else {
 			my.game.wordLength = 3;
 		}

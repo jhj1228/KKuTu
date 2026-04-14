@@ -4846,6 +4846,12 @@ function requestProfile(id) {
 	}
 	else if (!o.robot) {
 		$stage.dialog.profileShut.show();
+		var targetName = o.profile.title || o.profile.name;
+		if ($data._shut.hasOwnProperty(targetName)) {
+			$stage.dialog.profileShut.text(L['liftshut']);
+		} else {
+			$stage.dialog.profileShut.text(L['shut']);
+		}
 		$stage.dialog.profileWhisper.show();
 		$stage.dialog.profileReport.show();
 		$stage.dialog.profileFriend.show();
@@ -4913,6 +4919,12 @@ function showOfflineProfile(o, id) {
 		$stage.dialog.profileDress.show();
 	} else {
 		$stage.dialog.profileShut.show();
+		var targetName = o.profile.title || o.profile.name;
+		if ($data._shut.hasOwnProperty(targetName)) {
+			$stage.dialog.profileShut.text(L['liftshut']);
+		} else {
+			$stage.dialog.profileShut.text(L['shut']);
+		}
 		$stage.dialog.profileFriend.show();
 	}
 
