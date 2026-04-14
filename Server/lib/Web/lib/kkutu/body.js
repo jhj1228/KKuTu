@@ -3520,6 +3520,7 @@ function showBlacklist() {
 					showConfirm(targetName + L['blacklistRemoveConfirm'], function () {
 						delete $data._shut[name];
 						localStorage.setItem('_shut', JSON.stringify($data._shut));
+						notice(name + L['userNShut']);
 						showBlacklist();
 					});
 				}));
