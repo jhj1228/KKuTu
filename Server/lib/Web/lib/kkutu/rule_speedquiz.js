@@ -46,7 +46,6 @@ $lib.Speedquiz.turnStart = function (data) {
 	}
 
 	var qVal = data.question;
-	if ($data.room.opts.drg) qVal = "<label style='color:" + getRandomColor() + "'>" + qVal + "</label>";
 	$stage.game.display.html($data._question = qVal);
 
 	clearInterval($data._tTime);
@@ -91,8 +90,7 @@ $lib.Speedquiz.turnEnd = function (id, data) {
 		$uc.addClass("game-user-bomb");
 	} else if (data.answer) {
 		$stage.game.here.hide();
-		var ansColor = ($data.room.opts.drg) ? getRandomColor() : "#FFFF44";
-		$stage.game.display.html($("<label>").css('color', ansColor).html(data.answer));
+		$stage.game.display.html($("<label>").css('color', "#FFFF44").html(data.answer));
 		stopBGM();
 		playSound('horr');
 	} else {
