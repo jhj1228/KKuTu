@@ -249,6 +249,15 @@ exports.RULE = {
 		ai: false,
 		big: true,
 		ewq: true
+	},
+	'SCR': { // 스크램블
+		lang: "ko",
+		rule: "Scramble",
+		opts: ["ijp", "ulm", "nht"],
+		time: 1,
+		ai: true,
+		big: false,
+		ewq: false
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
