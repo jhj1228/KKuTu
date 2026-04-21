@@ -60,6 +60,9 @@ exports.getTitle = function () {
 		case 'KAT':
 		case 'KKT':
 			my.game.wordLength = 3;
+			ja = 44032 + 588 * Math.floor(Math.random() * 18);
+			eng = "^[\\u" + ja.toString(16) + "-\\u" + (ja + 587).toString(16) + "]";
+			break;
 		case 'KMH':
 		case 'KRH':
 		case 'KSH':
@@ -144,7 +147,7 @@ exports.roundReady = function () {
 			my.game.wordLength = 4;
 		} else if (my.connRule === 'sami') {
 			my.game.wordLength = 2;
-		} else {
+		} else if (my.connRule === 'samsam') {
 			my.game.wordLength = 3;
 		}
 
@@ -769,8 +772,8 @@ function getSubChar(char) {
 		case "KMT":
 			if (char.length > 2) {
 				r = char.slice(1);
-				break;
 			}
+			break;
 		case "KKT": case "KSH": case "KAP": case "KMH": case "KRH": case "KAT":
 			if (my.opts.dueum) break;
 

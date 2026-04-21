@@ -250,7 +250,7 @@ exports.RULE = {
 		big: true,
 		ewq: true
 	},
-	'SCR': { // 스크램블
+	'SCR': { // 단어맞추기
 		lang: "ko",
 		rule: "Scramble",
 		opts: ["ijp", "ulm", "nht"],

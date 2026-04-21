@@ -54,9 +54,9 @@ block JS
 					var isKkt = modeVal === 0;
 					var isKkat = modeVal === 15;
 					var isKpq = modeVal === 17;
-					$roomDiag.css('height', isKpq ? '500px' : ((isKkt || isKkat) ? '470px' : '435px'));
-					
-					if (isKkt || isKkat) {
+				$roomDiag.css('height', isKpq ? '500px' : ((isKkt || isKkat) ? '470px' : '435px'));
+				
+				if (isKkt || isKkat) {
 						$("#RoomDiag").find("div.dialog-bar:has(select#room-rule)").show();
 					} else {
 						$("#RoomDiag").find("div.dialog-bar:has(select#room-rule)").hide();

@@ -135,20 +135,19 @@ process.on('message', function (msg) {
 			if (!DIC[msg.target]) break;
 			DIC[msg.target].sendError(msg.code);
 			break;
-		case "room-reserve":
-			if (RESERVED[msg.session]) {
-				// 이미 입장 요청을 했는데 또 하는 경우
-				break;
-			} else RESERVED[msg.session] = {
-				profile: msg.profile,
-				room: msg.room,
-				spec: msg.spec,
-				pass: msg.pass,
-				_expiration: setTimeout(function (tg, create) {
-					process.send({ type: "room-expired", id: msg.room.id, create: create });
-					delete RESERVED[tg];
-				}, 10000, msg.session, msg.create)
-			};
+		case "room-reserve": if (RESERVED[msg.session]) {
+			// 이미 입장 요청을 했는데 또 하는 경우
+			break;
+		} else RESERVED[msg.session] = {
+			profile: msg.profile,
+			room: msg.room,
+			spec: msg.spec,
+			pass: msg.pass,
+			_expiration: setTimeout(function (tg, create) {
+				process.send({ type: "room-expired", id: msg.room.id, create: create });
+				delete RESERVED[tg];
+			}, 10000, msg.session, msg.create)
+		};
 			break;
 		case "room-invalid":
 			delete ROOM[msg.room.id];
@@ -335,17 +334,22 @@ KKuTu.onClientMessage = function ($c, msg) {
 			if (!msg.round) stable = false;
 			if (!msg.time) stable = false;
 			if (!msg.opts) stable = false;
+			if (!msg.rule) {
+				msg.rule = "samsam";
+			}
 
 			msg.code = false;
 			msg.limit = Number(msg.limit);
 			msg.mode = Number(msg.mode);
 			msg.round = Number(msg.round);
 			msg.time = Number(msg.time);
+			msg.rule = String(msg.rule);
 
 			if (isNaN(msg.limit)) stable = false;
 			if (isNaN(msg.mode)) stable = false;
 			if (isNaN(msg.round)) stable = false;
 			if (isNaN(msg.time)) stable = false;
+			if (!['sasa', 'samsam', 'sami', 'ii'].includes(msg.rule)) stable = false;
 
 			if (stable) {
 				if (msg.title.length > 20) stable = false;

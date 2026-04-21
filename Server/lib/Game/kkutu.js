@@ -846,7 +846,10 @@ exports.Room = function (room, channel) {
 	my.limit = Math.round(room.limit);
 	my.mode = room.mode;
 	my.rule = Const.getRule(room.mode);
-	my.connRule = room.rule;
+	// Only KKT(0) and KAT(15) use room.rule; others ignore it
+	if (room.mode === 0 || room.mode === 15) {
+		my.connRule = room.rule || "samsam";
+	}
 	my.round = Math.round(room.round);
 	my.time = room.time * my.rule.time;
 	my.opts = {
@@ -1079,7 +1082,10 @@ exports.Room = function (room, channel) {
 		my.limit = Math.max(Math.min(8, my.players.length), Math.round(room.limit));
 		my.mode = room.mode;
 		my.rule = Const.getRule(room.mode);
-		my.connRule = room.rule;
+		// Only KKT(0) and KAT(15) use room.rule; others ignore it
+		if (room.mode === 0 || room.mode === 15) {
+			my.connRule = room.rule || "samsam";
+		}
 		my.round = Math.round(room.round);
 		my.time = room.time * my.rule.time;
 		my.pq = room.pq;
