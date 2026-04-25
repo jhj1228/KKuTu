@@ -288,7 +288,7 @@ exports.KO_INJEONG = [
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
-	"CPT", "PTE", "CTR"
+	"CPT", "ENG", "PTE", "CTR"
 ];
 exports.EN_INJEONG = [
 	"LOL", "GTD"

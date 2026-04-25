@@ -201,14 +201,18 @@ exports.readyRobot = function (robot) {
 	}
 };
 function shuffleWord(word) {
-	var letters = word.split('');
-	for (var i = letters.length - 1; i > 0; i--) {
-		var j = Math.floor(Math.random() * (i + 1));
-		var temp = letters[i];
-		letters[i] = letters[j];
-		letters[j] = temp;
-	}
-	return letters.join('');
+	var shuffled;
+	do {
+		var letters = word.split('');
+		for (var i = letters.length - 1; i > 0; i--) {
+			var j = Math.floor(Math.random() * (i + 1));
+			var temp = letters[i];
+			letters[i] = letters[j];
+			letters[j] = temp;
+		}
+		shuffled = letters.join('');
+	} while (shuffled === word);
+	return shuffled;
 }
 function revealRandomly(word, revealRatio) {
 	var len = word.length;
@@ -267,7 +271,7 @@ function getAnswer(theme, nomean) {
 		if (!len) return R.go(null);
 		do {
 			pick = Math.floor(Math.random() * len);
-			if ($res[pick]._id.length >= 2 && (my.opts.unlimited || $res[pick]._id.length <= 15))
+			if ($res[pick]._id.length >= 4 && (my.opts.unlimited || $res[pick]._id.length <= 15))
 				if ($res[pick].type == "INJEONG" || $res[pick].mean.length >= 0) {
 					return R.go($res[pick]);
 				}

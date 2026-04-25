@@ -846,7 +846,6 @@ exports.Room = function (room, channel) {
 	my.limit = Math.round(room.limit);
 	my.mode = room.mode;
 	my.rule = Const.getRule(room.mode);
-	// Only KKT(0) and KAT(15) use room.rule; others ignore it
 	if (room.mode === 0 || room.mode === 15) {
 		my.connRule = room.rule || "samsam";
 	}
@@ -1082,7 +1081,6 @@ exports.Room = function (room, channel) {
 		my.limit = Math.max(Math.min(8, my.players.length), Math.round(room.limit));
 		my.mode = room.mode;
 		my.rule = Const.getRule(room.mode);
-		// Only KKT(0) and KAT(15) use room.rule; others ignore it
 		if (room.mode === 0 || room.mode === 15) {
 			my.connRule = room.rule || "samsam";
 		}
@@ -1595,6 +1593,9 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 			break;
 		case 'KPQ':
 			rw.score += score * 0.41;
+			break;
+		case 'SCR':
+			rw.score += score * 0.95;
 			break;
 		default:
 			break;
