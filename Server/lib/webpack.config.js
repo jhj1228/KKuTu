@@ -80,6 +80,7 @@ module.exports = {
 				resolve(gameSourcePath, "rule_speedquiz.js"),
 				resolve(gameSourcePath, "rule_picturequiz.js"),
 				resolve(gameSourcePath, "rule_scramble.js"),
+				resolve(gameSourcePath, "rule_wordstack.js"),
 				resolve(gameSourcePath, "body.js"),
 				resolve(gameSourcePath, "tail.js"),
 			],

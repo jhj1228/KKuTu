@@ -28,7 +28,7 @@ exports.BLOCKED_LENGTH = 10000;
 exports.KICK_BY_SPAM = 9;
 exports.MAX_OBSERVER = 4;
 exports.TESTER = GLOBAL.ADMIN.concat([
-	"Input tester id here"
+	"102050173530405729973"
 ]);
 exports.IS_SECURED = GLOBAL.IS_SECURED;
 exports.SSL_OPTIONS = GLOBAL.SSL_OPTIONS;
@@ -258,6 +258,15 @@ exports.RULE = {
 		ai: true,
 		big: false,
 		ewq: false
+	},
+	'KSW': { // 워드스택
+		lang: "ko",
+		rule: "Wordstack",
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd"],
+		time: 1,
+		ai: true,
+		big: false,
+		ewq: true
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
