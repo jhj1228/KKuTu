@@ -24,8 +24,12 @@ var DIC;
 const ROBOT_START_DELAY = [1200, 800, 400, 200, 50, 0];
 const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 100, 0];
 const ROBOT_THINK_COEF = [4, 2, 1, 0, 0, 0];
-const ROBOT_HIT_LIMIT = [8, 4, 2, 1, 0, 0];
+const ROBOT_HIT_LIMIT = [9999];
 const ROBOT_LENGTH_LIMIT = [3, 4, 9, 15, 20, 99];
+
+const RIEUL_TO_NIEUN = [4449, 4450, 4457, 4460, 4462, 4467];
+const RIEUL_TO_IEUNG = [4451, 4455, 4456, 4461, 4466, 4469];
+const NIEUN_TO_IEUNG = [4455, 4461, 4466, 4469];
 
 function getMission(lang) {
     if (lang == 'ko') {
@@ -55,10 +59,44 @@ function getRandom(arr) {
 }
 
 function getSubChar(char) {
+    var my = this;
     var code;
+    var k, ca, cb, cc;
+    var r;
+
     if (!char) return '';
     code = char.charCodeAt(0);
     if (code < 44032) return '';
+
+    if (my && my.opts && my.opts.dueum) {
+        return String.fromCharCode(Math.floor((code - 44032) / 28) + 4449);
+    }
+
+    k = code - 0xAC00;
+    if (k < 0 || k > 11171) return '';
+
+    ca = [Math.floor(k / 28 / 21), Math.floor(k / 28) % 21, k % 28];
+    cb = [ca[0] + 0x1100, ca[1] + 0x1161, ca[2] + 0x11A7];
+    cc = false;
+
+    if (cb[0] == 4357) {
+        cc = true;
+        if (RIEUL_TO_NIEUN.includes(cb[1])) cb[0] = 4354;
+        else if (RIEUL_TO_IEUNG.includes(cb[1])) cb[0] = 4363;
+        else cc = false;
+    } else if (cb[0] == 4354) {
+        if (NIEUN_TO_IEUNG.indexOf(cb[1]) != -1) {
+            cb[0] = 4363;
+            cc = true;
+        }
+    }
+
+    if (cc) {
+        cb[0] -= 0x1100; cb[1] -= 0x1161; cb[2] -= 0x11A7;
+        r = String.fromCharCode(((cb[0] * 21) + cb[1]) * 28 + cb[2] + 0xAC00);
+        return r;
+    }
+
     return String.fromCharCode(Math.floor((code - 44032) / 28) + 4449);
 }
 
@@ -80,9 +118,17 @@ function getWordList(char, subChar, isLimited) {
     var aqs = [];
 
     if (isLimited) {
-        aqs.push(['_id', new RegExp('^' + char)]);
+        if (subChar && subChar !== char) {
+            aqs.push(['_id', new RegExp('^(' + char + '|' + subChar + ')')]);
+        } else {
+            aqs.push(['_id', new RegExp('^' + char)]);
+        }
     } else {
-        aqs.push(['_id', new RegExp(char)]);
+        if (subChar && subChar !== char) {
+            aqs.push(['_id', new RegExp('(' + char + '|' + subChar + ')')]);
+        } else {
+            aqs.push(['_id', new RegExp(char)]);
+        }
     }
 
     if (my.rule.lang == 'ko' && !my.opts.moreword) {
@@ -302,7 +348,7 @@ exports.submit = function (client, text) {
             my.game.chain[client.id].push(text);
 
             var firstChar = text.charAt(0);
-            var endChar = preChar; // 끝말
+            var endChar = preChar;
             var myPool = my.game.pool[client.id];
             var pidx = getPoolIndex(firstChar, client.id);
             if (pidx == -1) return;
@@ -315,26 +361,22 @@ exports.submit = function (client, text) {
 
             client.game.score += score;
 
-            for (var k in my.game.seq) {
-                var o = my.game.seq[k];
-                var otherId = o.robot ? o.id : o;
-                var otherClient = DIC[otherId];
-                if (otherClient) {
-                    var isMe = (otherId === client.id);
-                    otherClient.publish('turnEnd', {
-                        ok: true,
-                        target: client.id,
-                        value: text,
-                        mean: $doc ? $doc.mean : '',
-                        theme: $doc ? $doc.theme : '',
-                        wc: $doc ? $doc.type : '',
-                        score: isMe ? score : 0,
-                        bonus: 0,
-                        pool: my.game.pool[otherId],
-                        subpool: getSubpool.call(my, my.game.pool[otherId])
-                    }, true);
-                }
+            var poolData = {};
+            for (var k in my.game.pool) {
+                poolData[k] = my.game.pool[k];
             }
+
+            client.publish('turnEnd', {
+                ok: true,
+                target: client.id,
+                value: text,
+                mean: $doc ? $doc.mean : '',
+                theme: $doc ? $doc.theme : '',
+                wc: $doc ? $doc.type : '',
+                score: score,
+                bonus: 0,
+                pools: poolData
+            }, true);
 
             if (!client.robot) {
                 client.invokeWordPiece(text, 1);
@@ -342,6 +384,21 @@ exports.submit = function (client, text) {
                     DB.kkutu[l].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
                 }
             }
+        }
+
+        function checkManner() {
+            if (!my.opts.manner) {
+                approved();
+                return;
+            }
+
+            getWordList.call(my, preChar, preSubChar, true).then(function (list) {
+                if (list && list.length) {
+                    approved();
+                } else {
+                    denied(403);
+                }
+            });
         }
 
         function denied(code) {
@@ -352,7 +409,7 @@ exports.submit = function (client, text) {
             if (!my.opts.injeong && ($doc.flag & Const.KOR_FLAG.INJEONG)) denied();
             else if (my.opts.strict && (!$doc.type.match(Const.KOR_STRICT) || $doc.flag >= 4)) denied(406);
             else if (my.opts.loanword && ($doc.flag & Const.KOR_FLAG.LOANWORD)) denied(405);
-            else approved();
+            else checkManner();
         } else {
             denied(404);
         }
@@ -408,32 +465,62 @@ exports.readyRobot = function (robot) {
         }
 
         var chain = my.game.chain[robot.id];
-        var target = null;
+        var validWords = [];
 
         for (i = 0; i < list.length; i++) {
             var word = list[i];
+            if (word._id.length < 2) continue;
             if (word._id.length > ROBOT_LENGTH_LIMIT[level]) continue;
             if (word.hit < ROBOT_HIT_LIMIT[level]) continue;
             if (chain.indexOf(word._id) !== -1) continue;
 
-            if (!target || Math.random() > 0.5) {
-                target = word;
+            validWords.push(word);
+        }
+
+        if (!validWords.length) {
+            text = targetChar + '... T.T';
+            doRobotMove();
+            return;
+        }
+
+        var attempts = 0;
+        var MAX_ATTEMPTS = Math.min(5, validWords.length);
+
+        function tryWord() {
+            if (attempts >= MAX_ATTEMPTS) {
+                text = targetChar + '... T.T';
+                doRobotMove();
+                return;
+            }
+
+            var target = validWords[Math.floor(Math.random() * validWords.length)];
+            text = target._id;
+            delay += 500 * ROBOT_THINK_COEF[level] * Math.random() / Math.log(1.1 + target.hit);
+            attempts++;
+
+            if (my.opts.manner) {
+                var endChar = getChar(text);
+                var endSubChar = getSubChar(endChar);
+
+                getWordList.call(my, endChar, endSubChar, true).then(function (nextList) {
+                    if (!nextList || !nextList.length) {
+                        tryWord();
+                    } else {
+                        doRobotMove();
+                    }
+                });
+            } else {
+                doRobotMove();
             }
         }
 
-        if (target) {
-            text = target._id;
-            delay += 500 * ROBOT_THINK_COEF[level] * Math.random() / Math.log(1.1 + target.hit);
-        } else {
-            text = targetChar + '... T.T';
-        }
-        doRobotMove();
+        tryWord();
     });
 
     function doRobotMove() {
         delay += text.length * ROBOT_TYPE_COEF[level];
 
-        if (!my.game.chain[robot.id]) return;
+        if (!my.game.chain[robot.id] || !my.game.pool || !my.game.pool[robot.id]) return;
         my.game.chain[robot.id].push(text);
 
         var pool = my.game.pool[robot.id];
@@ -454,34 +541,63 @@ exports.readyRobot = function (robot) {
 
         var endChar = getChar(text);
         var opponentId = my.game.opponent[robot.id];
-        if (opponentId && my.game.pool[opponentId]) {
+        if (opponentId && my.game.pool[opponentId] && /[가-힣a-zA-Z]/.test(endChar)) {
             my.game.pool[opponentId].push(endChar);
         }
 
+        var score = my.getScore.call(my, text, robot.id);
+        robot.game.score += score;
+
         my.game.dic[text] = (my.game.dic[text] || 0) + 1;
 
-        for (var k in my.game.seq) {
-            var o = my.game.seq[k];
-            var otherId = o.robot ? o.id : o;
-            var otherClient = DIC[otherId];
-            if (otherClient) {
-                otherClient.publish('turnEnd', {
-                    ok: true,
-                    target: robot.id,
-                    value: text,
-                    mean: '',
-                    theme: '',
-                    wc: '',
-                    score: 0,
-                    bonus: 0,
-                    pool: my.game.pool[otherId],
-                    subpool: getSubpool.call(my, my.game.pool[otherId])
-                }, true);
-            }
+        var poolData = {};
+        for (var k in my.game.pool) {
+            poolData[k] = my.game.pool[k];
         }
 
-        setTimeout(function () {
-            my.readyRobot(robot);
-        }, delay);
+        if (text.indexOf('...') !== -1) {
+            my.byMaster('turnEnd', {
+                ok: true,
+                target: robot.id,
+                value: text,
+                mean: '',
+                theme: '',
+                wc: '',
+                score: score,
+                bonus: 0,
+                pools: poolData
+            }, true);
+
+            setTimeout(function () {
+                my.readyRobot(robot);
+            }, delay);
+            return;
+        }
+
+        var l = my.rule && my.rule.lang ? my.rule.lang : 'ko';
+        var queryArgs = [['_id', text]];
+        if (l == "ko") {
+            queryArgs.push(['type', Const.KOR_GROUP]);
+        } else {
+            queryArgs.push(['_id', Const.ENG_ID]);
+        }
+
+        DB.kkutu[l].findOne.apply(DB.kkutu[l], queryArgs).on(function ($doc) {
+            my.byMaster('turnEnd', {
+                ok: true,
+                target: robot.id,
+                value: text,
+                mean: $doc ? $doc.mean : '',
+                theme: $doc ? $doc.theme : '',
+                wc: $doc ? $doc.type : '',
+                score: score,
+                bonus: 0,
+                pools: poolData
+            }, true);
+
+            setTimeout(function () {
+                my.readyRobot(robot);
+            }, delay);
+        });
     }
 };

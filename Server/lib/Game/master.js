@@ -42,7 +42,7 @@ var T_USER = {};
 var SID;
 var WDIC = {};
 
-const DEVELOP = exports.DEVELOP = global.test || false;
+const DEVELOP = exports.DEVELOP = global.test || true;
 const GUEST_PERMISSION = exports.GUEST_PERMISSION = {
 	'create': true,
 	'enter': true,

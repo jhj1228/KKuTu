@@ -16,6 +16,54 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+var RIEUL_TO_NIEUN = [4449, 4450, 4457, 4460, 4462, 4467];
+var RIEUL_TO_IEUNG = [4451, 4455, 4456, 4461, 4466, 4469];
+var NIEUN_TO_IEUNG = [4455, 4461, 4466, 4469];
+
+function getDueumChar(char) {
+    if (!$data.room || $data.room.opts.dueum) return char;
+
+    var code = char.charCodeAt(0);
+    if (code < 44032) return char;
+
+    var k = code - 0xAC00;
+    if (k < 0 || k > 11171) return char;
+
+    var ca = [Math.floor(k / 28 / 21), Math.floor(k / 28) % 21, k % 28];
+    var cb = [ca[0] + 0x1100, ca[1] + 0x1161, ca[2] + 0x11A7];
+    var cc = false;
+
+    if (cb[0] == 4357) {
+        cc = true;
+        if (RIEUL_TO_NIEUN.includes(cb[1])) cb[0] = 4354;
+        else if (RIEUL_TO_IEUNG.includes(cb[1])) cb[0] = 4363;
+        else cc = false;
+    } else if (cb[0] == 4354) {
+        if (NIEUN_TO_IEUNG.indexOf(cb[1]) != -1) {
+            cb[0] = 4363;
+            cc = true;
+        }
+    }
+
+    if (cc) {
+        cb[0] -= 0x1100; cb[1] -= 0x1161; cb[2] -= 0x11A7;
+        return String.fromCharCode(((cb[0] * 21) + cb[1]) * 28 + cb[2] + 0xAC00);
+    }
+
+    return char;
+}
+
+function formatPoolDisplay(pool) {
+    return pool.map(function (char) {
+        var dueumChar = getDueumChar(char);
+        if (dueumChar === char) {
+            return char;
+        } else {
+            return char + '(' + dueumChar + ')';
+        }
+    }).join(' ');
+}
+
 function updatePoolBar() {
     var $bar = $(".jjo-turn-time .graph-bar");
     var poolLength = $data._pool ? $data._pool.length : 0;
@@ -24,7 +72,7 @@ function updatePoolBar() {
 
     $bar.width(width + "%")
         .html(poolLength + "/8")
-        .css({ 'text-align': "center", 'background-color': bgColor });
+        .css({ 'text-align': "right", 'background-color': bgColor });
 }
 
 $lib.Wordstack.roundReady = function (data) {
@@ -38,7 +86,7 @@ $lib.Wordstack.roundReady = function (data) {
     $data.chain = 0;
 
     $data._pool = data.pool || [];
-    $stage.game.display.html($data._pool.join(' '));
+    $stage.game.display.html(formatPoolDisplay($data._pool));
     $stage.game.chain.show().html($data.chain);
     updatePoolBar();
     if ($data.room.opts.mission) {
@@ -59,7 +107,7 @@ $lib.Wordstack.turnStart = function (data) {
     if (data.pool && Array.isArray(data.pool)) {
         $data._pool = data.pool;
     }
-    var poolDisplay = $data._pool.join(' ');
+    var poolDisplay = formatPoolDisplay($data._pool);
     $stage.game.display.html($data._char = poolDisplay || "🔤");
     updatePoolBar();
 
@@ -102,11 +150,8 @@ $lib.Wordstack.turnEnd = function (id, data) {
         .html((data.score > 0) ? ("+" + (data.score - data.bonus)) : data.score);
     var $uc = $("#game-user-" + id);
 
-    console.log('Wordstack.turnEnd called:', { id: id, myId: $data.id, ok: data.ok, score: data.score });
-
     if (data.ok) {
         if ($data.id == id) {
-            console.log('Playing mission sound for my turn');
             checkFailCombo();
             clearTimeout($data._fail);
             $data.chain++;
@@ -114,18 +159,19 @@ $lib.Wordstack.turnEnd = function (id, data) {
             playSound('mission');
             pushHistory(data.value, data.mean, data.theme, data.wc);
 
-            if (data.pool && Array.isArray(data.pool)) {
-                $data._pool = data.pool;
-                var poolDisplay = $data._pool.join(' ');
+            if (data.pools && data.pools[$data.id]) {
+                $data._pool = data.pools[$data.id];
+                var poolDisplay = formatPoolDisplay($data._pool);
                 $stage.game.display.html(poolDisplay);
                 $data._char = poolDisplay;
                 updatePoolBar();
             }
         } else {
-            console.log('Other player turn, updating pool only');
-            if (data.pool && Array.isArray(data.pool)) {
-                $data._pool = data.pool;
-                var poolDisplay = $data._pool.join(' ');
+            pushHistory(data.value, data.mean, data.theme, data.wc);
+
+            if (data.pools && data.pools[$data.id]) {
+                $data._pool = data.pools[$data.id];
+                var poolDisplay = formatPoolDisplay($data._pool);
                 $stage.game.display.html(poolDisplay);
                 $data._char = poolDisplay;
                 updatePoolBar();
