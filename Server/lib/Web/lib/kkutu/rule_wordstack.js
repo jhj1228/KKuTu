@@ -159,6 +159,10 @@ $lib.Wordstack.turnEnd = function (id, data) {
             playSound('mission');
             pushHistory(data.value, data.mean, data.theme, data.wc);
 
+            if ($data.room.opts.mission && data.mission) {
+                $stage.game.items.html($data.mission = data.mission);
+            }
+
             if (data.pools && data.pools[$data.id]) {
                 $data._pool = data.pools[$data.id];
                 var poolDisplay = formatPoolDisplay($data._pool);

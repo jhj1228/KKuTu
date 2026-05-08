@@ -177,9 +177,13 @@ exports.getTitle = function () {
 
 exports.roundInfo = function (client) {
     var my = this;
+    if (my.opts.mission && my.game.mission && !my.game.mission[client.id]) {
+        my.game.mission[client.id] = getMission(my.rule.lang);
+    }
     client.send('roundReady', {
         round: my.game.round,
         pool: my.game.pool[client.id],
+        mission: my.game.mission ? my.game.mission[client.id] : null,
         enter: true
     }, true);
 };
@@ -194,8 +198,15 @@ exports.roundReady = function () {
         my.game.pool = {};
         my.game.dic = {};
         my.game.opponent = {};
+        my.game.mission = {};
 
-        if (my.opts.mission) my.game.mission = getMission(my.rule.lang);
+        if (my.opts.mission) {
+            for (var k in my.game.seq) {
+                var o = my.game.seq[k];
+                var t = o.robot ? o.id : o;
+                my.game.mission[t] = getMission(my.rule.lang);
+            }
+        }
 
         for (var k in my.game.seq) {
             var o = my.game.seq[k];
@@ -234,7 +245,7 @@ exports.roundReady = function () {
                 client.send('roundReady', {
                     round: my.game.round,
                     pool: my.game.pool[clientId],
-                    mission: my.game.mission,
+                    mission: my.game.mission[clientId],
                     opponent: my.game.opponent[clientId]
                 }, true);
             }
@@ -267,7 +278,8 @@ exports.turnStart = function () {
         if (client) {
             client.send('turnStart', {
                 pool: my.game.pool[clientId],
-                roundTime: my.game.roundTime
+                roundTime: my.game.roundTime,
+                mission: my.game.mission[clientId]
             }, true);
         }
     }
@@ -310,12 +322,13 @@ exports.submit = function (client, text) {
     function isChainable(text, pool) {
         if (!text || text.length <= 1) return false;
         var char = [];
+        var targetChar = my.opts.apmal ? text[text.length - 1] : text[0];
         for (var i in pool) {
             char.push(pool[i]);
             var sub = getSubChar(pool[i]);
             if (sub) char.push(sub);
         }
-        return char.indexOf(text[0]) != -1;
+        return char.indexOf(targetChar) != -1;
     }
 
     function getPoolIndex(char, clientId) {
@@ -343,20 +356,28 @@ exports.submit = function (client, text) {
             if (!my.game.chain[client.id]) return;
             if (!my.game.dic) return;
 
+            var baseScore = my.getScore.call(my, text, client.id, true);
             score = my.getScore.call(my, text, client.id);
-            my.game.dic[text] = (my.game.dic[text] || 0) + 1;
-            my.game.chain[client.id].push(text);
+            var bonus = score - baseScore;
 
-            var firstChar = text.charAt(0);
-            var endChar = preChar;
             var myPool = my.game.pool[client.id];
-            var pidx = getPoolIndex(firstChar, client.id);
+            var myRemoveChar, toOpponentChar;
+
+            if (my.opts.apmal) {
+                myRemoveChar = text.charAt(text.length - 1);
+                toOpponentChar = text.charAt(0);
+            } else {
+                myRemoveChar = text.charAt(0);
+                toOpponentChar = preChar;
+            }
+
+            var pidx = getPoolIndex(myRemoveChar, client.id);
             if (pidx == -1) return;
             myPool.splice(pidx, 1);
 
             var opponentId = my.game.opponent[client.id];
             if (opponentId && my.game.pool[opponentId]) {
-                my.game.pool[opponentId].push(endChar);
+                my.game.pool[opponentId].push(toOpponentChar);
             }
 
             client.game.score += score;
@@ -374,8 +395,9 @@ exports.submit = function (client, text) {
                 theme: $doc ? $doc.theme : '',
                 wc: $doc ? $doc.type : '',
                 score: score,
-                bonus: 0,
-                pools: poolData
+                bonus: bonus,
+                pools: poolData,
+                mission: my.game.mission ? my.game.mission[client.id] : null
             }, true);
 
             if (!client.robot) {
@@ -392,7 +414,16 @@ exports.submit = function (client, text) {
                 return;
             }
 
-            getWordList.call(my, preChar, preSubChar, true).then(function (list) {
+            var checkChar, checkSubChar;
+            if (my.opts.apmal) {
+                checkChar = text.charAt(0);
+                checkSubChar = getSubChar(checkChar);
+            } else {
+                checkChar = preChar;
+                checkSubChar = preSubChar;
+            }
+
+            getWordList.call(my, checkChar, checkSubChar, true).then(function (list) {
                 if (list && list.length) {
                     approved();
                 } else {
@@ -425,14 +456,23 @@ exports.submit = function (client, text) {
     DB.kkutu[l].findOne.apply(DB.kkutu[l], queryArgs).on(onDB);
 };
 
-exports.getScore = function (text, clientId) {
+exports.getScore = function (text, clientId, skipMission) {
     var my = this;
-    var score;
+    var score, arr;
 
     if (!text || !my.game.chain || !my.game.dic) return 0;
 
     score = Const.getPreScore(text, my.game.chain[clientId], 1);
     if (my.game.dic[text]) score *= 15 / (my.game.dic[text] + 15);
+
+    if (!skipMission && my.game.mission && my.game.mission[clientId] && typeof my.game.mission[clientId] === 'string' && my.opts.mission) {
+        var escapedMission = my.game.mission[clientId].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (arr = text.match(new RegExp(escapedMission, "g"))) {
+            score += score * 0.5 * arr.length;
+            // 즉시 새로운 mission 할당
+            my.game.mission[clientId] = getMission(my.rule.lang);
+        }
+    }
 
     return Math.round(score);
 };
@@ -499,10 +539,16 @@ exports.readyRobot = function (robot) {
             attempts++;
 
             if (my.opts.manner) {
-                var endChar = getChar(text);
-                var endSubChar = getSubChar(endChar);
+                var nextChar, nextSubChar;
+                if (my.opts.apmal) {
+                    nextChar = text.charAt(0);
+                    nextSubChar = getSubChar(nextChar);
+                } else {
+                    nextChar = getChar(text);
+                    nextSubChar = getSubChar(nextChar);
+                }
 
-                getWordList.call(my, endChar, endSubChar, true).then(function (nextList) {
+                getWordList.call(my, nextChar, nextSubChar, true).then(function (nextList) {
                     if (!nextList || !nextList.length) {
                         tryWord();
                     } else {
@@ -524,28 +570,38 @@ exports.readyRobot = function (robot) {
         my.game.chain[robot.id].push(text);
 
         var pool = my.game.pool[robot.id];
-        var char = text.charAt(0);
+        var myRemoveChar, toOpponentChar;
+
+        if (my.opts.apmal) {
+            myRemoveChar = text.charAt(text.length - 1);
+            toOpponentChar = text.charAt(0);
+        } else {
+            myRemoveChar = text.charAt(0);
+            toOpponentChar = getChar(text);
+        }
+
         var pidx = -1;
         for (var i in pool) {
-            if (pool[i] == char) {
+            if (pool[i] == myRemoveChar) {
                 pidx = i;
                 break;
             }
             var sub = getSubChar(pool[i]);
-            if (sub == char) {
+            if (sub == myRemoveChar) {
                 pidx = i;
                 break;
             }
         }
         if (pidx !== -1) pool.splice(pidx, 1);
 
-        var endChar = getChar(text);
         var opponentId = my.game.opponent[robot.id];
-        if (opponentId && my.game.pool[opponentId] && /[가-힣a-zA-Z]/.test(endChar)) {
-            my.game.pool[opponentId].push(endChar);
+        if (opponentId && my.game.pool[opponentId] && /[가-힣a-zA-Z]/.test(toOpponentChar)) {
+            my.game.pool[opponentId].push(toOpponentChar);
         }
 
+        var baseScore = my.getScore.call(my, text, robot.id, true);
         var score = my.getScore.call(my, text, robot.id);
+        var bonus = score - baseScore;
         robot.game.score += score;
 
         my.game.dic[text] = (my.game.dic[text] || 0) + 1;
@@ -564,8 +620,9 @@ exports.readyRobot = function (robot) {
                 theme: '',
                 wc: '',
                 score: score,
-                bonus: 0,
-                pools: poolData
+                bonus: bonus,
+                pools: poolData,
+                mission: my.game.mission ? my.game.mission[robot.id] : null
             }, true);
 
             setTimeout(function () {
@@ -591,8 +648,9 @@ exports.readyRobot = function (robot) {
                 theme: $doc ? $doc.theme : '',
                 wc: $doc ? $doc.type : '',
                 score: score,
-                bonus: 0,
-                pools: poolData
+                bonus: bonus,
+                pools: poolData,
+                mission: my.game.mission ? my.game.mission[robot.id] : null
             }, true);
 
             setTimeout(function () {
