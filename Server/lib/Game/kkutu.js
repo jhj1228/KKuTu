@@ -565,7 +565,9 @@ exports.Client = function (socket, profile, sid) {
 				return my.sendError(430, room.id);
 			}
 			if (!spec) {
-				if ($room.gaming) {
+				if ($room.opts.spectator) {
+					return my.send('error', { code: 465 });
+				} else if ($room.gaming) {
 					return my.send('error', { code: 416, target: $room.id });
 				} else if (my.guest) if (!GUEST_PERMISSION.enter) {
 					return my.sendError(401);

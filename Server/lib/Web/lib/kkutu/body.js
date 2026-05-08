@@ -932,9 +932,9 @@ function processRoom(data) {
 			if (data.spec && data.target == $data.id) {
 				if (!$data._spectate) {
 					$data._spectate = true;
-					clearBoard();
-					drawRound();
 				}
+				clearBoard();
+				drawRound();
 				if (data.boards) {
 					// 십자말풀이 처리
 					$data.selectedRound = 1;
