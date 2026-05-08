@@ -3221,7 +3221,7 @@ function chat(profile, msg, from, timestamp) {
 	if (link = msg.match(/https?:\/\/[\w\.\?\/&#%=-_\+]+/g)) {
 		msg = $msg.html();
 		link.forEach(function (item) {
-			msg = msg.replace(item, "<a href='#' style='color: #2222FF;' onclick='handleLinkWarning(\"" + item + "\"); return false;'>" + item + "</a>");
+			msg = msg.replace(escapeHtml(item), "<a href='#' class='chat-link' data-url='" + escapeHtml(item) + "' style='color: #2222FF;'>" + escapeHtml(item) + "</a>");
 		});
 		$msg.html(msg);
 	}

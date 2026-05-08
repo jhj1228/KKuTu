@@ -469,7 +469,6 @@ exports.getScore = function (text, clientId, skipMission) {
         var escapedMission = my.game.mission[clientId].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         if (arr = text.match(new RegExp(escapedMission, "g"))) {
             score += score * 0.5 * arr.length;
-            // 즉시 새로운 mission 할당
             my.game.mission[clientId] = getMission(my.rule.lang);
         }
     }
