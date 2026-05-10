@@ -694,7 +694,14 @@ function getAuto(char, subc, type) {
 			forManner($md);
 			var filteredList = $md;
 			if (my.game.chain) {
-				filteredList = filteredList.filter(function (item) { return !my.game.chain.includes(item._id); });
+				if (Array.isArray(my.game.chain)) {
+					filteredList = filteredList.filter(function (item) { return !my.game.chain.includes(item._id); });
+				} else if (typeof my.game.chain === 'object') {
+					var chainArray = Object.keys(my.game.chain).length > 0 && Array.isArray(Object.values(my.game.chain)[0])
+						? (my.game.chain[my.rule.lang] || []).concat.apply([], Object.values(my.game.chain))
+						: [];
+					filteredList = filteredList.filter(function (item) { return chainArray.indexOf(item._id) === -1; });
+				}
 			}
 			if (my.opts.dodoli) {
 				filteredList = filteredList.filter(function (item) {

@@ -147,7 +147,11 @@ function getWordList(char, subChar, isLimited) {
     }
 
     DB.kkutu[my.rule.lang].find.apply(DB.kkutu[my.rule.lang], aqs).sort(['hit', -1]).limit(50).on(function ($res) {
-        R.go($res);
+        if (my.game && !my.game.late) {
+            R.go($res || []);
+        } else {
+            R.go([]);
+        }
     });
 
     return R;
@@ -180,7 +184,7 @@ exports.getTitle = function () {
                 my.game.charpool = my.game.charpool.concat(getRandom(list).split(""));
             }
         }
-        R.go("①②③④⑤⑥⑦⑧⑨⑩");
+        R.go("①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
     }
 
     return R;
@@ -364,7 +368,7 @@ exports.submit = function (client, text) {
     if (my.game.chain[client.id].indexOf(text) != -1) return client.send('turnError', { code: 409, value: text }, true);
 
     function onDB($doc) {
-        if (!my.game.chain[client.id]) return;
+        if (!my.game || my.game.late || !my.game.chain[client.id]) return;
 
         var preChar = getChar(text);
         var preSubChar = getSubChar(preChar);
@@ -422,7 +426,7 @@ exports.submit = function (client, text) {
 
             if (!client.robot) {
                 client.invokeWordPiece(text, 1);
-                if ($doc) {
+                if ($doc && my.game && my.game.late === false) {
                     DB.kkutu[l].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
                 }
             }
@@ -444,6 +448,7 @@ exports.submit = function (client, text) {
             }
 
             getWordList.call(my, checkChar, checkSubChar, true).then(function (list) {
+                if (!my.game || my.game.late) return;
                 if (list && list.length) {
                     approved();
                 } else {
@@ -501,14 +506,18 @@ exports.readyRobot = function (robot) {
     var level = robot.level;
     var delay = ROBOT_START_DELAY[level] + 1000;
 
-    if (my.game.late) return;
+    if (!my.game || my.game.late) return;
     if (!my.game.pool || !my.game.pool[robot.id]) return;
 
     var pool = my.game.pool[robot.id];
     if (!pool.length) {
-        setTimeout(function () {
-            my.readyRobot(robot);
-        }, delay);
+        if (my.game && !my.game.late) {
+            setTimeout(function () {
+                if (my.game && !my.game.late) {
+                    my.readyRobot(robot);
+                }
+            }, delay);
+        }
         return;
     }
 
@@ -518,9 +527,13 @@ exports.readyRobot = function (robot) {
 
     var tryFindValidChar = function () {
         if (findAttempts >= MAX_POOL_ATTEMPTS) {
-            setTimeout(function () {
-                my.readyRobot(robot);
-            }, delay);
+            if (my.game && !my.game.late) {
+                setTimeout(function () {
+                    if (my.game && !my.game.late) {
+                        my.readyRobot(robot);
+                    }
+                }, delay);
+            }
             return;
         }
 
@@ -529,6 +542,8 @@ exports.readyRobot = function (robot) {
         findAttempts++;
 
         getWordList.call(my, targetChar, subChar, true).then(function (list) {
+            if (!my.game || !my.game.chain || my.game.late) return;
+
             if (!list || !list.length) {
                 tryFindValidChar();
             } else {
@@ -576,6 +591,8 @@ exports.readyRobot = function (robot) {
                     }
 
                     getWordList.call(my, nextChar, nextSubChar, true).then(function (nextList) {
+                        if (!my.game || !my.game.chain || my.game.late) return;
+
                         if (!nextList || !nextList.length) {
                             tryWord();
                         } else {
@@ -590,6 +607,8 @@ exports.readyRobot = function (robot) {
     };
 
     function doRobotMove() {
+        if (!my.game || my.game.late || !text) return;
+
         delay += text.length * ROBOT_TYPE_COEF[level];
 
         if (!my.game.chain[robot.id] || !my.game.pool || !my.game.pool[robot.id]) return;
@@ -647,6 +666,8 @@ exports.readyRobot = function (robot) {
         }
 
         DB.kkutu[l].findOne.apply(DB.kkutu[l], queryArgs).on(function ($doc) {
+            if (!my.game || !my.game.chain || !my.game.pool) return;
+
             my.byMaster('turnEnd', {
                 ok: true,
                 target: robot.id,
@@ -660,9 +681,13 @@ exports.readyRobot = function (robot) {
                 mission: my.game.mission ? my.game.mission[robot.id] : null
             }, true);
 
-            setTimeout(function () {
-                my.readyRobot(robot);
-            }, delay);
+            if (my.game && !my.game.late) {
+                setTimeout(function () {
+                    if (my.game && !my.game.late) {
+                        my.readyRobot(robot);
+                    }
+                }, delay);
+            }
         });
     }
 
