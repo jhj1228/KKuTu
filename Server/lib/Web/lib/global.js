@@ -247,10 +247,8 @@
 		return text.replace(/[&<>"']/g, function (m) { return map[m]; });
 	};
 	globalThis.parseMarkdown = function (text) {
-		// XSS 방지: 먼저 HTML 이스케이프
 		text = escapeHtml(text);
 
-		// 그 다음 마크다운 문법 처리
 		text = text.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
 		text = text.replace(/\*(.+?)\*/g, '<i>$1</i>');
 		text = text.replace(/__(.+?)__/g, '<u>$1</u>');
@@ -259,7 +257,6 @@
 		return text;
 	};
 
-	// XSS 방지: 이벤트 위임을 통한 안전한 링크 처리
 	$(document).on('click', 'a.chat-link[data-url]', function (e) {
 		e.preventDefault();
 		var url = $(this).attr('data-url');

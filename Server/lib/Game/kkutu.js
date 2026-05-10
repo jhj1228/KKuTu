@@ -1599,6 +1599,9 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 		case 'SCR':
 			rw.score += score * 0.95;
 			break;
+		case 'KSW':
+			rw.score += score * 0.58;
+			break;
 		default:
 			break;
 	}

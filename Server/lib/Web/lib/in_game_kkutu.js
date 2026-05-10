@@ -3116,15 +3116,21 @@ $lib.Wordstack.roundReady = function (data) {
     $data._fastTime = 10000;
     $data.chain = 0;
 
-    $data._pool = data.pool || [];
-    $stage.game.display.html(formatPoolDisplay($data._pool));
+    if (!$data._spectate) {
+        $data._pool = data.pool || [];
+        $stage.game.display.html(formatPoolDisplay($data._pool));
+        updatePoolBar();
+    } else {
+        $stage.game.display.html(L['spectateWordstack']);
+    }
+
     $stage.game.chain.show().html($data.chain);
-    updatePoolBar();
     if ($data.room.opts.mission) {
         $stage.game.items.show().css('opacity', 1).html($data.mission = data.mission);
     }
     drawRound(data.round);
-    playSound('round_start');
+    if (!$data._spectate) playSound('round_start');
+    clearInterval($data._tTime);
     recordEvent('roundReady', { data: data });
 };
 
@@ -3133,21 +3139,23 @@ $lib.Wordstack.turnStart = function (data) {
         $stage.game.here.show();
         if (mobile) $stage.game.hereText.val("").focus();
         else $stage.talk.val("").focus();
-    }
 
-    if (data.pool && Array.isArray(data.pool)) {
-        $data._pool = data.pool;
+        if (data.pool && Array.isArray(data.pool)) {
+            $data._pool = data.pool;
+        }
+        var poolDisplay = formatPoolDisplay($data._pool);
+        $stage.game.display.html($data._char = poolDisplay || "🔤");
+        updatePoolBar();
+        playBGM('jaqwi');
+    } else {
+        $stage.game.display.html(L['spectateWordstack']);
     }
-    var poolDisplay = formatPoolDisplay($data._pool);
-    $stage.game.display.html($data._char = poolDisplay || "🔤");
-    updatePoolBar();
 
     ws.onmessage = _onMessage;
     clearInterval($data._tTime);
     clearTrespasses();
     $data._tTime = addInterval($lib.Wordstack.turnGoing, TICK);
     $data._roundTime = data.roundTime;
-    playBGM('jaqwi');
     recordEvent('turnStart', {
         data: data
     });
@@ -3166,12 +3174,14 @@ $lib.Wordstack.turnGoing = function () {
         .width($data._roundTime / $data.room.time * 0.1 + "%")
         .html(tt);
 
-    if (!$rtb.hasClass("round-extreme")) if ($data._roundTime <= $data._fastTime) {
-        bRate = $data.bgm.currentTime / $data.bgm.duration;
-        if ($data.bgm.paused) stopBGM();
-        else playBGM('jaqwiF');
-        $data.bgm.currentTime = $data.bgm.duration * bRate;
-        $rtb.addClass("round-extreme");
+    if (!$data._spectate && $data.bgm && !$rtb.hasClass("round-extreme")) {
+        if ($data._roundTime <= $data._fastTime) {
+            bRate = $data.bgm.currentTime / $data.bgm.duration;
+            if ($data.bgm.paused) stopBGM();
+            else playBGM('jaqwiF');
+            $data.bgm.currentTime = $data.bgm.duration * bRate;
+            $rtb.addClass("round-extreme");
+        }
     }
 };
 
@@ -3182,7 +3192,10 @@ $lib.Wordstack.turnEnd = function (id, data) {
     var $uc = $("#game-user-" + id);
 
     if (data.ok) {
-        if ($data.id == id) {
+        if ($data._spectate) {
+            $stage.game.display.html(L['spectateWordstack']);
+            pushHistory(data.value, data.mean, data.theme, data.wc);
+        } else if ($data.id == id) {
             checkFailCombo();
             clearTimeout($data._fail);
             $data.chain++;
@@ -3217,8 +3230,10 @@ $lib.Wordstack.turnEnd = function (id, data) {
     } else {
         clearInterval($data._tTime);
         $stage.game.here.hide();
-        stopBGM();
-        playSound('horr');
+        if (!$data._spectate) {
+            stopBGM();
+            playSound('horr');
+        }
         addTimeout(restGoing, 1000, 10);
     }
 

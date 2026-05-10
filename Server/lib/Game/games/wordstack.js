@@ -105,6 +105,17 @@ function getChar(text) {
     return text.charAt(text.length - 1);
 }
 
+function isKoreanWord(text) {
+    if (!text) return false;
+    for (var i = 0; i < text.length; i++) {
+        var code = text.charCodeAt(i);
+        if (code < 0xAC00 || code > 0xD7A3) {
+            return false;
+        }
+    }
+    return true;
+}
+
 function getSubpool(pool) {
     var my = this;
     return pool.map(function (char) {
@@ -232,9 +243,15 @@ exports.roundReady = function () {
             playerList[j] = temp;
         }
 
-        for (var i = 0; i < playerList.length - 1; i += 2) {
-            my.game.opponent[playerList[i]] = playerList[i + 1];
-            my.game.opponent[playerList[i + 1]] = playerList[i];
+        if (playerList.length % 2 === 1) {
+            for (var i = 0; i < playerList.length; i++) {
+                my.game.opponent[playerList[i]] = playerList[(i + 1) % playerList.length];
+            }
+        } else {
+            for (var i = 0; i < playerList.length; i += 2) {
+                my.game.opponent[playerList[i]] = playerList[i + 1];
+                my.game.opponent[playerList[i + 1]] = playerList[i];
+            }
         }
 
         for (var k in my.game.seq) {
@@ -343,6 +360,7 @@ exports.submit = function (client, text) {
     }
 
     if (!isChainable(text, my.game.pool[client.id])) return client.chat(text);
+    if (l === 'ko' && !isKoreanWord(text)) return client.chat(text);
     if (my.game.chain[client.id].indexOf(text) != -1) return client.send('turnError', { code: 409, value: text }, true);
 
     function onDB($doc) {
@@ -355,6 +373,8 @@ exports.submit = function (client, text) {
             if (my.game.late) return;
             if (!my.game.chain[client.id]) return;
             if (!my.game.dic) return;
+
+            my.game.chain[client.id].push(text);
 
             var baseScore = my.getScore.call(my, text, client.id, true);
             score = my.getScore.call(my, text, client.id);
@@ -433,7 +453,7 @@ exports.submit = function (client, text) {
         }
 
         function denied(code) {
-            client.send('turnError', { code: code || 404, value: text });
+            client.send('turnError', { code: code || 404, value: text }, true);
         }
 
         if ($doc) {
@@ -492,80 +512,88 @@ exports.readyRobot = function (robot) {
         return;
     }
 
-    var targetChar = getRandom(pool);
-    var subChar = getSubChar(targetChar);
-    var text, i;
+    var targetChar, subChar, text, i;
+    var findAttempts = 0;
+    var MAX_POOL_ATTEMPTS = pool.length * 3;
 
-    getWordList.call(my, targetChar, subChar, true).then(function (list) {
-        if (!list || !list.length) {
-            text = targetChar + '... T.T';
-            doRobotMove();
+    var tryFindValidChar = function () {
+        if (findAttempts >= MAX_POOL_ATTEMPTS) {
+            setTimeout(function () {
+                my.readyRobot(robot);
+            }, delay);
             return;
         }
 
-        var chain = my.game.chain[robot.id];
-        var validWords = [];
+        targetChar = getRandom(pool);
+        subChar = getSubChar(targetChar);
+        findAttempts++;
 
-        for (i = 0; i < list.length; i++) {
-            var word = list[i];
-            if (word._id.length < 2) continue;
-            if (word._id.length > ROBOT_LENGTH_LIMIT[level]) continue;
-            if (word.hit < ROBOT_HIT_LIMIT[level]) continue;
-            if (chain.indexOf(word._id) !== -1) continue;
+        getWordList.call(my, targetChar, subChar, true).then(function (list) {
+            if (!list || !list.length) {
+                tryFindValidChar();
+            } else {
+                var chain = my.game.chain[robot.id];
+                var validWords = [];
 
-            validWords.push(word);
-        }
+                for (i = 0; i < list.length; i++) {
+                    var word = list[i];
+                    if (word._id.length < 2) continue;
+                    if (word._id.length > ROBOT_LENGTH_LIMIT[level]) continue;
+                    if (word.hit < ROBOT_HIT_LIMIT[level]) continue;
+                    if (chain.indexOf(word._id) !== -1) continue;
 
-        if (!validWords.length) {
-            text = targetChar + '... T.T';
-            doRobotMove();
-            return;
-        }
+                    if (my.rule.lang === 'ko' && !isKoreanWord(word._id)) continue;
 
-        var attempts = 0;
-        var MAX_ATTEMPTS = Math.min(5, validWords.length);
-
-        function tryWord() {
-            if (attempts >= MAX_ATTEMPTS) {
-                text = targetChar + '... T.T';
-                doRobotMove();
-                return;
-            }
-
-            var target = validWords[Math.floor(Math.random() * validWords.length)];
-            text = target._id;
-            delay += 500 * ROBOT_THINK_COEF[level] * Math.random() / Math.log(1.1 + target.hit);
-            attempts++;
-
-            if (my.opts.manner) {
-                var nextChar, nextSubChar;
-                if (my.opts.apmal) {
-                    nextChar = text.charAt(0);
-                    nextSubChar = getSubChar(nextChar);
-                } else {
-                    nextChar = getChar(text);
-                    nextSubChar = getSubChar(nextChar);
+                    validWords.push(word);
                 }
 
-                getWordList.call(my, nextChar, nextSubChar, true).then(function (nextList) {
-                    if (!nextList || !nextList.length) {
-                        tryWord();
-                    } else {
-                        doRobotMove();
-                    }
-                });
-            } else {
-                doRobotMove();
-            }
-        }
+                if (!validWords.length) {
+                    tryFindValidChar();
+                    return;
+                }
 
-        tryWord();
-    });
+                var wordAttempts = 0;
+                var MAX_WORD_ATTEMPTS = Math.min(5, validWords.length);
+
+                function tryWord() {
+                    if (wordAttempts >= MAX_WORD_ATTEMPTS) {
+                        tryFindValidChar();
+                        return;
+                    }
+
+                    var target = validWords[Math.floor(Math.random() * validWords.length)];
+                    text = target._id;
+                    delay += 500 * ROBOT_THINK_COEF[level] * Math.random() / Math.log(1.1 + target.hit);
+                    wordAttempts++;
+
+                    var nextChar, nextSubChar;
+                    if (my.opts.apmal) {
+                        nextChar = text.charAt(0);
+                        nextSubChar = getSubChar(nextChar);
+                    } else {
+                        nextChar = getChar(text);
+                        nextSubChar = getSubChar(nextChar);
+                    }
+
+                    getWordList.call(my, nextChar, nextSubChar, true).then(function (nextList) {
+                        if (!nextList || !nextList.length) {
+                            tryWord();
+                        } else {
+                            doRobotMove();
+                        }
+                    });
+                }
+
+                tryWord();
+            }
+        });
+    };
 
     function doRobotMove() {
         delay += text.length * ROBOT_TYPE_COEF[level];
 
         if (!my.game.chain[robot.id] || !my.game.pool || !my.game.pool[robot.id]) return;
+
         my.game.chain[robot.id].push(text);
 
         var pool = my.game.pool[robot.id];
@@ -610,26 +638,6 @@ exports.readyRobot = function (robot) {
             poolData[k] = my.game.pool[k];
         }
 
-        if (text.indexOf('...') !== -1) {
-            my.byMaster('turnEnd', {
-                ok: true,
-                target: robot.id,
-                value: text,
-                mean: '',
-                theme: '',
-                wc: '',
-                score: score,
-                bonus: bonus,
-                pools: poolData,
-                mission: my.game.mission ? my.game.mission[robot.id] : null
-            }, true);
-
-            setTimeout(function () {
-                my.readyRobot(robot);
-            }, delay);
-            return;
-        }
-
         var l = my.rule && my.rule.lang ? my.rule.lang : 'ko';
         var queryArgs = [['_id', text]];
         if (l == "ko") {
@@ -657,4 +665,6 @@ exports.readyRobot = function (robot) {
             }, delay);
         });
     }
+
+    tryFindValidChar();
 };
