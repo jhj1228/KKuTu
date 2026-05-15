@@ -291,10 +291,10 @@ exports.KO_INJEONG = [
 	"SCP", "IMS", "RAG", "NEX",
 	"KTV", "CPY", "WOR", "NFX", "KOT", "DRM", "THP",
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
-	"MIN", "MAF", "JAN", "CTH", "BGP", "BUT", "BUS",
+	"MIN", "MAF", "JAN", "MAP", "CTH", "BGP", "BUT", "BUS",
 	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB",
 	"ELW", "KMV", "OVW", "GEN", "ONE", "WEB", "UWH",
-	"KPO", "VOC", "ERT", "JPT", "ZEL",
+	"KPO", "VOC", "ERT", "JPT", "JAD", "ZEL", "CNT",
 	"CKR", "CRO", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
 ];

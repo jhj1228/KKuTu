@@ -565,7 +565,7 @@ exports.Client = function (socket, profile, sid) {
 				return my.sendError(430, room.id);
 			}
 			if (!spec) {
-				if ($room.opts.spectator) {
+				if ($room.opts.spectator && !my.admin) {
 					return my.send('error', { code: 465 });
 				} else if ($room.gaming) {
 					return my.send('error', { code: 416, target: $room.id });

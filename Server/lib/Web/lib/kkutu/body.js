@@ -806,6 +806,13 @@ function runCommand(cmd) {
 				notice(L['cmd_nothing']);
 				break;
 			}
+			if (c.startsWith('#')) {
+				var userId = c.substring(1).trim();
+				if (userId) {
+					requestProfile(userId);
+					break;
+				}
+			}
 			i = findOnlineUserIdByName(c);
 			if (i) {
 				requestProfile(i);
@@ -3129,7 +3136,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" ? "lobby" : key;
+	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "mouse" || key === "enchanted" ? "lobby" : key;
 
 	src.start();
 
