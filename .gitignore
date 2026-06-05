@@ -7,7 +7,7 @@ Server/lib/Web/public/js/**
 Server/lib/sub/auth.json
 Server/lib/sub/global.json
 Server/lib/data/speedquiz/**
-Server/lib/Web/public/img/kkutu/moremi/**
+Server/lib/Web/public/img/**
 KKUTU_ERROR.log
 /ssl
 db.sql

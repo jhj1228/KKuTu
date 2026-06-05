@@ -292,14 +292,14 @@ exports.KO_INJEONG = [
 	"KTV", "CPY", "WOR", "NFX", "KOT", "DRM", "THP",
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
 	"MIN", "MAF", "JAN", "MAP", "CTH", "BGP", "BUS",
-	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB",
+	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB", "UND",
 	"ELW", "KMV", "OVW", "GEN", "ONE", "WEB", "UWH",
 	"KPO", "ERT", "JPT", "JAD", "ZEL", "CNT",
 	"CKR", "CRO", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
 	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
-	"CPT", "LAN", "ENG", "PTE", "CTR"
+	"CPT", "LAN", "ENG", "PTE", "CNC", "CTR"
 ];
 exports.EN_INJEONG = [
 	"LOL", "GTD"

@@ -527,16 +527,14 @@ block Middle
 						);
 					}
 				thead: tr
-					td(style='width: 40px;') 계급장
 					td 레벨
 					td 필요 경험치
 					td 총 경험치
 				tbody(style='text-align: center;')
-					- var MAX_LEVEL = 360;
+					- var MAX_LEVEL = 400;
 					- var curr, integ = 0;
 					- for(var lv=1; lv<=MAX_LEVEL; lv++)
 						tr
-							td: img(src='/img/kkutu/lv/lv' + zeroPadding(lv, 4) + '.png')
 							td= lv
 							td= curr = (lv == MAX_LEVEL) ? "-" : getRequiredScore(lv)
 							td= (lv == MAX_LEVEL) ? "-" : integ += curr
