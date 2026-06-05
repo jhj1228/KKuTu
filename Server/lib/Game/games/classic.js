@@ -551,7 +551,8 @@ exports.readyRobot = function (robot) {
 		} while (
 			w._id.length > ROBOT_LENGTH_LIMIT[level] ||
 			robot._done.includes(w._id) ||
-			(my.game.chain && my.game.chain.indexOf(w._id) != -1)
+			(my.game.chain && my.game.chain.indexOf(w._id) != -1) ||
+			(my.opts.manner && w._id.length < 2)
 		);
 		if (w) {
 			text = w._id;
@@ -694,6 +695,11 @@ function getAuto(char, subc, type) {
 				filteredList = filteredList.filter(function (item) {
 					var w = item._id;
 					return w.length < 2 || w.charAt(0) !== w.charAt(w.length - 1);
+				});
+			}
+			if (my.opts.manner) {
+				filteredList = filteredList.filter(function (item) {
+					return item._id.length >= 2;
 				});
 			}
 			aft(filteredList);
