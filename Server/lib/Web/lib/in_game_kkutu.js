@@ -6176,7 +6176,7 @@ function getLevelImage(score) {
 	// return getImage("/img/kkutu/lv/lv" + zeroPadding(lv+1, 4) + ".png");
 	return $("<div>").css({
 		'float': "left",
-		'background-image': "url('/img/kkutu/lv/newlv1.png')",
+		'background-image': "url('/img/kkutu/newlv.png')",
 		'background-position': lX + "% " + lY + "%",
 		'background-size': "2560%"
 	});

@@ -272,7 +272,7 @@ exports.RULE = {
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
-	return 2 * (Math.pow(5 + 7 * (text || "").length, 0.74) + 0.88 * (chain || []).length) * (0.5 + 0.5 * tr) * 3.5;
+	return 2 * (Math.pow(5 + 7 * (text || "").length, 0.74) + 0.88 * (chain || []).length) * (0.5 + 0.5 * tr) * 4.5;
 };
 exports.getPenalty = function (chain, score) {
 	return -1 * Math.round(Math.min(10 + (chain || []).length * 2.1 + score * 0.07, score));

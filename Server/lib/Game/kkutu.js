@@ -1543,64 +1543,64 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 	// rank는 0~7
 	switch (Const.GAME_TYPE[mode]) {
 		case "KKT":
-			rw.score += score * 1.42;
-			break;
-		case "KSH":
-			rw.score += score * 0.55;
-			break;
-		case "CSQ":
-			rw.score += score * 0.6;
-			break;
-		case 'KCW':
-			rw.score += score * 1.0;
-			break;
-		case 'KTY':
-			rw.score += score * 0.45;
-			break;
-		case 'KAP':
-			rw.score += score * 0.8;
-			break;
-		case 'HUN':
-			rw.score += score * 0.5;
-			break;
-		case 'KDA':
-			rw.score += score * 0.57;
-			break;
-		case 'KSS':
-			rw.score += score * 0.5;
-			break;
-		case 'KMH':
-			rw.score += score * 0.8;
-			break;
-		case 'KKK':
-			rw.score += score * 1.72;
-			break;
-		case 'MOQ':
-			rw.score += score * 0.68;
-			break;
-		case 'ALL':
-			rw.score += score * 0.2;
-			break;
-		case 'KTT':
-			rw.score += score * 0.47;
-			break;
-		case 'KRH':
-			rw.score += score * 0.47;
-			break;
-		case 'KAT':
 			rw.score += score * 1.65;
 			break;
-		case 'KSQ':
+		case "KSH":
 			rw.score += score * 0.75;
 			break;
+		case "CSQ":
+			rw.score += score * 0.8;
+			break;
+		case 'KCW':
+			rw.score += score * 1.2;
+			break;
+		case 'KTY':
+			rw.score += score * 0.65;
+			break;
+		case 'KAP':
+			rw.score += score * 1;
+			break;
+		case 'HUN':
+			rw.score += score * 0.73;
+			break;
+		case 'KDA':
+			rw.score += score * 0.65;
+			break;
+		case 'KSS':
+			rw.score += score * 0.8;
+			break;
+		case 'KMH':
+			rw.score += score * 0.85;
+			break;
+		case 'KKK':
+			rw.score += score * 2;
+			break;
+		case 'MOQ':
+			rw.score += score * 0.85;
+			break;
+		case 'ALL':
+			rw.score += score * 0.4;
+			break;
+		case 'KTT':
+			rw.score += score * 0.65;
+			break;
+		case 'KRH':
+			rw.score += score * 0.77;
+			break;
+		case 'KAT':
+			rw.score += score * 1.8;
+			break;
+		case 'KSQ':
+			rw.score += score * 1;
+			break;
 		case 'KPQ':
-			rw.score += score * 0.41;
+			rw.score += score * 0.88;
 			break;
 		case 'SCR':
 			rw.score += score * 0.95;
 			break;
 		case 'KSW':
-			rw.score += score * 0.58;
+			rw.score += score * 0.6;
 			break;
 		default:
 			break;

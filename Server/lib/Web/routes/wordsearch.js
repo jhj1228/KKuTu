@@ -19,7 +19,6 @@
 var MainDB = require("../db");
 var Const = require("../../const");
 
-// 언어 파일 로드
 var Language = {
     'ko_KR': require("../lang/ko_KR.json"),
 };
