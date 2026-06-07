@@ -6673,6 +6673,7 @@ function resetLocalSettings() {
 		nf: false
 	};
 	applyOptions(opt);
+	$("#bgm-volume, #effect-volume, #ingame-volume").prop('disabled', false).css('opacity', '1');
 	localStorage.setItem('kkutu_settings', JSON.stringify(opt));
 }
 function loadLocalSettings() {
