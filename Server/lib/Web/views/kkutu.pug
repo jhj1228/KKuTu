@@ -32,10 +32,13 @@ mixin GameOption(key, prefix)
 		+Expl(true)
 			div!= L(`expl${name}`)
 
-mixin SettingOption(id, text, st)
+mixin SettingOption(id, text, st, explKey)
 	div.dialog-opt(style=st || "")
 		input(id=id, type='checkbox', style='margin-top: 5px; width: auto;')
 		label(for=id)= text
+		if explKey
+			+Expl(true)
+				div!= L(explKey)
 
 block Subject
 	title= L('title')
@@ -262,16 +265,16 @@ block Middle
 					option(value='enchanted') Enchanted Love
 		div.dialog-bar
 			h4= L('denyReq')
-			+SettingOption('deny-invite', L('denyInvite'))
-			+SettingOption('deny-whisper', L('whisper'))
+			+SettingOption('deny-invite', L('denyInvite'), '', 'explDenyInvite')
+			+SettingOption('deny-whisper', L('whisper'), '', 'explDenyWhisper')
 			h4
-			+SettingOption('deny-friend', L('friendAdd'))
+			+SettingOption('deny-friend', L('friendAdd'), '', 'explDenyFriend')
 		div.dialog-bar
 			h4= L('ingames')
-			+SettingOption('auto-ready', L('autoReady'))
-			+SettingOption('deny-vibrate', L('denyVibrate'))
+			+SettingOption('auto-ready', L('autoReady'), '', 'explAutoReady')
+			+SettingOption('deny-vibrate', L('denyVibrate'), '', 'explDenyVibrate')
 			h4
-			+SettingOption('no-filter', L('noFilter'))
+			+SettingOption('no-filter', L('noFilter'), '', 'explNoFilter')
 		div.dialog-bar
 			h4= L('etc')
 			+SettingOption('sort-user', L('sortUser'), "width: 200px;")

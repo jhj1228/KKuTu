@@ -288,7 +288,7 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
-	"SCP", "IMS", "VOC", "RAG", "NEX",
+	"BOJ", "SCP", "IMS", "VOC", "RAG", "NEX",
 	"KTV", "CPY", "WOR", "NFX", "KOT", "DRM", "THP",
 	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
 	"MIN", "MAF", "JAN", "MAP", "CTH", "BGP", "BUS",
