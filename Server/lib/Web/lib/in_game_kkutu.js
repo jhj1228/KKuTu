@@ -6340,7 +6340,8 @@ function playSound(key, loop) {
 	} else {
 		vol = $data.EffectVolume;
 	}
-	if (vol === undefined || vol === null) vol = 0.5;
+	if (vol === undefined || vol === null || !isFinite(vol)) vol = 0.5;
+	vol = Math.max(0, Math.min(1, vol));
 
 	if (window.hasOwnProperty("AudioBuffer") && sound instanceof AudioBuffer) {
 		var gainNode = audioContext.createGain();
@@ -6357,9 +6358,11 @@ function playSound(key, loop) {
 
 		src.gainNode = gainNode;
 	} else {
-		if (sound.readyState) sound.audio.currentTime = 0;
-		sound.audio.loop = loop || false;
-		sound.audio.volume = mute ? 0 : vol;
+		if (sound && sound.audio) {
+			if (sound.readyState) sound.audio.currentTime = 0;
+			sound.audio.loop = loop || false;
+			sound.audio.volume = mute ? 0 : vol;
+		}
 		src = sound;
 	}
 
