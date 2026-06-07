@@ -115,19 +115,24 @@ function applyOptions(opt) {
 
 	$data.muteBGM = $data.opts.mb;
 	$data.muteEff = $data.opts.me;
+	$data.muteIngame = $data.opts.mi;
 	$data.BGMVolume = parseFloat($data.opts.bv);
 	$data.EffectVolume = parseFloat($data.opts.ev);
+	$data.IngameVolume = parseFloat($data.opts.iv);
 
 	if ($data.BGMVolume <= 0.01) $data.BGMVolume = 0;
 	if ($data.EffectVolume <= 0.01) $data.EffectVolume = 0;
+	if ($data.IngameVolume <= 0.01) $data.IngameVolume = 0;
 	if ($data.opts.bs) {
 		$("#bgm-select").val($data.opts.bs);
 	}
 
 	$("#mute-bgm").attr('checked', $data.muteBGM);
 	$("#mute-effect").attr('checked', $data.muteEff);
+	$("#mute-ingame").attr('checked', $data.muteIngame);
 	$("#bgm-volume").val($data.BGMVolume);
 	$("#effect-volume").val($data.EffectVolume);
+	$("#ingame-volume").val($data.IngameVolume);
 	$("#deny-vibrate").attr('checked', $data.opts.dv);
 	$("#deny-invite").attr('checked', $data.opts.di);
 	$("#deny-whisper").attr('checked', $data.opts.dw);
@@ -164,22 +169,27 @@ function applyOptions(opt) {
 	}
 	if (typeof $_sound !== 'undefined') {
 		var effTargetVol = ($data.muteEff || $data.EffectVolume === 0) ? 0 : $data.EffectVolume;
+		var ingameTargetVol = ($data.muteIngame || $data.IngameVolume === 0) ? 0 : $data.IngameVolume;
 		for (var k in $_sound) {
 			var s = $_sound[k];
-			if (s && s.loop === false) {
-				if (s.gainNode) {
-					try {
-						s.gainNode.gain.cancelScheduledValues(audioContext.currentTime);
-						if (effTargetVol === 0) {
-							s.gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-						} else {
-							s.gainNode.gain.setTargetAtTime(effTargetVol, audioContext.currentTime, 0.1);
+			if (s) {
+				var cat = getSoundCategory(k);
+				var targetVol = (cat === 'ingame' ? ingameTargetVol : (cat === 'effect' ? effTargetVol : 0));
+				if (s.loop === false || cat === 'ingame') {
+					if (s.gainNode) {
+						try {
+							s.gainNode.gain.cancelScheduledValues(audioContext.currentTime);
+							if (targetVol === 0) {
+								s.gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+							} else {
+								s.gainNode.gain.setTargetAtTime(targetVol, audioContext.currentTime, 0.1);
+							}
+						} catch (e) {
+							s.gainNode.gain.value = targetVol;
 						}
-					} catch (e) {
-						s.gainNode.gain.value = effTargetVol;
+					} else if (s.audio) {
+						s.audio.volume = targetVol;
 					}
-				} else if (s.audio) {
-					s.audio.volume = effTargetVol;
 				}
 			}
 		}
@@ -3052,13 +3062,28 @@ function stopBGM() {
 		delete $data.bgm;
 	}
 }
+function getSoundCategory(key) {
+	var ingameSounds = {
+		'T0': true, 'T1': true, 'T2': true, 'T3': true, 'T4': true, 'T5': true,
+		'T6': true, 'T7': true, 'T8': true, 'T9': true, 'T10': true, 'jaqwi': true, 'JaqwiF': true
+	};
+	return ingameSounds[key] ? 'ingame' : (key === 'lobby' || key === 'lobbyseol' || key === 'ending' || key === 'museum' || key === 'inthepool' || key === 'enchanted' ? 'bgm' : 'effect');
+}
 function playSound(key, loop) {
 	var src, sound;
-	var mute = (loop && $data.muteBGM) || (!loop && $data.muteEff);
+	var category = getSoundCategory(key);
+	var mute = (category === 'bgm' && $data.muteBGM) || (category === 'effect' && $data.muteEff) || (category === 'ingame' && $data.muteIngame);
 
 	sound = $sound[key] || $sound.missing;
 
-	var vol = loop ? $data.BGMVolume : $data.EffectVolume;
+	var vol;
+	if (category === 'bgm') {
+		vol = $data.BGMVolume;
+	} else if (category === 'ingame') {
+		vol = $data.IngameVolume;
+	} else {
+		vol = $data.EffectVolume;
+	}
 	if (vol === undefined || vol === null) vol = 0.5;
 
 	if (window.hasOwnProperty("AudioBuffer") && sound instanceof AudioBuffer) {
@@ -3354,8 +3379,10 @@ function saveLocalSettings() {
 	var opt = {
 		mb: $("#mute-bgm").is(':checked'),
 		me: $("#mute-effect").is(':checked'),
+		mi: $("#mute-ingame").is(':checked'),
 		bv: $("#bgm-volume").val(),
 		ev: $("#effect-volume").val(),
+		iv: $("#ingame-volume").val(),
 		dv: $("#deny-vibrate").is(':checked'),
 		di: $("#deny-invite").is(':checked'),
 		dw: $("#deny-whisper").is(':checked'),
@@ -3374,8 +3401,10 @@ function resetLocalSettings() {
 	var opt = {
 		mb: false,
 		me: false,
+		mi: false,
 		bv: 0.5,
 		ev: 0.5,
+		iv: 0.5,
 		dv: false,
 		di: false,
 		dw: false,
@@ -3405,6 +3434,7 @@ function loadLocalSettings() {
 		opt = {
 			mb: false,
 			me: false,
+			mi: false,
 			bv: 0.5,
 			ev: 0.5,
 			dv: false,
@@ -3424,11 +3454,47 @@ function loadLocalSettings() {
 }
 $(document).ready(function () {
 	loadLocalSettings();
-	$("#mute-bgm, #mute-effect, #deny-vibrate, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select, #no-filter").on('change', function () {
+	$("#mute-bgm, #mute-effect, #mute-ingame, #deny-vibrate, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select, #no-filter").on('change', function () {
 		saveLocalSettings();
 	});
 
-	$("#bgm-volume, #effect-volume").on('input change', function () {
+	var volumeData = {
+		bgm: 0.5,
+		effect: 0.5,
+		ingame: 0.5
+	};
+
+	$("#mute-bgm").on('change', function () {
+		if ($(this).is(':checked')) {
+			volumeData.bgm = parseFloat($("#bgm-volume").val());
+			$("#bgm-volume").val(0).prop('disabled', true).css('opacity', '1');
+		} else {
+			$("#bgm-volume").val(volumeData.bgm).prop('disabled', false).css('opacity', '1');
+		}
+		saveLocalSettings();
+	});
+
+	$("#mute-effect").on('change', function () {
+		if ($(this).is(':checked')) {
+			volumeData.effect = parseFloat($("#effect-volume").val());
+			$("#effect-volume").val(0).prop('disabled', true).css('opacity', '1');
+		} else {
+			$("#effect-volume").val(volumeData.effect).prop('disabled', false).css('opacity', '1');
+		}
+		saveLocalSettings();
+	});
+
+	$("#mute-ingame").on('change', function () {
+		if ($(this).is(':checked')) {
+			volumeData.ingame = parseFloat($("#ingame-volume").val());
+			$("#ingame-volume").val(0).prop('disabled', true).css('opacity', '1');
+		} else {
+			$("#ingame-volume").val(volumeData.ingame).prop('disabled', false).css('opacity', '1');
+		}
+		saveLocalSettings();
+	});
+
+	$("#bgm-volume, #effect-volume, #ingame-volume").on('input change', function () {
 		saveLocalSettings();
 	});
 });
