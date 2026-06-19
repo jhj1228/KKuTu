@@ -133,6 +133,10 @@ function applyOptions(opt) {
 	$("#bgm-volume").val($data.BGMVolume);
 	$("#effect-volume").val($data.EffectVolume);
 	$("#ingame-volume").val($data.IngameVolume);
+	$("#bgm-volume").prop('disabled', $data.muteBGM).css('opacity', $data.muteBGM ? '0.5' : '1');
+	$("#effect-volume").prop('disabled', $data.muteEff).css('opacity', $data.muteEff ? '0.5' : '1');
+	$("#ingame-volume").prop('disabled', $data.muteIngame).css('opacity', $data.muteIngame ? '0.5' : '1');
+
 	$("#deny-vibrate").attr('checked', $data.opts.dv);
 	$("#deny-invite").attr('checked', $data.opts.di);
 	$("#deny-whisper").attr('checked', $data.opts.dw);

@@ -499,14 +499,4 @@ function maskText(text, answer) {
 			}
 		}
 	}
-
-	if (found) {
-		var censored = "";
-		for (var j = 0; j < text.length; j++) {
-			censored += mask[j] ? "○" : text[j];
-		}
-		return censored;
-	} else {
-		return text;
-	}
 }

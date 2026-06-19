@@ -10,5 +10,7 @@ Server/lib/data/speedquiz/**
 Server/lib/Web/public/img/**
 KKUTU_ERROR.log
 /ssl
+/word
 db.sql
+db_backup.sql
 .vscode
