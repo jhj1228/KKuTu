@@ -12,5 +12,5 @@ KKUTU_ERROR.log
 /ssl
 /word
 db.sql
-db_backup.sql
+db_old.sql
 .vscode

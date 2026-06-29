@@ -197,7 +197,7 @@ span {
 #account-info {
 	float: left;
 	padding-top: 8px;
-	width: 80px;
+	width: 100px;
 	text-align: center;
 	cursor: pointer;
 	transition: color 300ms ease;

@@ -288,13 +288,15 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
-	"IMS", "VOC", "KRR", "KTV",
-	"NSK", "KOT", "DOT", "DRR", "DGM", "RAG", "LVL",
-	"LOL", "MRN", "MMM", "MAP", "MKK", "MNG",
-	"MOB", "HYK", "CYP", "HRH", "STA", "OIJ",
-	"KGR", "ESB", "ELW", "OIM", "OVW", "NEX", "WOW",
-	"YRY", "KPO", "JLN", "JAN", "ZEL", "POK", "HAI",
-	"HSS", "KMV", "HDC", "HOS"
+	"BOJ", "SCP", "IMS", "VOC", "RAG", "NEX",
+	"KTV", "CPY", "WOR", "NFX", "KOT", "DRM", "THP",
+	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
+	"MIN", "MAF", "JAN", "MAP", "CTH", "BGP", "BUS",
+	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB", "UND",
+	"ELW", "KMV", "OVW", "GEN", "ONE", "WEB", "UWH",
+	"KPO", "ERT", "JPT", "JAD", "ZEL", "CNT",
+	"CKR", "CRO", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
+	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
 	"CPT", "LAN", "ENG", "PTE", "CNC", "CTR"

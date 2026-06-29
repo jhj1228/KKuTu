@@ -180,7 +180,7 @@ exports.run = function (Server, page) {
 		if (exordial !== undefined) MainDB.users.update(['_id', req.session.profile.id]).set(['exordial', exordial.slice(0, 100)]).on();
 		if (!nickname) return res.send({ result: 200 });
 
-		if (nickname.length > 12) nickname = nickname.slice(0, 12);
+		if (nickname.length > 16) nickname = nickname.slice(0, 16);
 		MainDB.users.findOne(['nickname', nickname]).on(function (data) {
 			if (data) return res.send({ error: 456 });
 			MainDB.users.findOne(['_id', req.session.profile.id]).on(function (requester) {
