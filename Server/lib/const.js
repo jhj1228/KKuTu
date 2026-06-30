@@ -38,9 +38,9 @@ exports.OPTIONS = {
 	'ext': { name: "Injeong" }, // 어인정
 	'mis': { name: "Mission" }, // 미션
 	'rdm': { name: "Randommission" }, // 랜덤미션
-	'loa': { name: "Loanword" }, // 우리말
+	// 'loa': { name: "Loanword" }, // 우리말
 	'prv': { name: "Proverb" }, // 속담
-	'str': { name: "Strict" }, // 깐깐
+	// 'str': { name: "Strict" }, // 깐깐
 	'k32': { name: "Sami" }, // 3232
 	'no2': { name: "No2" }, // 2글자 금지
 	// 'sht': { name: "Short" }, // 짧음
@@ -288,15 +288,6 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
-	"BOJ", "SCP", "IMS", "VOC", "RAG", "NEX",
-	"KTV", "CPY", "WOR", "NFX", "KOT", "DRM", "THP",
-	"DGM", "JLN", "LVL", "LKT", "LOA", "LOL",
-	"MIN", "MAF", "JAN", "MAP", "CTH", "BGP", "BUS",
-	"HSR", "BLA", "NVL", "STA", "APT", "APP", "ESB", "UND",
-	"ELW", "KMV", "OVW", "GEN", "ONE", "WEB", "UWH",
-	"KPO", "ERT", "JPT", "JAD", "ZEL", "CNT",
-	"CKR", "CRO", "TCG", "POK", "PJS", "HSS", "HAK", "KMU",
-	"KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
 	"CPT", "LAN", "ENG", "PTE", "CNC", "CTR"
@@ -305,11 +296,11 @@ exports.EN_INJEONG = [
 	"LOL", "GTD"
 ];
 exports.KO_THEME = [
-	"30", "40", "60", "80", "90",
-	"140", "190", "150", "160", "170",
-	"220", "230", "240", "270", "310",
-	"320", "350", "360", "420", "430",
-	"450", "490", "530"
+	"20", "40", "60", "100", "110", "150", "160",
+	"190", "200", "210", "230", "280", "300", "340",
+	"350", "390", "400", "440", "450", "460", "490",
+	"510", "520", "530", "570", "580", "600", "630",
+	"670", "680"
 ];
 exports.EN_THEME = [
 	"e05", "e08", "e12", "e13", "e15",
