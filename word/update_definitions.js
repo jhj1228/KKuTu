@@ -1,3 +1,21 @@
+/**
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
@@ -32,7 +50,7 @@ const THEME_MAP = {
     "가톨릭": 10, "건설": 20, "경영": 30, "경제": 40, "고유": 50, "공업": 60, "공예": 70, "공학": 80, "광업": 90,
     "교육": 100, "교통": 110, "군사": 120, "기계": 130, "기독교": 140, "농업": 150, "동물": 160, "매체": 170,
     "무용": 180, "문학": 190, "물리": 200, "미술": 210, "민속": 220, "법률": 230, "보건": 240, "복식": 250,
-    "복지": 260, "불교": 270, "사회": 280, "산업": 290, "생명": 300, "서비스업": 310, "수산업": 320, "수의": 330,
+    "복지": 260, "불교": 270, "사회 일반": 280, "산업": 290, "생명": 300, "서비스업": 310, "수산업": 320, "수의": 330,
     "수학": 340, "식물": 350, "식품": 360, "심리": 370, "약학": 380, "언어": 390, "역사": 400, "연기": 410,
     "영상": 420, "예체능": 430, "음악": 440, "의학": 450, "인명": 460, "인문": 470, "임업": 480, "자연": 490,
     "재료": 500, "전기·전자": 510, "정보·통신": 520, "정치": 530, "종교": 550, "지구": 560, "지리": 570,
