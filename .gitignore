@@ -11,6 +11,7 @@ Server/lib/Web/public/img/**
 KKUTU_ERROR.log
 /ssl
 /word
+/word/update_definitions.js
 db.sql
 db_old.sql
 .vscode

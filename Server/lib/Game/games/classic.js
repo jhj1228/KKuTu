@@ -264,7 +264,6 @@ exports.submit = function (client, text) {
 			return;
 		}
 	}
-
 	l = my.rule.lang;
 	my.game.loading = true;
 	function onDB($doc) {
@@ -340,17 +339,31 @@ exports.submit = function (client, text) {
 					approved();
 					return;
 				}
-				if (firstMove || my.opts.manner) getAuto.call(my, preChar, preSubChar, 1).then(function (w) {
-					if (w) approved();
-					else {
-						my.game.loading = false;
-						client.publish('turnError', { code: firstMove ? 402 : 403, value: text }, true);
-						if (client.robot) {
-							my.readyRobot(client);
+				if (firstMove) {
+					getAuto.call(my, preChar, preSubChar, 1).then(function (w) {
+						if (w) approved();
+						else {
+							my.game.loading = false;
+							client.publish('turnError', { code: 402, value: text }, true);
+							if (client.robot) {
+								my.readyRobot(client);
+							}
 						}
-					}
-				});
-				else approved();
+					});
+				} else if (my.opts.manner) {
+					getAuto.call(my, preChar, preSubChar, 1).then(function (w) {
+						if (w) approved();
+						else {
+							my.game.loading = false;
+							client.publish('turnError', { code: 403, value: text }, true);
+							if (client.robot) {
+								my.readyRobot(client);
+							}
+						}
+					});
+				} else {
+					approved();
+				}
 			}
 			if (my.opts.gentle) {
 				getAuto.call(my, preChar, preSubChar, 2).then(function (list) {
@@ -414,11 +427,11 @@ exports.submit = function (client, text) {
 		}
 	}
 	var queryArgs = [['_id', text]];
-	if (l == "ko") {
-		if (!my.opts.moreword) queryArgs.push(['type', Const.KOR_GROUP]);
+	/* if (l == "ko") {
+	if (!my.opts.moreword) queryArgs.push(['type', Const.KOR_GROUP]);
 	} else {
-		queryArgs.push(['_id', Const.ENG_ID]);
-	}
+	queryArgs.push(['_id', Const.ENG_ID]);
+	} */
 
 	DB.kkutu[l].findOne.apply(DB.kkutu[l], queryArgs).on(onDB);
 };
@@ -505,7 +518,9 @@ exports.readyRobot = function (robot) {
 		if (list.length) {
 			list.sort(function (a, b) { return b.hit - a.hit; });
 
-			if (ROBOT_HIT_LIMIT[level] > list[0].hit) denied();
+			if (ROBOT_HIT_LIMIT[level] > list[0].hit) {
+				denied();
+			}
 			else {
 				if (level >= 3 && !robot._done.length) {
 					if (my.opts.manner || my.opts.gentle) {
@@ -516,6 +531,7 @@ exports.readyRobot = function (robot) {
 						}
 						pickList(list);
 					} else {
+
 						if (level >= 5 || Math.random() < 0.5) {
 							list.sort(function (a, b) { return b._id.length - a._id.length; });
 						}
@@ -536,9 +552,9 @@ exports.readyRobot = function (robot) {
 							pickList(list);
 						}
 					}
-				} else pickList(list);
+				}
 			}
-		} else denied();
+		}
 	});
 
 	function denied() {
@@ -547,7 +563,9 @@ exports.readyRobot = function (robot) {
 	}
 	function pickList(list) {
 		if (list) do {
-			if (!(w = list.shift())) break;
+			if (!(w = list.shift())) {
+				break;
+			}
 		} while (
 			w._id.length > ROBOT_LENGTH_LIMIT[level] ||
 			robot._done.includes(w._id) ||
@@ -558,7 +576,9 @@ exports.readyRobot = function (robot) {
 			text = w._id;
 			delay += 500 * ROBOT_THINK_COEF[level] * Math.random() / Math.log(1.1 + w.hit);
 			after();
-		} else denied();
+		} else {
+			denied();
+		}
 	}
 	function after() {
 		delay += text.length * ROBOT_TYPE_COEF[level];
@@ -639,26 +659,21 @@ function getAuto(char, subc, type) {
 	if (!char) {
 		console.log(`Undefined char detected! key=${key} type=${type} adc=${adc}`);
 	}
-	MAN.findOne(['_id', char || "��"]).on(function ($mn) {
-		if ($mn && bool) {
-			if ($mn[key] === null) produce();
-			else R.go($mn[key]);
-		} else {
-			produce();
-		}
-	});
+	produce();
+
 	function produce() {
 		var aqs = [['_id', new RegExp(adv)]];
 		var aft;
 		var lst;
 
-		if (!my.opts.injeong) aqs.push(['flag', { '$nand': Const.KOR_FLAG.INJEONG }]);
+		// if (!my.opts.injeong) aqs.push(['flag', { '$nand': Const.KOR_FLAG.INJEONG }]);
+
 		if (my.rule.lang == "ko") {
-			if (my.opts.loanword) aqs.push(['flag', { '$nand': Const.KOR_FLAG.LOANWORD }]);
+			/* if (my.opts.loanword) aqs.push(['flag', { '$nand': Const.KOR_FLAG.LOANWORD }]);
 			if (my.opts.strict) aqs.push(['type', Const.KOR_STRICT], ['flag', { $lte: 3 }]);
-			else if (!my.opts.moreword) aqs.push(['type', Const.KOR_GROUP]);
+			else if (!my.opts.moreword) aqs.push(['type', Const.KOR_GROUP]); */
 		} else {
-			aqs.push(['_id', Const.ENG_ID]);
+			// aqs.push(['_id', Const.ENG_ID]);
 		}
 		switch (type) {
 			case 0:
@@ -678,8 +693,8 @@ function getAuto(char, subc, type) {
 				};
 				break;
 		}
+
 		DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(bool ? 1 : 2000).on(function ($md) {
-			forManner($md);
 			var filteredList = $md;
 			if (my.game.chain) {
 				if (Array.isArray(my.game.chain)) {
@@ -702,27 +717,9 @@ function getAuto(char, subc, type) {
 					return item._id.length >= 2;
 				});
 			}
+
 			aft(filteredList);
 		});
-		function forManner(list) {
-			lst = list;
-			MAN.upsert(['_id', char]).set([key, lst.length ? true : false]).on(null, null, onFail);
-		}
-		function onFail(err) {
-			var errStr = err ? err.toString() : "";
-			if (errStr.includes("이미 있습니다") || errStr.includes("already exists")) {
-				forManner(lst);
-			} else {
-				MAN.createColumn(key, "boolean").on(function () {
-					forManner(lst);
-				}, null, function (createErr) {
-					var createErrStr = createErr ? createErr.toString() : "";
-					if (createErrStr.includes("이미 있습니다") || createErrStr.includes("already exists")) {
-						forManner(lst);
-					}
-				});
-			}
-		}
 	}
 	return R;
 }

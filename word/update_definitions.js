@@ -31,7 +31,7 @@ const DB_CONFIG = {
 };
 
 // 우리말샘 파일 경로
-const TARGET_DIR = 'YOUR_JSON_DIRECTORY';
+const TARGET_DIR = 'YOUR_JSON_DIRECTORY'; // JSON 파일이 있는 디렉토리 경로
 const FILE_PREFIX = '1562938_';
 
 const BATCH_SIZE = 1000;
@@ -113,21 +113,8 @@ function processJsonData(jsonData) {
 
         const formattedDef = formatSubDefinitions(def);
 
-        if (!wordMap.has(cleanKey)) {
-            wordMap.set(cleanKey, []);
-        }
-
-        const meaningsArray = wordMap.get(cleanKey);
-
-        // 뜻이 완전히 똑같이 중복되는 경우만 스킵
-        const isDuplicate = meaningsArray.some(m => m.def === formattedDef);
-        if (!isDuplicate) {
-            meaningsArray.push({
-                def: formattedDef,
-                type: typeCode,
-                theme: themeCode
-            });
-        }
+        // 1. 순수 한글 키로 기본 저장
+        saveToWordMap(wordMap, cleanKey, formattedDef, typeCode, themeCode);
     });
 
     const resultList = [];
