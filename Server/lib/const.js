@@ -38,9 +38,9 @@ exports.OPTIONS = {
 	'ext': { name: "Injeong" }, // 어인정
 	'mis': { name: "Mission" }, // 미션
 	'rdm': { name: "Randommission" }, // 랜덤미션
-	// 'loa': { name: "Loanword" }, // 우리말
+	'loa': { name: "Loanword" }, // 우리말
 	'prv': { name: "Proverb" }, // 속담
-	// 'str': { name: "Strict" }, // 깐깐
+	'str': { name: "Strict" }, // 깐깐
 	'k32': { name: "Sami" }, // 3232
 	'no2': { name: "No2" }, // 2글자 금지
 	// 'sht': { name: "Short" }, // 짧음
@@ -55,7 +55,7 @@ exports.OPTIONS = {
 	'thw': { name: "Threeword" }, // 3글자
 	// 'ddl': { name: "Dodoli" }, // 도돌이 금지
 	'fre': { name: "Free" }, // 자유
-	'mwd': { name: "Moreword" }, // 특수 단어 허용
+	// 'mwd': { name: "Moreword" }, // 특수 단어 허용
 	'nht': { name: "Nohint" }, // 힌트 없음
 	'hrd': { name: "Hard" }, // 어려움
 	'spc': { name: "Spectator" }, // 관전 불가
@@ -288,7 +288,10 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
-	/*  */
+	"IMS", "VOC", "RAG", "NEX", "KTV", "KOT",
+	"DOT", "JLN", "LVL", "LOL", "JAN", "MAP",
+	"CYP", "STA", "ESB", "MOV", "ELW", "OVW",
+	"WOW", "KPO", "POK", "HSS", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
 	"CPT", "LAN", "ENG", "PTE", "CNC", "CTR"
