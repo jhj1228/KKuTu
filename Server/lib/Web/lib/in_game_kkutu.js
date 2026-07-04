@@ -263,7 +263,7 @@ $(document).ready(function () {
 	$data._soundList = [
 		{ key: "k", value: "/media/kkutu/k.mp3" },
 		{ key: "lobby", value: "/media/kkutu/LobbyBGM.mp3" },
-		//- { key: "lobby", value: "/media/kkutu/LobbyBGMOriginal.mp3" },
+		{ key: "original", value: "/media/kkutu/LobbyBGMOriginal.mp3" },
 		{ key: "lobbyseol", value: "/media/kkutu/LobbySeolBGM.mp3" },
 		{ key: "ending", value: "/media/kkutu/LobbyBGMending.mp3" },
 		{ key: "museum", value: "/media/kkutu/LobbyMuseum.mp3" },
@@ -6327,7 +6327,7 @@ function getSoundCategory(key) {
 		'T0': true, 'T1': true, 'T2': true, 'T3': true, 'T4': true, 'T5': true,
 		'T6': true, 'T7': true, 'T8': true, 'T9': true, 'T10': true, 'jaqwi': true, 'JaqwiF': true
 	};
-	return ingameSounds[key] ? 'ingame' : (key === 'lobby' || key === 'lobbyseol' || key === 'ending' || key === 'museum' || key === 'inthepool' || key === 'enchanted' ? 'bgm' : 'effect');
+	return ingameSounds[key] ? 'ingame' : (key === 'lobby' || key === 'original' || key === 'lobbyseol' || key === 'ending' || key === 'museum' || key === 'inthepool' || key === 'enchanted' ? 'bgm' : 'effect');
 }
 function playSound(key, loop) {
 	var src, sound;
@@ -6373,7 +6373,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "mouse" || key === "enchanted" ? "lobby" : key;
+	src.key = key === "lobby" || key === "original" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "mouse" || key === "enchanted" ? "lobby" : key;
 
 	src.start();
 
