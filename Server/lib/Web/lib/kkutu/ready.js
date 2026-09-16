@@ -727,6 +727,7 @@ $(document).ready(function () {
 			mode: $("#room-mode").val(),
 			round: $("#room-round").val(),
 			time: $("#room-time").val(),
+			db: $("#choose-db").val(),
 			rule: $("#room-rule").val(),
 			opts: opts,
 			pq: {

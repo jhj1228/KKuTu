@@ -87,7 +87,7 @@ exports.getTitle = function () {
 			findArgs.push(['_id', Const.ENG_ID]);
 		}
 
-		DB.kkutu[l.lang].find.apply(DB.kkutu[l.lang], findArgs).limit(20).on(function ($md) {
+		my.getWordTable(l.lang).find.apply(my.getWordTable(l.lang), findArgs).limit(20).on(function ($md) {
 			var list;
 
 			if ($md.length) {
@@ -329,7 +329,7 @@ exports.submit = function (client, text) {
 				if (!client.robot) {
 					if (!my.opts.unknownword) {
 						client.invokeWordPiece(text, 1);
-						DB.kkutu[l].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
+						my.getWordTable(l).update(['_id', text]).set(['hit', $doc.hit + 1]).on();
 					}
 				}
 			}
@@ -433,7 +433,7 @@ exports.submit = function (client, text) {
 	queryArgs.push(['_id', Const.ENG_ID]);
 	} */
 
-	DB.kkutu[l].findOne.apply(DB.kkutu[l], queryArgs).on(onDB);
+	my.getWordTable(l).findOne.apply(my.getWordTable(l), queryArgs).on(onDB);
 };
 exports.getScore = function (text, delay, ignoreMission) {
 	var my = this;
@@ -501,7 +501,7 @@ exports.readyRobot = function (robot) {
 			if (my.game.chain && my.game.chain.includes(tempText)) {
 				doTurn(makeRandomBody());
 			} else {
-				DB.kkutu[my.rule.lang].findOne(['_id', tempText]).on(function (doc) {
+				my.getWordTable().findOne(['_id', tempText]).on(function (doc) {
 					if (doc) {
 						doTurn(makeRandomBody());
 					} else {
@@ -605,7 +605,7 @@ exports.readyRobot = function (robot) {
 	function getWish(char) {
 		var R = new Lizard.Tail();
 
-		DB.kkutu[my.rule.lang].find(['_id', new RegExp(isRev ? `.${char}$` : `^${char}.`)]).limit(10).on(function ($res) {
+		my.getWordTable().find(['_id', new RegExp(isRev ? `.${char}$` : `^${char}.`)]).limit(10).on(function ($res) {
 			R.go({ char: char, length: $res.length });
 		});
 		return R;
@@ -694,7 +694,7 @@ function getAuto(char, subc, type) {
 				break;
 		}
 
-		DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(bool ? 1 : 2000).on(function ($md) {
+		my.getWordTable().find.apply(this, aqs).limit(bool ? 1 : 2000).on(function ($md) {
 			var filteredList = $md;
 			if (my.game.chain) {
 				if (Array.isArray(my.game.chain)) {

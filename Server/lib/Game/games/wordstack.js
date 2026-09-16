@@ -46,7 +46,7 @@ function getAuto(theme) {
 
     if (my.game.chain) aqs.push(['_id', { '$nin': my.game.chain }]);
 
-    var raiser = DB.kkutu[my.rule.lang].find.apply(DB.kkutu[my.rule.lang], aqs);
+    var raiser = my.getWordTable().find.apply(my.getWordTable(), aqs);
     raiser.on(function ($md) {
         R.go($md);
     });
@@ -146,7 +146,7 @@ function getWordList(char, subChar, isLimited) {
         aqs.push(['type', Const.KOR_GROUP]);
     }
 
-    DB.kkutu[my.rule.lang].find.apply(DB.kkutu[my.rule.lang], aqs).sort(['hit', -1]).limit(50).on(function ($res) {
+    my.getWordTable().find.apply(my.getWordTable(), aqs).sort(['hit', -1]).limit(50).on(function ($res) {
         if (my.game && !my.game.late) {
             R.go($res || []);
         } else {
@@ -172,7 +172,7 @@ exports.getTitle = function () {
         return R;
     }
 
-    DB.kkutu[my.rule.lang].find(['_id', /^.{3}$/]).limit(416).on(function ($res) {
+    my.getWordTable().find(['_id', /^.{3}$/]).limit(416).on(function ($res) {
         pick($res.map(function (item) { return item._id; }));
     });
 
@@ -427,7 +427,7 @@ exports.submit = function (client, text) {
             if (!client.robot) {
                 client.invokeWordPiece(text, 1);
                 if ($doc && my.game && my.game.late === false) {
-                    DB.kkutu[l].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
+                    my.getWordTable(l).update(['_id', text]).set(['hit', $doc.hit + 1]).on();
                 }
             }
         }
@@ -478,7 +478,7 @@ exports.submit = function (client, text) {
         queryArgs.push(['_id', Const.ENG_ID]);
     }
 
-    DB.kkutu[l].findOne.apply(DB.kkutu[l], queryArgs).on(onDB);
+    my.getWordTable(l).findOne.apply(my.getWordTable(l), queryArgs).on(onDB);
 };
 
 exports.getScore = function (text, clientId, skipMission) {
@@ -665,7 +665,7 @@ exports.readyRobot = function (robot) {
             queryArgs.push(['_id', Const.ENG_ID]);
         }
 
-        DB.kkutu[l].findOne.apply(DB.kkutu[l], queryArgs).on(function ($doc) {
+        my.getWordTable(l).findOne.apply(my.getWordTable(l), queryArgs).on(function ($doc) {
             if (!my.game || !my.game.chain || !my.game.pool) return;
 
             my.byMaster('turnEnd', {

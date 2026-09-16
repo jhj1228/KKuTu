@@ -77,7 +77,7 @@ exports.getTitle = function () {
 		var word = bItem[4];
 		var x = Number(bItem[0]), y = Number(bItem[1]);
 
-		DB.kkutu[my.rule.lang].findOne(['_id', word]).on(function ($doc) {
+		my.getWordTable().findOne(['_id', word]).on(function ($doc) {
 			if (!$doc) return R.go(null);
 			var rk = `${x},${y}`;
 			var i, o;

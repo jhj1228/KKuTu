@@ -200,7 +200,7 @@ exports.submit = function (client, text, data) {
 
 				if (!client.robot && $doc.type !== 'unknown') {
 					client.invokeWordPiece(text, 1);
-					DB.kkutu[searchLang].update(['_id', text]).set(['hit', $doc.hit + 1]).on();
+					my.getWordTable(searchLang).update(['_id', text]).set(['hit', $doc.hit + 1]).on();
 				}
 			}
 
@@ -233,7 +233,7 @@ exports.submit = function (client, text, data) {
 			}
 		}
 
-		DB.kkutu[searchLang].findOne(['_id', text]).on(onDB);
+		my.getWordTable(searchLang).findOne(['_id', text]).on(onDB);
 	} else {
 		client.publish('turnError', { code: 409, value: text }, true);
 	}
@@ -344,7 +344,7 @@ function getAuto(type, targetLang, skipVal) {
 
 	if (my.game.chain) aqs.push(['_id', { '$nin': my.game.chain }]);
 
-	var query = DB.kkutu[searchLang].find.apply(this, aqs);
+	var query = my.getWordTable(searchLang).find.apply(this, aqs);
 
 	if (skipVal && skipVal > 0 && typeof query.skip === 'function') {
 		query = query.skip(skipVal);

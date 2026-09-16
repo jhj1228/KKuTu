@@ -62,7 +62,7 @@ exports.roundReady = function () {
 	my.game.round++;
 	my.game.roundTime = my.time * 1000;
 	if (my.game.round <= my.round) {
-		DB.kkutu[my.rule.lang].find(['_id', searchReg], ['hit', { $gte: 1 }], conf.add).limit(1234).on(function ($docs) {
+		my.getWordTable().find(['_id', searchReg], ['hit', { $gte: 1 }], conf.add).limit(1234).on(function ($docs) {
 			$docs.sort(function (a, b) { return Math.random() < 0.5; });
 			while (w = $docs.shift()) {
 				words.push(w._id);
@@ -127,7 +127,7 @@ exports.submit = function (client, text, data) {
 		return client.chat(text);
 	}
 
-	DB.kkutu[my.rule.lang].findOne(['_id', text]).limit(['_id', true]).on(function ($doc) {
+	my.getWordTable().findOne(['_id', text]).limit(['_id', true]).on(function ($doc) {
 		if (!my.game.board) return;
 
 		var newBoard = my.game.board;

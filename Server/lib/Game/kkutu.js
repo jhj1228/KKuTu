@@ -853,6 +853,12 @@ exports.Room = function (room, channel) {
 	}
 	my.round = Math.round(room.round);
 	my.time = room.time * my.rule.time;
+	my.db = my.rule.lang === "ko" && ["g", "p", "u"].indexOf(room.db) !== -1 ? room.db : "p";
+	my.getWordTable = function (lang) {
+		lang = lang || my.rule.lang;
+		var db = my.rule.rule === "Classic" ? my.db : "p";
+		return DB.kkutu[lang === "ko" ? lang + "_" + db : lang];
+	};
 	my.opts = {
 		manner: room.opts.manner,
 		extend: room.opts.injeong,
@@ -895,6 +901,7 @@ exports.Room = function (room, channel) {
 			password: my.password ? true : false,
 			limit: my.limit,
 			mode: my.mode,
+			db: my.db,
 			rule: my.connRule,
 			round: my.round,
 			time: my.time,

@@ -78,6 +78,9 @@ Pub.ready = function (isPub) {
 				DB.kkutu_cw[LANG[i]] = new mainAgent.Table("kkutu_cw_" + LANG[i]);
 				DB.kkutu_manner[LANG[i]] = new mainAgent.Table("kkutu_manner_" + LANG[i]);
 			}
+			DB.kkutu.ko_g = new mainAgent.Table("kkutu_ko_g");
+			DB.kkutu.ko_p = new mainAgent.Table("kkutu_ko_p");
+			DB.kkutu.ko_u = new mainAgent.Table("kkutu_ko_u");
 			DB.kkutu_injeong = new mainAgent.Table("kkutu_injeong");
 			DB.kkutu_shop = new mainAgent.Table("kkutu_shop");
 			DB.kkutu_shop_desc = new mainAgent.Table("kkutu_shop_desc");

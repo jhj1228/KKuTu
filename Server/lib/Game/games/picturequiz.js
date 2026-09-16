@@ -239,7 +239,7 @@ function getAnswer(theme, wordlength) {
 	args.push(['theme', new RegExp("(,|^)(" + theme + ")(,|$)")]);
 	args.push(['type', Const.KOR_GROUP]);
 	args.push(['flag', { $lte: 7 }]);
-	DB.kkutu['ko'].find.apply(my, args).on(function ($res) {
+	my.getWordTable('ko').find.apply(my, args).on(function ($res) {
 		if (!$res) return R.go(null);
 		var pick;
 		var len = $res.length;

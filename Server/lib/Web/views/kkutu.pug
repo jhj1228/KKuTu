@@ -57,7 +57,7 @@ block JS
 					var isKkt = modeVal === 0;
 					var isKkat = modeVal === 15;
 					var isKpq = modeVal === 17;
-				$roomDiag.css('height', isKpq ? '500px' : ((isKkt || isKkat) ? '470px' : '435px'));
+				$roomDiag.css('height', isKpq ? '500px' : ((isKkt || isKkat) ? '500px' : '470px'));
 				
 				if (isKkt || isKkat) {
 						$("#RoomDiag").find("div.dialog-bar:has(select#room-rule)").show();
@@ -370,6 +370,12 @@ block Middle
 					option(value="samsam",selected)= '3-3'
 					option(value="sami")= '3-2'
 					option(value="ii")= '2-2'
+		div.dialog-bar
+			h4= 'DB'
+			select#choose-db
+				option(value="g")= '기초 사전'
+				option(value="p",selected)= '표준 사전'
+				option(value="u")= '복합 사전'
 		div.dialog-bar
 			h4= L('numRound')
 			- var maxRounds = isAdmin ? 20 : 10;

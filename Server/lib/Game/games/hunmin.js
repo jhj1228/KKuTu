@@ -217,7 +217,7 @@ exports.submit = function (client, text, data) {
 					denied();
 				}
 			}
-			DB.kkutu[l].findOne(['_id', text], ['type', Const.KOR_GROUP]).on(onDB);
+			my.getWordTable(l).findOne(['_id', text], ['type', Const.KOR_GROUP]).on(onDB);
 		} else {
 			client.publish('turnError', { code: 409, value: text }, true);
 		}
@@ -312,7 +312,7 @@ function getAuto(theme, type) {
 	if (my.opts.strict) aqs.push(['type', Const.KOR_STRICT], ['flag', { $lte: 3 }]);
 	else aqs.push(['type', Const.KOR_GROUP]);
 	if (my.game.chain) aqs.push(['_id', { '$nin': my.game.chain }]);
-	raiser = DB.kkutu[my.rule.lang].find.apply(this, aqs).limit(bool ? 1 : 123);
+	raiser = my.getWordTable().find.apply(this, aqs).limit(bool ? 1 : 123);
 	switch (type) {
 		case 0:
 		default:
