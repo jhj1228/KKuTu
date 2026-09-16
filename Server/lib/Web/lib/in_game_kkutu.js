@@ -800,6 +800,7 @@ $(document).ready(function () {
 			mode: $("#room-mode").val(),
 			round: $("#room-round").val(),
 			time: $("#room-time").val(),
+			db: $("#choose-db").val(),
 			rule: $("#room-rule").val(),
 			opts: opts,
 			pq: {
@@ -4146,9 +4147,10 @@ function toggleShutBlock(target) {
 function tryDict(text, callback) {
 	var text = text.replace(/[^\sa-zA-Zㄱ-ㅎ0-9가-힣]/g, "");
 	var lang = text.match(/[ㄱ-ㅎ가-힣]/) ? 'ko' : 'en';
+	var db = $("#dict-db").val();
 
 	if (text.length < 1) return callback({ error: 404 });
-	$.get("/dict/" + text + "?lang=" + lang, callback);
+	$.get("/dict/" + text + "?lang=" + lang + "&db=" + db, callback);
 }
 function processRoom(data) {
 	var i, j, key, o;
@@ -6190,7 +6192,7 @@ function getLevelImage(score) {
 	// return getImage("/img/kkutu/lv/lv" + zeroPadding(lv+1, 4) + ".png");
 	return $("<div>").css({
 		'float': "left",
-		'background-image': "url('/img/kkutu/newlv.png')",
+		'background-image': "url('/img/kkutu/lv/newlv.png')",
 		'background-position': lX + "% " + lY + "%",
 		'background-size': "2560%"
 	});

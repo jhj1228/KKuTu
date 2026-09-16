@@ -631,7 +631,6 @@ function getAuto(char, subc, type) {
 	var adv, adc;
 	var key = gameType + "_" + keyByOptions(my.opts);
 	var MAN = DB.kkutu_manner[my.rule.lang];
-	var bool = type == 1;
 
 	adc = char + (subc ? ("|" + subc) : "");
 	switch (gameType) {
@@ -666,7 +665,7 @@ function getAuto(char, subc, type) {
 		var aft;
 		var lst;
 
-		// if (!my.opts.injeong) aqs.push(['flag', { '$nand': Const.KOR_FLAG.INJEONG }]);
+		if (!my.opts.injeong) aqs.push(['flag', { '$nand': Const.KOR_FLAG.INJEONG }]);
 
 		if (my.rule.lang == "ko") {
 			/* if (my.opts.loanword) aqs.push(['flag', { '$nand': Const.KOR_FLAG.LOANWORD }]);
@@ -694,7 +693,7 @@ function getAuto(char, subc, type) {
 				break;
 		}
 
-		my.getWordTable().find.apply(this, aqs).limit(bool ? 1 : 2000).on(function ($md) {
+		my.getWordTable().find.apply(this, aqs).limit(2000).on(function ($md) {
 			var filteredList = $md;
 			if (my.game.chain) {
 				if (Array.isArray(my.game.chain)) {

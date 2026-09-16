@@ -270,6 +270,10 @@ block Middle
 			input#dict-input(style='width: 183px;', placeholder=L('wpInput'), maxlength=200)
 		div.dialog-bar#dict-output(style='height: 195px; overflow-y: scroll; color: #BBBBBB; background-color: #111111;')
 		div.dialog-bar.tail-button
+			select#dict-db(style='width: 86px;')
+				option(value="g")= '기초 사전'
+				option(value="p", selected)= '표준 사전'
+				option(value="u")= '복합 사전'
 			select#dict-theme(style='width: 86px;')
 				option(value="")= L('pickInjeong')
 				- locals.KO_INJEONG.forEach(function(item){

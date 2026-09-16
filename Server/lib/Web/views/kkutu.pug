@@ -511,11 +511,11 @@ block Middle
 			input#dict-input(style='width: 283px;', placeholder=L('wpInput'), maxlength=200)
 		div.dialog-bar#dict-output(style='height: 195px; overflow-y: scroll; color: #BBBBBB; background-color: #111111;')
 		div.dialog-bar.tail-button
+			select#dict-db
+				option(value="g")= '기초 사전'
+				option(value="p", selected)= '표준 사전'
+				option(value="u")= '복합 사전'
 			button#dict-search= L('SEARCH')
-			a(href='/wordsearch', target='_blank')
-				button#dict-search(type='button')= L('WORDSEARCH')
-			a(href='https://naver.me/xIFoyWUI', target='_blank')
-				button#dict-search(type='button')= '추가 요청'
 	+Dialog('InviteDiag', 300, 420, L('invite'))
 		div.invite-board(style='height: 355px; overflow-y: scroll;')
 		div.dialog-bar.tail-button

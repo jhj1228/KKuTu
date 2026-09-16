@@ -365,7 +365,8 @@ exports.run = function (Server, page) {
 	Server.get("/dict/:word", function (req, res) {
 		var word = req.params.word;
 		var lang = req.query.lang;
-		var DB = MainDB.kkutu[lang];
+		var db = req.query.db || "p";
+		var DB = MainDB.kkutu[lang === "ko" && ["g", "p", "u"].indexOf(db) !== -1 ? lang + "_" + db : lang];
 
 		if (!DB) return res.send({ error: 400 });
 		if (!DB.findOne) return res.send({ error: 400 });
