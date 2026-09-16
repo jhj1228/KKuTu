@@ -57,12 +57,24 @@ block JS
 					var isKkt = modeVal === 0;
 					var isKkat = modeVal === 15;
 					var isKpq = modeVal === 17;
-				$roomDiag.css('height', isKpq ? '500px' : ((isKkt || isKkat) ? '500px' : '470px'));
+					var isDbMode = [0, 1, 5, 9, 10, 14, 15].indexOf(modeVal) !== -1;
+
+					var baseHeight = 440;
+					if (isKkt || isKkat) baseHeight += 30;
+					if (isDbMode) baseHeight += 30;
+					if (isKpq) baseHeight += 60;
+					$roomDiag.css('height', baseHeight + 'px');
 				
-				if (isKkt || isKkat) {
+					if (isKkt || isKkat) {
 						$("#RoomDiag").find("div.dialog-bar:has(select#room-rule)").show();
 					} else {
 						$("#RoomDiag").find("div.dialog-bar:has(select#room-rule)").hide();
+					}
+
+					if (isDbMode) {
+						$("#RoomDiag").find("div.dialog-bar:has(select#choose-db)").show();
+					} else {
+						$("#RoomDiag").find("div.dialog-bar:has(select#choose-db)").hide();
 					}
 				}
 
