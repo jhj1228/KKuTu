@@ -26,7 +26,14 @@ block Middle
 	fieldset
 		legend 자격
 		input#db-password(type='password', placeholder='암호')
-		input#db-lang(placeholder='테이블')
+		select#db-lang
+			option(value="ko", selected)= '한국어'
+			option(value="en")= '영어'
+		select#db-db
+			option(value="")= '종합'
+			option(value="g")= '기초 사전'
+			option(value="p")= '표준 사전'
+			option(value="u")= '복합 사전'
 	fieldset
 		legend 상점 DB 다루기
 		div

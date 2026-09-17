@@ -2992,6 +2992,9 @@ function setRoomHead($obj, room) {
 		var ruleText = ruleMap[room.rule] || room.rule;
 		opts.push(ruleText);
 	}
+	if (room.db && [0, 1, 5, 9, 10, 14, 15].indexOf(room.mode) != -1) {
+		opts.push({ g: "기초", p: "표준", u: "복합" }[room.db] || room.db);
+	}
 
 	$obj.empty()
 		.append($("<h5>").addClass("room-head-number").html("[" + (room.practice ? L['practice'] : room.id) + "]"))

@@ -95,7 +95,7 @@ exports.run = function (Server, page) {
 	Server.get("/gwalli/kkutudb/:word", function (req, res) {
 		if (!checkAdmin(req, res)) return;
 
-		var TABLE = MainDB.kkutu[req.query.lang];
+		var TABLE = getKKuTuTable(req.query.lang, req.query.db);
 		var word = decodeURIComponent(req.params.word);
 
 		if (!TABLE) return res.sendStatus(400);
@@ -107,7 +107,7 @@ exports.run = function (Server, page) {
 	Server.get("/gwalli/kkututheme", function (req, res) {
 		if (!checkAdmin(req, res)) return;
 
-		var TABLE = MainDB.kkutu[req.query.lang];
+		var TABLE = getKKuTuTable(req.query.lang, req.query.db);
 
 		if (!TABLE) return res.sendStatus(400);
 		if (!TABLE.find) return res.sendStatus(400);
@@ -171,7 +171,7 @@ exports.run = function (Server, page) {
 
 		var theme = req.body.theme;
 		var list = req.body.list;
-		var TABLE = MainDB.kkutu[req.body.lang];
+		var TABLE = getKKuTuTable(req.body.lang, req.body.db);
 
 		if (list) list = list.split(/[,\r\n]+/);
 		else return res.sendStatus(400);
@@ -203,7 +203,7 @@ exports.run = function (Server, page) {
 	Server.post("/gwalli/kkutudb/:word", function (req, res) {
 		if (!checkAdmin(req, res)) return;
 		if (req.body.pw != GLOBAL.PASS) return res.sendStatus(400);
-		var TABLE = MainDB.kkutu[req.body.lang];
+		var TABLE = getKKuTuTable(req.body.lang, req.body.db);
 		var data = JSON.parse(req.body.data);
 		var word = decodeURIComponent(req.params.word);
 
@@ -269,6 +269,10 @@ exports.run = function (Server, page) {
 };;
 function noticeAdmin(req, ...args) {
 	JLog.info(`[운영자] ${req.originalUrl} ${req.ip} | ${args.join(' | ')}`);
+}
+function getKKuTuTable(lang, db) {
+	if (lang === "ko" && ["g", "p", "u"].indexOf(db) !== -1) return MainDB.kkutu[lang + "_" + db];
+	return MainDB.kkutu[lang];
 }
 function checkAdmin(req, res) {
 	if (global.isPublic) {

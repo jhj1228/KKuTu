@@ -27,13 +27,14 @@
 
 			if (forView) {
 				$("#db-list").val("");
-				$.get("/gwalli/kkututheme?theme=" + $("#db-theme").val().slice(1) + "&lang=" + $("#db-lang").val(), function (res) {
+				$.get("/gwalli/kkututheme?theme=" + $("#db-theme").val().slice(1) + "&lang=" + $("#db-lang").val() + "&db=" + $("#db-db").val(), function (res) {
 					$("#db-list").val(res.list.join('\n'));
 				});
 			} else {
 				$.post("/gwalli/kkutudb", {
 					pw: $("#db-password").val(),
 					lang: $("#db-lang").val(),
+					db: $("#db-db").val(),
 					theme: $("#db-theme").val(),
 					list: $("#db-list").val()
 				}, function (res) {
@@ -256,8 +257,13 @@
 
 		// 끄투 DB 다루기
 		$("#db-go").on('click', function (e) {
-			$.get("/gwalli/kkutudb/" + encodeURIComponent($("#db-word").val()) + "?lang=" + $("#db-lang").val(), function (res) {
+			$.get("/gwalli/kkutudb/" + encodeURIComponent($("#db-word").val()) + "?lang=" + $("#db-lang").val() + "&db=" + $("#db-db").val(), function (res) {
 				var $table = $("#wd-data").empty();
+
+				if (!res) {
+					$("#wd-flag").val("");
+					return alert("해당 사전에서 단어를 찾을 수 없습니다.");
+				}
 				var types = res.type ? res.type.split(',') : [];
 				var themes = res.theme ? res.theme.split(',') : [];
 				var means = res.mean ? res.mean.split(/＂[0-9]+＂/).slice(1).map(function (m1) {
@@ -284,6 +290,8 @@
 						});
 					});
 				});
+			}).fail(function (xhr) {
+				alert("조회에 실패했습니다. (" + xhr.status + ") 테이블/사전 값을 확인하세요.");
 			});
 		});
 		$("#word-add").on('click', function (e) {
@@ -339,6 +347,7 @@
 			$.post("/gwalli/kkutudb/" + encodeURIComponent($("#db-word").val()), {
 				pw: $("#db-password").val(),
 				lang: $("#db-lang").val(),
+				db: $("#db-db").val(),
 				data: JSON.stringify(obj)
 			}, function (res) {
 				alert(res);
