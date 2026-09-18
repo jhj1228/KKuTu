@@ -370,6 +370,9 @@ exports.submit = function (client, text) {
 					if (list.length <= 7) {
 						my.game.loading = false;
 						client.publish('turnError', { code: 412, value: text }, true);
+						if (client.robot) {
+							my.readyRobot(client);
+						}
 					} else {
 						checkFinal();
 					}
@@ -552,8 +555,12 @@ exports.readyRobot = function (robot) {
 							pickList(list);
 						}
 					}
+				} else {
+					pickList(list);
 				}
 			}
+		} else {
+			denied();
 		}
 	});
 
