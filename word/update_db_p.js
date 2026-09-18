@@ -1,0 +1,266 @@
+/**
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
+ * 
+ * Rule the words! LegendKKuTu
+ * Copyright (C) 2025-2026 정희정(wjdgmlwjd3102@gmail.com)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * 표준국어대사전 단어 뜻 자동 입력 프로그램
+ * Node.js 환경에서 실행하며, 지정된 디렉토리의 JSON 파일을 읽어 PostgreSQL 데이터베이스에 단어와 뜻을 자동으로 입력합니다.
+ * DB_CONFIG 객체를 통해 PostgreSQL 데이터베이스 접속 정보를 설정합니다.
+ * 사용자는 TARGET_DIR와 FILE_PREFIX 상수를 통해 JSON 파일의 위치와 접두사를 지정할 수 있습니다.
+ * 표준국어대사전은 kkutu_ko_p 데이터베이스를 사용합니다.
+ */
+
+const { Pool } = require('pg');
+const fs = require('fs');
+const path = require('path');
+
+const DB_CONFIG = {
+    user: '', // PostgreSQL 사용자 이름
+    host: '', // PostgreSQL 호스트
+    database: '', // PostgreSQL 데이터베이스 이름
+    password: '', // PostgreSQL 비밀번호
+    port: 5432,
+    max: 20,
+};
+
+const TARGET_DIR = ''; // 파일 경로
+const FILE_PREFIX = '';
+
+const BATCH_SIZE = 1000;
+
+const TYPE_MAP = {
+    "명사": 1, "대명사": 2, "수시": 3, "조사": 4, "동사": 5, "형용사": 6, "관형사": 7, "부사": 8, "감탄사": 9,
+    "접사": 10, "의존 명사": 11, "보조 동사": 12, "보조 형용사": 13, "어미": 14, "관형사·명사": 15,
+    "수사·관형사": 16, "명사·부사": 17, "감탄사·명사": 18, "대명사·부사": 19, "대명사·감탄사": 20,
+    "동사·형용사": 21, "관형사·감탄사": 22, "부사·감탄사": 23, "의존 명사·조사": 24, "수사·관형사·명사": 25,
+    "대명사·관형사": 26
+};
+
+const THEME_MAP = {
+    "가톨릭": 10, "건설": 20, "경영": 30, "경제": 40, "고유": 50, "공업": 60, "공예": 70, "공학": 80, "광업": 90,
+    "교육": 100, "교통": 110, "군사": 120, "기계": 130, "기독교": 140, "농업": 150, "동물": 160, "매체": 170,
+    "무용": 180, "문학": 190, "물리": 200, "미술": 210, "민속": 220, "법률": 230, "보건": 240, "복식": 250,
+    "복지": 260, "불교": 270, "사회": 280, "산업": 290, "생명": 300, "서비스업": 310, "수산업": 320, "수의": 330,
+    "수학": 340, "식물": 350, "식품": 360, "심리": 370, "약학": 380, "언어": 390, "역사": 400, "연기": 410,
+    "영상": 420, "예체능": 430, "음악": 440, "의학": 450, "인명": 460, "인문": 470, "임업": 480, "자연": 490,
+    "재료": 500, "전기·전자": 510, "정보·통신": 520, "정치": 530, "종교": 550, "지구": 560, "지리": 570,
+    "지명": 580, "책명": 590, "천문": 600, "천연자원": 610, "철학": 620, "체육": 630, "한의": 640, "해양": 650,
+    "행정": 660, "화학": 670, "환경": 680
+};
+
+function cleanWord(text) {
+    if (!text) return "";
+    return text.replace(/[^가-힣ㄱ-ㅎㅏ-ㅣ]/g, '');
+}
+
+function formatSubDefinitions(text) {
+    if (!text) return "";
+    let formatted = text.trim();
+    formatted = formatted.replace(/[\u0000-\u001F]/g, '');
+
+    const circledMap = { '①': 1, '②': 2, '③': 3, '④': 4, '⑤': 5, '⑥': 6, '⑦': 7, '⑧': 8, '⑨': 9, '⑩': 10 };
+    for (const [char, num] of Object.entries(circledMap)) {
+        formatted = formatted.split(char).join(`（${num}）`);
+    }
+
+    if (!formatted.match(/^\s*（\d+）/) && !formatted.match(/^\s*［\d+］/)) {
+        formatted = `（1）${formatted}`;
+    }
+    return formatted;
+}
+
+function processJsonData(jsonData) {
+    console.log("데이터 정밀 파싱 중...");
+    let items = [];
+    if (Array.isArray(jsonData)) items = jsonData;
+    else if (jsonData.channel && Array.isArray(jsonData.channel.item)) items = jsonData.channel.item;
+
+    const wordMap = new Map();
+    const korFlagMap = new Map();
+
+    items.forEach((item) => {
+        const wordInfo = item.word_info || item.wordinfo || {};
+        if (wordInfo.word_unit === "속담" || wordInfo.word_unit === "관용구") return;
+
+        let rawWord = wordInfo.word || item.word || "";
+        if (!rawWord) return;
+
+        const cleanKey = cleanWord(rawWord);
+        if (!cleanKey) return;
+
+        if (!wordMap.has(cleanKey)) {
+            wordMap.set(cleanKey, []);
+        }
+        const meaningsArray = wordMap.get(cleanKey);
+
+        if (wordInfo.word_type === "외래어") {
+            korFlagMap.set(cleanKey, 1);
+        }
+
+        const posInfoList = wordInfo.pos_info || [];
+        posInfoList.forEach((posInfo) => {
+            const pos = posInfo.pos || "";
+            const typeCode = TYPE_MAP[pos] !== undefined ? String(TYPE_MAP[pos]) : "";
+            const commPatternList = posInfo.comm_pattern_info || [];
+
+            commPatternList.forEach((commPattern) => {
+                const senseList = commPattern.sense_info || [];
+
+                senseList.forEach((sense) => {
+                    const def = sense.definition || "";
+                    if (!def) return;
+
+                    let themeCode = "";
+                    if (Array.isArray(sense.cat_info)) {
+                        for (const c of sense.cat_info) {
+                            if (c.cat && THEME_MAP[c.cat] !== undefined) {
+                                themeCode = String(THEME_MAP[c.cat]);
+                                break;
+                            }
+                        }
+                    }
+
+                    const formattedDef = formatSubDefinitions(def);
+
+                    const isDuplicate = meaningsArray.some(m => m.def === formattedDef);
+                    if (!isDuplicate) {
+                        meaningsArray.push({
+                            def: formattedDef,
+                            type: typeCode,
+                            theme: themeCode
+                        });
+                    }
+                });
+            });
+        });
+    });
+
+    const resultList = [];
+    for (const [word, meanings] of wordMap) {
+        let combinedMean = "";
+        let typeArray = [];
+        let themeArray = [];
+
+        meanings.forEach((m, idx) => {
+            const topIndex = idx + 1;
+            combinedMean += `＂${topIndex}＂［1］${m.def}`;
+            typeArray.push(m.type);
+            themeArray.push(m.theme);
+        });
+
+        if (combinedMean) {
+            resultList.push({
+                id: word,
+                mean: combinedMean,
+                type: typeArray.join(','),
+                theme: themeArray.join(','),
+                korFlag: korFlagMap.get(word) || 0
+            });
+        }
+    }
+
+    console.log(`파싱 완료. 총 ${resultList.length}개의 단어가 준비되었습니다.`);
+    return resultList;
+}
+
+async function insertDataToDb() {
+    if (!fs.existsSync(TARGET_DIR)) {
+        console.error(`폴더를 찾을 수 없습니다: ${TARGET_DIR}`);
+        return;
+    }
+
+    const pool = new Pool(DB_CONFIG);
+
+    try {
+        const files = fs.readdirSync(TARGET_DIR);
+
+        const targetFiles = files.filter(file => file.startsWith(FILE_PREFIX) && file.endsWith('.json'));
+
+        if (targetFiles.length === 0) {
+            console.log(`조건에 맞는 JSON 파일이 ${TARGET_DIR}에 없습니다.`);
+            return;
+        }
+
+        console.log(`\n총 ${targetFiles.length}개의 파일을 찾았습니다. 자동 연속 처리를 시작합니다.\n`);
+
+        for (let fileIndex = 0; fileIndex < targetFiles.length; fileIndex++) {
+            const fileName = targetFiles[fileIndex];
+            const filePath = path.join(TARGET_DIR, fileName);
+
+            console.log(`=================================================`);
+            console.log(`[${fileIndex + 1} / ${targetFiles.length}] 파일 처리 시작: ${fileName}`);
+
+            const rawData = fs.readFileSync(filePath, 'utf8');
+            const jsonData = JSON.parse(rawData);
+
+            const processedList = processJsonData(jsonData);
+
+            if (processedList.length === 0) {
+                console.log(`이 파일에는 저장할 유효한 데이터가 없습니다. 다음으로 넘어갑니다.`);
+                continue;
+            }
+
+            console.log(`DB 입력 시작 (총 ${processedList.length}개)...`);
+            let successCount = 0;
+
+            for (let i = 0; i < processedList.length; i += BATCH_SIZE) {
+                const batch = processedList.slice(i, i + BATCH_SIZE);
+
+                const query = `
+                    INSERT INTO public.kkutu_ko.p (_id, mean, type, theme, flag)
+                    VALUES 
+                    ${batch.map((_, idx) => `($${idx * 5 + 1}, $${idx * 5 + 2}, $${idx * 5 + 3}, $${idx * 5 + 4}, $${idx * 5 + 5})`).join(', ')}
+                    ON CONFLICT (_id) 
+                    DO UPDATE SET 
+                        mean = EXCLUDED.mean,
+                        type = EXCLUDED.type,
+                        theme = EXCLUDED.theme,
+                        flag = EXCLUDED.flag
+                `;
+
+                const values = [];
+                batch.forEach(item => {
+                    values.push(item.id);
+                    values.push(item.mean);
+                    values.push(item.type);
+                    values.push(item.theme);
+                    values.push(item.korFlag);
+                });
+
+                await pool.query(query, values);
+                successCount += batch.length;
+
+                if (i === 0 || i % (BATCH_SIZE * 5) === 0) {
+                    console.log(` - 진행률: ${((successCount / processedList.length) * 100).toFixed(1)}%`);
+                }
+            }
+            console.log(`[${fileName}] 작업 완료! (${successCount}개)\n`);
+        }
+
+        console.log(`모든 파일(${targetFiles.length}개)의 데이터베이스 입력이 완료되었습니다.`);
+
+    } catch (err) {
+        console.error("오류 발생:", err);
+    } finally {
+        await pool.end();
+    }
+}
+
+insertDataToDb();
