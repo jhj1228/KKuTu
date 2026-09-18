@@ -668,11 +668,11 @@ function getAuto(char, subc, type) {
 		if (!my.opts.injeong) aqs.push(['flag', { '$nand': Const.KOR_FLAG.INJEONG }]);
 
 		if (my.rule.lang == "ko") {
-			/* if (my.opts.loanword) aqs.push(['flag', { '$nand': Const.KOR_FLAG.LOANWORD }]);
+			if (my.opts.loanword) aqs.push(['flag', { '$nand': Const.KOR_FLAG.LOANWORD }]);
 			if (my.opts.strict) aqs.push(['type', Const.KOR_STRICT], ['flag', { $lte: 3 }]);
-			else if (!my.opts.moreword) aqs.push(['type', Const.KOR_GROUP]); */
+			else if (!my.opts.moreword) aqs.push(['type', Const.KOR_GROUP]);
 		} else {
-			// aqs.push(['_id', Const.ENG_ID]);
+			aqs.push(['_id', Const.ENG_ID]);
 		}
 		switch (type) {
 			case 0:

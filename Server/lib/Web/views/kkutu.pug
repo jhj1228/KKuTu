@@ -179,19 +179,40 @@ block JS
 					updateMissionState();
 					updateMannerGentleState();
 				}
+				updateInjeongDbState();
 				updateBoomState();
+			}
+			function updateInjeongDbState() {
+				var $injeong = $('#room-injeong');
+				var $db = $('#choose-db');
+
+				if ($injeong.length === 0 || $db.length === 0) return;
+
+				var isP = $db.val() === 'p';
+				if (!isP) {
+					$injeong.prop('checked', false);
+					$injeong.prop('disabled', true);
+					$injeong.parent().css('opacity', '1');
+				} else if (!$('#room-unknownword').is(':checked')) {
+					$injeong.prop('disabled', false);
+					$injeong.parent().css('opacity', '1');
+				}
 			}
 			$(document).on('change', '#room-mission', updateMissionState);
 			$(document).on('change', '#room-manner', updateMannerGentleState);
 			$(document).on('change', '#room-gentle', updateMannerGentleState);
 			$(document).on('change', '#room-unknownword', updateUnknownWordState);
 			$(document).on('change', '#room-free', updateBoomState);
+			$(document).on('change', '#choose-db', updateInjeongDbState);
 			
 			$(document).on('change', '#room-randomturn', updateRandomReverseState);
 			$(document).on('change', '#room-reverse', updateRandomReverseState);
 			$(document).on('change', '#room-mode', function() {
 					updateRoomDiagHeight();
-				setTimeout(updateBoomState, 100);
+				setTimeout(function() {
+					updateBoomState();
+					updateInjeongDbState();
+				}, 100);
 			});
 
 			var initFunc = function() {
@@ -200,6 +221,7 @@ block JS
 				updateMissionState();
 				updateRandomReverseState();
 				updateBoomState();
+				updateInjeongDbState();
 				if (!$('#room-unknownword').is(':checked')) {
 					updateMannerGentleState();
 				}
@@ -383,7 +405,7 @@ block Middle
 					option(value="sami")= '3-2'
 					option(value="ii")= '2-2'
 		div.dialog-bar
-			h4= 'DB'
+			h4= '낱말집'
 			select#choose-db
 				option(value="g")= '기초 사전'
 				option(value="p",selected)= '표준 사전'

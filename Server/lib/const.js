@@ -35,7 +35,7 @@ exports.SSL_OPTIONS = GLOBAL.SSL_OPTIONS;
 exports.OPTIONS = {
 	'man': { name: "Manner" }, // 매너
 	'gte': { name: "Gentle" }, // 젠틀
-	// 'ext': { name: "Injeong" }, // 어인정
+	'ext': { name: "Injeong" }, // 어인정
 	'mis': { name: "Mission" }, // 미션
 	'rdm': { name: "Randommission" }, // 랜덤미션
 	'loa': { name: "Loanword" }, // 우리말
@@ -288,6 +288,11 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
+	"IMS", "VOC", "RAG", "NEX", "KTV", "ETP", "NAC", "NFX", "KOT",
+	"DOT", "THP", "JLN", "LVL", "LOL", "MIN", "JAN", "MAP", "BGP",
+	"HSR", "BLA", "CYP", "NVL", "STA", "ESB", "ELW", "MOV", "OVW",
+	"GSI", "WOW", "WET", "KPO", "ZEL", "CKR", "POK", "PJS",
+	"HSS", "KMU", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
 ];
