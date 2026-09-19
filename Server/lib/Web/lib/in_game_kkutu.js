@@ -4545,6 +4545,14 @@ function updateRoomList(refresh) {
 function roomListBar(o) {
 	var $R, $ch;
 	var opts = getOptions(o.mode, o.opts, o.pq);
+	
+	if ((o.mode === 0 || o.mode === 15) && o.rule) {
+		var ruleMap = { sasa: "4-4", samsam: "3-3", sami: "3-2", ii: "2-2" };
+		opts.push(ruleMap[o.rule] || o.rule);
+	}
+	if (o.db && [0, 1, 5, 9, 10, 14, 15].indexOf(o.mode) != -1) {
+		opts.push({ g: "기초", p: "표준", u: "복합" }[o.db] || o.db);
+	}
 
 	$R = $("<div>").attr('id', "room-" + o.id).addClass("rooms-item")
 		.append($ch = $("<div>").addClass("rooms-channel channel-" + o.channel).on('click', function (e) { requestRoomInfo(o.id); }))
