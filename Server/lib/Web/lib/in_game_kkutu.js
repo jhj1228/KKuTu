@@ -4543,8 +4543,9 @@ function updateRoomList(refresh) {
 	}
 }
 function roomListBar(o) {
-	var $R, $ch;
+	var $R, $ch, $mode;
 	var opts = getOptions(o.mode, o.opts, o.pq);
+	var rule = RULE[MODE[o.mode]];
 	
 	if ((o.mode === 0 || o.mode === 15) && o.rule) {
 		var ruleMap = { sasa: "4-4", samsam: "3-3", sami: "3-2", ii: "2-2" };
@@ -4560,7 +4561,7 @@ function roomListBar(o) {
 		.append($("<div>").addClass("rooms-title ellipse").text(badWords(o.title)))
 		.append($("<div>").addClass("rooms-limit").html(o.players.length + " / " + o.limit))
 		.append($("<div>").width(270)
-			.append($("<div>").addClass("rooms-mode").html(opts.join(" / ").toString()))
+			.append($mode = $("<div>").addClass("rooms-mode").html(opts.join(" / ").toString()))
 			.append($("<div>").addClass("rooms-round").html(L['rounds'] + " " + o.round))
 			.append($("<div>").addClass("rooms-time").html(o.time + L['SECOND']))
 		)
@@ -4571,6 +4572,12 @@ function roomListBar(o) {
 		});
 	if (o.gaming) $R.addClass("rooms-gaming");
 	if (o.password) $R.addClass("rooms-locked");
+	if (rule.opts.indexOf("ijp") != -1) {
+		$mode.append($("<div>").addClass("expl").html("<h5>" + o.opts.injpick.map(function (item) {
+			return L["theme_" + item];
+		}) + "</h5>"));
+		global.expl($R);
+	}
 
 	return $R;
 }
