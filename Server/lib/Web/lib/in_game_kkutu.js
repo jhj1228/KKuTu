@@ -268,7 +268,7 @@ $(document).ready(function () {
 		{ key: "ending", value: "/media/kkutu/LobbyBGMending.mp3" },
 		{ key: "museum", value: "/media/kkutu/LobbyMuseum.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
-		{ key: "mouse", value: "/media/kkutu/LobbyMouse.mp3" },
+		{ key: "kkutudive", value: "/media/kkutu/kkutudive.mp3" },
 		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },
 		{ key: "jaqwiF", value: "/media/kkutu/JaqwiFastBGM.mp3" },
@@ -527,6 +527,7 @@ $(document).ready(function () {
 		$("#room-round").val($data.room.round);
 		$("#room-time").val($data.room.time / rule.time);
 		$("#room-rule").val($data.room.rule || "samsam");
+		$("#choose-db").val($data.room.db || "p");
 		for (i in OPTIONS) {
 			k = OPTIONS[i].name.toLowerCase();
 			$("#room-" + k).attr('checked', $data.room.opts[k]);
@@ -6347,7 +6348,7 @@ function getSoundCategory(key) {
 		'T0': true, 'T1': true, 'T2': true, 'T3': true, 'T4': true, 'T5': true,
 		'T6': true, 'T7': true, 'T8': true, 'T9': true, 'T10': true, 'jaqwi': true, 'JaqwiF': true
 	};
-	return ingameSounds[key] ? 'ingame' : (key === 'lobby' || key === 'original' || key === 'lobbyseol' || key === 'ending' || key === 'museum' || key === 'inthepool' || key === 'enchanted' ? 'bgm' : 'effect');
+	return ingameSounds[key] ? 'ingame' : (key === 'lobby' || key === 'original' || key === 'lobbyseol' || key === 'ending' || key === 'museum' || key === 'inthepool' || key === 'enchanted' || key === 'kkutudive' ? 'bgm' : 'effect');
 }
 function playSound(key, loop) {
 	var src, sound;
@@ -6393,7 +6394,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "original" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "mouse" || key === "enchanted" ? "lobby" : key;
+	src.key = key === "lobby" || key === "original" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "kkutudive" ? "lobby" : key;
 
 	src.start();
 

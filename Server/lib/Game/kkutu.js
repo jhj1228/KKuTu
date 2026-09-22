@@ -1093,6 +1093,7 @@ exports.Room = function (room, channel) {
 		if (room.mode === 0 || room.mode === 15) {
 			my.connRule = room.rule || "samsam";
 		}
+		my.db = my.rule.lang === "ko" && ["g", "p", "u"].indexOf(room.db) !== -1 ? room.db : "p";
 		my.round = Math.round(room.round);
 		my.time = room.time * my.rule.time;
 		my.pq = room.pq;

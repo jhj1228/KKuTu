@@ -80,8 +80,15 @@
 		};
 		var $gn = $("#global-notice").hide();
 		var $c;
-		var explSize;
 		var gn = $("#gn-content").html() || "";
+		function positionExpl(e) {
+			var $expl = $(".expl-active");
+			var explSize;
+
+			if (!$expl.length) return;
+			explSize = [$expl.outerWidth(), $expl.outerHeight()];
+			$expl.css({ 'left': Math.min(e.clientX + 5, size[0] - explSize[0] - 12), 'top': Math.min(e.clientY + 23, size[1] - explSize[1] - 12) });
+		}
 
 		globalThis.profile = $("#profile").html();
 		if (globalThis.profile) globalThis.profile = JSON.parse(globalThis.profile);
@@ -102,8 +109,7 @@
 			$("#Middle").css('margin-left', Math.max(0, size[0] * 0.5 - 500));
 			$("#Bottom").width(size[0]);
 		}).on('mousemove', function (e) {
-			if (explSize == null) return;
-			$(".expl-active").css({ 'left': Math.min(e.clientX + 5, size[0] - explSize[0] - 12), 'top': Math.min(e.clientY + 23, size[1] - explSize[1] - 12) });
+			positionExpl(e);
 		}).trigger('resize');
 
 		$("#quick-search-btn").on('click', function (e) {
@@ -142,9 +148,9 @@
 			$q.parent().addClass("expl-mother").on('mouseenter', function (e) {
 				var $e = $(e.currentTarget).children(".expl");
 
-				explSize = [$e.width(), $e.height()];
 				$(".expl-active").removeClass("expl-active");
 				$e.addClass("expl-active");
+				positionExpl(e);
 			}).on('mouseleave', function (e) {
 				$(e.currentTarget).children(".expl").removeClass("expl-active");
 			});
