@@ -28,7 +28,7 @@ exports.BLOCKED_LENGTH = 10000;
 exports.KICK_BY_SPAM = 9;
 exports.MAX_OBSERVER = 4;
 exports.TESTER = GLOBAL.ADMIN.concat([
-	"102050173530405729973"
+	""
 ]);
 exports.IS_SECURED = GLOBAL.IS_SECURED;
 exports.SSL_OPTIONS = GLOBAL.SSL_OPTIONS;
@@ -44,9 +44,9 @@ exports.OPTIONS = {
 	'k32': { name: "Sami" }, // 3232
 	'no2': { name: "No2" }, // 2글자 금지
 	// 'sht': { name: "Short" }, // 짧음
-	// 'rtn': { name: "Return" }, // 리턴
+	'rtn': { name: "Return" }, // 리턴
 	'rdt': { name: "Randomturn" }, // 랜덤턴
-	'unw': { name: "Unknownword" }, // 언노운워드
+	// 'unw': { name: "Unknownword" }, // 언노운워드
 	// 'bom': { name: "Boom" }, // 폭탄
 	// 'rvs': { name: "Reverse" }, // 리버스
 	'wpk': { name: "Wordpick" }, // 워드픽
@@ -54,7 +54,7 @@ exports.OPTIONS = {
 	'due': { name: "Dueum" }, // 두음법칙 금지
 	'thw': { name: "Threeword" }, // 3글자
 	// 'ddl': { name: "Dodoli" }, // 도돌이 금지
-	'fre': { name: "Free" }, // 자유
+	// 'fre': { name: "Free" }, // 자유
 	// 'mwd': { name: "Moreword" }, // 특수 단어 허용
 	'nht': { name: "Nohint" }, // 힌트 없음
 	'hrd': { name: "Hard" }, // 어려움
@@ -92,7 +92,7 @@ exports.RULE = {
 	'KKT': { // 쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd", "spc"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -101,7 +101,7 @@ exports.RULE = {
 	'KSH': { // 끝말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd", "spc"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -137,7 +137,7 @@ exports.RULE = {
 	'KAP': { // 앞말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd", "spc"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -147,7 +147,7 @@ exports.RULE = {
 	'HUN': { // 훈민정음
 		lang: "ko",
 		rule: "Hunmin",
-		opts: ["ext", "mis", "rdm", "loa", "str", "rdt", "thw", "spc"],
+		opts: ["ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "thw", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -156,7 +156,7 @@ exports.RULE = {
 	'KDA': { // 단어대결
 		lang: "ko",
 		rule: "Daneo",
-		opts: ["ijp", "mis", "rdm", "rdt", "spc"],
+		opts: ["ijp", "mis", "rdm", "rtn", "rdt", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -174,7 +174,7 @@ exports.RULE = {
 	'KMH': { // 가운뎃말잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd", "spc"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -201,7 +201,7 @@ exports.RULE = {
 	'ALL': { // 전체
 		lang: "ko",
 		rule: "All",
-		opts: ["mis", "rdm", "rdt", "fre", "spc"],
+		opts: ["mis", "rdm", "rtn", "rdt", "fre", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -219,7 +219,7 @@ exports.RULE = {
 	'KRH': { // 랜덤잇기
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd", "spc"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -228,7 +228,7 @@ exports.RULE = {
 	'KAT': { // 앞말쿵쿵따
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd", "spc"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -264,7 +264,7 @@ exports.RULE = {
 	'KSW': { // 워드스택
 		lang: "ko",
 		rule: "Wordstack",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", /*"rdt", "unw",*/ "due", "mwd", "spc", "apm"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "due", "mwd", "spc", "apm"],
 		time: 1,
 		ai: true,
 		big: false,

@@ -293,15 +293,15 @@ block Middle
 			h4= L('selectbgm')
 			select#bgm-select
 				optgroup(label='끄투 BGM')
-					option(value='lobby', selected) 기본
-					option(value='original', selected) 오리지널
+					// option(value='lobby', selected) 기본
+					option(value='original') 기본
 					//- option(value='lobbyseol') 명절
 					option(value='ending') 끄투 엔딩
 					option(value='museum') 끄투 박물관
 				optgroup(label='기타 BGM')
 					option(value='inthepool') IN THE SEA x IN THE POOL
-					option(value='enchanted') Enchanted Love
-					option(value='kkutudive') 끄투다이브
+					option(value='lobby', selected) Enchanted Love
+					option(value='freedomdive') FREEDOM DiVE↓
 		div.dialog-bar
 			h4= L('denyReq')
 			+SettingOption('deny-invite', L('denyInvite'), '', 'explDenyInvite')

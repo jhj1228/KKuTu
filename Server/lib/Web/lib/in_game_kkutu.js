@@ -262,14 +262,14 @@ $(document).ready(function () {
 	}
 	$data._soundList = [
 		{ key: "k", value: "/media/kkutu/k.mp3" },
-		{ key: "lobby", value: "/media/kkutu/LobbyBGM.mp3" },
+		{ key: "lobby", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
 		{ key: "original", value: "/media/kkutu/LobbyBGMOriginal.mp3" },
 		{ key: "lobbyseol", value: "/media/kkutu/LobbySeolBGM.mp3" },
 		{ key: "ending", value: "/media/kkutu/LobbyBGMending.mp3" },
 		{ key: "museum", value: "/media/kkutu/LobbyMuseum.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
-		{ key: "kkutudive", value: "/media/kkutu/kkutudive.mp3" },
-		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
+		{ key: "freedomdive", value: "/media/kkutu/freedomdive.mp3" },
+		//- { key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },
 		{ key: "jaqwiF", value: "/media/kkutu/JaqwiFastBGM.mp3" },
 		{ key: "game_start", value: "/media/kkutu/game_start.mp3" },
@@ -5647,7 +5647,8 @@ function getScore(id) {
 		}
 		return 0;
 	}
-	else return ($data.users[id] || $data.robots[id]).game.score;
+	var player = $data.users[id] || $data.robots[id];
+	return player && player.game ? player.game.score : 0;
 }
 function addScore(id, score) {
 	if ($data._replay) {
@@ -5655,7 +5656,10 @@ function addScore(id, score) {
 			$rec.users[id].game.score += score;
 		}
 	}
-	else ($data.users[id] || $data.robots[id]).game.score += score;
+	else {
+		var player = $data.users[id] || $data.robots[id];
+		if (player && player.game) player.game.score += score;
+	}
 }
 function drawObtainedScore($uc, $sc) {
 	$uc.append($sc);
@@ -6313,10 +6317,10 @@ function getAudio(k, url, cb) {
 		$sound[k] = new AudioSound(url);
 		done();
 	}
-	function done() {
-		if (--$data._lsRemain == 0) {
-			if (cb) cb();
-		} else loading(L['loadRemain']);
+	function done(){
+		if(--$data._lsRemain == 0){
+			if(cb) cb();
+		}else loading(L['loadRemain'] + $data._lsRemain);
 	}
 	function AudioSound(url) {
 		var my = this;
@@ -6348,7 +6352,7 @@ function getSoundCategory(key) {
 		'T0': true, 'T1': true, 'T2': true, 'T3': true, 'T4': true, 'T5': true,
 		'T6': true, 'T7': true, 'T8': true, 'T9': true, 'T10': true, 'jaqwi': true, 'JaqwiF': true
 	};
-	return ingameSounds[key] ? 'ingame' : (key === 'lobby' || key === 'original' || key === 'lobbyseol' || key === 'ending' || key === 'museum' || key === 'inthepool' || key === 'enchanted' || key === 'kkutudive' ? 'bgm' : 'effect');
+	return ingameSounds[key] ? 'ingame' : (key === 'lobby' || key === 'original' || key === 'lobbyseol' || key === 'ending' || key === 'museum' || key === 'inthepool' || key === 'enchanted' || key === 'freedomdive' ? 'bgm' : 'effect');
 }
 function playSound(key, loop) {
 	var src, sound;
@@ -6394,7 +6398,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "original" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "kkutudive" ? "lobby" : key;
+	src.key = key === "lobby" || key === "original" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "freedomdive" ? "lobby" : key;
 
 	src.start();
 

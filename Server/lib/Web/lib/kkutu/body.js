@@ -2389,7 +2389,8 @@ function getScore(id) {
 		}
 		return 0;
 	}
-	else return ($data.users[id] || $data.robots[id]).game.score;
+	var player = $data.users[id] || $data.robots[id];
+	return player && player.game ? player.game.score : 0;
 }
 function addScore(id, score) {
 	if ($data._replay) {
@@ -2397,7 +2398,10 @@ function addScore(id, score) {
 			$rec.users[id].game.score += score;
 		}
 	}
-	else ($data.users[id] || $data.robots[id]).game.score += score;
+	else {
+		var player = $data.users[id] || $data.robots[id];
+		if (player && player.game) player.game.score += score;
+	}
 }
 function drawObtainedScore($uc, $sc) {
 	$uc.append($sc);
@@ -3055,10 +3059,10 @@ function getAudio(k, url, cb) {
 		$sound[k] = new AudioSound(url);
 		done();
 	}
-	function done() {
-		if (--$data._lsRemain == 0) {
-			if (cb) cb();
-		} else loading(L['loadRemain']);
+	function done(){
+		if(--$data._lsRemain == 0){
+			if(cb) cb();
+		}else loading(L['loadRemain'] + $data._lsRemain);
 	}
 	function AudioSound(url) {
 		var my = this;
@@ -3090,7 +3094,7 @@ function getSoundCategory(key) {
 		'T0': true, 'T1': true, 'T2': true, 'T3': true, 'T4': true, 'T5': true,
 		'T6': true, 'T7': true, 'T8': true, 'T9': true, 'T10': true, 'jaqwi': true, 'JaqwiF': true
 	};
-	return ingameSounds[key] ? 'ingame' : (key === 'lobby' || key === 'original' || key === 'lobbyseol' || key === 'ending' || key === 'museum' || key === 'inthepool' || key === 'enchanted' || key === 'kkutudive' ? 'bgm' : 'effect');
+	return ingameSounds[key] ? 'ingame' : (key === 'lobby' || key === 'original' || key === 'lobbyseol' || key === 'ending' || key === 'museum' || key === 'inthepool' || key === 'enchanted' || key === 'freedomdive' ? 'bgm' : 'effect');
 }
 function playSound(key, loop) {
 	var src, sound;
@@ -3136,7 +3140,7 @@ function playSound(key, loop) {
 	if ($_sound[key]) $_sound[key].stop();
 	$_sound[key] = src;
 	src.originalKey = key;
-	src.key = key === "lobby" || key === "original" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "kkutudive" ? "lobby" : key;
+	src.key = key === "lobby" || key === "original" || key === "lobbyseol" || key === "ending" || key === "museum" || key === "inthepool" || key === "enchanted" || key === "freedomdive" ? "lobby" : key;
 
 	src.start();
 
