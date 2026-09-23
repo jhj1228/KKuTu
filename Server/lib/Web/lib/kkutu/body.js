@@ -2637,18 +2637,19 @@ function loadShop() {
 	$(".shop-type.selected").removeClass("selected");
 	$("#shop-type-all").addClass("selected");
 }
-function filterShop(by) {
+function filterShop(by, query) {
 	var isAll = by === true;
 	var $o, obj;
 	var i;
 
+	query = (query || "").toLowerCase();
 	if (!isAll) by = by.split(',');
 	for (i in $data.shop) {
 		obj = $data.shop[i];
 		if (obj.cost < 0) continue;
-		$o = $("#goods_" + i).show();
-		if (isAll) continue;
-		if (by.indexOf(obj.group) == -1) $o.hide();
+		$o = $("#goods_" + i);
+		if ((!isAll && by.indexOf(obj.group) == -1) || (query && iName(obj._id).toLowerCase().indexOf(query) == -1)) $o.hide();
+		else $o.show();
 	}
 }
 function explainGoods(item, equipped, expire) {

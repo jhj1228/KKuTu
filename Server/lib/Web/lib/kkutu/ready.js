@@ -599,7 +599,13 @@ $(document).ready(function () {
 		$(".shop-type.selected").removeClass("selected");
 		$target.addClass("selected");
 
-		filterShop(type == 'all' || $target.attr('value'));
+		filterShop(type == 'all' || $target.attr('value'), $("#shop-search").val());
+	});
+	$("#shop-search").on('input', function (e) {
+		var $selected = $(".shop-type.selected");
+		var type = $selected.attr('id').slice(10);
+
+		filterShop(type == 'all' || $selected.attr('value'), e.currentTarget.value);
 	});
 	$stage.menu.dict.on('click', function (e) {
 		showDialog($stage.dialog.dict);
