@@ -328,10 +328,16 @@ $lib.PictureQuiz.turnGoing = function () {
 
     if (!$rtb.hasClass("round-extreme"))
         if ($data._roundTime <= $data._fastTime) {
-            bRate = $data.bgm.currentTime / $data.bgm.duration;
-            if ($data.bgm.paused) stopBGM();
+            var bgm = $data.bgm;
+
+            if (bgm && bgm.audio && isFinite(bgm.audio.duration) && bgm.audio.duration > 0) {
+                bRate = bgm.audio.currentTime / bgm.audio.duration;
+            }
+            if (bgm && bgm.audio && bgm.audio.paused) stopBGM();
             else playBGM('jaqwiF');
-            $data.bgm.currentTime = $data.bgm.duration * bRate;
+            if (isFinite(bRate) && $data.bgm && $data.bgm.audio) {
+                $data.bgm.audio.currentTime = $data.bgm.audio.duration * bRate;
+            }
             $rtb.addClass("round-extreme");
         }
 };

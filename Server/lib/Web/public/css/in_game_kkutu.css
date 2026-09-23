@@ -26,6 +26,10 @@ equ {
 	z-index: 4;
 }
 
+#Balloons {
+	z-index: 4;
+}
+
 #Intro img {
 	width: 1010px;
 	height: 604px;

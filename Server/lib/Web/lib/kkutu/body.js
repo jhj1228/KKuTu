@@ -2420,6 +2420,9 @@ function roundEnd(result, data) {
 	var lvUp, sc;
 	var addit, addp;
 
+	clearInterval($data._tTime);
+	$data._relay = false;
+	stopBGM();
 	$(".result-me-expl").empty();
 	$stage.game.display.html(L['roundEnd']);
 	$data._resultPage = 1;
@@ -3181,7 +3184,9 @@ function badWords(text) {
 }
 function chatBalloon(text, id, flag) {
 	$("#cb-" + id).remove();
-	var offset = ((flag & 2) ? $("#game-user-" + id) : $("#room-user-" + id)).offset();
+	var $target = (flag & 2) ? $("#game-user-" + id) : $("#room-user-" + id);
+	var $fallback = (flag & 2) ? $("#room-user-" + id) : $("#game-user-" + id);
+	var offset;
 	var img = (flag == 2) ? "chat-balloon-bot" : "chat-balloon-tip";
 	var $obj = $("<div>").addClass("chat-balloon")
 		.attr('id', "cb-" + id)
@@ -3189,6 +3194,8 @@ function chatBalloon(text, id, flag) {
 	[(flag == 2) ? 'prepend' : 'append']($("<h4>").text(text));
 	var ot, ol;
 
+	if (!$target.is(":visible") && $fallback.is(":visible")) $target = $fallback;
+	offset = $target.offset();
 	if (!offset) return;
 	$stage.balloons.append($obj);
 	if (flag == 1) ot = 0, ol = 220;
@@ -3216,7 +3223,12 @@ function chat(profile, msg, from, timestamp) {
 	playSound('k');
 	stackChat();
 	if (!mobile && $data.room) {
-		$bar = ($data.room.gaming ? 2 : 0) + ($(".jjoriping").hasClass("cw") || $(".jjoriping").hasClass("pq") ? 1 : 0);
+		$stage.box.chat.show();
+		if ($data.room.gaming || $data.resulting) {
+			$stage.box.chat.width(1000).height(140);
+			$stage.chat.height(70);
+		}
+		$bar = (($data.room.gaming || $data.resulting) ? 2 : 0) + ($(".jjoriping").hasClass("cw") || $(".jjoriping").hasClass("pq") ? 1 : 0);
 		chatBalloon(msg, profile.id, $bar);
 	}
 	$stage.chat.append($item = $("<div>").addClass("chat-item")
