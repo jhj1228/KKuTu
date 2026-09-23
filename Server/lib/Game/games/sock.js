@@ -63,7 +63,7 @@ exports.roundReady = function () {
 	my.game.roundTime = my.time * 1000;
 	if (my.game.round <= my.round) {
 		my.getWordTable().find(['_id', searchReg], ['hit', { $gte: 1 }], conf.add).limit(1234).on(function ($docs) {
-			$docs.sort(function (a, b) { return Math.random() < 0.5; });
+			shuffle($docs);
 			while (w = $docs.shift()) {
 				words.push(w._id);
 				i = w._id.length;
@@ -165,6 +165,15 @@ exports.getScore = function (text, delay) {
 
 	return Math.round(Math.pow(text.length - 1, 1.6) * 8);
 };
+function shuffle(items) {
+	var i = items.length, j, temp;
+	while (--i > 0) {
+		j = Math.floor(Math.random() * (i + 1));
+		temp = items[j];
+		items[j] = items[i];
+		items[i] = temp;
+	}
+}
 function getBoard(words, len) {
 	var str = words.join("").split("");
 	var sl = str.length;
