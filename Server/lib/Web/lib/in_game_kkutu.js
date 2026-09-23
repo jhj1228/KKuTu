@@ -451,7 +451,7 @@ $(document).ready(function () {
 	});
 	function startDrag($diag, sx, sy) {
 		var pos = $diag.position();
-		$(window).on('mousemove', function (e) {
+		$(window).on('mousemove.kkutuDrag', function (e) {
 			var dx = e.pageX - sx, dy = e.pageY - sy;
 
 			$diag.css('left', pos.left + dx);
@@ -459,7 +459,7 @@ $(document).ready(function () {
 		});
 	}
 	function stopDrag($diag) {
-		$(window).off('mousemove');
+		$(window).off('mousemove.kkutuDrag');
 	}
 	$(".result-me-gauge .graph-bar").addClass("result-me-before-bar");
 	$(".result-me-gauge")
@@ -5941,6 +5941,7 @@ function processShop(callback) {
 	$.get("/shop", function (res) {
 		$data.shop = {};
 		for (i in res.goods) {
+			res.goods[i].options = res.goods[i].options || {};
 			$data.shop[res.goods[i]._id] = res.goods[i];
 		}
 		if (callback) callback(res);

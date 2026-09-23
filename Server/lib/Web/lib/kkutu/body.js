@@ -2683,6 +2683,7 @@ function processShop(callback) {
 	$.get("/shop", function (res) {
 		$data.shop = {};
 		for (i in res.goods) {
+			res.goods[i].options = res.goods[i].options || {};
 			$data.shop[res.goods[i]._id] = res.goods[i];
 		}
 		if (callback) callback(res);
