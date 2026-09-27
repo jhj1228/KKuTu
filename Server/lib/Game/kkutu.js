@@ -37,6 +37,7 @@ const NUM_SLAVES = 4;
 const GUEST_IMAGE = "/img/kkutu/guest.png";
 const MAX_OKG = 18;
 const PER_OKG = 600000;
+const ROBOT_EXP_REWARD_MULTIPLIER = 0.1;
 
 exports.NIGHT = false;
 exports.init = function (_DB, _DIC, _ROOM, _GUEST_PERMISSION, _CHAN) {
@@ -1304,6 +1305,7 @@ exports.Room = function (room, channel) {
 		var teams = [null, [], [], [], []];
 		var sumScore = 0;
 		var now = (new Date()).getTime();
+		var hasRobot = my.game.seq.some(function (player) { return player.robot; });
 
 		my.interrupt();
 		for (i in my.players) {
@@ -1351,6 +1353,7 @@ exports.Room = function (room, channel) {
 				rw.score = 0;
 				rw.money = 0;
 			}
+			if (hasRobot && res.length === 1) rw.score = Math.round(rw.score * ROBOT_EXP_REWARD_MULTIPLIER);
 			if (rw.together) {
 				if (o.game.wpc) o.game.wpc.forEach(function (item) { o.obtain("$WPC" + item, 1); }); // 글자 조각 획득 처리
 				o.onOKG(rw.playTime);
