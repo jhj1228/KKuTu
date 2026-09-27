@@ -291,7 +291,7 @@ exports.KO_INJEONG = [
 	/*"IMS",*/ "RAG", "NEX", "KTV", "ETP", "NAC", "NFX", "KOT",
 	/*"DOT",*/ "THP", "JLN", "LVL", "LOL", "MIN", "JAN", "MAP", "KCP", /*"BGP",*/
 	"HSR", "BLA", /*"CYP",*/ /*"NVL",*/ "STA", /*"ESB",*/ "APP", "ELW", "MOV", "OVW",
-	"GSI", /*"WOW",*/ "WET", "KPO", /*"SVS",*/ "ZEL", /*"CKR",*/ "POK", "PJS",
+	"GSI", /*"WOW",*/ "WET", "KPO", /*"SVS",*/ "JPT",  "ZEL", /*"CKR",*/ "POK", "PJS",
 	"HSS", "KMU", "KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
