@@ -1032,6 +1032,9 @@ exports.Room = function (room, channel) {
 		}
 
 		my.players.splice(x, 1);
+		if (my.gaming && my.game.seq.length <= 2 && my.game.seq.indexOf(client.id) != -1) {
+			my.game.playerQuit = { score: client.game.score || 0 };
+		}
 		client.game = {};
 		if (client.id == my.master) {
 			while (my.removeAI(false, true));
@@ -1043,6 +1046,7 @@ exports.Room = function (room, channel) {
 				x = my.game.seq.indexOf(client.id);
 				if (x != -1) {
 					if (my.game.seq.length <= 2) {
+						my.game.playerQuit = true;
 						my.game.seq.splice(x, 1);
 						my.roundEnd();
 					} else {
@@ -1306,6 +1310,7 @@ exports.Room = function (room, channel) {
 		var sumScore = 0;
 		var now = (new Date()).getTime();
 		var hasRobot = my.game.seq.some(function (player) { return player.robot; });
+		var playerQuit = my.game.playerQuit;
 
 		my.interrupt();
 		for (i in my.players) {
@@ -1335,8 +1340,9 @@ exports.Room = function (room, channel) {
 			sumScore += o.game.score;
 			res.push({ id: o.id, score: o.team ? teams[o.team][1] : o.game.score, dim: o.team ? teams[o.team][0] : 1 });
 		}
+		if (playerQuit) sumScore += playerQuit.score;
 		res.sort(function (a, b) { return b.score - a.score; });
-		rl = res.length;
+		rl = res.length + (playerQuit ? 1 : 0);
 
 		for (i in res) {
 			o = DIC[res[i].id];
@@ -1345,6 +1351,7 @@ exports.Room = function (room, channel) {
 			} else {
 				res[i].rank = Number(i);
 			}
+			if (playerQuit && playerQuit.score > res[i].score) res[i].rank++;
 			pv = res[i].score;
 			rw = getRewards(my.mode, o.game.score / res[i].dim, o.game.bonus, res[i].rank, rl, sumScore);
 			rw.playTime = now - o.playAt;
@@ -1554,64 +1561,64 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 	// rank는 0~7
 	switch (Const.GAME_TYPE[mode]) {
 		case "KKT":
-			rw.score += score * 1.65;
+			rw.score += score * 1.1;
 			break;
 		case "KSH":
-			rw.score += score * 0.75;
+			rw.score += score * 0.55;
 			break;
 		case "CSQ":
-			rw.score += score * 0.8;
-			break;
-		case 'KCW':
-			rw.score += score * 1.2;
-			break;
-		case 'KTY':
-			rw.score += score * 0.65;
-			break;
-		case 'KAP':
-			rw.score += score * 1;
-			break;
-		case 'HUN':
-			rw.score += score * 0.73;
-			break;
-		case 'KDA':
-			rw.score += score * 0.65;
-			break;
-		case 'KSS':
-			rw.score += score * 0.8;
-			break;
-		case 'KMH':
-			rw.score += score * 0.85;
-			break;
-		case 'KKK':
-			rw.score += score * 2;
-			break;
-		case 'MOQ':
-			rw.score += score * 0.85;
-			break;
-		case 'ALL':
 			rw.score += score * 0.4;
 			break;
+		case 'KCW':
+			rw.score += score * 1.0;
+			break;
+		case 'KTY':
+			rw.score += score * 0.39;
+			break;
+		case 'KAP':
+			rw.score += score * 0.8;
+			break;
+		case 'HUN':
+			rw.score += score * 0.55;
+			break;
+		case 'KDA':
+			rw.score += score * 0.40;
+			break;
+		case 'KSS':
+			rw.score += score * 0.5;
+			break;
+		case 'KMH':
+			rw.score += score * 0.71;
+			break;
+		case 'KKK':
+			rw.score += score * 1.45;
+			break;
+		case 'MOQ':
+			rw.score += score * 0.55;
+			break;
+		case 'ALL':
+			rw.score += score * 0.1;
+			break;
 		case 'KTT':
-			rw.score += score * 0.65;
+			rw.score += score * 0.45;
 			break;
 		case 'KRH':
-			rw.score += score * 0.77;
+			rw.score += score * 0.5;
 			break;
 		case 'KAT':
-			rw.score += score * 1.8;
+			rw.score += score * 1.47;
 			break;
 		case 'KSQ':
-			rw.score += score * 1;
+			rw.score += score * 0.7;
 			break;
 		case 'KPQ':
-			rw.score += score * 0.88;
+			rw.score += score * 0.75;
 			break;
 		case 'SCR':
-			rw.score += score * 0.95;
+			rw.score += score * 0.6;
 			break;
 		case 'KSW':
-			rw.score += score * 0.6;
+			rw.score += score * 0.37;
 			break;
 		default:
 			break;
