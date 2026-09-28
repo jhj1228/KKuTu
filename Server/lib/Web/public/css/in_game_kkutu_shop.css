@@ -70,13 +70,12 @@
 }
 
 #shop-search {
-	box-sizing: border-box;
-	min-width: 0px;
-	flex: 1;
-	height: 27px;
-	padding: 3px 6px;
-	border: 1px solid #AAAAAA;
-	font-size: 11px;
+    box-sizing: border-box;
+    width: 205px;
+    height: 24px;
+    padding: 3px 6px;
+    border: 1px solid #AAAAAA;
+    font-size: 11px;
 }
 
 /* NIK */

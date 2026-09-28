@@ -140,10 +140,6 @@ exports.submit = function (client, text, data) {
 	if (isAllowed) {
 		var searchLang = 'ko';
 
-		if (/^[a-zA-Z0-9\s']+$/.test(text)) {
-			searchLang = 'en';
-		}
-
 		my.game.loading = true;
 
 		function onDB($doc) {
@@ -256,7 +252,7 @@ exports.readyRobot = function (robot) {
 	var delay = ROBOT_START_DELAY[level];
 	var w, text;
 
-	var targetLang = (Math.random() < 0.5) ? 'en' : 'ko';
+	var targetLang = 'ko';
 
 	var skipCount = Math.floor(Math.random() * 10000);
 
@@ -319,8 +315,7 @@ exports.readyRobot = function (robot) {
 };
 function getMission(my) {
 	var arrKo = Const.MISSION_ko || [];
-	var arrEn = Const.MISSION_en || [];
-	var arr = arrKo.concat(arrEn);
+	var arr = arrKo;
 
 	if (!arr || arr.length === 0) return "-";
 	return arr[Math.floor(Math.random() * arr.length)];

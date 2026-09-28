@@ -262,6 +262,7 @@ exports.run = function (Server, page) {
 			MainDB.kkutu_shop_desc.upsert(['_id', item._id]).set(item.text).on();
 		});
 		MainDB.kkutu_shop_desc.refreshLanguage(Language);
+		res.sendStatus(200);
 	});
 
 	// 스피드퀴즈 질문 추가
