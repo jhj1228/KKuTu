@@ -183,7 +183,7 @@ exports.RULE = {
 	'KKK': { // 끄투
 		lang: "ko",
 		rule: "Classic",
-		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rdt", "unw", "due", "mwd", "spc"],
+		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "rdt", "unw", "due", "mwd", "spc"],
 		time: 1,
 		ai: true,
 		big: false,
@@ -289,7 +289,7 @@ exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
 
 exports.KO_INJEONG = [
 	/*"IMS",*/ "RAG", "NEX", "KTV", "ETP", "NAC", "NFX", "KOT",
-	/*"DOT",*/ "THP", "JLN", "LVL", "LOL", "MIN", "JAN", "MAP", "KCP", /*"BGP",*/
+	/*"DOT",*/ "THP", "JLN", "LVL", "LKT", "LOL", "MIN", "JAN", "MAP", "KCP", /*"BGP",*/
 	"HSR", "BLA", /*"CYP",*/ /*"NVL",*/ "STA", /*"ESB",*/ "APP", "ELW", "MOV", "OVW",
 	"GSI", /*"WOW",*/ "WET", "KPO", /*"SVS",*/ "JPT",  "ZEL", /*"CKR",*/ "POK", "PJS",
 	"HSS", "KMU", "KRP", "KAD", "HOS"
