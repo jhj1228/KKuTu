@@ -152,6 +152,14 @@ process.on('message', function (msg) {
 		case "room-invalid":
 			delete ROOM[msg.room.id];
 			break;
+		case "room-close":
+			var room = ROOM[msg.id];
+			if (!room) break;
+
+			room.players.slice().forEach(function (playerId) {
+				if (DIC[playerId]) DIC[playerId].leave();
+			});
+			break;
 		default:
 			JLog.warn(`처리되지 않은 IPC 메시지 유형: ${msg.type}`);
 	}

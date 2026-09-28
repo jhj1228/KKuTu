@@ -35,6 +35,7 @@ var Server;
 var DIC = {};
 var DNAME = {};
 var ROOM = {};
+var CHAN = {};
 
 var T_ROOM = {};
 var T_USER = {};
@@ -84,6 +85,14 @@ function processAdmin(id, value) {
 			if (temp = DIC[value]) {
 				temp.socket.send('{"type":"error","code":410}');
 				temp.socket.close();
+			}
+			return null;
+		case "closeroom":
+			if (temp = ROOM[value]) {
+				if (CHAN[temp.channel]) {
+					CHAN[temp.channel].send({ type: "room-close", id: temp.id });
+					JLog.info(`[Admin] 방 ${temp.id} 강제 삭제 요청`);
+				}
 			}
 			return null;
 		case "tailroom":
@@ -376,8 +385,9 @@ Cluster.on('message', function (worker, msg) {
 			JLog.warn(`처리되지 않은 IPC 메시지 유형: ${msg.type}`);
 	}
 });
-exports.init = function (_SID, CHAN) {
+exports.init = function (_SID, _CHAN) {
 	SID = _SID;
+	CHAN = _CHAN;
 	MainDB = require('../Web/db');
 
 	MainDB.ready = function () {
