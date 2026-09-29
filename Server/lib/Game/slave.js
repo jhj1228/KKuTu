@@ -157,8 +157,18 @@ process.on('message', function (msg) {
 			if (!room) break;
 
 			room.players.slice().forEach(function (playerId) {
-				if (DIC[playerId]) DIC[playerId].leave();
+				if (DIC[playerId]) {
+					DIC[playerId].sendError(466);
+					DIC[playerId].leave();
+				}
 			});
+			break;
+		case "room-title":
+			var room = ROOM[msg.id];
+			if (!room) break;
+
+			room.title = msg.title;
+			room.export();
 			break;
 		default:
 			JLog.warn(`처리되지 않은 IPC 메시지 유형: ${msg.type}`);

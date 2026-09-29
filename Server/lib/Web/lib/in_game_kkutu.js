@@ -2496,10 +2496,28 @@ $lib.All.turnEnd = function (id, data) {
 
 $lib.Speedquiz = {};
 
+function resetQuestionDisplay() {
+	$stage.game.display.css('font-size', "");
+}
+
+function fitQuestionDisplay() {
+	var $display = $stage.game.display;
+	var display = $display.get(0);
+	var fontSize = 20;
+	var minFontSize = 12;
+
+	$display.css('font-size', fontSize + "px");
+	while (display && display.scrollWidth > display.clientWidth && fontSize > minFontSize) {
+		fontSize--;
+		$display.css('font-size', fontSize + "px");
+	}
+}
+
 $lib.Speedquiz.roundReady = function (data) {
 	var tv = L['sqTheme'] + ": " + L['speedquiz_' + data.topic];
 
 	clearBoard();
+	resetQuestionDisplay();
 	$data._roundTime = $data.room.time * 1000;
 	$data._fastTime = 10000;
 	$stage.game.display.html(tv);
@@ -2525,6 +2543,7 @@ $lib.Speedquiz.turnStart = function (data) {
 
 	var qVal = data.question;
 	$stage.game.display.html($data._question = qVal);
+	fitQuestionDisplay();
 
 	clearInterval($data._tTime);
 	$data._tTime = addInterval(turnGoing, TICK);
@@ -2568,6 +2587,7 @@ $lib.Speedquiz.turnEnd = function (id, data) {
 		$uc.addClass("game-user-bomb");
 	} else if (data.answer) {
 		$stage.game.here.hide();
+		resetQuestionDisplay();
 		$stage.game.display.html($("<label>").css('color', "#FFFF44").html(data.answer));
 		stopBGM();
 		playSound('horr');

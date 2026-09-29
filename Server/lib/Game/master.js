@@ -95,6 +95,15 @@ function processAdmin(id, value) {
 				}
 			}
 			return null;
+		case "roomtitle":
+			var roomTitle = value.match(/^(\d+)\s+(.+)$/);
+			if (roomTitle && (temp = ROOM[roomTitle[1]])) {
+				if (CHAN[temp.channel]) {
+					CHAN[temp.channel].send({ type: "room-title", id: temp.id, title: roomTitle[2].trim().substr(0, 20) });
+					JLog.info(`[Admin] 방 ${temp.id} 제목 변경 요청`);
+				}
+			}
+			return null;
 		case "tailroom":
 			if (temp = ROOM[value]) {
 				if (T_ROOM[value] == id) {
