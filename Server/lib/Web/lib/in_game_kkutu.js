@@ -5160,7 +5160,7 @@ function requestRoomInfo(id) {
 function requestProfile(id) {
 	var o = $data.users[id] || $data.robots[id];
 	var $rec = $("#profile-record").empty();
-	var $pi, $ex;
+	var $pi, $ex, defaultProfileHeight = $stage.dialog.profile.data("default-height");
 	var i;
 
 	if (!o) {
@@ -5181,7 +5181,13 @@ function requestProfile(id) {
 		return;
 	}
 
+	if (!defaultProfileHeight) {
+		defaultProfileHeight = $stage.dialog.profile.css("height");
+		$stage.dialog.profile.data("default-height", defaultProfileHeight);
+	}
 	$("#ProfileDiag .dialog-title").text(getDisplayName(o) + L['sProfile']);
+	$stage.dialog.profile.css("height", o.robot ? "180px" : defaultProfileHeight);
+	$(".profile-record").toggle(!o.robot);
 	$(".profile-head").empty().append($pi = $("<div>").addClass("moremi profile-moremi"))
 		.append($("<div>").addClass("profile-head-item")
 			.append(getImage(o.profile.image).addClass("profile-image"))
