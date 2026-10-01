@@ -4621,7 +4621,7 @@ function normalGameUserBar(o) {
 		.append($("<div>").addClass("game-user-title")
 			.append(getLevelImage(o.data.score).addClass("game-user-level"))
 			.append($bar = $("<div>").addClass("game-user-name ellipse").html(getDisplayName(o)))
-			.append($("<div>").addClass("expl").html(L['LEVEL'] + " " + getLevel(o.data.score)))
+			.append($("<div>").addClass("expl").html(L['LEVEL'] + " " + getLevel(o.data.score) + "<br>" + getDisplayName(o)))
 		)
 		.append($n = $("<div>").addClass("game-user-score"));
 	renderMoremi($m, o.equip);
