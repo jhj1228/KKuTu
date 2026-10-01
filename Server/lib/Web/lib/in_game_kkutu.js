@@ -133,6 +133,7 @@ $(document).ready(function () {
 			setting: $("#SettingBtn"),
 			community: $("#CommunityBtn"),
 			blacklist: $("#BlacklistBtn"),
+			mailbox: $("#MailboxBtn"),
 			newRoom: $("#NewRoomBtn"),
 			setRoom: $("#SetRoomBtn"),
 			quickRoom: $("#QuickRoomBtn"),
@@ -161,6 +162,13 @@ $(document).ready(function () {
 			blacklist: $("#BlacklistDiag"),
 			blacklistItems: $("#blacklist-items"),
 			blacklistClear: $("#blacklist-clear"),
+			mailbox: $("#MailboxDiag"),
+			mailboxItems: $("#mailbox-items"),
+			mailboxClaimAll: $("#mailbox-claim-all"),
+			mailboxDetail: $("#MailboxDetailDiag"),
+			mailboxDetailTitle: $("#mailbox-detail-title"),
+			mailboxDetailContent: $("#mailbox-detail-content"),
+			mailboxClaim: $("#mailbox-claim"),
 			room: $("#RoomDiag"),
 			roomOK: $("#room-ok"),
 			quick: $("#QuickDiag"),
@@ -491,6 +499,92 @@ $(document).ready(function () {
 			showBlacklist();
 		}
 	});
+	$stage.menu.mailbox.on('click', function (e) {
+		if ($data.guest) return fail(421);
+		$stage.dialog.mailboxClaimAll.prop('disabled', true);
+		showDialog($stage.dialog.mailbox);
+		loadMailbox();
+	});
+	$stage.dialog.mailboxClaimAll.on('click', function (e) {
+		claimMailboxItems($data._mailboxItems.map(function (item) { return item.id; }));
+	});
+	$stage.dialog.mailboxClaim.on('click', function (e) {
+		if (!$data._mailboxItem) return;
+		claimMailboxItems([$data._mailboxItem.id]);
+	});
+	function claimMailboxItems(ids) {
+		var index = 0;
+
+		if (!ids.length) return;
+		$stage.dialog.mailboxClaimAll.prop('disabled', true);
+		$stage.dialog.mailboxClaim.prop('disabled', true);
+		function claimNext() {
+			if (index >= ids.length) {
+				$stage.dialog.mailboxDetail.hide();
+				showAlert(L['mailboxClaimed']);
+				return loadMailbox();
+			}
+			$.post('/mailbox/claim', { id: ids[index++] }, function (res) {
+				if (res.error) {
+					if (res.error === 430) return claimNext();
+					fail(res.error);
+					return loadMailbox();
+				}
+				$data.users[$data.id].money = res.money;
+				$data.users[$data.id].box = res.box;
+				updateMe();
+				claimNext();
+			});
+		}
+		claimNext();
+	}
+	function loadMailbox() {
+		$.get('/mailbox', function (res) {
+			if (res.error) return fail(res.error);
+
+			$stage.dialog.mailboxItems.empty();
+			$data._mailboxItems = res.items;
+			if (res.items.length) {
+				res.items.forEach(appendMailboxItem);
+				$stage.dialog.mailboxClaimAll.prop('disabled', false);
+			} else {
+				$stage.dialog.mailboxItems.append($('<div>')
+					.css({ padding: '10px', textAlign: 'center' })
+					.text(L['mailboxEmpty']));
+				$stage.dialog.mailboxClaimAll.prop('disabled', true);
+			}
+		});
+	}
+	function appendMailboxItem(item) {
+		var detail = getMailboxItemDetail(item);
+		var $item = $('<div>')
+			.css({ backgroundColor: '#F7F7F7', border: '1px solid #CCCCCC', cursor: 'pointer', marginBottom: '6px', padding: '10px' })
+			.append($('<div>').css({ fontWeight: 'bold', marginBottom: '4px' }).text(detail.title))
+			.append($('<div>').css({ color: '#666666', fontSize: '11px' }).text(detail.summary));
+
+		$item.on('click', function (e) {
+			$data._mailboxItem = item;
+			$stage.dialog.mailboxDetailTitle.text(detail.title);
+			$stage.dialog.mailboxDetailContent.text(detail.content);
+			$stage.dialog.mailboxClaim.prop('disabled', false);
+			showDialog($stage.dialog.mailboxDetail);
+		});
+		$stage.dialog.mailboxItems.append($item);
+	}
+	function getMailboxItemDetail(item) {
+		var summary = item.money ? item.money + L['ping'] : L['mailboxDictionaryPage'] + ' ' + item.dictPage + L['mailboxItemUnit'];
+
+		switch (item.type) {
+			case 'okg':
+				return { title: L['mailboxOkgReward'], summary: summary, content: L['mailboxOkgContent'] + '\n\n' + summary };
+			case 'level':
+				return { title: L['mailboxLevelReward'], summary: summary, content: L['LEVEL'] + ' ' + item.level + L['mailboxLevelContent'] + '\n\n' + summary };
+			case 'play':
+				return { title: L['mailboxPlayReward'], summary: summary, content: L['mailboxPlayContent'] + '\n\n' + summary };
+			default:
+				return { title: L['attendanceReward'], summary: summary, content: L['mailboxAttendanceContent'] + '\n\n' + summary };
+		}
+	}
 	$stage.dialog.commFriendAdd.on('click', function (e) {
 		var id = prompt(L['friendAddNotice']);
 

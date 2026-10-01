@@ -17,10 +17,107 @@
  */
 
 var Web = require("request");
+var PgEscape = require("pg-escape");
 var MainDB = require("../db");
 var JLog = require("../../sub/jjlog");
 var GLOBAL = require("../../sub/global.json");
 var Const = require("../../const");
+
+var ATTENDANCE_REWARD = 100;
+var LEVEL_REWARD = 5000;
+var OKG_TIME = 600000;
+var PLAY_REWARD_TIME = 1800000;
+var MAX_OKG = 18;
+
+function getToday() {
+	var now = new Date();
+	var month = now.getMonth() + 1;
+	var day = now.getDate();
+
+	return [now.getFullYear(), month < 10 ? '0' + month : month, day < 10 ? '0' + day : day].join('-');
+}
+
+function getRequiredScore(level) {
+	return Math.round(
+		(!(level % 5) * 0.3 + 1) * (!(level % 15) * 0.4 + 1) * (!(level % 45) * 0.5 + 1) * (
+			120 + Math.floor(level / 5) * 60 + Math.floor(level * level / 225) * 120 + Math.floor(level * level / 2025) * 180
+		)
+	);
+}
+
+function getLevel(score) {
+	var level = 1;
+	var required = getRequiredScore(level);
+
+	while (score >= required) {
+		level++;
+		required += getRequiredScore(level);
+	}
+	return level;
+}
+
+function getMailboxItems($user, claimed) {
+	var data = $user.kkutu || {};
+	var playTime = Number(data.playTime) || 0;
+	var today = getToday();
+	var items = [];
+	var i;
+	var id;
+	var level;
+
+	function add(reward) {
+		if (!claimed[reward.id]) items.push(reward);
+	}
+
+	add({ id: 'attendance:' + today, type: 'attendance', money: ATTENDANCE_REWARD });
+	for (i = 1; i <= Math.min(MAX_OKG, Math.floor(playTime / OKG_TIME)); i++) {
+		add({ id: 'okg:' + today + ':' + i, type: 'okg', dictPage: 1, count: i });
+	}
+	level = getLevel(Number(data.score) || 0);
+	for (i = 10; i <= Math.floor(level / 10) * 10; i += 10) {
+		add({ id: 'level:' + i, type: 'level', money: LEVEL_REWARD, level: i });
+	}
+	for (i = 1; i <= Math.floor(playTime / PLAY_REWARD_TIME); i++) {
+		add({ id: 'play:' + today + ':' + i, type: 'play', dictPage: 2, count: i });
+	}
+	return items;
+}
+
+function getMailbox(uid, callback) {
+	var userQuery = "SELECT kkutu FROM users WHERE _id = " + PgEscape.literal(uid);
+	var claimQuery = "SELECT reward_id FROM mailbox_claims WHERE user_id = " + PgEscape.literal(uid);
+
+	MainDB.users.direct(userQuery, function (error, $result) {
+		if (error || !$result.rows.length) return callback(error || new Error('User not found'));
+
+		MainDB.users.direct(claimQuery, function (claimError, $claims) {
+			var claimed = {};
+			var i;
+
+			if (claimError) return callback(claimError);
+			for (i = 0; i < $claims.rows.length; i++) claimed[$claims.rows[i].reward_id] = true;
+			callback(null, getMailboxItems($result.rows[0], claimed));
+		});
+	});
+}
+
+function claimMailboxItem(uid, reward, callback) {
+	var claim = "INSERT INTO mailbox_claims (user_id, reward_id) VALUES (" + PgEscape.literal(uid) + ", " + PgEscape.literal(reward.id) + ") ON CONFLICT DO NOTHING RETURNING 1";
+	var sets = [];
+	var query;
+
+	if (reward.money) sets.push("money = money + " + reward.money);
+	if (reward.dictPage) {
+		sets.push("box = jsonb_set(COALESCE(box::jsonb, '{}'::jsonb), '{dictPage}', to_jsonb(COALESCE((COALESCE(box::jsonb, '{}'::jsonb)->>'dictPage')::integer, 0) + " + reward.dictPage + "), true)::json");
+	}
+	query = "WITH claim AS (" + claim + ") UPDATE users SET " + sets.join(', ') + " WHERE _id = " + PgEscape.literal(uid) + " AND EXISTS (SELECT 1 FROM claim) RETURNING money, box";
+
+	MainDB.users.direct(query, function (error, $result) {
+		if (error) return callback(error);
+		if (!$result.rowCount) return callback(null, null);
+		callback(null, $result.rows[0]);
+	});
+}
 
 function obtain($user, key, value, term, addValue) {
 	var now = (new Date()).getTime();
@@ -48,6 +145,36 @@ function consume($user, key, value, force) {
 }
 
 exports.run = function (Server, page) {
+	Server.get("/mailbox", function (req, res) {
+		if (!req.session.profile) return res.json({ error: 400 });
+		if (req.session.profile.guest) return res.json({ error: 421 });
+
+		getMailbox(req.session.profile.id, function (error, items) {
+			if (error) return res.json({ error: 500 });
+			res.json({ items: items });
+		});
+	});
+	Server.post("/mailbox/claim", function (req, res) {
+		if (!req.session.profile) return res.json({ error: 400 });
+		if (req.session.profile.guest) return res.json({ error: 421 });
+
+		var uid = req.session.profile.id;
+
+		getMailbox(uid, function (error, items) {
+			var reward;
+			var i;
+
+			if (error) return res.json({ error: 500 });
+			for (i = 0; i < items.length; i++) if (items[i].id === req.body.id) reward = items[i];
+			if (!reward) return res.json({ error: 430 });
+
+			claimMailboxItem(uid, reward, function (claimError, $user) {
+				if (claimError) return res.json({ error: 500 });
+				if (!$user) return res.json({ error: 430 });
+				res.json({ result: 200, money: $user.money, box: $user.box, reward: reward });
+			});
+		});
+	});
 
 	Server.get("/box", function (req, res) {
 		if (req.session.profile) {

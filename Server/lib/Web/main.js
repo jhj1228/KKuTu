@@ -178,12 +178,16 @@ DB.ready = function () {
 	}, 4000);
 	JLog.success("DB가 준비되었습니다.");
 
-	DB.kkutu_shop_desc.refreshLanguage(Language);
-	Server.listen(80);
-	if (Const.IS_SECURED) {
-		const options = Secure();
-		https.createServer(options, Server).listen(443);
-	}
+	DB.users.direct("CREATE TABLE IF NOT EXISTS mailbox_claims (user_id character varying(64) NOT NULL, reward_id character varying(64) NOT NULL, PRIMARY KEY (user_id, reward_id))", function (error) {
+		if (error) return JLog.error("우편함 보상 이력 테이블 생성 실패: " + error.toString());
+
+		DB.kkutu_shop_desc.refreshLanguage(Language);
+		Server.listen(80);
+		if (Const.IS_SECURED) {
+			const options = Secure();
+			https.createServer(options, Server).listen(443);
+		}
+	});
 };
 Const.MAIN_PORTS.forEach(function (v, i) {
 	var KEY = process.env['WS_KEY'];
