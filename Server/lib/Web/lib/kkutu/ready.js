@@ -427,7 +427,7 @@ $(document).ready(function () {
 		}
 	});
 	$stage.menu.mailbox.on('click', function (e) {
-		if ($data.guest) return fail(421);
+		if ($data.guest) return fail(467);
 		$stage.dialog.mailboxClaimAll.prop('disabled', true);
 		showDialog($stage.dialog.mailbox);
 		loadMailbox();

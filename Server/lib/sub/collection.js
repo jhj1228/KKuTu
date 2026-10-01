@@ -419,8 +419,8 @@ exports.Agent = function (type, origin) {
 		my.createColumn = function (name, type) {
 			return new pointer("createColumn", [name, type]);
 		};
-		my.direct = function (q, f) {
-			JLog.warn("직접 쿼리: " + q);
+		my.direct = function (q, f, silent) {
+			if (!silent) JLog.warn("직접 쿼리: " + q);
 			origin.query(q, f);
 		};
 	};

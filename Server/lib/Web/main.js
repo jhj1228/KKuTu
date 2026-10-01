@@ -178,16 +178,24 @@ DB.ready = function () {
 	}, 4000);
 	JLog.success("DB가 준비되었습니다.");
 
-	DB.users.direct("CREATE TABLE IF NOT EXISTS mailbox_claims (user_id character varying(64) NOT NULL, reward_id character varying(64) NOT NULL, PRIMARY KEY (user_id, reward_id))", function (error) {
-		if (error) return JLog.error("우편함 보상 이력 테이블 생성 실패: " + error.toString());
+	DB.users.direct("CREATE TABLE IF NOT EXISTS mailbox_claims (user_id character varying(64) NOT NULL, reward_id character varying(64) NOT NULL, PRIMARY KEY (user_id, reward_id))", function (legacyError) {
+		if (legacyError) return JLog.error("우편함 기존 이력 테이블 생성 실패: " + legacyError.toString());
 
-		DB.kkutu_shop_desc.refreshLanguage(Language);
-		Server.listen(80);
-		if (Const.IS_SECURED) {
-			const options = Secure();
-			https.createServer(options, Server).listen(443);
-		}
-	});
+		DB.users.direct("CREATE TABLE IF NOT EXISTS mailbox_rewards (user_id character varying(64) NOT NULL, reward_id character varying(64) NOT NULL, created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP, claimed_at timestamp with time zone, expired_at timestamp with time zone, PRIMARY KEY (user_id, reward_id))", function (error) {
+			if (error) return JLog.error("우편함 보상 테이블 생성 실패: " + error.toString());
+
+			DB.users.direct("INSERT INTO mailbox_rewards (user_id, reward_id, claimed_at) SELECT user_id, reward_id, CURRENT_TIMESTAMP FROM mailbox_claims ON CONFLICT DO NOTHING", function (migrationError) {
+				if (migrationError) return JLog.error("우편함 보상 이력 이전 실패: " + migrationError.toString());
+
+				DB.kkutu_shop_desc.refreshLanguage(Language);
+				Server.listen(80);
+				if (Const.IS_SECURED) {
+					const options = Secure();
+					https.createServer(options, Server).listen(443);
+				}
+			}, true);
+		}, true);
+	}, true);
 };
 Const.MAIN_PORTS.forEach(function (v, i) {
 	var KEY = process.env['WS_KEY'];

@@ -85,24 +85,44 @@ function getMailboxItems($user, claimed) {
 
 function getMailbox(uid, callback) {
 	var userQuery = "SELECT kkutu FROM users WHERE _id = " + PgEscape.literal(uid);
-	var claimQuery = "SELECT reward_id FROM mailbox_claims WHERE user_id = " + PgEscape.literal(uid);
 
 	MainDB.users.direct(userQuery, function (error, $result) {
-		if (error || !$result.rows.length) return callback(error || new Error('User not found'));
+		var rewards;
+		var values;
+		var insertQuery;
+		var expireQuery;
+		var pendingQuery;
 
-		MainDB.users.direct(claimQuery, function (claimError, $claims) {
-			var claimed = {};
+		if (error || !$result.rows.length) return callback(error || new Error('User not found'));
+		rewards = getMailboxItems($result.rows[0], {});
+		values = rewards.map(function (reward) {
+			return "(" + PgEscape.literal(uid) + ", " + PgEscape.literal(reward.id) + ")";
+		}).join(', ');
+		insertQuery = "INSERT INTO mailbox_rewards (user_id, reward_id) VALUES " + values + " ON CONFLICT DO NOTHING";
+		expireQuery = "UPDATE mailbox_rewards SET expired_at = CURRENT_TIMESTAMP WHERE user_id = " + PgEscape.literal(uid) + " AND claimed_at IS NULL AND expired_at IS NULL AND created_at < CURRENT_TIMESTAMP - INTERVAL '7 days'";
+		pendingQuery = "SELECT reward_id FROM mailbox_rewards WHERE user_id = " + PgEscape.literal(uid) + " AND claimed_at IS NULL AND expired_at IS NULL AND created_at >= CURRENT_TIMESTAMP - INTERVAL '7 days'";
+
+		MainDB.users.direct(insertQuery, function (insertError) {
+			if (insertError) return callback(insertError);
+
+			MainDB.users.direct(expireQuery, function (expireError) {
+				if (expireError) return callback(expireError);
+
+				MainDB.users.direct(pendingQuery, function (pendingError, $pending) {
+					var pending = {};
 			var i;
 
-			if (claimError) return callback(claimError);
-			for (i = 0; i < $claims.rows.length; i++) claimed[$claims.rows[i].reward_id] = true;
-			callback(null, getMailboxItems($result.rows[0], claimed));
-		});
-	});
+					if (pendingError) return callback(pendingError);
+					for (i = 0; i < $pending.rows.length; i++) pending[$pending.rows[i].reward_id] = true;
+					callback(null, rewards.filter(function (reward) { return pending[reward.id]; }));
+				}, true);
+			}, true);
+		}, true);
+	}, true);
 }
 
 function claimMailboxItem(uid, reward, callback) {
-	var claim = "INSERT INTO mailbox_claims (user_id, reward_id) VALUES (" + PgEscape.literal(uid) + ", " + PgEscape.literal(reward.id) + ") ON CONFLICT DO NOTHING RETURNING 1";
+	var claim = "UPDATE mailbox_rewards SET claimed_at = CURRENT_TIMESTAMP WHERE user_id = " + PgEscape.literal(uid) + " AND reward_id = " + PgEscape.literal(reward.id) + " AND claimed_at IS NULL AND expired_at IS NULL AND created_at >= CURRENT_TIMESTAMP - INTERVAL '7 days' RETURNING 1";
 	var sets = [];
 	var query;
 
@@ -116,7 +136,7 @@ function claimMailboxItem(uid, reward, callback) {
 		if (error) return callback(error);
 		if (!$result.rowCount) return callback(null, null);
 		callback(null, $result.rows[0]);
-	});
+	}, true);
 }
 
 function obtain($user, key, value, term, addValue) {
@@ -147,7 +167,7 @@ function consume($user, key, value, force) {
 exports.run = function (Server, page) {
 	Server.get("/mailbox", function (req, res) {
 		if (!req.session.profile) return res.json({ error: 400 });
-		if (req.session.profile.guest) return res.json({ error: 421 });
+		if (req.session.profile.guest) return res.json({ error: 467 });
 
 		getMailbox(req.session.profile.id, function (error, items) {
 			if (error) return res.json({ error: 500 });
@@ -156,7 +176,7 @@ exports.run = function (Server, page) {
 	});
 	Server.post("/mailbox/claim", function (req, res) {
 		if (!req.session.profile) return res.json({ error: 400 });
-		if (req.session.profile.guest) return res.json({ error: 421 });
+		if (req.session.profile.guest) return res.json({ error: 467 });
 
 		var uid = req.session.profile.id;
 

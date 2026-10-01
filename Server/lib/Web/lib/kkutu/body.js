@@ -369,6 +369,11 @@ function onMessage(data) {
 			if (location.hash[1]) tryJoin(location.hash.slice(1));
 			updateUI(undefined, true);
 			welcome();
+			if (!$data.guest) {
+				$.get('/mailbox', function (res) {
+					if (!res.error && res.items && res.items.length) notice(L['notreadmail']);
+				});
+			}
 			if (data.caj) checkAge();
 			updateCommunity();
 			break;

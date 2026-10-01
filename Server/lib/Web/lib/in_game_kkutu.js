@@ -500,7 +500,7 @@ $(document).ready(function () {
 		}
 	});
 	$stage.menu.mailbox.on('click', function (e) {
-		if ($data.guest) return fail(421);
+		if ($data.guest) return fail(467);
 		$stage.dialog.mailboxClaimAll.prop('disabled', true);
 		showDialog($stage.dialog.mailbox);
 		loadMailbox();
@@ -3753,6 +3753,11 @@ function onMessage(data) {
 			if (location.hash[1]) tryJoin(location.hash.slice(1));
 			updateUI(undefined, true);
 			welcome();
+			if (!$data.guest) {
+				$.get('/mailbox', function (res) {
+					if (!res.error && res.items && res.items.length) notice(L['notreadmail']);
+				});
+			}
 			if (data.caj) checkAge();
 			updateCommunity();
 			break;
