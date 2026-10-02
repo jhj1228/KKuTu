@@ -19,14 +19,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * 표준국어대사전 단어 뜻 자동 입력 프로그램
- * Node.js 환경에서 실행하며, 지정된 디렉토리의 JSON 파일을 읽어 PostgreSQL 데이터베이스에 단어와 뜻을 자동으로 입력합니다.
- * DB_CONFIG 객체를 통해 PostgreSQL 데이터베이스 접속 정보를 설정합니다.
- * 사용자는 TARGET_DIR와 FILE_PREFIX 상수를 통해 JSON 파일의 위치와 접두사를 지정할 수 있습니다.
- * 표준국어대사전은 kkutu_ko_p 데이터베이스를 사용합니다.
- */
-
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');

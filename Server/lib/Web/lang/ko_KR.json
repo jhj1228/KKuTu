@@ -536,7 +536,7 @@
 		"attendanceReward": "출석 보상",
 		"mailboxClaimed": "보상을 수령했습니다.",
 		"mailboxEmpty": "수령 가능한 보상이 없습니다.",
-		"mailboxAttendanceContent": "오늘의 출석 보상입니다. 하단의 전체 수령 버튼으로 받을 수 있습니다.",
+		"mailboxAttendanceContent": "오늘의 출석 보상입니다. 하단의 수령 버튼으로 받을 수 있습니다.",
 		"mailboxOkgReward": "오끄감 보상",
 		"mailboxLevelReward": "레벨 달성 보상",
 		"mailboxPlayReward": "게임 플레이 보상",

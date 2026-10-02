@@ -197,14 +197,14 @@ $(document).ready(function () {
 	}
 	$data._soundList = [
 		{ key: "k", value: "/media/kkutu/k.mp3" },
-		{ key: "lobby", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
+		{ key: "lobby", value: "/media/kkutu/LobbyBGM.mp3" },
 		{ key: "original", value: "/media/kkutu/LobbyBGMOriginal.mp3" },
 		{ key: "lobbyseol", value: "/media/kkutu/LobbySeolBGM.mp3" },
 		{ key: "ending", value: "/media/kkutu/LobbyBGMending.mp3" },
 		{ key: "museum", value: "/media/kkutu/LobbyMuseum.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
 		{ key: "freedomdive", value: "/media/kkutu/freedomdive.mp3" },
-		//- { key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
+		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },
 		{ key: "jaqwiF", value: "/media/kkutu/JaqwiFastBGM.mp3" },
 		{ key: "game_start", value: "/media/kkutu/game_start.mp3" },
@@ -433,13 +433,13 @@ $(document).ready(function () {
 		loadMailbox();
 	});
 	$stage.dialog.mailboxClaimAll.on('click', function (e) {
-		claimMailboxItems($data._mailboxItems.map(function (item) { return item.id; }));
+		claimMailboxItems($data._mailboxItems.map(function (item) { return item.id; }), true);
 	});
 	$stage.dialog.mailboxClaim.on('click', function (e) {
 		if (!$data._mailboxItem) return;
-		claimMailboxItems([$data._mailboxItem.id]);
+		claimMailboxItems([$data._mailboxItem.id], true);
 	});
-	function claimMailboxItems(ids) {
+	function claimMailboxItems(ids, playSuccessSound) {
 		var index = 0;
 
 		if (!ids.length) return;
@@ -448,6 +448,7 @@ $(document).ready(function () {
 		function claimNext() {
 			if (index >= ids.length) {
 				$stage.dialog.mailboxDetail.hide();
+				if (playSuccessSound) playSound('success');
 				showAlert(L['mailboxClaimed']);
 				return loadMailbox();
 			}

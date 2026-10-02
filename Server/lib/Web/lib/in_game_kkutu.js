@@ -53,7 +53,7 @@ var MOREMI_PART;
 var AVAIL_EQUIP;
 var RULE;
 var OPTIONS;
-var MAX_LEVEL = 400;
+var MAX_LEVEL = 360;
 var TICK = 30;
 var EXP = [];
 var BAD = new RegExp(["느으*[^가-힣]*금마?", "니[^가-힣]*(엄|앰|엠)", "(ㅄ|ㅅㅂ|ㅂㅅ)", "미친(년|놈)?", "(병|븅|빙)[^가-힣]*신", "보[^가-힣]*지", "(새|섀|쌔|썌)[^가-힣]*(기|끼)", "섹[^가-힣]*스", "(시|씨|쉬|쒸)이*입?[^가-힣]*(발|빨|벌|뻘|팔|펄)", "십[^가-힣]*새", "씹", "(애|에)[^가-힣]*미", "자[^가-힣]*지", "존[^가-힣]*나", "좆|죶", "지랄", "창[^가-힣]*(녀|년|놈)", "fuck", "sex"].join('|'), "g");
@@ -270,14 +270,14 @@ $(document).ready(function () {
 	}
 	$data._soundList = [
 		{ key: "k", value: "/media/kkutu/k.mp3" },
-		{ key: "lobby", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
+		{ key: "lobby", value: "/media/kkutu/LobbyBGM.mp3" },
 		{ key: "original", value: "/media/kkutu/LobbyBGMOriginal.mp3" },
 		{ key: "lobbyseol", value: "/media/kkutu/LobbySeolBGM.mp3" },
 		{ key: "ending", value: "/media/kkutu/LobbyBGMending.mp3" },
 		{ key: "museum", value: "/media/kkutu/LobbyMuseum.mp3" },
 		{ key: "inthepool", value: "/media/kkutu/LobbyINTHEPOOL.mp3" },
 		{ key: "freedomdive", value: "/media/kkutu/freedomdive.mp3" },
-		//- { key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
+		{ key: "enchanted", value: "/media/kkutu/LobbyEnchantedlove.mp3" },
 		{ key: "jaqwi", value: "/media/kkutu/JaqwiBGM.mp3" },
 		{ key: "jaqwiF", value: "/media/kkutu/JaqwiFastBGM.mp3" },
 		{ key: "game_start", value: "/media/kkutu/game_start.mp3" },
@@ -506,13 +506,13 @@ $(document).ready(function () {
 		loadMailbox();
 	});
 	$stage.dialog.mailboxClaimAll.on('click', function (e) {
-		claimMailboxItems($data._mailboxItems.map(function (item) { return item.id; }));
+		claimMailboxItems($data._mailboxItems.map(function (item) { return item.id; }), true);
 	});
 	$stage.dialog.mailboxClaim.on('click', function (e) {
 		if (!$data._mailboxItem) return;
-		claimMailboxItems([$data._mailboxItem.id]);
+		claimMailboxItems([$data._mailboxItem.id], true);
 	});
-	function claimMailboxItems(ids) {
+	function claimMailboxItems(ids, playSuccessSound) {
 		var index = 0;
 
 		if (!ids.length) return;
@@ -521,6 +521,7 @@ $(document).ready(function () {
 		function claimNext() {
 			if (index >= ids.length) {
 				$stage.dialog.mailboxDetail.hide();
+				if (playSuccessSound) playSound('success');
 				showAlert(L['mailboxClaimed']);
 				return loadMailbox();
 			}
