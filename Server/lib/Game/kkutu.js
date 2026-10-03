@@ -851,6 +851,8 @@ exports.Room = function (room, channel) {
 	my.rule = Const.getRule(room.mode);
 	if (room.mode === 0 || room.mode === 15) {
 		my.connRule = room.rule || "samsam";
+	} else {
+		delete my.connRule;
 	}
 	my.round = Math.round(room.round);
 	my.time = room.time * my.rule.time;
@@ -1097,6 +1099,8 @@ exports.Room = function (room, channel) {
 		my.rule = Const.getRule(room.mode);
 		if (room.mode === 0 || room.mode === 15) {
 			my.connRule = room.rule || "samsam";
+		} else {
+			delete my.connRule;
 		}
 		my.db = my.rule.lang === "ko" && ["g", "p", "u"].indexOf(room.db) !== -1 ? room.db : "p";
 		my.round = Math.round(room.round);
@@ -1233,6 +1237,7 @@ exports.Room = function (room, channel) {
 		my.game.turn = 0;
 		my.game.seq = [];
 		my.game.robots = [];
+		delete my.game.wordLength;
 		if (my.practice) {
 			my.game.robots.push(o = new exports.Robot(my.master, my.id, pracLevel));
 			my.game.seq.push(o, my.master);
