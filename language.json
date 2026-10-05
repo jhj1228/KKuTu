@@ -1,7 +1,11 @@
 {
 	"menu-server": "서버",
-	"menu-server-on": "서버 켜기",
-	"menu-server-off": "서버 끄기",
+	"menu-server-on": "전체 서버 켜기",
+	"menu-server-off": "전체 서버 끄기",
+	"menu-web-server-on": "웹 서버 켜기",
+	"menu-web-server-off": "웹 서버 끄기",
+	"menu-game-server-on": "게임 서버 켜기",
+	"menu-game-server-off": "게임 서버 끄기",
 	"menu-program": "프로그램",
 	"menu-program-info": "프로그램 정보",
 	"menu-program-blog": "개발자 블로그",
