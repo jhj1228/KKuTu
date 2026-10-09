@@ -269,6 +269,15 @@ exports.RULE = {
 		ai: true,
 		big: false,
 		ewq: true
+	},
+	'KCB': { // 잇기 대결
+		lang: "ko",
+		rule: "Chainbattle",
+		opts: ["ext", "mis", "loa", "str", "due", "mwd", "spc"],
+		time: 1,
+		ai: false,
+		big: false,
+		ewq: false
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
