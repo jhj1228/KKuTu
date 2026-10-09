@@ -93,8 +93,68 @@ exports.init = function (_DB, _DIC) {
 
 exports.getTitle = function () {
 	var R = new Lizard.Tail();
+	var my = this;
+	var example;
+	var initial;
 
-	R.go("①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
+	if (!my.rule || !my.rule.lang) {
+		R.go('undefinedd');
+		return R;
+	}
+
+	example = Const.EXAMPLE_TITLE[my.rule.lang];
+	my.game.dic = {};
+	initial = 44032 + 588 * Math.floor(Math.random() * 18);
+
+	function tryTitle(height) {
+		if (height > 50) {
+			R.go(example);
+			return;
+		}
+
+		var args = [[
+			'_id',
+			new RegExp('^[\\u' + initial.toString(16) + '-\\u' + (initial + 587).toString(16) + '].{' + Math.max(1, my.round - 1) + '}$')
+		]];
+
+		if (!my.opts.moreword) args.push(['type', Const.KOR_GROUP]);
+		my.getWordTable(my.rule.lang).find.apply(my.getWordTable(my.rule.lang), args).limit(20).on(function (words) {
+			var candidates;
+
+			if (!words.length) {
+				tryTitle(height + 10);
+				return;
+			}
+
+			candidates = words.sort(function () { return Math.random() - 0.5; });
+			checkTitle(candidates.shift()._id).then(function checkNext(title) {
+				if (title) R.go(title);
+				else if (candidates.length) checkTitle(candidates.shift()._id).then(checkNext);
+				else R.go(example);
+			});
+		});
+	}
+
+	function checkTitle(title) {
+		var R = new Lizard.Tail();
+		var checks = [];
+
+		for (var i = 0; i < title.length; i++) {
+			checks.push(hasFollowingWord.call(my, title.charAt(i)));
+		}
+		Lizard.all(checks).then(function (results) {
+			for (var i in results) {
+				if (!results[i]) {
+					R.go(null);
+					return;
+				}
+			}
+			R.go(title);
+		});
+		return R;
+	}
+
+	tryTitle(10);
 	return R;
 };
 
@@ -130,7 +190,7 @@ exports.roundReady = function () {
 	players = my.game.seq.map(function (entry) { return entry.robot ? entry.id : entry; });
 	players.forEach(function (id) {
 		my.game.chain[id] = [];
-		my.game.chars[id] = Const.MISSION_ko[Math.floor(Math.random() * Const.MISSION_ko.length)];
+		my.game.chars[id] = my.game.title[my.game.round - 1];
 		if (my.opts.mission) my.game.mission[id] = getMission(my.rule.lang);
 		var client = DIC[id];
 		if (client) {
