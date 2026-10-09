@@ -288,13 +288,13 @@ exports.MISSION_ko = ["가", "나", "다", "라", "마", "바", "사", "아", "�
 exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
 exports.KO_INJEONG = [
-	"NEX", "SCP", "IMS", "VOC", "RAG", "KTV", "ETP", "NAC", 
-	"TBC", "NFX", "KOT", "THP", "JLN", "LVL", "LAK", "LOL", "MIN", 
+	/*"NEX", "SCP", "IMS", "VOC", "RAG", "KTV", "ETP", "NAC", 
+	"TBC", "NFX", "KOT", "THP", "JLN", "LVL", "LKT", "LOL", "MIN", 
 	"MAF", "JAN", "MAP", "MOB", "KCP", "BGP", "BUS", "HSR", "BLA",
-	"NVL", "STA", "APT", "ESB", "APP", "ELW", "MOV", "OVW",
+	"NVL", "STA", "APT", "ESB", "APP", "UDT", "ELW", "MOV", "OVW",
 	"GSI", "WOW", "WET", "UHS", "KPO", "YGO",
-	"JPT", "JAD", "ZEL", "CSG", "CKR", "POK", "PJS",
-	"HSS", "SCH", "KMU", "KRP", "KAD", "HOS"
+	"JPT", "JAD", "ZEL", "CSG", "CKR", "CRO", "POK", "PJS",
+	"HSS", "SCH", "KMU", "KRP", "KAD", "HOS"*/
 ];
 exports.SPEEDQUIZ_TOPIC = [
 	"LANG", "ENGW"
