@@ -261,7 +261,7 @@ exports.RULE = {
 		big: false,
 		ewq: false
 	},
-	'KSW': { // 워드스택
+	'KWS': { // 워드스택
 		lang: "ko",
 		rule: "Wordstack",
 		opts: ["man", "gte", "ext", "mis", "rdm", "loa", "str", "rtn", "due", "mwd", "spc", "apm"],

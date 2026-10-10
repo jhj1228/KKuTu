@@ -1565,65 +1565,68 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 	// all은 1~8
 	// rank는 0~7
 	switch (Const.GAME_TYPE[mode]) {
-		case "KKT":
-			rw.score += score * 1.1;
+		case "KKT": // 쿵쿵따
+			rw.score += score * 1.4;
 			break;
-		case "KSH":
-			rw.score += score * 0.55;
+		case "KSH": // 끝말잇기
+			rw.score += score * 0.5;
 			break;
-		case "CSQ":
+		case "CSQ": // 자음퀴즈
 			rw.score += score * 0.4;
 			break;
-		case 'KCW':
+		case 'KCW': // 십자말풀이
 			rw.score += score * 1.0;
 			break;
-		case 'KTY':
-			rw.score += score * 0.39;
+		case 'KTY': // 타자 대결
+			rw.score += score * 0.3;
 			break;
-		case 'KAP':
+		case 'KAP': // 앞말잇기
 			rw.score += score * 0.8;
 			break;
-		case 'HUN':
-			rw.score += score * 0.55;
-			break;
-		case 'KDA':
-			rw.score += score * 0.40;
-			break;
-		case 'KSS':
+		case 'HUN': // 훈민정음
 			rw.score += score * 0.5;
 			break;
-		case 'KMH':
-			rw.score += score * 0.71;
-			break;
-		case 'KKK':
-			rw.score += score * 1.45;
-			break;
-		case 'MOQ':
-			rw.score += score * 0.55;
-			break;
-		case 'ALL':
-			rw.score += score * 0.1;
-			break;
-		case 'KTT':
-			rw.score += score * 0.45;
-			break;
-		case 'KRH':
+		case 'KDA': // 단어 대결
 			rw.score += score * 0.5;
 			break;
-		case 'KAT':
-			rw.score += score * 1.47;
+		case 'KSS': // 솎솎
+			rw.score += score * 0.5;
 			break;
-		case 'KSQ':
-			rw.score += score * 0.7;
-			break;
-		case 'KPQ':
-			rw.score += score * 0.75;
-			break;
-		case 'SCR':
+		case 'KMH': // 가운뎃말잇기
 			rw.score += score * 0.6;
 			break;
-		case 'KSW':
-			rw.score += score * 0.37;
+		case 'KKK': // 끄투
+			rw.score += score * 1.8;
+			break;
+		case 'MOQ': // 모음퀴즈
+			rw.score += score * 0.5;
+			break;
+		case 'ALL': // 전체
+			rw.score += score * 0.05;
+			break;
+		case 'KTT': // 주제 타자 대결
+			rw.score += score * 0.3;
+			break;
+		case 'KRH': // 랜덤잇기
+			rw.score += score * 0.5;
+			break;
+		case 'KAT': // 앞말 쿵쿵따
+			rw.score += score * 1.6;
+			break;
+		case 'KSQ': // 스피드퀴즈
+			rw.score += score * 0.4;
+			break;
+		case 'KPQ': // 그림퀴즈
+			rw.score += score * 0.7;
+			break;
+		case 'SCR': // 단어맞추기
+			rw.score += score * 0.6;
+			break;
+		case 'KWS': // 워드스택
+			rw.score += score * 0.5;
+			break;
+		case 'KCB': // 잇기 대결
+			rw.score += score * 0.4;
 			break;
 		default:
 			break;
