@@ -331,6 +331,13 @@ $(document).ready(function () {
 			if ($stage.game.here.is(":visible") || $data._relay) {
 				o.relay = true;
 			}
+			if ($data.venezia && $data.venezia.active) {
+				$data.venezia.words.some(function (word) {
+					if (word.text != o.value) return false;
+					o.data = word.index;
+					return true;
+				});
+			}
 			send('talk', o);
 		}
 		if ($data._whisper) {

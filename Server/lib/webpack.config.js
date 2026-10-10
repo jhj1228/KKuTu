@@ -82,6 +82,7 @@ module.exports = {
 				resolve(gameSourcePath, "rule_scramble.js"),
 				resolve(gameSourcePath, "rule_wordstack.js"),
 				resolve(gameSourcePath, "rule_chainbattle.js"),
+				resolve(gameSourcePath, "rule_venezia.js"),
 				resolve(gameSourcePath, "body.js"),
 				resolve(gameSourcePath, "tail.js"),
 			],

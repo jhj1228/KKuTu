@@ -2354,7 +2354,8 @@ function clearBoard() {
 	$stage.dialog.result.hide();
 	$stage.dialog.dress.hide();
 	$stage.dialog.charFactory.hide();
-	$(".jjoriping,.rounds,.game-body").removeClass("cw").removeClass("pq");
+	$(".jjoriping,.rounds,.game-body").removeClass("cw").removeClass("pq").removeClass("ve");
+	$(".jjoriping").after($stage.game.round);
 	$stage.game.display.empty();
 	$stage.game.chain.hide();
 	$stage.game.hints.empty().hide();
