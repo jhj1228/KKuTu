@@ -99,8 +99,8 @@ function drawVenezia() {
 $lib.Venezia.roundReady = function (data) {
 	stopVenezia();
 	clearBoard();
-	$(".jjoriping,.rounds,.game-body").addClass("ve");
-	$stage.game.round.insertAfter($(".ve .jjoEyeL"));
+	$stage.box.game.addClass("venezia-mode");
+	$stage.game.round.insertAfter($stage.box.game.find(".jjoEyeL"));
 	$data._round = data.round;
 	$data._roundTime = $data.room.time * 1000;
 	$data._fastTime = 10000;

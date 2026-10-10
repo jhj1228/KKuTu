@@ -980,8 +980,7 @@ iframe {
 }
 
 .cw .jjoNose,
-.pq .jjoNose,
-.ve .jjoNose {
+.pq .jjoNose {
 	left: 94px;
 }
 
@@ -991,8 +990,7 @@ iframe {
 }
 
 .cw .jjoEyeR,
-.pq .jjoEyeR,
-.ve .jjoEyeR {
+.pq .jjoEyeR {
 	left: 183px;
 }
 
@@ -1131,12 +1129,7 @@ iframe {
 }
 
 .cw .jjo-round-time,
-.pq .jjo-round-time,
-.ve .jjo-round-time {
-	width: 306px;
-}
-
-.ve .jjoDisplayBar .graph {
+.pq .jjo-round-time {
 	width: 306px;
 }
 
@@ -1511,51 +1504,6 @@ iframe {
 	width: 334px;
 }
 
-.ve.jjoriping {
-	position: relative;
-	margin: -10px 0px 0px 90px;
-	width: 322px;
-}
-
-.ve .rounds {
-	position: absolute;
-	top: 18px;
-	left: 0px;
-	z-index: 1;
-	margin: 0px;
-	width: 322px;
-}
-
-.ve .jjoDisplayBar {
-	width: 308px;
-	height: 330px;
-	transition: all 0.5s ease;
-}
-
-.ve .jjo-display {
-	position: relative;
-	padding: 5px;
-	width: 298px;
-	height: 280px;
-	overflow: visible;
-	text-overflow: clip;
-	white-space: normal;
-}
-
-.ve.game-body {
-	position: relative;
-	top: -378px;
-	left: 660px;
-	width: 334px;
-}
-
-.ve .game-user {
-	border: 2px solid #DDDDDD;
-	margin: 1px;
-	width: 330px;
-	height: 22px;
-}
-
 .game-user {
 	padding: 1px;
 	border: 3px solid #DDDDDD;
@@ -1622,8 +1570,70 @@ iframe {
 }
 
 .cw .game-user-score,
-.pq .game-user-score,
-.ve .game-user-score {
+.pq .game-user-score {
+	padding-top: 3px;
+	font-size: 15px;
+}
+
+.GameBox.venezia-mode .jjoNose {
+	left: 94px;
+}
+
+.GameBox.venezia-mode .jjoEyeR {
+	left: 183px;
+}
+
+.GameBox.venezia-mode .jjo-round-time,
+.GameBox.venezia-mode .jjoDisplayBar .graph {
+	width: 306px;
+}
+
+.GameBox.venezia-mode .jjoriping {
+	position: relative;
+	margin: -10px 0px 0px 90px;
+	width: 322px;
+}
+
+.GameBox.venezia-mode .rounds {
+	position: absolute;
+	top: 18px;
+	left: 0px;
+	z-index: 1;
+	margin: 0px;
+	width: 322px;
+}
+
+.GameBox.venezia-mode .jjoDisplayBar {
+	width: 308px;
+	height: 330px;
+	transition: all 0.5s ease;
+}
+
+.GameBox.venezia-mode .jjo-display {
+	position: relative;
+	padding: 5px;
+	width: 298px;
+	height: 280px;
+	overflow: visible;
+	text-overflow: clip;
+	white-space: normal;
+}
+
+.GameBox.venezia-mode .game-body {
+	position: relative;
+	top: -378px;
+	left: 660px;
+	width: 334px;
+}
+
+.GameBox.venezia-mode .game-user {
+	border: 2px solid #DDDDDD;
+	margin: 1px;
+	width: 330px;
+	height: 22px;
+}
+
+.GameBox.venezia-mode .game-user-score {
 	padding-top: 3px;
 	font-size: 15px;
 }

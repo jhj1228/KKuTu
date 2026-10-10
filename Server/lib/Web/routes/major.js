@@ -220,29 +220,46 @@ exports.run = function (Server, page) {
 	Server.get("/ranking", function (req, res) {
 		var pg = Number(req.query.p);
 		var id = req.query.id;
+		var limit = 15;
+		var offset;
+		var where;
+		var query;
+		var targetRank;
 
-		function process($body) {
-			if (!$body || !$body.data || $body.data.length == 0) return res.send($body);
+		if (isNaN(pg) || pg < 0) pg = 0;
+		offset = pg * limit;
+		targetRank = id ? "(SELECT rank FROM ranked WHERE ranked.id = " + PgEscape.literal(id) + ")" : "";
+		where = id
+			? "ranked.rank >= " + targetRank + " - 9 AND ranked.rank < " + targetRank + " + 6"
+			: "ranked.rank >= " + offset + " AND ranked.rank < " + (offset + limit);
+		query = "WITH ranked AS (" +
+			"SELECT _id AS id, nickname, (kkutu->>'score')::numeric AS score, " +
+			"ROW_NUMBER() OVER (ORDER BY (kkutu->>'score')::numeric DESC, _id) - 1 AS rank " +
+			"FROM users " +
+			"WHERE kkutu IS NOT NULL AND kkutu->>'score' ~ '^[0-9]+(\\.[0-9]+)?$'" +
+			") " +
+			"SELECT id, nickname, score, rank FROM ranked " +
+			"WHERE " + where + " " +
+			"ORDER BY rank LIMIT " + limit;
 
-			var ids = $body.data.map(function (e) { return e.id; });
-			MainDB.users.find(['_id', { '$in': ids }]).limit(['nickname', true]).on(function ($res) {
-				if ($res) {
-					var map = {};
-					$res.forEach(function (e) { map[e._id] = e.nickname; });
-					$body.data.forEach(function (e) {
-						if (map[e.id]) e.nickname = map[e.id];
-					});
-				}
-				res.send($body);
+		MainDB.users.direct(query, function (error, $result) {
+			if (error) {
+				JLog.error("랭킹 조회 오류: " + error.toString());
+				return res.send({ error: 500 });
+			}
+			res.send({
+				page: id && $result.rows.length ? Math.floor(Number($result.rows[0].rank) / limit) : pg,
+				target: id,
+				data: $result.rows.map(function (item) {
+					return {
+						id: item.id,
+						nickname: item.nickname,
+						score: item.score,
+						rank: Number(item.rank)
+					};
+				})
 			});
-		}
-
-		if (id) {
-			MainDB.redis.getSurround(id, 15).then(process);
-		} else {
-			if (isNaN(pg)) pg = 0;
-			MainDB.redis.getPage(pg, 15).then(process);
-		}
+		}, true);
 	});
 	Server.get("/injeong/:word", function (req, res) {
 		if (!req.session.profile) return res.send({ error: 402 });
