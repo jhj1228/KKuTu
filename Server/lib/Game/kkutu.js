@@ -1628,6 +1628,9 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 		case 'KCB': // 잇기 대결
 			rw.score += score * 0.4;
 			break;
+		case 'KVE': // 산성비
+			rw.score += score * 0.2;
+			break;
 		default:
 			break;
 	}

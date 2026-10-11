@@ -279,7 +279,7 @@ exports.RULE = {
 		big: false,
 		ewq: false
 	},
-	'KVE': { // 한국어 단어 지우기
+	'KVE': { // 산성비
 		lang: "ko",
 		rule: "Venezia",
 		opts: ["spc"],
