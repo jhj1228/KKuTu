@@ -225,12 +225,14 @@ exports.run = function (Server, page) {
 		var where;
 		var query;
 		var targetRank;
+		var targetRangeStart;
 
 		if (isNaN(pg) || pg < 0) pg = 0;
 		offset = pg * limit;
 		targetRank = id ? "(SELECT rank FROM ranked WHERE ranked.id = " + PgEscape.literal(id) + ")" : "";
+		targetRangeStart = "GREATEST(0, LEAST(" + targetRank + " - 9, (SELECT COUNT(*) FROM ranked) - " + limit + "))";
 		where = id
-			? "ranked.rank >= " + targetRank + " - 9 AND ranked.rank < " + targetRank + " + 6"
+			? "ranked.rank >= " + targetRangeStart + " AND ranked.rank < " + targetRangeStart + " + " + limit
 			: "ranked.rank >= " + offset + " AND ranked.rank < " + (offset + limit);
 		query = "WITH ranked AS (" +
 			"SELECT _id AS id, nickname, (kkutu->>'score')::numeric AS score, " +
