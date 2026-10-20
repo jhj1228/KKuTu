@@ -24,10 +24,6 @@ const SETTINGS = require("../settings.json");
 const SCRIPTS = {
 	'server-on': startServer,
 	'server-off': stopServer,
-	'web-server-on': startWebServer,
-	'web-server-off': stopWebServer,
-	'game-server-on': startGameServers,
-	'game-server-off': stopGameServers,
 	'program-info': () => {
 		exports.send('alert', [
 			`=== ${PKG.name} ===`,
@@ -55,28 +51,6 @@ exports.MAIN_MENU = [
 				label: LANG['menu-server-off'],
 				accelerator: "CmdOrCtrl+P",
 				click: () => exports.run("server-off")
-			},
-			{ type: "separator" },
-			{
-				label: LANG['menu-web-server-on'],
-				accelerator: "CmdOrCtrl+Alt+O",
-				click: () => exports.run("web-server-on")
-			},
-			{
-				label: LANG['menu-web-server-off'],
-				accelerator: "CmdOrCtrl+Alt+P",
-				click: () => exports.run("web-server-off")
-			},
-			{ type: "separator" },
-			{
-				label: LANG['menu-game-server-on'],
-				accelerator: "CmdOrCtrl+Shift+O",
-				click: () => exports.run("game-server-on")
-			},
-			{
-				label: LANG['menu-game-server-off'],
-				accelerator: "CmdOrCtrl+Shift+P",
-				click: () => exports.run("game-server-off")
 			}
 		]
 	},
@@ -132,88 +106,38 @@ class ChildProcess {
 			}
 		});
 		this.process.on('close', code => {
-			let msg, onClose = this.onClose;
+			let msg;
 
 			this.process.removeAllListeners();
 			JLog.error(msg = `${id}: 코드로 닫힘 ${code}`);
 			this.process = null;
-			this.onClose = null;
 
 			exports.send('log', 'e', msg);
 			exports.send('server-status', getServerStatus());
-			if (onClose) onClose();
 		});
 	}
-	kill(sig, onClose) {
-		if (this.process) {
-			this.onClose = onClose;
-			this.process.kill(sig || 'SIGINT');
-		} else if (onClose) {
-			onClose();
-		}
+	kill(sig) {
+		if (this.process) this.process.kill(sig || 'SIGINT');
 	}
 }
 let webServer, gameServers;
 
-function isRunning(child) {
-	return child && child.process;
-}
-
 function startServer() {
-	startWebServer();
-	startGameServers();
-}
-
-function stopServer() {
-	stopWebServer();
-	stopGameServers();
-}
-
-function startWebServer() {
-	if (isRunning(webServer)) {
-		stopWebServer(startWebServer);
-		return;
-	}
-
+	stopServer();
 	if (SETTINGS['server-name']) process.env['KKT_SV_NAME'] = SETTINGS['server-name'];
+
 	webServer = new ChildProcess('W', "node", `${__dirname}/lib/Web/cluster.js`, SETTINGS['web-num-cpu']);
-	exports.send('server-status', getServerStatus());
-}
+	gameServers = [];
 
-function stopWebServer(onComplete) {
-	if (webServer) webServer.kill(null, onComplete);
-	else if (onComplete) onComplete();
-}
-
-function startGameServers() {
-	if (gameServers && gameServers.some(isRunning)) {
-		stopGameServers(startGameServers);
-		return;
-	}
-
-	if (!gameServers) gameServers = [];
 	for (let i = 0; i < SETTINGS['game-num-inst']; i++) {
-		if (!isRunning(gameServers[i])) {
-			gameServers[i] = new ChildProcess('G', "node", `${__dirname}/lib/Game/cluster.js`, i, SETTINGS['game-num-cpu']);
-		}
+		gameServers.push(new ChildProcess('G', "node", `${__dirname}/lib/Game/cluster.js`, i, SETTINGS['game-num-cpu']));
 	}
 	exports.send('server-status', getServerStatus());
 }
-
-function stopGameServers(onComplete) {
-	const runningServers = gameServers ? gameServers.filter(isRunning) : [];
-	if (!runningServers.length) {
-		if (onComplete) onComplete();
-		return;
-	}
-
-	let remaining = runningServers.length;
-	const onServerClosed = () => {
-		if (--remaining === 0 && onComplete) onComplete();
-	};
-	runningServers.forEach(v => v.kill(null, onServerClosed));
+function stopServer() {
+	if (webServer) webServer.kill();
+	if (gameServers) gameServers.forEach(v => v.kill());
 }
-
 function getServerStatus() {
 	if (!webServer || !gameServers) return 0;
 	if (webServer.process && gameServers.every(v => v.process)) return 2;

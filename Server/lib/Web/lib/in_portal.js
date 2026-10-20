@@ -37,9 +37,12 @@
 		$stage.start.prop('disabled', true).on('click', function (e) {
 			var i, j;
 
+			if (globalThis.profile && globalThis.profile.guest) {
+				location.href = "/login";
+				return;
+			}
 			for (i = 0.9; i < 1; i += 0.01) {
 				for (j in LIST) {
-					if (j == 0 && $("#account-info").html() != L['LOGIN']) continue;
 					if (LIST[j] < i * LIMIT) {
 						return $("#server-" + j).trigger('click');
 					}
@@ -86,6 +89,10 @@
 					.append($("<div>").addClass("server-enter").html(L['serverEnter']))
 				);
 				if (status != "x") $e.on('click', function (e) {
+					if (globalThis.profile && globalThis.profile.guest) {
+						location.href = "/login";
+						return;
+					}
 					location.href = "/?server=" + i;
 				}); else $e.children(".server-enter").html("-");
 			});

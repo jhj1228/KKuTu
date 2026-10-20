@@ -471,19 +471,6 @@ exports.init = function (_SID, _CHAN) {
 					$c.socket.close();
 					return;
 				}
-				if ($c.guest) {
-					if (SID != "0") {
-						$c.sendError(600);
-						$c.socket.close();
-						return;
-					}
-				} else {
-					if (SID == "0" && !$c.admin) {
-						$c.sendError(601);
-						$c.socket.close();
-						return;
-					}
-				}
 				/* Enhanced User Block System [S] */
 				if (GLOBAL.USER_BLOCK_OPTIONS.USE_MODULE && ((GLOBAL.USER_BLOCK_OPTIONS.BLOCK_IP_ONLY_FOR_GUEST && $c.guest) || !GLOBAL.USER_BLOCK_OPTIONS.BLOCK_IP_ONLY_FOR_GUEST)) {
 					MainDB.ip_block.findOne(['_id', $c.remoteAddress]).on(function ($body) {
