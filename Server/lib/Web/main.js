@@ -59,7 +59,7 @@ JLog.info("<< 끄투 웹 >>");
 Server.set('views', __dirname + "/views");
 Server.set('view engine', "pug");
 Server.use(Express.static(__dirname + "/public"));
-Server.use(Parser.urlencoded({ extended: true }));
+Server.use(Parser.urlencoded({ extended: true, limit: "5mb" }));
 
 class PgSessionStore extends Exession.Store {
 	constructor(db) {
