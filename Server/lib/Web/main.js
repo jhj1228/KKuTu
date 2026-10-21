@@ -289,6 +289,10 @@ Server.get("/", function (req, res) {
 		if (!id || typeof id !== 'string' || id.length === 0) {
 			id = sessionID || 'guest_' + Date.now();
 		}
+		if (req.session.profile.guest && Const.MAIN_PORTS[server]) {
+			return res.redirect('/login');
+		}
+
 		page(req, res, Const.MAIN_PORTS[server] ? "kkutu" : "portal", {
 			'_page': "kkutu",
 			'_id': id,

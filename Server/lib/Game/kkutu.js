@@ -1476,6 +1476,8 @@ exports.Room = function (room, channel) {
 		return my.route("turnEnd");
 	};
 	my.submit = function (client, text, data) {
+		if (my.game.loading) return;
+
 		return my.route("submit", client, text, data);
 	};
 	my.getScore = function (text, delay, ignoreMission) {

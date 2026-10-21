@@ -3522,7 +3522,9 @@ $lib.Chainbattle.turnEnd = function (id, data) {
 	var $score = $('<div>').addClass('deltaScore').html(data.score > 0 ? '+' + (data.score - data.bonus) : data.score);
 
 	if (data.ok) {
-		pushHistory(data.value, data.mean, data.theme, data.wc);
+		if (id == $data.id) {
+			pushHistory(data.value, data.mean, data.theme, data.wc);
+		}
 		addScore(id, data.score);
 		if (!$data._spectate && id == $data.id) {
 			clearTimeout($data._fail);

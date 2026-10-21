@@ -310,7 +310,7 @@ exports.KO_INJEONG = [
 	"KOT", "THP", "JLN", "LVL", "LOL", "MIN", "MAF", "JAN",
 	"MAP", "MOB", "KCP", "BGP", "BUS", "BLA", "NVL", "STA",
 	"MOV", "ELW", "OVW", "WOW", "WEB", "KPO", "CSG",
-	"CKR", "PJS", "HSS", "KMU", "HOS"
+	"CKR", "CRO", "PJS", "HSS", "KMU", "KRP", "KAD", "HOS"
 ];
 exports.SPEEDQUIZ_TOPIC = [
 	"LANG", "ENGW"

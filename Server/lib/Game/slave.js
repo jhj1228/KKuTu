@@ -300,9 +300,9 @@ KKuTu.onClientMessage = function ($c, msg) {
 				if ($c.subPlace) temp = $c.pracRoom;
 				else if (!(temp = ROOM[$c.place])) return;
 				if (!temp.gaming) return;
-				if (temp.game.late) {
+				if (temp.game.late || temp.game.loading) {
 					$c.chat(msg.value);
-				} else if (!temp.game.loading) {
+				} else {
 					temp.submit($c, msg.value, msg.data);
 				}
 			} else {
