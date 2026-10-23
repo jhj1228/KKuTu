@@ -487,6 +487,7 @@ exports.run = function (Server, page) {
 		if (!req.session.profile) return res.json({ error: 400 });
 		var uid = req.session.profile.id;
 		var tray = (req.body.tray || "").split('|');
+		var db = req.body.db || "p";
 		var i, o;
 
 		if (tray.length < 1 || tray.length > 6) return res.json({ error: 400 });
@@ -503,7 +504,11 @@ exports.run = function (Server, page) {
 				req[tray[i]] = (req[tray[i]] || 0) + 1;
 				if (($user.box[tray[i]] || 0) < req[tray[i]]) return res.json({ error: 434 });
 			}
-			MainDB.kkutu[parseLanguage(word)].findOne(['_id', word]).on(function ($dic) {
+			var lang = parseLanguage(word);
+			var DB = MainDB.kkutu[lang === "ko" && ["g", "p", "u"].indexOf(db) !== -1 ? lang + "_" + db : lang];
+
+			if (!DB) return res.json({ error: 400 });
+			DB.findOne(['_id', word]).on(function ($dic) {
 				if (!$dic) {
 					if (word.length == 3) {
 						blend = true;
