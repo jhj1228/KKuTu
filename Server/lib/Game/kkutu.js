@@ -39,6 +39,14 @@ const MAX_OKG = 18;
 const PER_OKG = 600000;
 const ROBOT_EXP_REWARD_MULTIPLIER = 0.1;
 
+function getToday() {
+	var now = new Date();
+	var month = now.getMonth() + 1;
+	var day = now.getDate();
+
+	return [now.getFullYear(), month < 10 ? '0' + month : month, day < 10 ? '0' + day : day].join('-');
+}
+
 exports.NIGHT = false;
 exports.init = function (_DB, _DIC, _ROOM, _GUEST_PERMISSION, _CHAN) {
 	var i, k;
@@ -263,7 +271,7 @@ exports.Client = function (socket, profile, sid) {
 		};
 	} else {
 		my.onOKG = function (time) {
-			var d = (new Date()).getDate();
+			var d = getToday();
 			var updated = false;
 
 			if (my.guest) return;
@@ -405,7 +413,7 @@ exports.Client = function (socket, profile, sid) {
 	};
 	my.checkExpire = function () {
 		var now = new Date();
-		var d = now.getDate();
+		var d = getToday();
 		var i, expired = [];
 		var gr;
 
@@ -1625,13 +1633,13 @@ function getRewards(mode, score, bonus, rank, all, ss) {
 			rw.score += score * 0.6;
 			break;
 		case 'KWS': // 워드스택
-			rw.score += score * 0.5;
+			rw.score += score * 0.2;
 			break;
 		case 'KCB': // 잇기 대결
-			rw.score += score * 0.4;
+			rw.score += score * 0.2;
 			break;
 		case 'KVE': // 산성비
-			rw.score += score * 0.2;
+			rw.score += score * 0.45;
 			break;
 		default:
 			break;

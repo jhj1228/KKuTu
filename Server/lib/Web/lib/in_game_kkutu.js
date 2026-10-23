@@ -6960,6 +6960,10 @@ function chat(profile, msg, from, timestamp) {
 	var $bar, $msg, $item;
 	var link;
 
+	if (typeof msg !== 'string') {
+		console.warn('Ignoring chat event with a non-string message.', { profile: profile, msg: msg });
+		return;
+	}
 	if ($data._shut[profile.title || profile.name]) return;
 	if (from) {
 		if ($data.opts.dw) return;

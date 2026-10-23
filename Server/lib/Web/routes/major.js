@@ -56,14 +56,15 @@ function getLevel(score) {
 	return level;
 }
 
-function getMailboxItems($user, claimed) {
+function getMailboxItems($user, claimed, today) {
 	var data = $user.kkutu || {};
 	var playTime = Number(data.playTime) || 0;
-	var today = getToday();
 	var items = [];
 	var i;
 	var id;
 	var level;
+
+	today = today || getToday();
 
 	function add(reward) {
 		if (!claimed[reward.id]) items.push(reward);
@@ -84,7 +85,8 @@ function getMailboxItems($user, claimed) {
 }
 
 function getMailbox(uid, callback) {
-	var userQuery = "SELECT kkutu FROM users WHERE _id = " + PgEscape.literal(uid);
+	var today = getToday();
+	var userQuery = "UPDATE users SET kkutu = CASE WHEN COALESCE(kkutu::jsonb->>'connectDate', '') <> " + PgEscape.literal(today) + " THEN jsonb_set(jsonb_set(COALESCE(kkutu::jsonb, '{}'::jsonb), '{connectDate}', to_jsonb(" + PgEscape.literal(today) + "::text), true), '{playTime}', '0'::jsonb, true)::json ELSE kkutu END WHERE _id = " + PgEscape.literal(uid) + " RETURNING kkutu";
 
 	MainDB.users.direct(userQuery, function (error, $result) {
 		var rewards;
@@ -94,7 +96,7 @@ function getMailbox(uid, callback) {
 		var pendingQuery;
 
 		if (error || !$result.rows.length) return callback(error || new Error('User not found'));
-		rewards = getMailboxItems($result.rows[0], {});
+		rewards = getMailboxItems($result.rows[0], {}, today);
 		values = rewards.map(function (reward) {
 			return "(" + PgEscape.literal(uid) + ", " + PgEscape.literal(reward.id) + ")";
 		}).join(', ');
