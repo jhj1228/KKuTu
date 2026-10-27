@@ -43,6 +43,7 @@ exports.roundReady = function () {
 	var ijl = my.opts.injpick.length;
 
 	clearTimeout(my.game.turnTimer);
+	clearTimeout(my.game.robotTimer);
 	my.game.round++;
 	my.game.roundTime = my.time * 1000;
 	if (my.game.round <= my.round) {
@@ -90,6 +91,7 @@ exports.turnEnd = function () {
 	var target = DIC[my.game.seq[my.game.turn]] || my.game.seq[my.game.turn];
 	var score;
 
+	clearTimeout(my.game.robotTimer);
 	if (my.game.loading) {
 		my.game.turnTimer = setTimeout(my.turnEnd, 100);
 		return;
@@ -115,7 +117,6 @@ exports.turnEnd = function () {
 		}, true);
 		my.game._rrt = setTimeout(my.roundReady, 3000);
 	});
-	clearTimeout(my.game.robotTimer);
 };
 exports.submit = function (client, text, data) {
 	var score, l, t;
@@ -233,8 +234,20 @@ exports.readyRobot = function (robot) {
 	var level = robot.level;
 	var delay = ROBOT_START_DELAY[level];
 	var w, text;
+	var round = my.game.round;
+	var turn = my.game.turn;
+
+	function isCurrentTurn() {
+		return my.gaming &&
+			my.game.round === round &&
+			my.game.turn === turn &&
+			my.game.seq &&
+			my.game.seq[turn] === robot &&
+			!my.game.late;
+	}
 
 	getAuto.call(my, my.game.theme, 2).then(function (list) {
+		if (!isCurrentTurn()) return;
 		if (list.length) {
 			list.sort(function () { return Math.random() - 0.5; });
 
@@ -256,8 +269,11 @@ exports.readyRobot = function (robot) {
 		} else denied();
 	}
 	function after() {
+		if (!isCurrentTurn()) return;
 		delay += text.length * ROBOT_TYPE_COEF[level];
-		setTimeout(my.turnRobot, delay, robot, text);
+		my.game.robotTimer = setTimeout(function () {
+			if (isCurrentTurn()) my.turnRobot(robot, text);
+		}, delay);
 	}
 };
 function toRegex(theme) {

@@ -191,19 +191,28 @@
 
 <body>
 
-    <!-- <nav class="nav-header">
+    <nav class="nav-header">
         <button class="nav-btn active" onclick="switchTab('tab-updates', this)">업데이트</button>
         <button class="nav-btn" onclick="switchTab('tab-notices', this)">공지사항</button>
-        <button class="nav-btn" onclick="switchTab('tab-events', this)">추가 예정 기능</button>
-    </nav> -->
+        <button class="nav-btn" onclick="switchTab('tab-events', this)">단어 업데이트</button>
+    </nav>
 
     <div class="content-container">
 
         <div id="tab-updates" class="tab-content active">
             <div class="card">
                 <div class="card-header">
-                    <span class="header-title" style="color:#4a90e2">v1.4.5</span>
+                    <span class="header-title" style="color:#4a90e2">v1.4.6</span>
                     <span class="badge bg-red">NEW</span>
+                    <span class="header-sub">26.10.23</span>
+                </div>
+                <ul>
+                    <li>글자 조합소에서 글자 조각 조합 시 엉뚱한 오류가 발생하던 현상이 수정되었습니다.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="header-title" style="color:#666">v1.4.5</span>
                     <span class="header-sub">26.10.21</span>
                 </div>
                 <ul>
@@ -666,12 +675,66 @@
             </div>
         </div>
         <div id="tab-events" class="tab-content">
-            <div class="card" style="border-left: 5px solid skyblue;">
+            <!-- <div class="card">
                 <div class="card-header">
-                    <span class="header-title">추가 예정 기능</span>
+                    <span class="header-title">26년 11월 1주차 업데이트</span>
                 </div>
                 <ul>
-                    <li>아이템 강화 기능 추가</li>
+                    <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:10px;">
+					<thead>
+						<tr style="background:var(--accent-color);">
+							<th style="padding:6px 10px; text-align:left; border-bottom:2px solid var(--primary-color);color:var(--primary-dark);">주제</th>
+							<th style="padding:6px 10px; text-align:center; border-bottom:2px solid var(--primary-color);color:var(--primary-dark);">단어 개수</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="border-bottom:1px solid #f0f0f0;">
+							<td style="padding:5px 10px;"></td>
+							<td style="text-align:center; padding:5px;"></td>
+						</tr>
+					</tbody>
+				</table>
+                </ul>
+            </div> -->
+            <div class="card" style="border-left: 5px solid #87CEEB;">
+                <div class="card-header">
+                    <span class="header-title">26년 10월 4주차 업데이트</span>
+                </div>
+                <ul>
+                    <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:10px;">
+					<thead>
+						<tr style="background:var(--accent-color);">
+							<th style="padding:6px 10px; text-align:left; border-bottom:2px solid var(--primary-color);color:var(--primary-dark);">주제</th>
+							<th style="padding:6px 10px; text-align:center; border-bottom:2px solid var(--primary-color);color:var(--primary-dark);">단어 개수</th>
+						</tr>
+					</thead>
+					<tbody>
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+							<td style="padding:5px 10px;">국내 방송 프로그램</td>
+							<td style="text-align:center; padding:5px;">20</td>
+						</tr>
+						<tr style="border-bottom:1px solid #f0f0f0;">
+							<td style="padding:5px 10px;">라이트 노벨</td>
+							<td style="text-align:center; padding:5px;">2764</td>
+						</tr>
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+							<td style="padding:5px 10px;">리그 오브 레전드</td>
+							<td style="text-align:center; padding:5px;">57</td>
+						</tr>
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+							<td style="padding:5px 10px;">소설</td>
+							<td style="text-align:center; padding:5px;">184</td>
+						</tr>
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+							<td style="padding:5px 10px;">쿠키런</td>
+							<td style="text-align:center; padding:5px;">1</td>
+						</tr>
+                        <tr style="border-bottom:1px solid #f0f0f0;">
+							<td style="padding:5px 10px;">하스스톤</td>
+							<td style="text-align:center; padding:5px;">1242</td>
+						</tr>
+					</tbody>
+				</table>
                 </ul>
             </div>
         </div>
