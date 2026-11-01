@@ -3411,14 +3411,14 @@ function restGoing(rest) {
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var CHAINBATTLE_RIEUL_TO_NIEUN = [4449, 4450, 4457, 4460, 4462, 4467];
+var CHAINBATTLE_RIEUL_TO_NIEUN = [4449, 4450, 4452, 4453, 4454, 4457, 4458, 4459, 4460, 4462, 4463, 4464, 4465, 4467, 4468];
 var CHAINBATTLE_RIEUL_TO_IEUNG = [4451, 4455, 4456, 4461, 4466, 4469];
 var CHAINBATTLE_NIEUN_TO_IEUNG = [4455, 4461, 4466, 4469];
 
 function getChainbattleDueumChar(char) {
 	var code, k, ca, cb, changed;
 
-	if (!$data.room || $data.room.opts.due) return char;
+	if (!$data.room || $data.room.opts.dueum) return char;
 	code = char.charCodeAt(0);
 	if (code < 44032) return char;
 

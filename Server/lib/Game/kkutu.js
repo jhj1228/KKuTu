@@ -875,6 +875,7 @@ exports.Room = function (room, channel) {
 		extend: room.opts.injeong,
 		mission: room.opts.mission,
 		loanword: room.opts.loanword,
+		dueum: room.opts.dueum,
 		randomturn: room.opts.randomturn,
 		reverse: room.opts.reverse,
 		injpick: room.opts.injpick || []
