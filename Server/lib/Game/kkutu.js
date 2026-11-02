@@ -874,6 +874,7 @@ exports.Room = function (room, channel) {
 		manner: room.opts.manner,
 		extend: room.opts.injeong,
 		mission: room.opts.mission,
+		randommission: room.opts.randommission,
 		loanword: room.opts.loanword,
 		dueum: room.opts.dueum,
 		randomturn: room.opts.randomturn,

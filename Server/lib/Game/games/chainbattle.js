@@ -25,10 +25,14 @@ var RIEUL_TO_NIEUN = [4449, 4450, 4452, 4453, 4454, 4457, 4458, 4459, 4460, 4462
 var RIEUL_TO_IEUNG = [4451, 4455, 4456, 4461, 4466, 4469];
 var NIEUN_TO_IEUNG = [4455, 4461, 4466, 4469];
 
-function getMission(lang) {
-	return lang == 'ko'
-		? Const.MISSION_ko[Math.floor(Math.random() * Const.MISSION_ko.length)]
-		: Const.MISSION_en[Math.floor(Math.random() * Const.MISSION_en.length)];
+function getMission(lang, previousMission) {
+	var missions = lang == 'ko' ? Const.MISSION_ko : Const.MISSION_en;
+	var candidates = missions.filter(function (mission) {
+		return mission != previousMission;
+	});
+
+	if (!candidates.length) candidates = missions;
+	return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
 function getSubChar(char) {
@@ -305,7 +309,9 @@ exports.getScore = function (text, clientId, skipMission) {
 
 	if (!skipMission && mission && (matches = text.match(new RegExp(mission, 'g')))) {
 		score += score * 0.5 * matches.length;
-		my.game.mission[clientId] = getMission(my.rule.lang);
+		my.game.mission[clientId] = getMission(my.rule.lang, mission);
+	} else if (!skipMission && mission && my.opts.randommission) {
+		my.game.mission[clientId] = getMission(my.rule.lang, mission);
 	}
 	return Math.round(score);
 };

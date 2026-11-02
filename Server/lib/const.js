@@ -273,7 +273,7 @@ exports.RULE = {
 	'KCB': { // 잇기 대결
 		lang: "ko",
 		rule: "Chainbattle",
-		opts: ["ext", "mis", "loa", "str", "due", "mwd", "spc"],
+		opts: ["ext", "mis", "rdm", "loa", "str", "due", "mwd", "spc"],
 		time: 1,
 		ai: false,
 		big: false,
@@ -308,7 +308,7 @@ exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
 exports.KO_INJEONG = [
 	"NEX", "IMS", "VOC", "RAG", "KTV", "ETP", "NAC", "NFX",
 	"KOT", "THP", "JLN", "LVL", "LOL", "MIN", "MAF", "JAN",
-	"MAP", "MOB", "KCP", "BGP", "BUS", "BLA", "NVL", "STA",
+	"MAP", "MOB", "KCP", "BGP", "BUS", "HSR", "BLA", "NVL", "STA",
 	"URT", "ELW", "MOV", "OVW", "WOW", "WEB", "KPO", "CSG",
 	"CKR", "CRO", "PJS", "HSS", "KMU", "KRP", "KAD", "HOS"
 ];

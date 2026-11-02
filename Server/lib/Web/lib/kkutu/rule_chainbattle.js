@@ -137,7 +137,7 @@ $lib.Chainbattle.turnEnd = function (id, data) {
 			$stage.game.chain.html($data.chain);
 			$stage.game.display.html(formatChainbattleChar($data._char));
 			playSound('mission');
-			if ($data.room.opts.mission && data.mission) {
+			if (data.mission) {
 				$stage.game.items.html($data.mission = data.mission);
 			}
 		}
