@@ -460,6 +460,8 @@ exports.readyRobot = function (robot) {
 	var ended = {};
 	var w, text, i;
 	var lmax;
+	var round = my.game.round;
+	var turn = my.game.turn;
 	var isRev = (Const.GAME_TYPE[my.mode] == "KAP" || Const.GAME_TYPE[my.mode] == "KAT");
 	if (my.opts.unknownword) {
 		const LEN_LIMITS = [4, 7, 10, 15, 20, 50];
@@ -490,7 +492,7 @@ exports.readyRobot = function (robot) {
 
 			robot._done.push(text);
 			const DELAYS = [3000, 2000, 1500, 700, 100, 0];
-			setTimeout(my.turnRobot, DELAYS[level], robot, text);
+			scheduleTurn(DELAYS[level]);
 		}
 
 		if (my.game.mission && typeof my.game.mission === 'string') {
@@ -590,7 +592,19 @@ exports.readyRobot = function (robot) {
 	function after() {
 		delay += text.length * ROBOT_TYPE_COEF[level];
 		robot._done.push(text);
-		setTimeout(my.turnRobot, delay, robot, text);
+		scheduleTurn(delay);
+	}
+	function scheduleTurn(turnDelay) {
+		clearTimeout(my.game.robotTimer);
+		my.game.robotTimer = setTimeout(function () {
+			if (!my.game || !my.game.seq ||
+				my.game.round !== round ||
+				my.game.turn !== turn ||
+				my.game.seq[turn] !== robot ||
+				my.game.late) return;
+
+			my.turnRobot(robot, text);
+		}, turnDelay);
 	}
 	function getWishList(list) {
 		var R = new Lizard.Tail();
