@@ -2277,6 +2277,10 @@ iframe {
 	cursor: pointer;
 }
 
+.chat-head.chat-observer {
+	color: #777777;
+}
+
 .chat-head:hover {
 	background-color: #FFF;
 }

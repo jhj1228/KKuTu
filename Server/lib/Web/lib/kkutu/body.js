@@ -3223,6 +3223,8 @@ function chatBalloon(text, id, flag) {
 function chat(profile, msg, from, timestamp) {
 	var time = timestamp ? new Date(timestamp) : new Date();
 	var equip = $data.users[profile.id] ? $data.users[profile.id].equip : {};
+	var form = $data.users[profile.id] && $data.users[profile.id].game ? $data.users[profile.id].game.form : null;
+	var chatPrefix = form == "S" ? "[관전]" : (form == "O" ? "[옵저버]" : "");
 	var $bar, $msg, $item;
 	var link;
 
@@ -3249,7 +3251,7 @@ function chat(profile, msg, from, timestamp) {
 		chatBalloon(msg, profile.id, $bar);
 	}
 	$stage.chat.append($item = $("<div>").addClass("chat-item")
-		.append($bar = $("<div>").addClass("chat-head ellipse").text(profile.title || profile.name))
+		.append($bar = $("<div>").addClass("chat-head ellipse" + (chatPrefix ? " chat-observer" : "")).text(chatPrefix + (profile.title || profile.name)))
 		.append($msg = $("<div>").addClass("chat-body").html(msg))
 		.append($("<div>").addClass("chat-stamp").text(time.toLocaleTimeString()))
 	);

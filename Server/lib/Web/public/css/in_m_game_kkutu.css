@@ -1637,6 +1637,10 @@ iframe {
 	text-align: center;
 }
 
+.chat-head.chat-observer {
+	color: #777777;
+}
+
 .chat-body {
 	float: left;
 	width: calc(100% - 190px);
