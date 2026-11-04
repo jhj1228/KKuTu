@@ -1260,11 +1260,16 @@ $(document).ready(function () {
 	$stage.dialog.injPickNo.on('click', function (e) {
 		$("#injpick-list input").prop('checked', false);
 	});
+	$("#injpick-list").on('change', '.injpick-group-selector', function (e) {
+		var $group = $(e.currentTarget);
+
+		$("#ko-pick-list ." + $group.data('topic-class')).prop('checked', $group.is(':checked'));
+	});
 	$stage.dialog.injPickOK.on('click', function (e) {
 		var $target = $($data._ijkey + "list");
 		var list = [];
 
-		$data._injpick = $target.find("input").each(function (i, o) {
+		$data._injpick = $target.find("input:not(.injpick-group-selector)").each(function (i, o) {
 			var $o = $(o);
 			var id = $o.attr('id').slice(8);
 

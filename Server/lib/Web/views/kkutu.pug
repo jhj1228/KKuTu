@@ -475,19 +475,25 @@ block Middle
 				- });
 		div.dialog-bar#injpick-list(style='height: 280px; overflow-y: scroll;')
 			div.dialog-opt#ko-pick-list(style='width: 100%;')
-				div(style='width: 100%; font-weight: bold; color: #000; text-align: center; font-size: 15px;') 일반 주제
+				div(style='width: 100%; font-weight: bold; color: #000; text-align: center; font-size: 15px;')
+					span(style='display: inline-flex; align-items: center; gap: 4px;')
+						input.injpick-group-selector(data-topic-class='injpick-general', type='checkbox', style='float: none; width: auto; margin: 0;')
+						| 일반 주제
 				each item in locals.KO_THEME
 					if locals.IJP_EXCEPT.indexOf(item) == -1
 						- var name = "ko-pick-" + item
 						div(style='float: left; width: 100%;')
-							input(id=name, type='checkbox', style='width: auto;')
+							input.injpick-topic.injpick-general(id=name, type='checkbox', style='width: auto;')
 							label(for=name)= LANG['theme_' + item]
-				div(style='width: 100%; font-weight: bold; color: #000; text-align: center; font-size: 15px;') 어인정 주제
+				div(style='width: 100%; font-weight: bold; color: #000; text-align: center; font-size: 15px;')
+					span(style='display: inline-flex; align-items: center; gap: 4px;')
+						input.injpick-group-selector(data-topic-class='injpick-injeong', type='checkbox', style='float: none; width: auto; margin: 0;')
+						| 어인정 주제
 				each item in locals.KO_INJEONG
 					if locals.IJP_EXCEPT.indexOf(item) == -1
 						- var name = "ko-pick-" + item
 						div(style='float: left; width: 100%;')
-							input(id=name, type='checkbox', style='width: auto;')
+							input.injpick-topic.injpick-injeong(id=name, type='checkbox', style='width: auto;')
 							label(for=name)= LANG['theme_' + item]
 		div.dialog-bar.tail-button
 			button#injpick-ok= L('OK')
