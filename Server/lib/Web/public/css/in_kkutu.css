@@ -2278,7 +2278,12 @@ iframe {
 }
 
 .chat-head.chat-observer {
-	color: #777777;
+	background-image: none !important;
+	-webkit-background-clip: border-box !important;
+	background-clip: border-box !important;
+	-webkit-text-fill-color: #777777 !important;
+	color: #777777 !important;
+	text-shadow: none !important;
 }
 
 .chat-head:hover {
