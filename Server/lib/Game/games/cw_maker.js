@@ -16,14 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-﻿var Prompt = require('prompt');
-var DB = require('../../Web/db');
+﻿var DB;
 var Const = require('../../const');
 var Lizard = require('../../sub/lizard');
 var LANG = 'ko';
 
-Prompt.start();
-DB.ready = function(){
+if(require.main === module){
+	var Prompt = require('prompt');
+	
+	DB = require('../../Web/db');
+	Prompt.start();
+	DB.ready = function(){
 	var i;
 	
 	for(i in MAPS){
@@ -81,6 +84,7 @@ DB.ready = function(){
 		});
 	}
 };
+}
 var MC = {};
 var MAPS = [
 	{ name: "강아지",
@@ -203,15 +207,45 @@ function getMap(){
 	}
 	return MAPS[li];
 }
-function getBoard(lang){
+function getRandomMap(){
+	return MAPS[random(0, MAPS.length)];
+}
+exports.generate = function(wordTable, lang, timeout){
+	return getBoard(lang, wordTable, getRandomMap(), timeout, true);
+};
+function getBoard(lang, wordTable, selectedMap, timeout, randomize){
 	var R = new Lizard.Tail();
 	var MEAN = [ 'mean', new RegExp("^.{9}[^=→][^\.]{15}") ];
 	var NO_BUL = new RegExp("^(500|210|120|10)$");
 	var board = {};
-	var proc = [];
-	var map = getMap();
-	var queue = map.queue.slice(0);
+	var map = selectedMap || getMap();
+	var queue = (typeof map.queue === 'string') ? map.queue.split(' ').map(function(item){ return item.split(''); }) : map.queue.slice(0);
 	var regCache = {};
+	var usedWords = words.slice(0);
+	var active = true;
+	var timer;
+
+	map = {
+		name: map.name,
+		queue: queue.slice(0)
+	};
+	wordTable = wordTable || DB.kkutu[lang];
+	if(timeout){
+		timer = setTimeout(function(){
+			finish(null);
+		}, timeout);
+	}
+	function finish(data){
+		if(!active) return;
+		active = false;
+		if(timer) clearTimeout(timer);
+		R.go(data);
+	}
+	function takeWord(candidates){
+		var index = randomize ? random(0, Math.min(50, candidates.length)) : 0;
+		
+		return candidates.splice(index, 1)[0];
+	}
 	
 	function process(){
 		var i, m = queue.shift();
@@ -220,9 +254,10 @@ function getBoard(lang){
 		var p, k;
 		var mapLen = queue.length;
 		
+		if(!active) return;
 		console.log("[PROCESS] QUEUE: " + mapLen);
 		if(!m){
-			R.go({ map: map, board: board });
+			finish({ map: map, board: board });
 			return;
 		}
 		p = [ m[0], m[1] ];
@@ -237,27 +272,29 @@ function getBoard(lang){
 		}
 		if(regCache[reg]){
 			// if(Math.random() < 0.5 && regCache[reg].length >= 50) regCache[reg].shift();
-			onDBFound(regCache[reg].shift());
-		}else DB.kkutu[lang].find(
+			onDBFound(takeWord(regCache[reg]));
+		}else wordTable.find(
 			[ '_id', new RegExp(`^${reg}$`) ],
 			[ 'theme', { $not: NO_BUL } ],
-			[ '_id', { $nin: words } ],
+			[ '_id', { $nin: usedWords } ],
 			[ 'type', Const.KOR_GROUP ],
 			[ 'flag', { $lte: 7 } ],
 			// (mapLen < 10) ? undefined : [ 'hit', { $gte: 2 } ],
 			MEAN
 		).limit(500).on(function($docs){
+			if(!active) return;
 			// regCache[reg] = $docs;
 			regCache[reg] = $docs.sort(function(a, b){ return b.hit - a.hit; });
 			// if(Math.random() < 0.5 && regCache[reg].length >= 50) regCache[reg].shift();
-			onDBFound(regCache[reg].shift());
+			onDBFound(takeWord(regCache[reg]));
 		});
 		function onDBFound($doc){
 			var obj = {};
 			var pick = $doc; // hit 순으로 하나씩 뽑자.
 			var j, l, n;
 			
-			if(pick && !words.includes(pick._id)){
+			if(!active) return;
+			if(pick && !usedWords.includes(pick._id)){
 				obj.word = pick._id;
 				obj.mean = pick.mean;
 				obj.pos = m;
@@ -268,7 +305,7 @@ function getBoard(lang){
 					board[k].chain[obj.word] = obj;
 					p[m[2]]++;
 				}
-				words.push(obj.word);
+				usedWords.push(obj.word);
 			}else{
 				queue.push(m);
 				for(j in arg){
@@ -282,7 +319,7 @@ function getBoard(lang){
 							if(!Object.keys(board[k].chain).length) delete board[k];
 							p[m[2]]++;
 						}
-						words.splice(words.indexOf(n), 1);
+						usedWords.splice(usedWords.indexOf(n), 1);
 					}
 				}
 			}

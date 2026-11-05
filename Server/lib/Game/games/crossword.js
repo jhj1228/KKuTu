@@ -18,12 +18,16 @@
 
 var Const = require('../../const');
 var Lizard = require('../../sub/lizard');
+var CrosswordMaker = require('./cw_maker');
 var DB;
 var DIC;
 
 var ROBOT_SEEK_DELAY = [5000, 3000, 1500, 700, 300, 100];
 var ROBOT_CATCH_RATE = [0.05, 0.2, 0.4, 0.6, 0.88, 0.99];
 var ROBOT_TYPE_COEF = [2000, 1200, 800, 300, 100, 0];
+var GENERATED_BOARD_LIMIT = 100;
+var GENERATED_BOARD_TIMEOUT = 8000;
+var generatedBoardCount = 0;
 
 exports.init = function (_DB, _DIC) {
 	DB = _DB;
@@ -43,35 +47,75 @@ exports.getTitle = function () {
 		var left = my.round;
 		var pick, pi, i, j;
 		var mParser = [];
+		var generatedBoards = [];
 
-		while (left) {
-			pick = $box[pi = Math.floor(Math.random() * $box.length)];
-			if (!pick) return;
-			$box.splice(pi, 1);
-			if (maps.includes(pick.map)) continue;
-			means.push({});
-			mdb.push({});
-			maps.push(pick.map);
-			boards.push(pick.data.split('|').map(function (item) { return item.split(','); }));
-			left--;
+		generatedBoardCount = Math.max(generatedBoardCount, $box.length);
+		for (i = 0; i < my.round; i++) {
+			generatedBoards.push(CrosswordMaker.generate(my.getWordTable(), my.rule.lang, GENERATED_BOARD_TIMEOUT));
 		}
-		for (i in boards) {
-			for (j in boards[i]) {
-				pi = boards[i][j];
-				mParser.push(getMeaning(i, pi));
-				answers[`${i},${pi[0]},${pi[1]},${pi[2]}`] = pi.pop();
+		Lizard.all(generatedBoards).then(function ($generatedBoards) {
+			for (i = 0; i < $generatedBoards.length; i++) {
+				pick = makeGeneratedPick($generatedBoards[i]);
+				if (pick && generatedBoardCount < GENERATED_BOARD_LIMIT) {
+					DB.kkutu_cw[my.rule.lang].insert([ 'map', pick.map ], [ 'data', pick.data ]).on();
+					generatedBoardCount++;
+				}
+				if (!pick) {
+					while (left) {
+						pick = $box[pi = Math.floor(Math.random() * $box.length)];
+						if (!pick) return;
+						$box.splice(pi, 1);
+						if (!maps.includes(pick.map)) break;
+						pick = null;
+					}
+				}
+				if (!pick) return;
+				means.push({});
+				mdb.push({});
+				maps.push(pick.map);
+				boards.push(pick.data.split('|').map(function (item) { return item.split(','); }));
+				left--;
 			}
-		}
-		my.game.numQ = mParser.length;
-		Lizard.all(mParser).then(function () {
-			my.game.prisoners = {};
-			my.game.answers = answers;
-			my.game.boards = boards;
-			my.game.means = means;
-			my.game.mdb = mdb;
-			R.go("①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
+			for (i in boards) {
+				for (j in boards[i]) {
+					pi = boards[i][j];
+					mParser.push(getMeaning(i, pi));
+					answers[`${i},${pi[0]},${pi[1]},${pi[2]}`] = pi.pop();
+				}
+			}
+			my.game.numQ = mParser.length;
+			Lizard.all(mParser).then(function () {
+				my.game.prisoners = {};
+				my.game.answers = answers;
+				my.game.boards = boards;
+				my.game.means = means;
+				my.game.mdb = mdb;
+				R.go("①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳");
+			});
 		});
 	});
+	function makeGeneratedPick(generatedBoard) {
+		var data;
+
+		if (!generatedBoard) return null;
+		data = generatedBoard.map.queue.map(function (slot) {
+			var cell = generatedBoard.board[`${slot[0]},${slot[1]}`];
+			var word;
+
+			if (!cell) return null;
+			for (word in cell.chain) {
+				if (cell.chain[word].pos[2] == slot[2]) {
+					return [ slot[0], slot[1], slot[2], slot[3], word ].join(',');
+				}
+			}
+			return null;
+		});
+		if (data.includes(null)) return null;
+		return {
+			map: generatedBoard.map.name,
+			data: data.join('|')
+		};
+	}
 	function getMeaning(round, bItem) {
 		var R = new Lizard.Tail();
 		var word = bItem[4];
