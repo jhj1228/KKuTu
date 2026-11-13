@@ -599,6 +599,36 @@ iframe {
 	height: 360px;
 }
 
+.UserListBox .product-title {
+	display: flex;
+	float: left;
+	align-items: center;
+	box-sizing: border-box;
+	width: calc(100% - 60px);
+	height: 20px;
+}
+
+.UserListBox .productSorter {
+	float: left;
+}
+
+.UserListBox .ProductTitleBtn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: 57px;
+	height: 20px;
+	margin-top: 0;
+	padding: 0;
+}
+
+.UserListBox .ProductTitleBtn span {
+	display: flex;
+	align-items: center;
+	gap: 3px;
+}
+
 .UserListBox div {
 	float: left;
 }
@@ -650,6 +680,44 @@ iframe {
 .RoomListBox {
 	width: 790px;
 	height: 360px;
+}
+
+.RoomListBox .product-title {
+	display: flex;
+	float: left;
+	align-items: center;
+	box-sizing: border-box;
+	width: calc(100% - 174px);
+	height: 20px;
+}
+
+.RoomListBox .productSorter {
+	float: left;
+}
+
+.RoomListBox .ProductTitleBtn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: 57px;
+	height: 20px;
+	margin-top: 0;
+	padding: 0;
+}
+
+.RoomListBox .ProductTitleBtn span {
+	display: flex;
+	align-items: center;
+	gap: 3px;
+}
+
+.RoomListBox #RoomRefreshBtn {
+	width: 114px;
+}
+
+.RoomListBox #item_asc {
+	margin-right: 0;
 }
 
 .RoomListBox div {

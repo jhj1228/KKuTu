@@ -263,6 +263,18 @@ $(document).ready(function () {
 		yell: $("#Yell").hide(),
 		balloons: $("#Balloons")
 	};
+	$("#room-filter-waiting, #room-filter-open").on('change', function () {
+		updateRoomList(true);
+	});
+	$("#user-sort-level, #user-sort-nickname").on('change', function (e) {
+		var isLevelSort = e.currentTarget.id === "user-sort-level" && e.currentTarget.checked;
+
+		$("#user-sort-level").prop('checked', isLevelSort);
+		$("#user-sort-nickname").prop('checked', !isLevelSort && e.currentTarget.checked);
+		$("#sort-user").prop('checked', isLevelSort);
+		saveLocalSettings();
+		updateUserList(true);
+	});
 	if (_WebSocket == undefined) {
 		loading(L['websocketUnsupport']);
 		showAlert(L['websocketUnsupport']);
@@ -324,10 +336,15 @@ $(document).ready(function () {
 			delete $data.rooms[id];
 			if (isLobby) $("#room-" + id).remove();
 		} else {
-			// $data.rooms[id] = data;
-			if (isLobby && !$data.rooms[id]) $stage.lobby.roomList.append($("<div>").attr('id', "room-" + id));
 			$data.rooms[id] = data;
-			if (isLobby) $("#room-" + id).replaceWith(roomListBar(data));
+			if (isLobby) {
+				if (roomMatchesFilters(data)) {
+					if (!$("#room-" + id).length) $stage.lobby.roomList.append($("<div>").attr('id', "room-" + id));
+					$("#room-" + id).replaceWith(roomListBar(data));
+				} else {
+					$("#room-" + id).remove();
+				}
+			}
 		}
 		// updateRoomList();
 	};
@@ -3850,6 +3867,7 @@ function showDialog($d, noToggle) {
 }
 function applyOptions(opt) {
 	$data.opts = opt;
+	if ($data.opts.su) $data.opts.usn = false;
 
 	$data.muteBGM = $data.opts.mb;
 	$data.muteEff = $data.opts.me;
@@ -3884,6 +3902,8 @@ function applyOptions(opt) {
 	$("#deny-friend").attr('checked', $data.opts.df);
 	$("#auto-ready").attr('checked', $data.opts.ar);
 	$("#sort-user").attr('checked', $data.opts.su);
+	$("#user-sort-level").prop('checked', $data.opts.su);
+	$("#user-sort-nickname").prop('checked', $data.opts.usn);
 	$("#only-waiting").attr('checked', $data.opts.ow);
 	$("#only-unlock").attr('checked', $data.opts.ou);
 	$("#no-filter").attr('checked', $data.opts.nf);
@@ -4952,6 +4972,16 @@ function updateUserList(refresh) {
 		}
 		arr.sort(function (a, b) { return b.data.score - a.data.score; });
 		refresh = true;
+	} else if ($data.opts.usn) {
+		arr = [];
+		for (i in $data.users) {
+			len++;
+			arr.push($data.users[i]);
+		}
+		arr.sort(function (a, b) {
+			return getDisplayName(a).localeCompare(getDisplayName(b), 'ko');
+		});
+		refresh = true;
 	} else {
 		arr = $data.users;
 
@@ -5005,16 +5035,23 @@ function addonNickname($R, o) {
 	if (o.equip['BDG'] == "b1_gm") $R.addClass("x-gm");
 	if (o.equip['BDG'] == "b1_subgm") $R.addClass("x-subgm");
 }
+function roomMatchesFilters(o) {
+	return (!$("#room-filter-waiting").prop('checked') || !o.gaming)
+		&& (!$("#room-filter-open").prop('checked') || !o.password);
+}
 function updateRoomList(refresh) {
 	var i;
 	var len = 0;
 
 	if (!refresh) {
 		$(".rooms-create").remove();
-		for (i in $data.rooms) len++;
+		for (i in $data.rooms) {
+			if (roomMatchesFilters($data.rooms[i])) len++;
+		}
 	} else {
 		$stage.lobby.roomList.empty();
 		for (i in $data.rooms) {
+			if (!roomMatchesFilters($data.rooms[i])) continue;
 			$stage.lobby.roomList.append(roomListBar($data.rooms[i]));
 			len++;
 		}
@@ -7193,6 +7230,7 @@ function saveLocalSettings() {
 		df: $("#deny-friend").is(':checked'),
 		ar: $("#auto-ready").is(':checked'),
 		su: $("#sort-user").is(':checked'),
+		usn: !$("#sort-user").is(':checked') && $("#user-sort-nickname").is(':checked'),
 		ow: $("#only-waiting").is(':checked'),
 		ou: $("#only-unlock").is(':checked'),
 		bs: $("#bgm-select").val(),
@@ -7216,6 +7254,7 @@ function resetLocalSettings() {
 		df: false,
 		ar: false,
 		su: false,
+		usn: false,
 		ow: false,
 		ou: false,
 		bs: "lobby",
@@ -7250,6 +7289,7 @@ function loadLocalSettings() {
 			df: false,
 			ar: false,
 			su: false,
+			usn: false,
 			ow: false,
 			ou: false,
 			bs: "lobby",

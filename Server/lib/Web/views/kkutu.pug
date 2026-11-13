@@ -275,7 +275,6 @@ block Middle
 		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none; background-color: #FFADAD;')!= L('exitGame')
 		button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')!= L('replayGame')
 		button#LeaderboardBtn.for-lobby(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
-		button#RoomRefreshBtn.tiny-menu.for-lobby(style='display: none; background-color: #FFD4E5;')!= L('room_refresh')
 	+Dialog('SettingDiag', 300, 390, L('settingsText'))
 		div.dialog-bar
 			div(style='display: flex; align-items: center;')
@@ -693,7 +692,7 @@ block Middle
 		div.dialog-bar(style='padding: 10px;')
 			div#wardrobe-grid(style='display: flex; justify-content: space-between; gap: 5px;')
 				- for(var i=0; i<5; i++)
-					div.wardrobe-slot(data-index=i, style='width: 120px; border: 1px solid #ccc; padding: 5px; background: #f9f9f9; text-align: center; border-radius: 4px;')
+					div.wardrobe-slot(data-index=i, style='width: 120px; border: 1px solid #ccc; padding: 5px; background: #f9f9f9; text-align: center;')
 						div.moremi.wardrobe-view(style='width: 80px; height: 80px; margin: 0 auto; background: #fff; border: 1px inset #eee;')
 						div.wardrobe-meta(style='margin-top: 5px;')
 							div.wardrobe-label(style='font-size: 11px; height: 15px; overflow: hidden; margin-bottom: 5px;')= L('empty')
@@ -733,10 +732,49 @@ block Middle
 		div.dialog-bar.tail-button(style='position: absolute; bottom: 10px; right: 10px; width: calc(100% - 20px);')
 			button#alert-cancel(style='display: none; margin-right: 10px;')= L('NO')
 			button#alert-ok= L('OK')
-	+Product('UserList')
-		div 불러오는 중
-	+Product('RoomList')
-		div 불러오는 중
+	div.UserListBox.Product(style='display: none')
+		h5.product-title!= L('UserList').replace('FA{users}', "<i class='fa fa-users'></i>")
+		div.productSorter
+			div#user-sort-button.ProductTitleBtn.ProductSort
+				span
+					i.fa.fa-sort-alpha-asc
+					| 정렬
+			div.sortTooltip
+				div.radio-toolbar
+					div(style='margin-left: 5px; width: 100px; text-align: left;')
+						label(for='user-sort-level')
+							input#user-sort-level.checkTooltip(type='checkbox')
+							|  레벨 순 정렬
+						br
+						label(for='user-sort-nickname')
+							input#user-sort-nickname.checkTooltip(type='checkbox')
+							|  닉네임 순 정렬
+		div.product-body
+			div 불러오는 중
+	div.RoomListBox.Product(style='display: none')
+		h5.product-title!= L('RoomList').replace('FA{bars}', "<i class='fa fa-bars'></i>")
+		div.productSorter
+			div#item_asc.ProductTitleBtn.ProductSort
+				span
+					i.fa.fa-sort-alpha-asc
+					| 정렬
+			div.sortTooltip
+				div.radio-toolbar
+					div(style='width: 130px;')
+						label(for='room-filter-waiting')
+							input#room-filter-waiting.checkTooltip(type='checkbox')
+							|  대기 중인 방만 보기
+						br
+						label(for='room-filter-open')
+							input#room-filter-open.checkTooltip(type='checkbox')
+							|  열려 있는 방만 보기
+		button#RoomRefreshBtn.ProductTitleBtn.ProductSort(type='button')
+			span
+				i.fa.fa-refresh
+				| 
+				= '목록 새로고침'
+		div.product-body
+			div 불러오는 중
 	+Product('Shop')
 		div.shop-categories
 			- for(var i in locals.CATEGORIES)
