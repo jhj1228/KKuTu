@@ -275,7 +275,7 @@ block Middle
 		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none; background-color: #FFADAD;')!= L('exitGame')
 		button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')!= L('replayGame')
 		button#LeaderboardBtn.for-lobby(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
-	+Dialog('SettingDiag', 300, 390, L('settingsText'))
+	+Dialog('SettingDiag', 300, 320, L('settingsText'))
 		div.dialog-bar
 			div(style='display: flex; align-items: center;')
 				h4(style='width: 100px; margin: 0;')= L('bgmoption')
@@ -318,13 +318,6 @@ block Middle
 			+SettingOption('deny-vibrate', L('denyVibrate'), '', 'explDenyVibrate')
 			h4
 			+SettingOption('no-filter', L('noFilter'), '', 'explNoFilter')
-		div.dialog-bar
-			h4= L('etc')
-			+SettingOption('sort-user', L('sortUser'), "width: 200px;")
-			h4
-			+SettingOption('only-waiting', L('onlyWaiting'), "width: 200px;")
-			h4
-			+SettingOption('only-unlock', L('onlyUnlock'), "width: 200px;")
 		div.dialog-bar.tail-button
 			button#setting-ok= L('save')
 			button#setting-reset= L('initialize')

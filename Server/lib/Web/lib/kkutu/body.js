@@ -1232,9 +1232,7 @@ function updateUserList(refresh) {
 
 		for (i in $data.users) len++;
 	}
-	$stage.lobby.userListTitle.html("<i class='fa fa-users'></i>"
-		+ "&lt;<b>" + L['server_' + $data.server] + "</b>&gt; "
-		+ L['UserList'].replace("FA{users}", "")
+	$stage.lobby.userListTitle.html(L['UserList'].replace("FA{users}", "<i class='fa fa-users'></i>")
 		+ " [" + len + L['MN'] + "]");
 
 	if (refresh) {
