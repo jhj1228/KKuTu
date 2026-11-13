@@ -3864,6 +3864,9 @@ function applyOptions(opt) {
 	if ($data.opts.bs) {
 		$("#bgm-select").val($data.opts.bs);
 	}
+	$data.opts.ff = ["gyeonggi-title", "trickcal"].indexOf($data.opts.ff) === -1 ? "original" : $data.opts.ff;
+	$("body").attr("data-font", $data.opts.ff);
+	$("#font-select").val($data.opts.ff);
 
 	$("#mute-bgm").attr('checked', $data.muteBGM);
 	$("#mute-effect").attr('checked', $data.muteEff);
@@ -7193,6 +7196,7 @@ function saveLocalSettings() {
 		ow: $("#only-waiting").is(':checked'),
 		ou: $("#only-unlock").is(':checked'),
 		bs: $("#bgm-select").val(),
+		ff: $("#font-select").val(),
 		nf: $("#no-filter").is(':checked')
 	};
 	applyOptions(opt);
@@ -7215,6 +7219,7 @@ function resetLocalSettings() {
 		ow: false,
 		ou: false,
 		bs: "lobby",
+		ff: "original",
 		nf: false
 	};
 	applyOptions(opt);
@@ -7248,6 +7253,7 @@ function loadLocalSettings() {
 			ow: false,
 			ou: false,
 			bs: "lobby",
+			ff: "original",
 			nf: false
 		};
 	}
@@ -7256,7 +7262,7 @@ function loadLocalSettings() {
 }
 $(document).ready(function () {
 	loadLocalSettings();
-	$("#mute-bgm, #mute-effect, #mute-ingame, #deny-vibrate, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select, #no-filter").on('change', function () {
+	$("#mute-bgm, #mute-effect, #mute-ingame, #deny-vibrate, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select, #font-select, #no-filter").on('change', function () {
 		saveLocalSettings();
 	});
 

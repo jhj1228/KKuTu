@@ -276,7 +276,7 @@ block Middle
 		button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')!= L('replayGame')
 		button#LeaderboardBtn.for-lobby(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
 		button#RoomRefreshBtn.tiny-menu.for-lobby(style='display: none; background-color: #FFD4E5;')!= L('room_refresh')
-	+Dialog('SettingDiag', 300, 365, L('settingsText'))
+	+Dialog('SettingDiag', 300, 390, L('settingsText'))
 		div.dialog-bar
 			div(style='display: flex; align-items: center;')
 				h4(style='width: 100px; margin: 0;')= L('bgmoption')
@@ -302,6 +302,11 @@ block Middle
 				optgroup(label='기타 BGM')
 					option(value='inthepool') IN THE POOL x IN THE SEA
 					option(value='lobby', selected) Enchanted Love
+		div.dialog-bar
+			h4= '글꼴 선택'
+			select#font-select
+				option(value='original') 나눔바른고딕
+				option(value='gyeonggi-title') 경기천년체
 		div.dialog-bar
 			h4= L('denyReq')
 			+SettingOption('deny-invite', L('denyInvite'), '', 'explDenyInvite')

@@ -21,12 +21,30 @@
 	src: url('../media/NanumBarunGothicLight.woff') format('woff');
 }
 
+@font-face {
+	font-family: 'Trickcal';
+	src: url('../media/Trickcal.woff') format('woff');
+}
+
+@font-face {
+	font-family: 'GyeonggiTitle';
+	src: url('../media/Title_Medium.woff') format('woff');
+}
+
 body {
 	color: #EEEEEE;
 	padding: 0px;
 	margin: 0px;
 	min-width: 480px;
 	font-family: 'NBGothic';
+}
+
+body[data-font="trickcal"] {
+	font-family: 'Trickcal', 'NBGothic';
+}
+
+body[data-font="gyeonggi-title"] {
+	font-family: 'GyeonggiTitle', 'NBGothic';
 }
 
 a {
