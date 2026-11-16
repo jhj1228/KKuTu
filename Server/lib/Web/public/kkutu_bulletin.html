@@ -186,6 +186,10 @@
         a:visited {
             color: blue
         }
+
+        body.single .nav-header {
+            display: none;
+        }
     </style>
 </head>
 
@@ -202,8 +206,17 @@
         <div id="tab-updates" class="tab-content active">
             <div class="card">
                 <div class="card-header">
-                    <span class="header-title" style="color:#2563EB">v1.4.8</span>
+                    <span class="header-title" style="color:#2563EB">v1.4.9</span>
                     <span class="badge bg-red">NEW</span>
+                    <span class="header-sub">26.11.13</span>
+                </div>
+                <ul>
+                    <li>레전드끄투 모던 UI가 적용되었습니다.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="header-title" style="color:#666">v1.4.8</span>
                     <span class="header-sub">26.11.13</span>
                 </div>
                 <ul>
@@ -690,7 +703,7 @@
                     <span class="badge bg-red">필독</span>
                 </div>
                 <ul>
-                    <li>공지사항이 없습니다.</li>
+                    <li>새로운 UI가 적용되었습니다. 아직 UI가 완벽하게 지원하지 않아 일부 버그가 있을 수 있습니다.(그림퀴즈 등)<br>버그가 발견됐을 시 아래 이메일로 문의주세요.</li>
                 </ul>
             </div>
         </div>
@@ -720,6 +733,18 @@
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
         }
+
+        (function () {
+            var map = { updates: 'tab-updates', notices: 'tab-notices', events: 'tab-events' };
+            var id = map[location.hash.slice(1)];
+            if (!id || !document.getElementById(id)) return;
+            document.body.classList.add('single');
+            var contents = document.getElementsByClassName('tab-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
+            }
+            document.getElementById(id).classList.add('active');
+        })();
     </script>
 </body>
 

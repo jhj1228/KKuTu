@@ -24,6 +24,7 @@
 .portal-notice #global-notice {
 	display: flex;
 	position: relative;
+	z-index: auto;
 	margin: 0 0 16px 0;
 	height: 44px;
 	text-align: left;
@@ -71,8 +72,8 @@
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) 380px;
 	grid-template-areas:
-		"hero     servers"
-		"bulletin bulletin";
+		"hero    servers"
+		"updates side";
 	gap: 16px;
 	float: left;
 	margin-bottom: 24px;
@@ -233,7 +234,7 @@
 }
 
 #server-list {
-	flex: 1;
+	flex: none;
 	overflow-y: auto;
 }
 
@@ -343,13 +344,123 @@
 }
 
 
-.portal-bulletin {
-	grid-area: bulletin;
+.portal-shortcuts {
+	margin-top: auto;
+	padding: 14px 16px 16px 16px;
+	border-top: 1px solid var(--border);
+}
+
+.portal-section-title {
+	margin-bottom: 10px;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--primary-dark);
+}
+
+.shortcut-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 8px;
+}
+
+.shortcut {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	box-sizing: border-box;
+	height: 68px;
+	font-size: 22px;
+	color: var(--text-2);
+	background-color: var(--surface-2);
+	box-shadow: var(--line);
+	transition: background-color var(--ease), color var(--ease), box-shadow var(--ease);
+}
+
+.shortcut:hover {
+	color: var(--primary);
+	background-color: var(--primary-soft);
+	box-shadow: inset 0 0 0 1px var(--primary-soft-2);
+}
+
+.shortcut-label {
+	max-width: 100%;
+	font-size: 11px;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.shortcut-empty,
+.shortcut-empty:hover {
+	border: 1px dashed var(--border);
+	background-color: transparent;
+	box-shadow: none;
+}
+
+.portal-board {
+	display: flex;
+	flex-direction: column;
 	overflow: hidden;
 }
 
-#kkutu-bulletin {
+.portal-board-title {
+	display: flex;
+	flex: none;
+	align-items: center;
+	box-sizing: border-box;
+	padding: 0 16px;
+	height: 48px;
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--primary-dark);
+	background-color: var(--head);
+	border-bottom: 1px solid var(--border);
+}
+
+.portal-board-frame {
 	display: block;
+	flex: 1;
+	min-height: 0;
+	width: 100%;
 	border: 0;
 	margin: 0;
+}
+
+.portal-updates {
+	grid-area: updates;
+	height: 560px;
+}
+
+.portal > .portal-side {
+	grid-area: side;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	height: 560px;
+	background-color: transparent;
+	box-shadow: none;
+}
+
+.portal-notices {
+	flex: 1;
+	min-height: 0;
+	background-color: var(--surface);
+	box-shadow: var(--line), var(--shadow-sm);
+}
+
+.portal-ad {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	height: 180px;
+	font-size: 20px;
+	font-weight: 700;
+	letter-spacing: 4px;
+	color: var(--text-3);
+	background-color: var(--surface);
+	box-shadow: var(--line), var(--shadow-sm);
 }

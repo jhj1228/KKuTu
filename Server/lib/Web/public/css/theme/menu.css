@@ -232,4 +232,5 @@
 
 .kkutu-actions #global-notice {
 	position: relative;
+	z-index: auto;
 }
