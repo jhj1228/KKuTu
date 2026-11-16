@@ -108,7 +108,7 @@ body[data-only="for-gaming"] .RoomBox {
 	color: var(--text);
 }
 
-.GameBox:not(.venezia-mode) .game-body:not(.cw):not(.pq) .game-user-score {
+.GameBox .game-body:not(.cw):not(.pq) .game-user-score {
 	text-align: center;
 }
 
@@ -135,13 +135,13 @@ body[data-only="for-gaming"] .RoomBox {
 	}
 }
 
-.GameBox:not(.venezia-mode) .game-body:not(.cw):not(.pq) {
+.GameBox .game-body:not(.cw):not(.pq) {
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
 }
 
-.GameBox:not(.venezia-mode) .game-body:not(.cw):not(.pq) > .game-user {
+.GameBox .game-body:not(.cw):not(.pq) > .game-user {
 	flex: none;
 }
 

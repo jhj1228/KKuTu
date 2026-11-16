@@ -53,7 +53,7 @@ block JS
 				var gameBox = document.querySelector('.GameBox');
 				function isNormalBoard() {
 					var cmd = gameBox.querySelector('.cwcmd');
-					if (gameBox.classList.contains('venezia-mode') || gameBox.querySelector('.pq')) return false;
+					if (gameBox.querySelector('.pq')) return false;
 					if (!gameBox.querySelector('.cw')) return true;
 					var bb = gameBox.querySelector('.bb');
 					return (!!cmd && cmd.style.display !== 'none') || (!!bb && bb.style.display !== 'none');

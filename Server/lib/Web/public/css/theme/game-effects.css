@@ -134,3 +134,72 @@
 		transform: none;
 	}
 }
+
+.GameBox .game-user {
+	position: relative;
+}
+
+.GameBox .deltaScore {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	right: 0;
+	z-index: 2;
+	margin: -22px 0 0 0;
+	width: auto;
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 44px;
+	text-align: center;
+	text-shadow: none;
+	color: var(--primary);
+	pointer-events: none;
+	animation: ScorePop 1.6s ease-out both;
+}
+
+.GameBox .game-user:has(.game-user-image) .deltaScore {
+	top: auto;
+	bottom: 34px;
+	margin: 0;
+	line-height: 30px;
+}
+
+.GameBox .game-user:not(:has(.game-user-image)) .deltaScore {
+	top: auto;
+	bottom: 100%;
+	left: auto;
+	right: 10px;
+	margin: 0;
+	line-height: 26px;
+	text-align: right;
+}
+
+.GameBox .deltaScore.lost {
+	color: var(--danger);
+}
+
+.GameBox .deltaScore.bonus {
+	color: var(--success);
+}
+
+@keyframes ScorePop {
+	0% {
+		opacity: 0;
+		transform: translateY(6px) scale(0.9);
+	}
+
+	15% {
+		opacity: 1;
+		transform: translateY(-14px) scale(1.15);
+	}
+
+	70% {
+		opacity: 1;
+		transform: translateY(-20px) scale(1);
+	}
+
+	100% {
+		opacity: 0;
+		transform: translateY(-30px) scale(1);
+	}
+}

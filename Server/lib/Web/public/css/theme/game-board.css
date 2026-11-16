@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-.GameBox.Product:not(.venezia-mode):not(:has(.cw, .pq)) {
+.GameBox.Product:not(:has(.cw, .pq)) {
 	width: 1000px !important;
 	height: 490px !important;
 	display: flex;
@@ -27,12 +27,12 @@
 	box-shadow: var(--line), var(--shadow-md);
 }
 
-body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .pq)) {
+body[data-only="for-gaming"] .GameBox.Product:not(:has(.cw, .pq)) {
 	width: calc(var(--game-w, 1010) * 1px - 10px) !important;
 	height: calc(var(--game-h, 500) * 1px - 10px) !important;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .product-title {
+.GameBox:not(:has(.cw, .pq)) .product-title {
 	display: flex;
 	align-items: center;
 	gap: 4px;
@@ -40,22 +40,22 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	color: var(--text-2);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .product-title h5 {
+.GameBox:not(:has(.cw, .pq)) .product-title h5 {
 	flex: none;
 	float: none;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .product-title .room-head-title {
+.GameBox:not(:has(.cw, .pq)) .product-title .room-head-title {
 	flex: 1;
 	min-width: 0;
 	width: auto;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .room-head-title { color: var(--text); }
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .room-head-number { color: var(--text-3); }
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .room-head-mode { color: var(--primary); }
+.GameBox:not(:has(.cw, .pq)) .room-head-title { color: var(--text); }
+.GameBox:not(:has(.cw, .pq)) .room-head-number { color: var(--text-3); }
+.GameBox:not(:has(.cw, .pq)) .room-head-mode { color: var(--primary); }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .product-body {
+.GameBox:not(:has(.cw, .pq)) .product-body {
 	display: grid;
 	grid-template-columns: 200px minmax(0, 1fr) 200px;
 	grid-template-rows: auto minmax(0, 1fr) 44px 180px;
@@ -74,7 +74,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	min-height: 0;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .game-head {
+.GameBox:not(:has(.cw, .pq)) .game-head {
 	grid-area: head;
 	display: grid;
 	grid-template-columns: 200px minmax(0, 1fr) 200px;
@@ -89,11 +89,11 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	width: auto;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .game-head > div {
+.GameBox:not(:has(.cw, .pq)) .game-head > div {
 	float: none;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .rounds {
+.GameBox:not(:has(.cw, .pq)) .rounds {
 	grid-area: rounds;
 	display: flex;
 	justify-content: center;
@@ -104,7 +104,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	text-shadow: none;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .rounds label {
+.GameBox:not(:has(.cw, .pq)) .rounds label {
 	margin: 0;
 	padding: 0 7px;
 	min-width: 12px;
@@ -116,24 +116,24 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	box-shadow: var(--line);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .rounds-current {
+.GameBox:not(:has(.cw, .pq)) .rounds-current {
 	font-size: 13px;
 	color: #FFFFFF !important;
 	background-color: var(--primary) !important;
 	box-shadow: none !important;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjoriping {
+.GameBox:not(:has(.cw, .pq)) .jjoriping {
 	grid-area: main;
 	width: auto;
 	min-width: 0;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjoObj {
+.GameBox:not(:has(.cw, .pq)) .jjoObj {
 	display: none;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjoDisplayBar {
+.GameBox:not(:has(.cw, .pq)) .jjoDisplayBar {
 	display: flex;
 	flex-direction: column;
 	float: none;
@@ -147,7 +147,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	box-shadow: var(--shadow-md);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjo-display {
+.GameBox:not(:has(.cw, .pq)) .jjo-display {
 	flex: 1;
 	box-sizing: border-box;
 	padding: 0 16px;
@@ -161,17 +161,17 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	background-color: #111827;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjo-display-word-length {
+.GameBox:not(:has(.cw, .pq)) .jjo-display-word-length {
 	font-size: 15px;
 	color: #FBBF24;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .display-text {
+.GameBox:not(:has(.cw, .pq)) .display-text {
 	width: auto;
 	min-width: 26px;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjoDisplayBar .graph {
+.GameBox:not(:has(.cw, .pq)) .jjoDisplayBar .graph {
 	flex: none;
 	box-sizing: border-box;
 	border: none;
@@ -180,7 +180,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	text-shadow: none;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjoDisplayBar .graph-bar {
+.GameBox:not(:has(.cw, .pq)) .jjoDisplayBar .graph-bar {
 	padding: 0;
 	height: 18px;
 	line-height: 18px;
@@ -188,36 +188,36 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	font-weight: 700;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjoDisplayBar .graph-bar::after {
+.GameBox:not(:has(.cw, .pq)) .jjoDisplayBar .graph-bar::after {
 	content: "";
 	display: inline-block;
 	width: 8px;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjo-turn-time {
+.GameBox:not(:has(.cw, .pq)) .jjo-turn-time {
 	background-color: #E5E7EB;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjo-turn-time .graph-bar {
+.GameBox:not(:has(.cw, .pq)) .jjo-turn-time .graph-bar {
 	color: #3A2E00;
 	background-color: #F5C542;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjo-round-time {
+.GameBox:not(:has(.cw, .pq)) .jjo-round-time {
 	border-bottom: none;
 	background-color: #DCE3EE;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .jjo-round-time .graph-bar {
+.GameBox:not(:has(.cw, .pq)) .jjo-round-time .graph-bar {
 	color: #FFFFFF;
 	background-color: var(--primary);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .round-extreme {
+.GameBox:not(:has(.cw, .pq)) .round-extreme {
 	background-color: var(--danger) !important;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) :is(.items, .chain):not([style*="display: none"]) {
+.GameBox:not(:has(.cw, .pq)) :is(.items, .chain):not([style*="display: none"]) {
 	display: flex !important;
 	flex-direction: column;
 	align-items: center;
@@ -236,32 +236,32 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	box-shadow: var(--line), var(--shadow-sm);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) :is(.items, .chain)::before {
+.GameBox:not(:has(.cw, .pq)) :is(.items, .chain)::before {
 	margin-bottom: 6px;
 	font-size: 12px;
 	font-weight: 700;
 	color: var(--text-3);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .items {
+.GameBox:not(:has(.cw, .pq)) .items {
 	grid-area: left;
 	color: var(--warning);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .items::before {
+.GameBox:not(:has(.cw, .pq)) .items::before {
 	content: "미션";
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .chain {
+.GameBox:not(:has(.cw, .pq)) .chain {
 	grid-area: right;
 	color: var(--primary-dark);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .chain::before {
+.GameBox:not(:has(.cw, .pq)) .chain::before {
 	content: "체인";
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) :is(.hints, .b-left) {
+.GameBox:not(:has(.cw, .pq)) :is(.hints, .b-left) {
 	grid-area: left;
 	margin: 0;
 	width: auto;
@@ -269,7 +269,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	overflow: hidden;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .hint-item {
+.GameBox:not(:has(.cw, .pq)) .hint-item {
 	float: none;
 	box-sizing: border-box;
 	margin: 0 0 4px 0;
@@ -287,17 +287,17 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	box-shadow: var(--line);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .history-holder {
+.GameBox:not(:has(.cw, .pq)) .history-holder {
 	grid-area: hist;
 	width: auto;
 	height: 46px;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .history {
+.GameBox:not(:has(.cw, .pq)) .history {
 	height: 46px;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .history-item {
+.GameBox:not(:has(.cw, .pq)) .history-item {
 	box-sizing: border-box;
 	margin: 0 6px 0 0;
 	padding: 6px 10px 0 10px;
@@ -310,7 +310,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	box-shadow: var(--line);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .history-mean {
+.GameBox:not(:has(.cw, .pq)) .history-mean {
 	display: block;
 	padding: 2px 0 0 0;
 	width: 100%;
@@ -321,27 +321,27 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	color: var(--text-3);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .history-mean-c {
+.GameBox:not(:has(.cw, .pq)) .history-mean-c {
 	color: var(--text-3);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .history-class {
+.GameBox:not(:has(.cw, .pq)) .history-class {
 	padding: 0 4px;
 	line-height: 16px;
 	font-size: 10px;
 	vertical-align: 1px;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .history-theme,
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .word-theme {
+.GameBox:not(:has(.cw, .pq)) .history-theme,
+.GameBox:not(:has(.cw, .pq)) .word-theme {
 	color: var(--primary);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .word-m3-head {
+.GameBox:not(:has(.cw, .pq)) .word-m3-head {
 	color: var(--text-2);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .game-input {
+.GameBox:not(:has(.cw, .pq)) .game-input {
 	grid-area: input;
 	position: static;
 	float: none;
@@ -351,7 +351,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	box-shadow: none;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) #game-input {
+.GameBox:not(:has(.cw, .pq)) #game-input {
 	box-sizing: border-box;
 	padding: 0 14px;
 	border: 2px solid var(--primary);
@@ -362,32 +362,32 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	box-shadow: var(--ring);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .game-body {
+.GameBox:not(:has(.cw, .pq)) .game-body {
 	grid-area: users;
 	margin: 0;
 	width: auto;
 	height: 180px;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .game-user {
+.GameBox:not(:has(.cw, .pq)) .game-user {
 	border-color: var(--border);
 	box-shadow: var(--shadow-sm);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .game-user-current {
+.GameBox:not(:has(.cw, .pq)) .game-user-current {
 	border-color: var(--primary);
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .game-user-name {
+.GameBox:not(:has(.cw, .pq)) .game-user-name {
 	font-size: 13px;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .game-user-score {
+.GameBox:not(:has(.cw, .pq)) .game-user-score {
 	font-size: 24px;
 	line-height: 32px;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)):has(.hints:not([style*="display: none"])) .game-head {
+.GameBox:not(:has(.cw, .pq)):has(.hints:not([style*="display: none"])) .game-head {
 	grid-template-rows: auto 104px auto;
 	grid-template-areas:
 		"rounds rounds rounds"
@@ -395,11 +395,11 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 		"left   .      .";
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)):has(.hints:not([style*="display: none"])) .history-holder {
+.GameBox:not(:has(.cw, .pq)):has(.hints:not([style*="display: none"])) .history-holder {
 	display: none;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .hints:not([style*="display: none"]) {
+.GameBox:not(:has(.cw, .pq)) .hints:not([style*="display: none"]) {
 	display: flex !important;
 	flex-direction: column;
 	gap: 6px;
@@ -409,7 +409,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	overflow: visible;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .hints .hint-item {
+.GameBox:not(:has(.cw, .pq)) .hints .hint-item {
 	margin: 0;
 	padding: 8px 10px 8px 12px;
 	height: auto;

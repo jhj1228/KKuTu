@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-.GameBox.Product:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) {
+.GameBox.Product:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) {
 	display: flex;
 	flex-direction: column;
 	width: 1000px !important;
@@ -27,12 +27,12 @@
 	box-shadow: var(--line), var(--shadow-md);
 }
 
-body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) {
+body[data-only="for-gaming"] .GameBox.Product:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) {
 	width: calc(var(--game-w, 1010) * 1px - 10px) !important;
 	height: calc(var(--game-h, 500) * 1px - 10px) !important;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .product-title {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .product-title {
 	display: flex;
 	align-items: center;
 	gap: 4px;
@@ -40,27 +40,27 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	color: var(--text-2);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .product-title h5 {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .product-title h5 {
 	flex: none;
 	float: none;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .product-title .room-head-title {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .product-title .room-head-title {
 	flex: 1;
 	min-width: 0;
 	width: auto;
 	color: var(--text);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .room-head-number {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .room-head-number {
 	color: var(--text-3);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .room-head-mode {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .room-head-mode {
 	color: var(--primary);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .product-body {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .product-body {
 	display: flex;
 	flex: 1;
 	flex-direction: column;
@@ -72,7 +72,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	min-height: 0;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-head {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-head {
 	display: grid;
 	flex: 1;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -86,15 +86,15 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	min-height: 0;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-head > div {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-head > div {
 	float: none;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) :is(.items, .hints, .chain, .history-holder, .pqcmd, .bb) {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) :is(.items, .hints, .chain, .history-holder, .pqcmd, .bb) {
 	display: none !important;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cwcmd {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cwcmd {
 	display: flex !important;
 	flex-direction: column;
 	gap: 10px;
@@ -109,7 +109,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	transition: opacity 150ms ease;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-head {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-head {
 	flex: none;
 	margin: 0;
 	width: auto;
@@ -120,7 +120,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	color: var(--primary-dark);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) #cw-q-input {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) #cw-q-input {
 	flex: none;
 	box-sizing: border-box;
 	padding: 0 14px;
@@ -132,7 +132,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	box-shadow: var(--ring);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-body {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-body {
 	box-sizing: border-box;
 	padding: 16px 18px;
 	flex: 0 1 auto;
@@ -147,19 +147,19 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	box-shadow: var(--line), var(--shadow-sm);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-body .word-m2-head {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-body .word-m2-head {
 	color: var(--success);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-body .word-m3-head {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-body .word-m3-head {
 	color: var(--text-2);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-body .word-theme {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-q-body .word-theme {
 	color: var(--primary);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .rounds {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .rounds {
 	display: flex;
 	gap: 4px;
 	grid-area: rounds;
@@ -171,7 +171,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	text-shadow: none;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .rounds label {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .rounds label {
 	margin: 0;
 	padding: 0 12px;
 	line-height: 30px;
@@ -182,19 +182,19 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	cursor: pointer;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .rounds label:hover {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .rounds label:hover {
 	color: var(--primary);
 	background-color: var(--primary-soft);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .rounds-current {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .rounds-current {
 	font-size: 15px;
 	color: #FFFFFF !important;
 	background-color: var(--primary) !important;
 	box-shadow: none !important;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoriping {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoriping {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-end;
@@ -205,11 +205,11 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	min-height: 0;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoObj {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoObj {
 	display: none;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoDisplayBar {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoDisplayBar {
 	display: flex;
 	flex-direction: column;
 	box-sizing: border-box;
@@ -225,7 +225,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	transition: none;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjo-display {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjo-display {
 	flex: 1;
 	box-sizing: border-box;
 	padding: 0;
@@ -237,7 +237,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	container-type: size;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoDisplayBar .graph {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoDisplayBar .graph {
 	flex: none;
 	box-sizing: border-box;
 	border: none;
@@ -247,7 +247,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	background-color: #DCE3EE;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoDisplayBar .graph-bar {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoDisplayBar .graph-bar {
 	padding: 0;
 	height: 18px;
 	line-height: 18px;
@@ -257,22 +257,22 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	background-color: var(--primary);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoDisplayBar .graph-bar::after {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .jjoDisplayBar .graph-bar::after {
 	content: "";
 	display: inline-block;
 	width: 8px;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar {
 	display: flex;
 	background-color: transparent;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar[id$="-1"] {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar[id$="-1"] {
 	flex-direction: column;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-cell {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-cell {
 	display: flex;
 	flex: 1;
 	align-items: center;
@@ -292,24 +292,24 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	transition: background-color var(--ease), box-shadow var(--ease);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar:hover .cw-cell {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar:hover .cw-cell {
 	background-color: var(--primary-soft);
 	box-shadow: inset 0 0 0 1px var(--primary), 0 0 0 1px var(--primary);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar.cw-open .cw-cell {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar.cw-open .cw-cell {
 	color: var(--text);
 	background-color: #E2E8F0;
 	box-shadow: inset 0 0 0 1px #94A3B8, 0 0 0 1px #94A3B8;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar.cw-my-open .cw-cell {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .cw-bar.cw-my-open .cw-cell {
 	color: var(--success);
 	background-color: var(--success-soft);
 	box-shadow: inset 0 0 0 1px #6BC79A, 0 0 0 1px #6BC79A;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-body {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-body {
 	display: grid;
 	flex: none;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -322,7 +322,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	height: auto;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user {
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -337,12 +337,12 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	box-shadow: var(--shadow-sm);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user > div,
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-title > div {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user > div,
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-title > div {
 	float: none;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-title {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-title {
 	display: flex;
 	flex: 1;
 	align-items: center;
@@ -350,14 +350,14 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	min-width: 0;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-level {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-level {
 	flex: none;
 	margin: 0;
 	width: 22px;
 	height: 22px;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-name {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-name {
 	flex: 1;
 	min-width: 0;
 	padding: 0;
@@ -368,7 +368,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	font-weight: 700;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-score {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-score {
 	flex: none;
 	padding: 0;
 	width: auto;
@@ -377,7 +377,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	color: var(--text);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-score-char {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-score-char {
 	float: left;
 	width: auto;
 	min-width: 0;
@@ -385,49 +385,12 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.
 	font-variant-numeric: tabular-nums;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-current {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-user-current {
 	border-color: var(--primary);
 	background-color: var(--primary-soft);
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-input {
+.GameBox:has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .game-input {
 	display: none !important;
 }
 
-.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.cwcmd:not([style*="display: none"])) .deltaScore {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	z-index: 2;
-	width: auto;
-	font-size: 22px;
-	line-height: 48px;
-	text-align: center;
-	text-shadow: none;
-	color: var(--primary);
-	pointer-events: none;
-	animation: CrosswordScoreUp 1.6s ease-out both;
-}
-
-@keyframes CrosswordScoreUp {
-	0% {
-		opacity: 0;
-		transform: translateY(6px) scale(0.9);
-	}
-
-	15% {
-		opacity: 1;
-		transform: translateY(-14px) scale(1.15);
-	}
-
-	70% {
-		opacity: 1;
-		transform: translateY(-20px) scale(1);
-	}
-
-	100% {
-		opacity: 0;
-		transform: translateY(-30px) scale(1);
-	}
-}
