@@ -48,6 +48,30 @@ block JS
 	script(src='https://www.google.com/recaptcha/api.js')
 	script.
 		$(function() {
+				$('#gn-content').html(function(i, h) { return h.replace(/<br\s*\/?>/gi, ' · '); });
+				$('#global-notice').appendTo('.kkutu-actions');
+				var gameBox = document.querySelector('.GameBox');
+				function isNormalBoard() {
+					return !gameBox.classList.contains('venezia-mode') && !gameBox.querySelector('.cw, .pq');
+				}
+				function fitGame() {
+					var w = document.documentElement.clientWidth - 16 * 2 - 360 - 16;
+					var h = window.innerHeight - 56 - 16 * 2 - 40 - 16;
+					var s;
+
+					if (isNormalBoard()) {
+						s = Math.max(0.5, Math.min(w / 1010, h / 500, 1.25));
+						document.body.style.setProperty('--game-w', (w / s).toFixed(1));
+						document.body.style.setProperty('--game-h', (h / s).toFixed(1));
+					} else {
+						s = Math.max(0.5, Math.min(w / 1010, h / 420, 1.8));
+					}
+					document.body.style.setProperty('--game-scale', s.toFixed(3));
+				}
+				$(window).on('resize', fitGame);
+				if (window.ResizeObserver) new ResizeObserver(fitGame).observe(gameBox);
+				if (window.MutationObserver) new MutationObserver(fitGame).observe(gameBox, { attributes: true, attributeFilter: ['class'], subtree: true });
+				fitGame();
 				function updateRoomDiagHeight() {
 					var $roomMode = $('#room-mode');
 					var $roomDiag = $('#RoomDiag');
@@ -235,6 +259,19 @@ block JS
 
 block CSS
 	link(rel='stylesheet', href='/css/in_game_kkutu_shop.css')
+	link(rel='stylesheet', href='/css/theme/base.css')
+	link(rel='stylesheet', href='/css/theme/loading.css')
+	link(rel='stylesheet', href='/css/theme/topbar.css')
+	link(rel='stylesheet', href='/css/theme/menu.css')
+	link(rel='stylesheet', href='/css/theme/components.css')
+	link(rel='stylesheet', href='/css/theme/layout.css')
+	link(rel='stylesheet', href='/css/theme/lobby.css')
+	link(rel='stylesheet', href='/css/theme/room.css')
+	link(rel='stylesheet', href='/css/theme/chat.css')
+	link(rel='stylesheet', href='/css/theme/profile.css')
+	link(rel='stylesheet', href='/css/theme/game.css')
+	link(rel='stylesheet', href='/css/theme/game-board.css')
+	link(rel='stylesheet', href='/css/theme/game-effects.css')
 	
 block Jungle
 	span#PUBLIC= PUBLIC ? "true" : undefined
@@ -254,27 +291,31 @@ block Middle
 	div#Intro
 		img#intro(src='/img/kkutu/intro.png')
 		//- img#intro-start(src='/img/kkutu/intro_start.gif')
-		div#version= VERSION
+		img.intro-logo(src='/img/kkutu/short_logo.png', alt='KKuTu')
+		div.intro-bar
+			div
 		div#intro-text= L('LOADING')
-	div.kkutu-menu
-		button#HelpBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #BBBBBB;')!= L('help')
-		button#SettingBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #CCCCCC;')!= L('settings')
-		button#CommunityBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #DAA9FF;')!= L('community')
-		button#BlacklistBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #FFB6C1;')!= L('blacklist')
-		button#MailboxBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #FFD4E5;')!= L('mailbox')
-		button#SpectateBtn.for-master.for-normal(style='display: none; background-color: #D19DFF;')!= L('spectate')
-		button#SetRoomBtn.for-master(style='display: none; background-color: #B0D2F3;')!= L('settingRoom')
-		button#NewRoomBtn.for-lobby(style='display: none; background-color: #8EC0F3;')!= L('createRoom')
-		button#QuickRoomBtn.for-lobby(style='display: none; background-color: #B0D2F3;')!= L('quick')
-		button#ShopBtn.for-lobby(style='display: none; background-color: #B3E7B7;')!= L('shop')
-		button#DictionaryBtn.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #73D07A;')!= L('dictionary')
-		button#InviteBtn.for-master(style='display: none; background-color: #9FE669;')!= L('inviteUser')
-		button#PracticeBtn.for-master.for-normal(style='display: none; background-color: #FCF5A9;')!= L('practiceGame')
-		button#ReadyBtn.for-normal(style='display: none; background-color: #FFC67F;')!= L('readyGame')
-		button#StartBtn.for-master(style='display: none; background-color: #FFB576;')!= L('startGame')
-		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none; background-color: #FFADAD;')!= L('exitGame')
-		button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')!= L('replayGame')
-		button#LeaderboardBtn.for-lobby(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
+		div#version= VERSION
+	div.kkutu-menu.kkutu-nav
+		button#ShopBtn.for-lobby(style='display: none;')!= L('shop')
+		button#DictionaryBtn.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('dictionary')
+		button#LeaderboardBtn.for-lobby(style='display: none;')!= L('leaderboard')
+		button#ReplayBtn.for-lobby(style='display: none;')!= L('replayGame')
+		button#HelpBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('help')
+		button#SettingBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('settings')
+		button#CommunityBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('community')
+		button#BlacklistBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('blacklist')
+		button#MailboxBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('mailbox')
+	div.kkutu-menu.kkutu-actions
+		button#NewRoomBtn.for-lobby(style='display: none;')!= L('createRoom')
+		button#QuickRoomBtn.for-lobby(style='display: none;')!= L('quick')
+		button#SpectateBtn.for-master.for-normal(style='display: none;')!= L('spectate')
+		button#SetRoomBtn.for-master(style='display: none;')!= L('settingRoom')
+		button#InviteBtn.for-master(style='display: none;')!= L('inviteUser')
+		button#PracticeBtn.for-master.for-normal(style='display: none;')!= L('practiceGame')
+		button#ReadyBtn.for-normal(style='display: none;')!= L('readyGame')
+		button#StartBtn.for-master(style='display: none;')!= L('startGame')
+		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none;')!= L('exitGame')
 	+Dialog('SettingDiag', 300, 320, L('settingsText'))
 		div.dialog-bar
 			div(style='display: flex; align-items: center;')

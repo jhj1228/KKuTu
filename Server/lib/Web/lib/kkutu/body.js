@@ -1033,6 +1033,7 @@ function updateUI(myRoom, refresh) {
 	if (only == "for-gaming" && !myRoom) return;
 	if ($data.practicing) only = "for-gaming";
 
+	$("body").attr('data-only', only);
 	$(".kkutu-menu button").hide();
 	for (i in $stage.box) $stage.box[i].hide();
 	$stage.box.me.show();
@@ -2111,6 +2112,10 @@ function gameReady() {
 	$data._gAnim = true;
 	$stage.box.room.show().height(360).animate({ 'height': 1 }, 500);
 	$stage.box.game.height(1).animate({ 'height': 410 }, 500);
+	$stage.box.game.removeClass("game-enter");
+	void $stage.box.game[0].offsetWidth;
+	$stage.box.game.addClass("game-enter");
+	addTimeout(function () { $stage.box.game.removeClass("game-enter"); }, 1200);
 	stopBGM();
 	$stage.dialog.resultSave.attr('disabled', false);
 	clearBoard();
@@ -2170,6 +2175,7 @@ function replayReady() {
 
 	replayStop();
 	$data._replay = true;
+	$("body").attr('data-only', 'for-replay');
 	$data.room = {
 		title: $rec.title,
 		players: [],
@@ -2791,58 +2797,42 @@ function pushDisplay(text, mean, theme, wc) {
 	}
 	kkt = 'K' + $data._speed;
 
+	var $word = $("<div>").addClass("display-word");
+
+	$stage.game.display.append($word);
 	if (beat) {
 		for (i in beat) {
 			if (beat[i] == "0") continue;
 
-			$stage.game.display.append($l = $("<div>")
+			$word.append($l = $("<div>")
 				.addClass("display-text")
-				.css({ 'float': isRev ? "right" : "left", 'margin-top': -6, 'font-size': 36 })
-				.hide()
+				.css('float', isRev ? "right" : "left")
 				.html(isRev ? text.charAt(len - j - 1) : text.charAt(j))
 			);
 			j++;
 			addTimeout(function ($l, snd) {
-				var anim = { 'margin-top': 0 };
-
 				playSound(snd);
 				if ($l.html() == $data.mission) {
 					playSound('mission');
-					$l.css({ 'color': "#66FF66" });
-					anim['font-size'] = 24;
-				} else {
-					anim['font-size'] = 20;
+					$l.addClass("display-mission");
 				}
-				$l.show().animate(anim, 100);
+				$l.addClass("display-on");
 			}, Number(i) * tick, $l, ta);
 		}
-		i = $stage.game.display.children("div").get(0);
-		$(i).css(isRev ? 'margin-right' : 'margin-left', ($stage.game.display.width() - 20 * len) * 0.5);
 	} else {
-		j = "";
-		if (isRev) for (i = 0; i < len; i++) {
+		$word.addClass("display-long");
+		for (i = 0; i < len; i++) {
 			addTimeout(function (t) {
+				var $c = $("<span>").addClass("display-char").text(t);
+
 				playSound(ta);
 				if (t == $data.mission) {
 					playSound('mission');
-					j = "<label style='color: #66FF66;'>" + t + "</label>" + j;
-				} else {
-					j = t + j;
+					$c.addClass("display-mission");
 				}
-				$stage.game.display.html(j);
-			}, Number(i) * sg / len, text[len - i - 1]);
-		}
-		else for (i = 0; i < len; i++) {
-			addTimeout(function (t) {
-				playSound(ta);
-				if (t == $data.mission) {
-					playSound('mission');
-					j += "<label style='color: #66FF66;'>" + t + "</label>";
-				} else {
-					j += t;
-				}
-				$stage.game.display.html(j);
-			}, Number(i) * sg / len, text[i]);
+				if (isRev) $word.prepend($c);
+				else $word.append($c);
+			}, Number(i) * sg / len, isRev ? text[len - i - 1] : text[i]);
 		}
 	}
 	addTimeout(function () {
@@ -2852,9 +2842,9 @@ function pushDisplay(text, mean, theme, wc) {
 					if (v == 1) return;
 					else playSound('kung');
 				}
-				(beat ? $stage.game.display.children(".display-text") : $stage.game.display)
-					.css('font-size', 21)
-					.animate({ 'font-size': 20 }, tick);
+				$word.removeClass("display-beat");
+				void $word[0].offsetWidth;
+				$word.addClass("display-beat");
 			}, i * tick * 2, i);
 		}
 		addTimeout(pushHistory, tick * 4, text, mean, theme, wc);
@@ -2870,7 +2860,6 @@ function pushHint(hint) {
 			.append($("<label>").html(v))
 			.append($("<div>").addClass("expl").css({ 'white-space': "normal", 'width': 200 }).html(v.html()))
 	);
-	if (!mobile) $obj.width(0).animate({ width: 215 });
 	global.expl($obj);
 }
 function pushHistory(text, mean, theme, wc) {
@@ -3226,17 +3215,27 @@ function chatBalloon(text, id, flag) {
 		.attr('id', "cb-" + id)
 		.append($("<div>").addClass("jt-image " + img))
 	[(flag == 2) ? 'prepend' : 'append']($("<h4>").text(text));
-	var ot, ol;
+	var ot, ol, rect, base, bw, bh;
 
 	if (!$target.is(":visible") && $fallback.is(":visible")) $target = $fallback;
 	offset = $target.offset();
 	if (!offset) return;
 	$stage.balloons.append($obj);
-	if (flag == 1) ot = 0, ol = 220;
-	else if (flag == 2) ot = 35 - $obj.height(), ol = -2;
-	else if (flag == 3) ot = 5, ol = 210;
-	else ot = 40, ol = 110;
-	$obj.css({ top: offset.top + ot, left: offset.left + ol });
+	rect = $target[0].getBoundingClientRect();
+	bw = $obj.outerWidth();
+	bh = $obj.outerHeight();
+	if (flag == 2) {
+		ot = 4 - bh;
+		ol = (rect.width - bw) * 0.5;
+	} else if (flag & 1) {
+		ot = rect.height;
+		ol = rect.width - bw;
+	} else {
+		ot = rect.height * 0.35;
+		ol = rect.width * 0.5 + 30;
+	}
+	base = $stage.balloons.offset() || { top: 0, left: 0 };
+	$obj.css({ top: offset.top - base.top + ot, left: offset.left - base.left + ol });
 	addTimeout(function () {
 		$obj.animate({ 'opacity': 0 }, 500, function () { $obj.remove(); });
 	}, 2500);

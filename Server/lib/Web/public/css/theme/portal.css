@@ -1,0 +1,355 @@
+/**
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#Middle {
+	width: 1000px;
+	margin-top: calc(var(--top-h) + 24px);
+}
+
+.portal-notice #global-notice {
+	display: flex;
+	position: relative;
+	margin: 0 0 16px 0;
+	height: 44px;
+	text-align: left;
+	font-weight: normal;
+}
+
+.portal-notice #gn-content {
+	position: static;
+	flex: 1;
+	padding: 0 44px 0 14px;
+	line-height: 44px;
+	font-size: 14px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: var(--primary-dark);
+	background-color: var(--primary-soft);
+	box-shadow: inset 0 0 0 1px var(--primary-soft-2);
+	z-index: auto;
+}
+
+.portal-notice #gn-content::before {
+	content: "공지";
+	display: inline-block;
+	margin-right: 10px;
+	padding: 0 8px;
+	line-height: 22px;
+	font-size: 12px;
+	font-weight: 700;
+	color: #FFFFFF;
+	background-color: var(--primary);
+}
+
+.portal-notice #global-notice::after {
+	content: "×";
+	position: absolute;
+	top: 0;
+	right: 16px;
+	line-height: 44px;
+	font-size: 18px;
+	color: var(--text-3);
+}
+
+.portal {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 380px;
+	grid-template-areas:
+		"hero     servers"
+		"bulletin bulletin";
+	gap: 16px;
+	float: left;
+	margin-bottom: 24px;
+	width: 100%;
+}
+
+.portal > div {
+	background-color: var(--surface);
+	box-shadow: var(--line), var(--shadow-sm);
+}
+
+.portal-hero {
+	grid-area: hero;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	position: relative;
+	box-sizing: border-box;
+	padding: 40px 44px;
+	min-height: 340px;
+	overflow: hidden;
+	background-image:
+		linear-gradient(var(--border) 1px, transparent 1px),
+		linear-gradient(90deg, var(--border) 1px, transparent 1px);
+	background-size: 40px 40px;
+	background-position: -1px -1px;
+}
+
+.portal-hero::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: linear-gradient(90deg, var(--surface) 40%, rgba(255, 255, 255, 0.6) 100%);
+	pointer-events: none;
+}
+
+.portal-hero::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 6px;
+	background-color: var(--primary);
+}
+
+.portal-hero > * {
+	position: relative;
+}
+
+.portal-logo {
+	width: 160px;
+	height: 80px;
+	margin-left: -6px;
+}
+
+#holder {
+	margin: 14px 0 0 0;
+	width: auto;
+	font-size: 28px;
+	font-weight: 700;
+	text-align: left;
+	text-shadow: none;
+	color: var(--text);
+}
+
+.portal-desc {
+	margin: 8px 0 0 0;
+	font-size: 15px;
+	color: var(--text-2);
+}
+
+#game-start {
+	float: none;
+	margin-top: 28px;
+	padding: 0 32px;
+	border: 1px solid var(--primary);
+	width: auto;
+	min-width: 240px;
+	height: 56px;
+	font-size: 18px;
+	font-weight: 700;
+	color: #FFFFFF;
+	background-color: var(--primary);
+	box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+
+#game-start:hover {
+	font-size: 18px;
+	border-color: var(--primary-hover);
+	background-color: var(--primary-hover);
+}
+
+#game-start:disabled {
+	border-color: var(--border-strong);
+	color: var(--text-3);
+	background-color: var(--surface-3);
+	box-shadow: none;
+	cursor: wait;
+}
+
+.portal-hint {
+	margin: 10px 0 0 0;
+	font-size: 12px;
+	color: var(--text-3);
+}
+
+
+.server-list-box {
+	grid-area: servers;
+	display: flex;
+	flex-direction: column;
+	float: none;
+	width: auto;
+	background: linear-gradient(var(--head) 0 48px, var(--surface) 48px);
+}
+
+.server-list-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	box-sizing: border-box;
+	padding: 0 8px 0 16px;
+	border-bottom: 1px solid var(--border);
+	width: auto;
+	height: 48px;
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--primary-dark);
+	background-color: transparent;
+}
+
+#server-total {
+	font-size: 13px;
+	font-weight: normal;
+	color: var(--text-3);
+}
+
+#server-refresh {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 0 0 auto;
+	width: 36px;
+	height: 36px;
+	font-size: 15px;
+	color: var(--text-2);
+	transition: background-color var(--ease), color var(--ease);
+}
+
+#server-refresh:hover {
+	color: var(--primary);
+	background-color: var(--primary-soft);
+}
+
+#server-list {
+	flex: 1;
+	overflow-y: auto;
+}
+
+.server {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	float: none;
+	box-sizing: border-box;
+	padding: 0 16px;
+	margin: 0;
+	border-bottom: 1px solid var(--border);
+	width: auto;
+	height: 52px;
+	font-size: 14px;
+	transition: background-color var(--ease);
+}
+
+.server > div {
+	float: none;
+}
+
+.server:hover {
+	background-color: var(--primary-soft);
+}
+
+.server-status {
+	flex: none;
+	margin: 0;
+	width: 10px;
+	height: 10px;
+}
+
+.ss-o { background-color: #22B35E; }
+.ss-p { background-color: #F0A01A; }
+.ss-q { background-color: var(--danger); }
+.ss-x { background-color: var(--border-strong); }
+
+.server-name {
+	flex: none;
+	width: 96px;
+	font-weight: 700;
+	color: var(--text);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.server-people {
+	flex: 1;
+	position: relative;
+	width: auto;
+	height: 22px;
+	background-color: var(--surface-3);
+	box-shadow: none;
+}
+
+.server-people > .graph-bar {
+	background-image: none;
+	background-color: var(--primary-soft-2);
+}
+
+.server-people > label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	line-height: 22px;
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--text-2);
+}
+
+.server-enter {
+	flex: none;
+	padding: 0 12px;
+	width: auto;
+	min-width: 30px;
+	line-height: 30px;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--primary);
+	box-shadow: inset 0 0 0 1px var(--primary-soft-2);
+	transition: background-color var(--ease), color var(--ease);
+}
+
+.server:hover .server-enter {
+	color: #FFFFFF;
+	background-color: var(--primary);
+	box-shadow: none;
+}
+
+.server:has(.ss-x) {
+	cursor: default;
+	opacity: 0.55;
+}
+
+.server:has(.ss-x):hover {
+	background-color: transparent;
+}
+
+.server:has(.ss-x) .server-enter,
+.server:has(.ss-x):hover .server-enter {
+	color: var(--text-3);
+	background-color: transparent;
+	box-shadow: none;
+}
+
+
+.portal-bulletin {
+	grid-area: bulletin;
+	overflow: hidden;
+}
+
+#kkutu-bulletin {
+	display: block;
+	border: 0;
+	margin: 0;
+}

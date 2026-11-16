@@ -153,9 +153,11 @@ function getMousePos(evt) {
     if (evt.touches && evt.touches.length) point = evt.touches[0];
     else if (evt.changedTouches && evt.changedTouches.length) point = evt.changedTouches[0];
 
+    var scale = (rect.width && $data.pq.canvas.offsetWidth) ? (rect.width / $data.pq.canvas.offsetWidth) : 1;
+
     return {
-        X: point.clientX - rect.left,
-        Y: point.clientY - rect.top
+        X: (point.clientX - rect.left) / scale,
+        Y: (point.clientY - rect.top) / scale
     };
 }
 

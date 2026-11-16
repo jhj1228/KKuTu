@@ -1,0 +1,154 @@
+/**
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.expl-active,
+#ExplBox {
+	border-color: transparent;
+	color: #F3F4F6;
+	background-color: rgba(15, 23, 42, 0.94);
+	box-shadow: var(--shadow-md);
+}
+
+.productSorter .sortTooltip {
+	padding: 8px 4px;
+	color: var(--text);
+	background-color: var(--surface);
+	box-shadow: var(--line), var(--shadow-md);
+	z-index: 3;
+}
+
+
+.Product {
+	margin-bottom: 12px;
+	color: var(--text);
+	background-color: var(--surface);
+	box-shadow: var(--line), var(--shadow-sm);
+}
+
+.product-title {
+	border-bottom-color: var(--border);
+	color: var(--text);
+	font-weight: 700;
+	background-color: transparent;
+}
+
+.product-title i {
+	margin-right: 6px;
+	color: var(--primary);
+}
+
+.ProductSort,
+.ProductTitleBtn,
+.ProductTitleBtnR {
+	border: 1px solid var(--border-strong);
+	color: var(--text-2);
+	font-weight: 700;
+	background: var(--surface);
+	transition: background-color var(--ease), color var(--ease), border-color var(--ease);
+}
+
+.ProductSort:hover,
+.ProductTitleBtn:hover,
+.ProductTitleBtnR:hover {
+	border-color: var(--primary);
+	color: var(--primary);
+	background: var(--primary-soft);
+}
+
+.room-head-modified {
+	animation: ModernModifiedBlink 1s ease 3;
+}
+
+@keyframes ModernModifiedBlink {
+	0% {
+		background-color: #FFF0B3;
+	}
+
+	100% {
+		background-color: transparent;
+	}
+}
+
+
+.dialog {
+	color: var(--text);
+	background-color: var(--surface);
+	box-shadow: var(--line), var(--shadow-lg);
+}
+
+.dialog-head {
+	border-bottom-color: var(--border);
+	color: var(--text);
+	font-weight: 700;
+	background-color: var(--head);
+}
+
+.dialog .closeBtn {
+	background-color: #F06571;
+	cursor: pointer;
+}
+
+.dialog .closeBtn:hover {
+	background-color: var(--danger);
+}
+
+.dialog-bar h4 {
+	color: var(--text-2);
+}
+
+.tail-button button:first-child {
+	border-color: var(--primary);
+	color: #FFFFFF;
+	background-color: var(--primary);
+}
+
+.tail-button button:first-child:hover {
+	background-color: var(--primary-hover);
+}
+
+.ranking-me {
+	background-color: var(--primary-soft);
+}
+
+#AutoCompletionBox {
+	background-color: rgba(15, 23, 42, 0.9);
+	box-shadow: var(--shadow-md);
+}
+
+.auto-item:hover {
+	background-color: rgba(255, 255, 255, 0.08);
+}
+
+.auto-selected {
+	color: #FFD24D;
+	background-color: rgba(255, 255, 255, 0.12);
+}
+
+.wardrobe-slot {
+	border-color: var(--border);
+	background: var(--surface-2);
+}
+
+.wardrobe-slot.selected {
+	border-color: var(--primary);
+	background: var(--primary-soft);
+}
+
+.wardrobe-view {
+	border: 1px solid var(--border);
+}

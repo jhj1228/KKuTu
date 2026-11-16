@@ -1,0 +1,334 @@
+/**
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.team-selector {
+	border-right-color: var(--border);
+}
+
+.team-button {
+	transition: filter var(--ease);
+}
+
+.team-button:hover {
+	border-bottom: none;
+	margin-top: 2px;
+	filter: brightness(0.94);
+}
+
+.team-0 { background-color: var(--surface-3); }
+.team-1 { background-color: #FF8A8A; }
+.team-2 { background-color: #FFD24D; }
+.team-3 { background-color: #8EE0A0; }
+.team-4 { background-color: #8FAEFF; }
+
+.team-chosen {
+	box-shadow: inset 0 0 0 2px var(--text);
+}
+
+.team-unable div {
+	color: var(--text-3);
+	background-color: var(--surface-3);
+}
+
+.room-user {
+	background-color: var(--surface-2);
+	box-shadow: var(--line);
+	transition: background-color var(--ease), box-shadow var(--ease);
+}
+
+.room-user:hover {
+	background-color: var(--surface);
+	box-shadow: inset 0 0 0 1px var(--primary), var(--shadow-md);
+}
+
+.room-user-readied { color: var(--primary); }
+.room-user-spectate { color: var(--violet); }
+.room-user-practice { color: var(--warning); }
+.room-user-master { color: var(--danger); }
+
+body:is([data-only="for-master"], [data-only="for-normal"]) #Middle {
+	grid-template-rows: 40px auto minmax(0, 1fr);
+	grid-template-areas:
+		"actions me"
+		"room    me"
+		"room    chat";
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .GameBox {
+	display: none !important;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .RoomBox {
+	grid-area: room;
+	display: grid !important;
+	grid-template-rows: 60px minmax(0, 1fr);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .RoomBox[style*="display: none"] {
+	display: none !important;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .RoomBox > .product-title {
+	gap: 8px;
+	height: 60px;
+	padding: 0 16px;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .RoomBox .product-title h5 {
+	float: none;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-head-number {
+	flex: none;
+	padding: 3px 8px;
+	width: auto;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--text-2);
+	background-color: var(--surface-3);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-head-title {
+	flex: 1;
+	min-width: 0;
+	margin-right: 8px;
+	width: auto;
+	font-size: 18px;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: var(--text);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) :is(.room-head-mode, .room-head-limit, .room-head-round, .room-head-time) {
+	flex: none;
+	margin: 0;
+	padding: 0 12px;
+	width: auto;
+	height: 30px;
+	line-height: 30px;
+	font-size: 13px;
+	font-weight: 700;
+	text-align: center;
+	white-space: nowrap;
+	color: var(--text-2);
+	background-color: var(--surface);
+	box-shadow: var(--line);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-head-mode {
+	flex: 0 1 auto;
+	min-width: 0;
+	max-width: 360px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: var(--primary-dark);
+	background-color: var(--primary-soft);
+	box-shadow: inset 0 0 0 1px var(--primary-soft-2);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .RoomBox > .product-body {
+	display: grid;
+	grid-template-rows: auto minmax(0, 1fr);
+	overflow: hidden;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .team-selector {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	float: none;
+	padding: 16px 16px 0 16px;
+	margin: 0;
+	border-right: none;
+	width: auto;
+	height: auto;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .team-selector::before {
+	content: "팀 선택";
+	margin-right: 6px;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--text-3);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .team-button {
+	float: none;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	width: 80px;
+	height: 36px;
+	line-height: 36px;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--text);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .team-button:hover {
+	margin: 0;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .team-chosen {
+	box-shadow: inset 0 0 0 2px var(--text);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .team-unable .team-button {
+	box-shadow: none;
+	cursor: not-allowed;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-users {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	align-content: start;
+	gap: 12px;
+	float: none;
+	padding: 16px;
+	min-height: 0;
+	overflow-y: auto;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+	float: none;
+	box-sizing: border-box;
+	padding: 44px 12px 16px 12px;
+	margin: 0;
+	width: auto;
+	height: auto;
+	background-color: var(--surface);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user div {
+	float: none;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-image {
+	margin: 0;
+	width: 120px;
+	height: 120px;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-stat {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	right: 10px;
+	padding: 0;
+	width: auto;
+	height: auto;
+	font-size: 12px;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-stat div {
+	margin: 0;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-ready {
+	padding: 3px 8px;
+	width: auto;
+	text-align: left;
+	font-weight: 700;
+	color: var(--text-3);
+	background-color: var(--surface-3);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-readied {
+	color: var(--primary);
+	background-color: var(--primary-soft);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-master {
+	color: var(--danger);
+	background-color: var(--danger-soft);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-spectate {
+	color: var(--violet);
+	background-color: var(--violet-soft);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-practice {
+	color: var(--warning);
+	background-color: var(--warning-soft);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-team {
+	margin: 0;
+	padding: 3px 10px;
+	width: auto;
+	font-weight: 700;
+	text-align: center;
+	color: var(--text);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-title {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	box-sizing: border-box;
+	padding: 14px 0 0 0;
+	width: 100%;
+	font-size: 15px;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-level {
+	flex: none;
+	width: 26px;
+	height: 26px;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user-name {
+	min-width: 0;
+	padding: 0;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user:has(.room-user-readied) {
+	box-shadow: inset 0 -3px 0 var(--primary), var(--line);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user:has(.room-user-master) {
+	box-shadow: inset 0 -3px 0 var(--danger), var(--line);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user:has(.room-user-spectate) {
+	box-shadow: inset 0 -3px 0 var(--violet), var(--line);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user:has(.room-user-practice) {
+	box-shadow: inset 0 -3px 0 #F0A01A, var(--line);
+}
+
+body:is([data-only="for-master"], [data-only="for-normal"]) .room-user:hover {
+	background-color: var(--surface);
+	box-shadow: inset 0 0 0 1px var(--primary), var(--shadow-md);
+}

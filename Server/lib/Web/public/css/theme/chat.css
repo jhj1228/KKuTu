@@ -1,0 +1,131 @@
+/**
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#Chat hr,
+#chat-log-board hr {
+	border-bottom: 1px solid var(--border);
+}
+
+.chat-item {
+	display: flex;
+	align-items: flex-start;
+	padding: 3px 0;
+	margin: 0;
+}
+
+.chat-item > div {
+	float: none;
+}
+
+.chat-head {
+	order: 1;
+	flex: none;
+	padding: 0 8px 0 4px;
+	margin: 0;
+	width: 90px;
+	text-align: left;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.chat-head:hover {
+	background-color: var(--surface-3);
+}
+
+.chat-body {
+	order: 2;
+	flex: 1;
+	min-width: 0;
+	width: auto;
+	word-break: break-all;
+}
+
+.chat-stamp {
+	order: 3;
+	flex: none;
+	padding: 1px 4px 0 8px;
+	width: auto;
+	color: var(--text-3);
+}
+
+.chat-notice {
+	background-color: var(--primary-soft);
+}
+
+.chat-notice .chat-head {
+	color: var(--primary);
+}
+
+.chat-balloon h4 {
+	border-color: var(--border);
+	color: var(--text);
+	background-color: var(--surface);
+	box-shadow: var(--shadow-md);
+}
+
+#ChatBtn {
+	border-color: var(--primary);
+	color: #FFFFFF;
+	font-weight: 700;
+	background-color: var(--primary);
+}
+
+#ChatBtn:hover {
+	background-color: var(--primary-hover);
+}
+
+body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) .ChatBox {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) .ChatBox .product-body {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	grid-template-rows: minmax(0, 1fr) auto;
+	overflow: hidden;
+}
+
+body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) #Chat {
+	grid-column: 1 / -1;
+	box-sizing: border-box;
+	padding: 8px 12px;
+	height: auto !important;
+	min-height: 0;
+	overflow-y: auto;
+}
+
+body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) #Talk,
+body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) #ChatBtn {
+	float: none;
+	box-sizing: border-box;
+	height: 40px;
+}
+
+body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) #Talk {
+	margin: 0 0 12px 12px;
+	padding: 0 12px;
+	width: auto;
+	font-size: 14px;
+}
+
+body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) #ChatBtn {
+	margin: 0 12px 12px 0;
+	padding: 0 18px;
+	width: auto;
+}

@@ -86,6 +86,12 @@
 			var explSize;
 
 			if (!$expl.length) return;
+			$expl.filter(".expl-portal").each(function () {
+				var mother = $(this).data('mother');
+				if (!mother || !document.body.contains(mother)) $(this).remove();
+			});
+			$expl = $(".expl-active");
+			if (!$expl.length) return;
 			explSize = [$expl.outerWidth(), $expl.outerHeight()];
 			$expl.css({ 'left': Math.min(e.clientX + 5, size[0] - explSize[0] - 12), 'top': Math.min(e.clientY + 23, size[1] - explSize[1] - 12) });
 		}
@@ -148,10 +154,17 @@
 			$q.parent().addClass("expl-mother").on('mouseenter', function (e) {
 				var $e = $(e.currentTarget).children(".expl");
 
+				$(".expl-portal").remove();
 				$(".expl-active").removeClass("expl-active");
-				$e.addClass("expl-active");
+				if ($(e.currentTarget).closest(".GameBox").length) {
+					$e.first().clone().addClass("expl-active expl-portal")
+						.data('mother', e.currentTarget).appendTo(document.body);
+				} else {
+					$e.addClass("expl-active");
+				}
 				positionExpl(e);
 			}).on('mouseleave', function (e) {
+				$(".expl-portal").remove();
 				$(e.currentTarget).children(".expl").removeClass("expl-active");
 			});
 		})();

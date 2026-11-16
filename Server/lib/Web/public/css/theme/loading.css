@@ -1,0 +1,167 @@
+/**
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#Intro {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: var(--surface);
+	background-image:
+		linear-gradient(var(--border) 1px, transparent 1px),
+		linear-gradient(90deg, var(--border) 1px, transparent 1px);
+	background-size: 48px 48px;
+	background-position: center center;
+	z-index: 20;
+}
+
+#Intro::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.55) 0%, var(--surface) 70%);
+	pointer-events: none;
+}
+
+#Intro > * {
+	position: relative;
+}
+
+#Intro img#intro {
+	display: none;
+}
+
+#Intro .intro-logo {
+	width: 200px;
+	height: 100px;
+	animation: IntroRise 600ms ease-out both;
+}
+
+#Intro .intro-bar {
+	margin-top: 28px;
+	width: 240px;
+	height: 4px;
+	overflow: hidden;
+	background-color: var(--surface-3);
+	animation: IntroRise 600ms 120ms ease-out both;
+}
+
+#Intro .intro-bar > div {
+	width: 40%;
+	height: 100%;
+	background-color: var(--primary);
+	animation: IntroBar 1.2s ease-in-out infinite;
+}
+
+#intro-text {
+	position: relative;
+	top: auto;
+	left: auto;
+	margin-top: 18px;
+	width: auto;
+	max-width: 480px;
+	min-height: 20px;
+	font-size: 15px;
+	line-height: 1.6;
+	text-align: center;
+	text-shadow: none;
+	color: var(--text-2);
+	animation: IntroRise 600ms 240ms ease-out both;
+}
+
+#version {
+	position: absolute;
+	top: auto;
+	right: 20px;
+	bottom: 16px;
+	left: auto;
+	font-size: 12px;
+	text-shadow: none;
+	color: var(--text-3);
+}
+
+@keyframes IntroRise {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes IntroBar {
+	0% {
+		transform: translateX(-100%);
+	}
+
+	100% {
+		transform: translateX(250%);
+	}
+}
+
+#Loading {
+	box-sizing: border-box;
+	top: 0;
+	left: 0;
+	padding: calc(50vh - 56px) 24px 0 24px;
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1.6;
+	white-space: pre-line;
+	color: #FFFFFF;
+	background-color: rgba(15, 23, 42, 0.55);
+	backdrop-filter: blur(3px);
+	z-index: 15;
+}
+
+#Loading::before {
+	content: "";
+	display: block;
+	margin: 0 auto 20px auto;
+	border: 3px solid rgba(255, 255, 255, 0.25);
+	border-top-color: #FFFFFF;
+	width: 30px;
+	height: 30px;
+	animation: LoadingSpin 0.9s linear infinite;
+}
+
+#Loading button {
+	display: inline-block;
+	margin-top: 14px;
+	padding: 0 18px;
+	height: 36px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+@keyframes LoadingSpin {
+	to {
+		transform: rotate(360deg);
+	}
+}
