@@ -226,12 +226,20 @@ span {
 }
 
 #global-notice {
+	position: relative;
 	margin-top: 30px;
 	color: #111111;
 	text-align: center;
 	font-weight: bold;
-	cursor: pointer;
 	z-index: 5;
+}
+
+#global-notice .gn-close {
+	position: absolute;
+	top: 0;
+	right: 10px;
+	padding: 3px 6px;
+	cursor: pointer;
 }
 
 #gn-content {

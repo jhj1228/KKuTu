@@ -102,12 +102,12 @@
 
 		$.cookie('test', "good");
 		if ($.cookie('test') != "good") {
-			$gn.html(gn = "쿠키 사용이 차단되어 있습니다. 로그인 관련 기능이 제한됩니다.<br>제한을 풀기 위해서는 브라우저 설정에서 쿠키 사용을 허용하도록 설정해야 합니다.<br>" + gn);
+			$("#gn-content").html(gn = "쿠키 사용이 차단되어 있습니다. 로그인 관련 기능이 제한됩니다.<br>제한을 풀기 위해서는 브라우저 설정에서 쿠키 사용을 허용하도록 설정해야 합니다.<br>" + gn);
 		} else {
 			$.cookie('test', "");
 		}
 		if (gn.length > 1) $gn.show();
-		$gn.on('click', function (e) { $gn.hide(); });
+		$gn.on('click', '.gn-close', function (e) { $gn.hide(); });
 
 		$(window).on('resize', function (e) {
 			size = [$(window).width(), $(window).height()];
