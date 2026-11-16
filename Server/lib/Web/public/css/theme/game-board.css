@@ -217,8 +217,8 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 	background-color: var(--danger) !important;
 }
 
-.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) :is(.items, .chain) {
-	display: flex;
+.GameBox:not(.venezia-mode):not(:has(.cw, .pq)) :is(.items, .chain):not([style*="display: none"]) {
+	display: flex !important;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
@@ -400,7 +400,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):not(:has(.cw, .
 }
 
 .GameBox:not(.venezia-mode):not(:has(.cw, .pq)) .hints:not([style*="display: none"]) {
-	display: flex;
+	display: flex !important;
 	flex-direction: column;
 	gap: 6px;
 	grid-area: left;

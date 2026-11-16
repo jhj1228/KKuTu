@@ -52,7 +52,11 @@ block JS
 				$('#global-notice').appendTo('.kkutu-actions');
 				var gameBox = document.querySelector('.GameBox');
 				function isNormalBoard() {
-					return !gameBox.classList.contains('venezia-mode') && !gameBox.querySelector('.cw, .pq');
+					var cmd = gameBox.querySelector('.cwcmd');
+					if (gameBox.classList.contains('venezia-mode') || gameBox.querySelector('.pq')) return false;
+					if (!gameBox.querySelector('.cw')) return true;
+					var bb = gameBox.querySelector('.bb');
+					return (!!cmd && cmd.style.display !== 'none') || (!!bb && bb.style.display !== 'none');
 				}
 				function fitGame() {
 					var w = document.documentElement.clientWidth - 16 * 2 - 360 - 16;
@@ -271,6 +275,8 @@ block CSS
 	link(rel='stylesheet', href='/css/theme/profile.css')
 	link(rel='stylesheet', href='/css/theme/game.css')
 	link(rel='stylesheet', href='/css/theme/game-board.css')
+	link(rel='stylesheet', href='/css/theme/game-crossword.css')
+	link(rel='stylesheet', href='/css/theme/game-sock.css')
 	link(rel='stylesheet', href='/css/theme/game-effects.css')
 	
 block Jungle

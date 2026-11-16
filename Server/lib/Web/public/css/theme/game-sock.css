@@ -1,0 +1,406 @@
+/**
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.GameBox.Product:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) {
+	display: flex;
+	flex-direction: column;
+	width: 1000px !important;
+	height: 490px !important;
+	color: var(--text);
+	background-color: #F3F7FD;
+	background-image: none;
+	box-shadow: var(--line), var(--shadow-md);
+}
+
+body[data-only="for-gaming"] .GameBox.Product:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) {
+	width: calc(var(--game-w, 1010) * 1px - 10px) !important;
+	height: calc(var(--game-h, 500) * 1px - 10px) !important;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .product-title {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	border-bottom-color: var(--border);
+	color: var(--text-2);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .product-title h5 {
+	flex: none;
+	float: none;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .product-title .room-head-title {
+	flex: 1;
+	min-width: 0;
+	width: auto;
+	color: var(--text);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .room-head-number {
+	color: var(--text-3);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .room-head-mode {
+	color: var(--primary);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .product-body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 14px;
+	box-sizing: border-box;
+	padding: 14px 12px 10px 12px;
+	width: auto;
+	height: auto;
+	min-height: 0;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-head {
+	display: grid;
+	flex: 1;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	grid-template-rows: auto minmax(0, 1fr);
+	grid-template-areas:
+		"words rounds"
+		"words board";
+	column-gap: 24px;
+	float: none;
+	width: auto;
+	min-height: 0;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-head > div {
+	float: none;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) :is(.items, .hints, .chain, .history-holder, .pqcmd, .cwcmd) {
+	display: none !important;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .bb {
+	display: flex !important;
+	flex-wrap: wrap;
+	align-content: flex-start;
+	gap: 10px 14px;
+	grid-area: words;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	width: auto;
+	min-height: 0;
+	overflow-y: auto;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .bb::before {
+	content: "찾은 단어";
+	flex-basis: 100%;
+	font-size: 14px;
+	font-weight: 700;
+	color: var(--primary-dark);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .bb-word {
+	display: flex;
+	gap: 0;
+	padding: 1px;
+	float: none;
+	width: auto;
+	color: var(--text);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .bb-char {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	float: none;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	width: 34px;
+	height: 34px;
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--text);
+	background-color: var(--surface);
+	box-shadow: inset 0 0 0 1px #B8C3D4, 0 0 0 1px #B8C3D4;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .bb-char[style*="color"] {
+	color: var(--text-3) !important;
+	background-color: var(--surface-3);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .rounds {
+	display: none !important;
+	gap: 4px;
+	grid-area: rounds;
+	justify-self: end;
+	position: static;
+	margin: 0 0 8px 0;
+	width: auto;
+	color: var(--text-2);
+	text-shadow: none;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .rounds label {
+	margin: 0;
+	padding: 0 10px;
+	line-height: 30px;
+	font-size: 15px;
+	font-weight: 700;
+	background-color: var(--surface);
+	box-shadow: var(--line);
+	cursor: default;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .rounds-current {
+	font-size: 15px;
+	color: #FFFFFF !important;
+	background-color: var(--primary) !important;
+	box-shadow: none !important;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .jjoriping {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	grid-area: board;
+	margin: 0;
+	width: auto;
+	min-width: 0;
+	min-height: 0;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .jjoObj {
+	display: none;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .jjoDisplayBar {
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	border: none;
+	width: auto;
+	max-width: 100%;
+	height: 100%;
+	aspect-ratio: 20 / 21;
+	background-color: transparent;
+	box-shadow: var(--shadow-md);
+	transition: none;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .jjo-display {
+	flex: 1;
+	box-sizing: border-box;
+	padding: 1px;
+	width: 100%;
+	height: auto;
+	min-height: 0;
+	overflow: hidden;
+	color: var(--text);
+	background-color: #E7ECF4;
+	container-type: size;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .jjoDisplayBar .graph {
+	flex: none;
+	box-sizing: border-box;
+	border: none;
+	width: 100%;
+	height: 18px;
+	text-shadow: none;
+	background-color: #DCE3EE;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .jjoDisplayBar .graph-bar {
+	padding: 0;
+	height: 18px;
+	line-height: 18px;
+	font-size: 12px;
+	font-weight: 700;
+	color: #FFFFFF;
+	background-color: var(--primary);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .jjoDisplayBar .graph-bar::after {
+	content: "";
+	display: inline-block;
+	width: 8px;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .sock-char {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	font-size: 6cqmin;
+	font-weight: 700;
+	color: var(--text);
+	background-color: var(--surface);
+	box-shadow: inset 0 0 0 1px #B8C3D4, 0 0 0 1px #B8C3D4;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .sock-char[class$="sock-"] {
+	background-color: #E2E8F0;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .sock-picked {
+	font-size: 7cqmin;
+	opacity: 1 !important;
+	animation: SockPicked 600ms ease-out forwards;
+}
+
+@keyframes SockPicked {
+	from {
+		color: var(--primary);
+		background-color: var(--primary-soft-2);
+	}
+
+	to {
+		color: transparent;
+		background-color: #E2E8F0;
+	}
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-input {
+	display: block !important;
+	order: 1;
+	align-self: center;
+	position: static;
+	top: auto;
+	left: auto;
+	float: none;
+	padding: 0;
+	width: 60%;
+	background-color: transparent;
+	box-shadow: none;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) #game-input {
+	box-sizing: border-box;
+	padding: 0 16px;
+	border: 2px solid var(--primary);
+	width: 100%;
+	height: 48px;
+	font-size: 17px;
+	font-weight: 700;
+	box-shadow: var(--ring);
+	cursor: text;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-body {
+	display: grid;
+	flex: none;
+	order: 2;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 10px;
+	position: static;
+	top: auto;
+	left: auto;
+	margin: 0;
+	width: auto;
+	height: auto;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-user {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	box-sizing: border-box;
+	padding: 0 14px;
+	margin: 0;
+	border: 2px solid var(--border);
+	width: auto;
+	height: 52px;
+	background-color: var(--surface);
+	box-shadow: var(--shadow-sm);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-user > div,
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-user-title > div {
+	float: none;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-user-title {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-user-level {
+	flex: none;
+	margin: 0;
+	width: 22px;
+	height: 22px;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-user-name {
+	flex: 1;
+	min-width: 0;
+	padding: 0;
+	margin: 0;
+	width: auto;
+	height: auto;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-user-score {
+	flex: none;
+	padding: 0;
+	width: auto;
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--text);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-user-score-char {
+	float: left;
+	width: auto;
+	min-width: 0;
+	text-align: center;
+	font-variant-numeric: tabular-nums;
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .game-user-current {
+	border-color: var(--primary);
+	background-color: var(--primary-soft);
+}
+
+.GameBox:not(.venezia-mode):has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .deltaScore {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 2;
+	width: auto;
+	font-size: 22px;
+	line-height: 48px;
+	text-align: center;
+	text-shadow: none;
+	color: var(--primary);
+	pointer-events: none;
+	animation: CrosswordScoreUp 1.6s ease-out both;
+}
