@@ -278,15 +278,6 @@ exports.RULE = {
 		ai: false,
 		big: false,
 		ewq: false
-	},
-	'KVE': { // 산성비
-		lang: "ko",
-		rule: "Venezia",
-		opts: ["spc"],
-		time: 2,
-		ai: false,
-		big: true,
-		ewq: false
 	}
 };
 exports.getPreScore = function (text, chain, tr) {
@@ -308,7 +299,7 @@ exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
 exports.KO_INJEONG = [
 	"NEX", "IMS", "VOC", "RAG", "KTV", "ETP", "NAC", "NFX",
 	"KOT", "THP", "JLN", "LVL", "LOL", "MIN", "MAF", "JAN",
-	"MAP", "MOB", "KCP", "BGP", "BUS", "HSR", "BLA", "NVL", "STA",
+	"MAP", "MOB", "KCP", "BGP", "BUS", "BLA", "NVL", "STA",
 	"URT", "ELW", "MOV", "OVW", "WOW", "WEB", "KPO", "CSG",
 	"CKR", "CRO", "PJS", "HSS", "KMU", "KRP", "KAD", "HOS"
 ];
