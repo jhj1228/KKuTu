@@ -1,0 +1,162 @@
+/**
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) .ShopBox .product-body {
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+	overflow: hidden;
+}
+
+.ShopBox .shop-categories {
+	display: flex;
+	flex: none;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	box-sizing: border-box;
+	padding: 12px 16px;
+	margin: 0;
+	width: 100%;
+	border-bottom: 1px solid var(--border);
+}
+
+.ShopBox .shop-categories > div {
+	float: none;
+}
+
+.ShopBox .category-filter.shop-type {
+	box-sizing: border-box;
+	padding: 0 14px;
+	margin: 0;
+	border: none;
+	width: auto;
+	height: 34px;
+	line-height: 34px;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--text-2);
+	background-color: var(--surface);
+	box-shadow: var(--line);
+	transition: background-color var(--ease), color var(--ease);
+}
+
+.ShopBox .category-filter.shop-type:hover {
+	color: var(--primary);
+	background-color: var(--primary-soft);
+}
+
+.ShopBox .category-filter.shop-type.selected,
+.ShopBox .category-filter.shop-type.selected:hover {
+	color: #FFFFFF;
+	background-color: var(--primary);
+	box-shadow: none;
+}
+
+.ShopBox #shop-search {
+	box-sizing: border-box;
+	margin-left: auto;
+	padding: 0 36px 0 12px;
+	width: 280px;
+	height: 34px;
+	font-size: 13px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238A94A4' stroke-width='2.5' stroke-linecap='square'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.5-4.5'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 12px center;
+}
+
+body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) #shop-shelf {
+	display: grid;
+	flex: 1;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	align-content: start;
+	gap: 12px;
+	box-sizing: border-box;
+	padding: 16px;
+	min-height: 0;
+	height: auto !important;
+	overflow-y: auto !important;
+}
+
+.ShopBox .goods {
+	display: flex;
+	flex-direction: column;
+	float: none;
+	box-sizing: border-box;
+	padding: 10px;
+	margin: 0;
+	width: auto;
+	height: auto;
+	background-color: var(--surface);
+	box-shadow: var(--line);
+	transition: box-shadow var(--ease);
+}
+
+.ShopBox .goods[style*="display: none"] {
+	display: none !important;
+}
+
+.ShopBox .goods:hover {
+	background-color: var(--surface);
+	box-shadow: inset 0 0 0 2px var(--primary), var(--shadow-md);
+}
+
+.ShopBox .goods > div {
+	float: none;
+}
+
+.ShopBox .goods-image {
+	margin: 0;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1 / 1;
+	background-color: var(--surface-2);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.ShopBox .goods-moremi {
+	position: relative;
+	overflow: hidden;
+}
+
+.ShopBox .goods-moremi img {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.ShopBox .goods-title {
+	margin: 10px 0 2px 0;
+	width: auto;
+	font-size: 14px;
+	font-weight: 700;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: var(--text);
+}
+
+.ShopBox .goods-cost {
+	margin: 0;
+	width: auto;
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--primary);
+}

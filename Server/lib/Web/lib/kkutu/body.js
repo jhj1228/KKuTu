@@ -2667,9 +2667,17 @@ function loadShop() {
 		res.goods.sort(function (a, b) { return b.updatedAt - a.updatedAt; }).forEach(function (item, index, my) {
 			if (item.cost < 0) return;
 			var url = iImage(false, item);
+			var eq = shopPreviewEquip(item);
+			var $img;
 
+			if (eq) {
+				$img = $("<div>").addClass("moremi goods-image goods-moremi");
+				renderMoremi($img, eq);
+			} else {
+				$img = $("<div>").addClass("jt-image goods-image").css('background-image', "url(" + url + ")");
+			}
 			$body.append($("<div>").attr('id', "goods_" + item._id).addClass("goods")
-				.append($("<div>").addClass("jt-image goods-image").css('background-image', "url(" + url + ")"))
+				.append($img)
 				.append($("<div>").addClass("goods-title").html(iName(item._id)))
 				.append($("<div>").addClass("goods-cost").html(commify(item.cost) + L['ping']))
 				.append(explainGoods(item, false))
@@ -2679,6 +2687,17 @@ function loadShop() {
 	});
 	$(".shop-type.selected").removeClass("selected");
 	$("#shop-type-all").addClass("selected");
+}
+function shopPreviewEquip(item) {
+	var g = item.group;
+	var eq = {};
+
+	if (g == "Mhand") eq.Mlhand = item._id;
+	else if (g.slice(0, 3) == "BDG") eq.BDG = item._id;
+	else if (g.charAt(0) == "M" && MOREMI_PART.indexOf(g.slice(1)) != -1) eq[g] = item._id;
+	else return null;
+
+	return eq;
 }
 function filterShop(by, query) {
 	var isAll = by === true;

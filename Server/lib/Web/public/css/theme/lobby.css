@@ -279,16 +279,3 @@ body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-norma
 	width: auto;
 	font-size: 14px;
 }
-
-body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) .ShopBox .product-body {
-	display: flex;
-	flex-direction: column;
-	padding: 12px 16px;
-	overflow: hidden;
-}
-
-body:is([data-only="for-lobby"], [data-only="for-master"], [data-only="for-normal"], [data-only="for-gaming"]) #shop-shelf {
-	flex: 1;
-	min-height: 0;
-	height: auto !important;
-}
