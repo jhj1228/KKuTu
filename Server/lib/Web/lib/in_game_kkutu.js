@@ -6543,9 +6543,12 @@ function vibrate(level) {
 	if ($data.opts.dv) return;
 	if (level < 1) return;
 
-	$("#Middle").css('padding-top', level);
+	var $m = $("#Middle").css('padding-top', "");
+	var base = parseFloat($m.css('padding-top')) || 0;
+
+	$m.css('padding-top', base + level);
 	addTimeout(function () {
-		$("#Middle").css('padding-top', 0);
+		$m.css('padding-top', "");
 		addTimeout(vibrate, 50, level * 0.7);
 	}, 50);
 }
@@ -6608,6 +6611,7 @@ function pushDisplay(text, mean, theme, wc) {
 				}
 				if (isRev) $word.prepend($c);
 				else $word.append($c);
+				fitDisplayWord($word);
 			}, Number(i) * sg / len, isRev ? text[len - i - 1] : text[i]);
 		}
 	}
@@ -6626,6 +6630,20 @@ function pushDisplay(text, mean, theme, wc) {
 		addTimeout(pushHistory, tick * 4, text, mean, theme, wc);
 		if (!isKKT) playSound(kkt);
 	}, sg);
+}
+function fitDisplayWord($word) {
+	var word = $word[0];
+	var box = $stage.game.display[0];
+	var pad, max, size;
+
+	if (!word || !box) return;
+	word.style.fontSize = "";
+	pad = parseFloat(getComputedStyle(box).paddingLeft) + parseFloat(getComputedStyle(box).paddingRight);
+	max = box.clientWidth - pad;
+	if (max > 0 && word.scrollWidth > max) {
+		size = parseFloat(getComputedStyle(word).fontSize) * max / word.scrollWidth;
+		word.style.fontSize = Math.max(10, Math.floor(size)) + "px";
+	}
 }
 function pushHint(hint) {
 	var v = processWord("", hint);

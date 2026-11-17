@@ -78,7 +78,7 @@
 }
 
 .display-mission {
-	color: #4ADE80;
+	color: #66FF66;
 }
 
 .display-beat {
@@ -147,11 +147,13 @@
 	z-index: 2;
 	margin: -22px 0 0 0;
 	width: auto;
-	font-size: 22px;
-	font-weight: 700;
+	font-size: 26px;
+	font-weight: 900;
 	line-height: 44px;
 	text-align: center;
-	text-shadow: none;
+	-webkit-text-stroke: 1.2px currentColor;
+	paint-order: stroke fill;
+	text-shadow: 0 0 2px #FFFFFF, 0 0 4px #FFFFFF, 0 2px 6px rgba(16, 24, 40, 0.25);
 	color: var(--primary);
 	pointer-events: none;
 	animation: ScorePop 1.6s ease-out both;
@@ -179,7 +181,8 @@
 }
 
 .GameBox .deltaScore.bonus {
-	color: var(--success);
+	color: #66FF66;
+	text-shadow: 0 0 2px #0B5D1E, 0 0 4px #0B5D1E, 0 2px 6px rgba(16, 24, 40, 0.3);
 }
 
 @keyframes ScorePop {
