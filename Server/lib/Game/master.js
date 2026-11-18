@@ -777,6 +777,11 @@ function processClientRequest($c, msg) {
 	}
 }
 KKuTu.onClientClosed = function ($c, code) {
+	if (DIC[$c.id] && DIC[$c.id] !== $c) {
+		if ($c.socket) $c.socket.removeAllListeners();
+		JLog.alert("이전 연결 퇴장 #" + $c.id);
+		return;
+	}
 	delete DIC[$c.id];
 	if ($c._error != 409 && !$c.admin) MainDB.users.update(['_id', $c.id]).set(['server', ""]).on();
 	if ($c.profile) delete DNAME[$c.profile.title || $c.profile.name];

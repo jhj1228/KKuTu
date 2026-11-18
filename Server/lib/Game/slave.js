@@ -542,6 +542,11 @@ KKuTu.onClientMessage = function ($c, msg) {
 	}
 };
 KKuTu.onClientClosed = function ($c, code) {
+	if (DIC[$c.id] && DIC[$c.id] !== $c) {
+		if ($c.socket) $c.socket.removeAllListeners();
+		JLog.alert(`채널 @${CHAN} 이전 연결 퇴장 #${$c.id}`);
+		return;
+	}
 	delete DIC[$c.id];
 	if ($c.profile) delete DNAME[$c.profile.title || $c.profile.name];
 	if ($c.socket) $c.socket.removeAllListeners();
