@@ -35,13 +35,17 @@
 			'background-size': "200px 200px"
 		});
 		$stage.start.prop('disabled', true).on('click', function (e) {
-			var i, j;
+			var i, j, pass;
+			var isMember = $("#account-info").html() != L['LOGIN'];
 
-			for (i = 0.9; i < 1; i += 0.01) {
-				for (j in LIST) {
-					if (j == 0 && $("#account-info").html() != L['LOGIN']) continue;
-					if (LIST[j] < i * LIMIT) {
-						return $("#server-" + j).trigger('click');
+			for (pass = 0; pass < 2; pass++) {
+				for (i = 0.9; i < 1; i += 0.01) {
+					for (j in LIST) {
+						if (LIST[j] === null) continue;
+						if (pass == 0 && isMember && j == 0) continue;
+						if (LIST[j] < i * LIMIT) {
+							return $("#server-" + j).trigger('click');
+						}
 					}
 				}
 			}
