@@ -748,10 +748,6 @@ $(document).ready(function () {
 		send('ready');
 	});
 	$stage.menu.start.on('click', function (e) {
-		if ($data.guest || ($data.id || '').indexOf('guest__') === 0) {
-			location.href = "/login";
-			return;
-		}
 		send('start');
 	});
 	$stage.menu.exit.on('click', function (e) {
