@@ -10,4 +10,5 @@ Server/lib/data/speedquiz/**
 KKUTU_ERROR.log
 /ssl
 db_old.sql
+db.sql
 .vscode

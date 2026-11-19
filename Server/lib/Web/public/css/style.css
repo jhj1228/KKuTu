@@ -261,6 +261,7 @@ span {
 	max-width: 400px;
 	white-space: normal;
 	word-break: keep-all;
+	overflow-wrap: anywhere;
 	padding: 5px;
 	/* border-radius: 5px; */
 	pointer-events: none;
