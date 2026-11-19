@@ -1,0 +1,109 @@
+extends layout
+
+mixin Dialog(id, w, t)
+	div.dialog(id=id, style=`width: ${w}px;`)
+		div.dialog-head
+			div.dialog-title(style=`width: ${w - 20}px;`)!= t || ''
+			div.closeBtn
+		div.dialog-body(style='font-size: 13px;')
+			block
+
+block Subject
+	title 서버 목록 - 레전드끄투
+
+block OpenGraph
+	meta(property='og:image', content='https://legendkkutu.kr/img/kkutu/logo.png')
+	meta(property='og:url', content='https://legendkkutu.kr/serverlist')
+	meta(property='og:title', content='글자로 놀자! 끄투 서버 목록')
+	meta(property='og:description', content='끄투 서버들의 접속 인원을 한눈에 확인하세요.')
+
+block CSS
+	link(rel='stylesheet', href='/css/in_game_kkutu.css')
+
+block Middle
+	div#sl-wrap(data-admin=SL_ADMIN ? '1' : null)
+		h3#sl-holder 글자로 놀자! 끄투 온라인
+		img#sl-logo(src='/img/kkutu/short_logo.png', alt='KKuTu')
+
+		div.sl-jjo
+			img.sl-eye.sl-eye-l(src='/img/jjoeyeL.png', alt='')
+			img.sl-eye.sl-eye-r(src='/img/jjoeyeR.png', alt='')
+			div.sl-jjo-bar
+				img.sl-nose(src='/img/jjonose.png', alt='')
+				div.sl-jjo-display
+					each link in SL_LINKS
+						- var external = /^https?:/.test(link.href || '');
+						button.sl-link(
+							type='button',
+							class='sl-link-' + (link.color || 'black'),
+							disabled=!link.href,
+							onclick=link.href ? (external ? `window.open(${JSON.stringify(link.href)}, "_blank");` : `location.href = ${JSON.stringify(link.href)};`) : null
+						)= link.label
+
+		h3.sl-list-title 서버 목록
+		if SL_NOTICE
+			div.sl-notice= SL_NOTICE
+		div.sl-list-box
+			table.sl-table
+				thead
+					tr
+						th.sl-c-home 홈페이지
+						th.sl-c-name 서버 이름
+						th.sl-c-people
+							| 접속 인원
+							label#sl-total
+						th.sl-c-ping 핑
+						th.sl-c-repo 레포지토리
+						th.sl-c-enter 접속
+						if SL_ADMIN
+							th.sl-c-admin 관리
+				tbody#sl-rows
+					tr.sl-empty
+						td(colspan=SL_ADMIN ? 7 : 6) 서버 목록을 불러오는 중입니다…
+		div#sl-updated
+
+		div.sl-menu
+			button#sl-refresh(type='button')
+				+FA('refresh')
+				|  새로 고침
+			button#sl-random(type='button') 무작위 서버로 접속
+			if SL_ADMIN
+				button#sl-register(type='button') 서버 등록하기
+		+separator(10)
+
+	if SL_ADMIN
+		+Dialog('sl-dialog', 320, '서버 등록')
+			form#sl-form(autocomplete='off')
+				input(type='hidden', name='id')
+				div.dialog-bar
+					h4 서버 이름 *
+					input(type='text', name='name', maxlength='30', required)
+				div.dialog-bar
+					h4 홈페이지
+					input(type='url', name='homepage', placeholder='https://example.com')
+				div.dialog-bar
+					h4 상태 API
+					input(type='url', name='api', placeholder='비우면 홈페이지/servers')
+				div.dialog-bar
+					h4 접속 주소
+					input(type='text', name='enter', placeholder='비우면 홈페이지')
+				div.dialog-bar
+					h4 레포지토리
+					input(type='url', name='repository', placeholder='https://github.com/...')
+				div.dialog-bar
+					h4 아이콘
+					input(type='text', name='icon', placeholder='비우면 기본 아이콘')
+				div.dialog-bar
+					h4
+					label
+						input#sl-form-self(type='checkbox', name='self', value='true', style='width: auto; height: auto;')
+						|  이 서버 (인원 직접 집계)
+				div.dialog-bar
+					label#sl-form-error
+				div.dialog-bar.tail-button
+					button(type='submit') 저장
+					button#sl-form-cancel(type='button') 취소
+
+block Bottom
+	div.bottom-legal!= L('Copyright')
+	div.bottom-legal!= L('License')

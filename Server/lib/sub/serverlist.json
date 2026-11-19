@@ -1,0 +1,96 @@
+{
+	"refreshInterval": 60000,
+	"timeout": 5000,
+	"notice": "이 목록에 등록된 서버는 본 서버와 어떠한 관계도 없으며 이 목록에 등록된 서버에 접속하여 발생하는 모든 일에 대해서 본 서버 측에서 책임을 지지 않습니다.",
+	"links": [
+		{
+			"label": "레전드끄투",
+			"href": "/",
+			"color": "green"
+		},
+		{
+			"label": "개발자 블로그",
+			"href": "",
+			"color": "blue"
+		},
+		{
+			"label": "GitHub 저장소",
+			"href": "https://github.com/jhj1228/KKuTu",
+			"color": "black"
+		}
+	],
+	"servers": [
+		{
+			"name": "끄투 온라인",
+			"homepage": "https://kkutu.kr",
+			"icon": "https://kkutu.kr/favicon.ico",
+			"id": "551c6d15f007"
+		},
+		{
+			"id": "0285d17ef19e",
+			"name": "끄투리오",
+			"homepage": "https://kkutu.io",
+			"icon": "https://cdn.kkutu.io/favicon.ico"
+		},
+		{
+			"id": "9d0734cc849f",
+			"name": "끄투코리아",
+			"homepage": "https://kkutu.co.kr",
+			"repository": "https://github.com/RevelabsKR/KKuTu",
+			"icon": "https://kkutu.co.kr/favicon.ico"
+		},
+		{
+			"id": "d9a6d0f23fe2",
+			"name": "BF끄투",
+			"homepage": "https://bfkkutu.kr",
+			"repository": "https://github.com/bfkkutu/KKuTu",
+			"icon": "https://bfkkutu.kr/favicon.ico"
+		},
+		{
+			"id": "78a89d805a8c",
+			"name": "마한끄투",
+			"homepage": "https://mahan.kr",
+			"repository": "https://github.com/githubmahan/KKuTu/",
+			"icon": "https://mahan.kr/favicon.ico"
+		},
+		{
+			"id": "df6f670b404f",
+			"name": "레전드끄투",
+			"homepage": "https://legendkkutu.kr/",
+			"repository": "https://github.com/jhj1228/KKuTu",
+			"icon": "https://legendkkutu.kr/favicon.ico"
+		},
+		{
+			"id": "df487192f043",
+			"name": "끄투엔",
+			"homepage": "https://kkutu-n.xyz",
+			"repository": "https://github.com/kitt3n69420/KKuTu",
+			"icon": "https://kkutu-n.xyz/favicon.ico"
+		},
+		{
+			"id": "39dbad169973",
+			"name": "차누끄투",
+			"homepage": "https://chanukkutu.kro.kr",
+			"repository": "https://github.com/Chanhooyoo1/ChanuKKuTu",
+			"icon": "https://chanukkutu.kro.kr/favicon.ico"
+		},
+		{
+			"id": "ffadf508b405",
+			"name": "끄투게임",
+			"homepage": "https://kkutugame.kr/",
+			"icon": "https://kkutugame.kr/favicon.ico"
+		},
+		{
+			"id": "89634b7ef374",
+			"name": "파얼끄투",
+			"homepage": "https://kkutu.parkeolru.com",
+			"icon": "https://kkutu.parkeolru.com/favicon.ico"
+		},
+		{
+			"name": "제온끄투",
+			"homepage": "https://zkt.kro.kr",
+			"icon": "https://zkt.kro.kr/favicon.ico",
+			"id": "ac486528fd6d"
+		}
+	]
+}

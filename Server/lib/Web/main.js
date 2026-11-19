@@ -327,6 +327,10 @@ Server.get("/servers", function (req, res) {
 	res.send({ list: list, max: Const.KKUTU_MAX });
 });
 
+require("./serverlist").run(Server, page, function () {
+	return gameServers.map(function (v) { return v.seek; });
+});
+
 //볕뉘 수정 구문 삭제(274~353)
 
 Server.get("/legal/:page", function (req, res) {
