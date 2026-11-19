@@ -92,6 +92,7 @@ $(document).ready(function () {
 			mailboxDetail: $("#MailboxDetailDiag"),
 			mailboxDetailTitle: $("#mailbox-detail-title"),
 			mailboxDetailContent: $("#mailbox-detail-content"),
+			mailboxDetailReward: $("#mailbox-detail-reward"),
 			mailboxClaim: $("#mailbox-claim"),
 			room: $("#RoomDiag"),
 			roomOK: $("#room-ok"),
@@ -521,15 +522,15 @@ $(document).ready(function () {
 	}
 	function appendMailboxItem(item) {
 		var detail = getMailboxItemDetail(item);
-		var $item = $('<div>')
-			.css({ backgroundColor: '#F7F7F7', border: '1px solid #CCCCCC', cursor: 'pointer', marginBottom: '6px', padding: '10px' })
-			.append($('<div>').css({ fontWeight: 'bold', marginBottom: '4px' }).text(detail.title))
-			.append($('<div>').css({ color: '#666666', fontSize: '11px' }).text(detail.summary));
+		var $item = $('<div>').addClass('mailbox-item')
+			.append($('<div>').addClass('mailbox-item-title').text(detail.title))
+			.append($('<div>').addClass('mailbox-item-summary').text(detail.summary));
 
 		$item.on('click', function (e) {
 			$data._mailboxItem = item;
 			$stage.dialog.mailboxDetailTitle.text(detail.title);
 			$stage.dialog.mailboxDetailContent.text(detail.content);
+			$stage.dialog.mailboxDetailReward.text(detail.summary);
 			$stage.dialog.mailboxClaim.prop('disabled', false);
 			showDialog($stage.dialog.mailboxDetail);
 		});
@@ -540,13 +541,13 @@ $(document).ready(function () {
 
 		switch (item.type) {
 			case 'okg':
-				return { title: L['mailboxOkgReward'], summary: summary, content: L['mailboxOkgContent'] + '\n\n' + summary };
+				return { title: L['mailboxOkgReward'], summary: summary, content: L['mailboxOkgContent'] };
 			case 'level':
-				return { title: L['mailboxLevelReward'], summary: summary, content: L['LEVEL'] + ' ' + item.level + L['mailboxLevelContent'] + '\n\n' + summary };
+				return { title: L['mailboxLevelReward'], summary: summary, content: L['LEVEL'] + ' ' + item.level + L['mailboxLevelContent'] };
 			case 'play':
-				return { title: L['mailboxPlayReward'], summary: summary, content: L['mailboxPlayContent'] + '\n\n' + summary };
+				return { title: L['mailboxPlayReward'], summary: summary, content: L['mailboxPlayContent'] };
 			default:
-				return { title: L['attendanceReward'], summary: summary, content: L['mailboxAttendanceContent'] + '\n\n' + summary };
+				return { title: L['attendanceReward'], summary: summary, content: L['mailboxAttendanceContent'] };
 		}
 	}
 	$stage.menu.newRoom.on('click', function (e) {

@@ -478,6 +478,14 @@ iframe {
 	background-color: #FFF;
 }
 
+#CommunityDiag {
+	height: auto !important;
+}
+
+#CommunityDiag .dialog-body {
+	display: flow-root;
+}
+
 .comm-tabs {
 	display: flex;
 }
@@ -485,9 +493,23 @@ iframe {
 .comm-tab {
 	flex: 1;
 	margin: 1px;
+	background-color: #DDDDDD;
+}
+
+.comm-tab:hover {
+	background-color: #EEEEEE;
 }
 
 .comm-tab.selected {
+	color: #EEEEEE;
+	background-color: #444444;
+}
+
+.comm-tab.selected:hover {
+	background-color: #555555;
+}
+
+.comm-tab:active {
 	color: #EEEEEE;
 	background-color: #444444;
 }
@@ -513,8 +535,61 @@ iframe {
 }
 
 #mailbox-items {
+	padding-right: 5px;
 	height: 278px;
 	overflow-y: scroll;
+}
+
+.mailbox-detail-box {
+	box-sizing: border-box;
+	padding: 8px;
+	border: 1px solid #AAAAAA;
+}
+
+#mailbox-detail-content {
+	padding-bottom: 6px;
+	border-bottom: 1px solid #CCCCCC;
+	margin-bottom: 6px;
+	height: 90px;
+	overflow-y: auto;
+	white-space: pre-wrap;
+}
+
+#mailbox-detail-title {
+	font-size: 15px;
+}
+
+#mailbox-detail-reward {
+	font-weight: bold;
+}
+
+.mailbox-item {
+	padding: 10px;
+	border: 1px solid #AAAAAA;
+	margin-bottom: 6px;
+	cursor: pointer;
+	background-color: #EEEEEE;
+	transition: all 200ms ease;
+}
+
+.mailbox-item:active {
+	color: #EEEEEE;
+	background-color: #444444;
+}
+
+.mailbox-item-title {
+	margin-bottom: 4px;
+	font-weight: bold;
+}
+
+.mailbox-item-summary {
+	color: #666666;
+	font-size: 11px;
+	transition: all 200ms ease;
+}
+
+.mailbox-item:active .mailbox-item-summary {
+	color: #CCCCCC;
 }
 
 .comm-head {

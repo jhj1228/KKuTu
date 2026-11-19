@@ -353,10 +353,12 @@ block Middle
 			div#mailbox-items
 			div.dialog-bar.tail-button
 				button#mailbox-claim-all= L('mailboxClaimAll')
-	+Dialog('MailboxDetailDiag', 300, 215, L('mailboxText'))
+	+Dialog('MailboxDetailDiag', 300, 235, L('mailboxText'))
 		div.dialog-bar
 			h4.dialog-bar-value#mailbox-detail-title(style='width: 100%; font-weight: bold;')
-		div.dialog-bar#mailbox-detail-content(style='height: 115px; overflow-y: auto; white-space: pre-wrap;')
+		div.dialog-bar.mailbox-detail-box
+			div#mailbox-detail-content
+			div#mailbox-detail-reward
 		div.dialog-bar.tail-button
 			button#mailbox-claim= L('mailboxClaim')
 	+Dialog('LeaderboardDiag', 300, 450, L('leaderboard'))
