@@ -48,34 +48,6 @@ block JS
 	script(src='https://www.google.com/recaptcha/api.js')
 	script.
 		$(function() {
-				$('#gn-content').html(function(i, h) { return h.replace(/<br\s*\/?>/gi, ' · '); });
-				$('#global-notice').appendTo('.kkutu-actions');
-				var gameBox = document.querySelector('.GameBox');
-				function isNormalBoard() {
-					var cmd = gameBox.querySelector('.cwcmd');
-					if (gameBox.querySelector('.pq')) return false;
-					if (!gameBox.querySelector('.cw')) return true;
-					var bb = gameBox.querySelector('.bb');
-					return (!!cmd && cmd.style.display !== 'none') || (!!bb && bb.style.display !== 'none');
-				}
-				function fitGame() {
-					var w = document.documentElement.clientWidth - 16 * 2 - 360 - 16;
-					var h = window.innerHeight - 56 - 16 * 2 - 40 - 16;
-					var s;
-
-					if (isNormalBoard()) {
-						s = Math.max(0.5, Math.min(w / 1010, h / 500, 1.25));
-						document.body.style.setProperty('--game-w', (w / s).toFixed(1));
-						document.body.style.setProperty('--game-h', (h / s).toFixed(1));
-					} else {
-						s = Math.max(0.5, Math.min(w / 1010, h / 420, 1.8));
-					}
-					document.body.style.setProperty('--game-scale', s.toFixed(3));
-				}
-				$(window).on('resize', fitGame);
-				if (window.ResizeObserver) new ResizeObserver(fitGame).observe(gameBox);
-				if (window.MutationObserver) new MutationObserver(fitGame).observe(gameBox, { attributes: true, attributeFilter: ['class'], subtree: true });
-				fitGame();
 				function updateRoomDiagHeight() {
 					var $roomMode = $('#room-mode');
 					var $roomDiag = $('#RoomDiag');
@@ -260,72 +232,9 @@ block JS
 			});
 			setTimeout(initFunc, 200);
 		});
-	script.
-		$(function() {
-			function stepRoomValue($input, d) {
-				var min = Number($input.attr('min'));
-				var max = Number($input.attr('max'));
-				var v = Math.round(Number($input.val()) || 0) + d;
-
-				if (!isNaN(min)) v = Math.max(min, v);
-				if (!isNaN(max)) v = Math.min(max, v);
-				$input.val(v).trigger('change');
-			}
-			function segLabel(type, text) {
-				if (type == 'num') return text.replace(/[^0-9.]/g, '');
-				if (type == 'db') return text.replace(/\s*사전$/, '');
-				return text;
-			}
-			function syncRoomTime() {
-				$('.room-time-seg').each(function() {
-					var $seg = $(this).empty();
-					var type = $seg.attr('data-label');
-
-					$('#' + $seg.attr('data-for')).children('option').each(function() {
-						var $o = $(this);
-
-						$seg.append($('<button type="button">')
-							.addClass('room-time-opt' + ($o.is(':selected') ? ' selected' : '') + ($o.attr('style') ? ' short' : ''))
-							.attr('data-value', $o.val())
-							.text(segLabel(type, $o.text())));
-					});
-				});
-			}
-			$(document).on('click', '.room-step', function() {
-				stepRoomValue($('#' + $(this).data('target')), Number($(this).data('step')));
-			});
-			$(document).on('click', '.room-time-opt', function() {
-				var id = $(this).closest('.room-time-seg').attr('data-for');
-
-				$('#' + id).val($(this).attr('data-value')).trigger('change');
-				syncRoomTime();
-			});
-			$('#room-mode, #room-time, #choose-db').on('change', syncRoomTime);
-			$('#NewRoomBtn, #SetRoomBtn').on('click', function() {
-				setTimeout(syncRoomTime, 0);
-			});
-			syncRoomTime();
-		});
 
 block CSS
 	link(rel='stylesheet', href='/css/in_game_kkutu_shop.css')
-	link(rel='stylesheet', href='/css/theme/base.css')
-	link(rel='stylesheet', href='/css/theme/loading.css')
-	link(rel='stylesheet', href='/css/theme/topbar.css')
-	link(rel='stylesheet', href='/css/theme/menu.css')
-	link(rel='stylesheet', href='/css/theme/components.css')
-	link(rel='stylesheet', href='/css/theme/layout.css')
-	link(rel='stylesheet', href='/css/theme/lobby.css')
-	link(rel='stylesheet', href='/css/theme/shop.css')
-	link(rel='stylesheet', href='/css/theme/room.css')
-	link(rel='stylesheet', href='/css/theme/chat.css')
-	link(rel='stylesheet', href='/css/theme/profile.css')
-	link(rel='stylesheet', href='/css/theme/game.css')
-	link(rel='stylesheet', href='/css/theme/game-board.css')
-	link(rel='stylesheet', href='/css/theme/game-crossword.css')
-	link(rel='stylesheet', href='/css/theme/game-sock.css')
-	link(rel='stylesheet', href='/css/theme/game-effects.css')
-	link(rel='stylesheet', href='/css/theme/dialogs.css')
 	
 block Jungle
 	span#PUBLIC= PUBLIC ? "true" : undefined
@@ -345,31 +254,27 @@ block Middle
 	div#Intro
 		img#intro(src='/img/kkutu/intro.png')
 		//- img#intro-start(src='/img/kkutu/intro_start.gif')
-		img.intro-logo(src='/img/kkutu/short_logo.png', alt='KKuTu')
-		div.intro-bar
-			div
-		div#intro-text= L('LOADING')
 		div#version= VERSION
-	div.kkutu-menu.kkutu-nav
-		button#ShopBtn.for-lobby(style='display: none;')!= L('shop')
-		button#DictionaryBtn.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('dictionary')
-		button#LeaderboardBtn.for-lobby(style='display: none;')!= L('leaderboard')
-		button#ReplayBtn.for-lobby(style='display: none;')!= L('replayGame')
-		button#HelpBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('help')
-		button#SettingBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('settings')
-		button#CommunityBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('community')
-		button#BlacklistBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('blacklist')
-		button#MailboxBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none;')!= L('mailbox')
-	div.kkutu-menu.kkutu-actions
-		button#NewRoomBtn.for-lobby(style='display: none;')!= L('createRoom')
-		button#QuickRoomBtn.for-lobby(style='display: none;')!= L('quick')
-		button#SpectateBtn.for-master.for-normal(style='display: none;')!= L('spectate')
-		button#SetRoomBtn.for-master(style='display: none;')!= L('settingRoom')
-		button#InviteBtn.for-master(style='display: none;')!= L('inviteUser')
-		button#PracticeBtn.for-master.for-normal(style='display: none;')!= L('practiceGame')
-		button#ReadyBtn.for-normal(style='display: none;')!= L('readyGame')
-		button#StartBtn.for-master(style='display: none;')!= L('startGame')
-		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none;')!= L('exitGame')
+		div#intro-text= L('LOADING')
+	div.kkutu-menu
+		button#HelpBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #BBBBBB;')!= L('help')
+		button#SettingBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #CCCCCC;')!= L('settings')
+		button#CommunityBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #DAA9FF;')!= L('community')
+		button#BlacklistBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #FFB6C1;')!= L('blacklist')
+		button#MailboxBtn.tiny-menu.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #FFD4E5;')!= L('mailbox')
+		button#SpectateBtn.for-master.for-normal(style='display: none; background-color: #D19DFF;')!= L('spectate')
+		button#SetRoomBtn.for-master(style='display: none; background-color: #B0D2F3;')!= L('settingRoom')
+		button#NewRoomBtn.for-lobby(style='display: none; background-color: #8EC0F3;')!= L('createRoom')
+		button#QuickRoomBtn.for-lobby(style='display: none; background-color: #B0D2F3;')!= L('quick')
+		button#ShopBtn.for-lobby(style='display: none; background-color: #B3E7B7;')!= L('shop')
+		button#DictionaryBtn.for-lobby.for-master.for-normal.for-gaming(style='display: none; background-color: #73D07A;')!= L('dictionary')
+		button#InviteBtn.for-master(style='display: none; background-color: #9FE669;')!= L('inviteUser')
+		button#PracticeBtn.for-master.for-normal(style='display: none; background-color: #FCF5A9;')!= L('practiceGame')
+		button#ReadyBtn.for-normal(style='display: none; background-color: #FFC67F;')!= L('readyGame')
+		button#StartBtn.for-master(style='display: none; background-color: #FFB576;')!= L('startGame')
+		button#ExitBtn.for-master.for-normal.for-gaming(style='display: none; background-color: #FFADAD;')!= L('exitGame')
+		button#ReplayBtn.for-lobby(style='display: none; background-color: #D9FF82;')!= L('replayGame')
+		button#LeaderboardBtn.for-lobby(style='display: none; background-color: #FFADD3;')!= L('leaderboard')
 	+Dialog('SettingDiag', 300, 320, L('settingsText'))
 		div.dialog-bar
 			div(style='display: flex; align-items: center;')
@@ -463,20 +368,17 @@ block Middle
 		div.dialog-bar.tail-button
 			button#quick-ok= L('OK')
 	+Dialog('RoomDiag', 300, 435)
-		div.room-section-title 방 정보
-		div.dialog-bar.room-field-full
+		div.dialog-bar
+			h4= L('roomTitle')
 			input#room-title(placeholder=(nick || L('guest'))+L('roomDefault'), maxlength=20)
-		div.dialog-bar.room-field-full
+		div.dialog-bar
+			h4= L('password')
 			input#room-pw(type='password', placeholder=L('password'), maxlength=20)
 		div.dialog-bar
 			h4= L('userLimit')
-			div.room-stepper
-				button.room-step(type='button', data-target='room-limit', data-step='-1') −
-				input#room-limit(type='number', min=1, max=8, step=0.01, value=8)
-				button.room-step(type='button', data-target='room-limit', data-step='1') +
-		div.room-divider
-		div.room-section-title= L('gameMode')
-		div.dialog-bar.room-field-full
+			input#room-limit(type='number', min=1, max=8, step=0.01, value=8)
+		div.dialog-bar
+			h4= L('gameMode')
 			select#room-mode
 				optgroup(label='게임 유형을 선택하세요.')
 					option(value=1)= L('modeKSH')
@@ -500,7 +402,8 @@ block Middle
 					option(value=16)= L('modeKSQ')
 					option(value=6)= L('modeHUN')
 					option(value=12)= L('modeALL')
-		div.dialog-bar.room-mode-expl
+		div.dialog-bar(style='margin-top: -5px; height: 50px;')
+			h4
 			h4#game-mode-expl.dialog-bar-value(style='width: 100%; font-size: 11px;')
 		div.dialog-bar(style='display: none;')
 			h4= '잇기 규칙'
@@ -510,9 +413,8 @@ block Middle
 					option(value="samsam",selected)= '3-3'
 					option(value="sami")= '3-2'
 					option(value="ii")= '2-2'
-		div.dialog-bar.room-time-bar
+		div.dialog-bar
 			h4= '낱말집'
-			div.room-time-seg(data-for='choose-db', data-label='db')
 			select#choose-db
 				option(value="g")= '기초 사전'
 				option(value="p",selected)= '표준 사전'
@@ -520,13 +422,9 @@ block Middle
 		div.dialog-bar
 			h4= L('numRound')
 			- var maxRounds = isAdmin ? 20 : 10;
-			div.room-stepper
-				button.room-step(type='button', data-target='room-round', data-step='-1') −
-				input#room-round(type='number', min=1, max=maxRounds, step=1, value=5)
-				button.room-step(type='button', data-target='room-round', data-step='1') +
-		div.dialog-bar.room-time-bar
+			input#room-round(type='number', min=1, max=maxRounds, step=1, value=5)
+		div.dialog-bar
 			h4= L('roundTime')
-			div.room-time-seg(data-for='room-time', data-label='num')
 			select#room-time
 				option(value=5, style='color: #FF4444')
 				option(value=10, style='color: #FF4444')
@@ -548,7 +446,6 @@ block Middle
 				option(value="correct", selected) 맞힌사람
 				option(value="order") 순서대로
 				option(value="random") 무작위로
-		div.room-divider
 		div.dialog-bar(style='height: 130px;')
 			h4(style='height: 105px;')= L('misc')
 			- for(var i in locals.OPTIONS)

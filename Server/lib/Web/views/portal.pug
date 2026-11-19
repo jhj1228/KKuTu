@@ -21,60 +21,32 @@ block Subject
 
 block CSS
 	link(rel='stylesheet', href='/css/in_game_kkutu.css')
-	link(rel='stylesheet', href='/css/theme/base.css')
-	link(rel='stylesheet', href='/css/theme/topbar.css')
-	link(rel='stylesheet', href='/css/theme/components.css')
-	link(rel='stylesheet', href='/css/theme/portal.css')
-
-block JS
-	script.
-		$(function() {
-			$('#gn-content').html(function(i, h) { return h.replace(/<br\s*\/?>/gi, ' · '); });
-			$('#global-notice').appendTo('.portal-notice');
-		});
 
 block Middle
-	-
-		var SHORTCUTS = [
-			{ icon: 'book', label: '도움말', href: '/help' },
-			{ icon: 'youtube-play', label: '유튜브', href: 'https://www.youtube.com/@%EC%A0%95%ED%9D%AC%EC%A0%95-p6o' },
-			{ icon: 'comments', label: '디스코드' },
-			{ icon: 'github', label: '깃허브', href: 'https://github.com/jhj1228/KKuTu' }
-		];
-	div.portal-notice
-	div.portal
-		div.portal-hero
-			img.portal-logo(src='/img/kkutu/short_logo.png', alt='KKuTu')
-			h1#holder= L('title').replace(/\[.+?\]/g, "")
-			p.portal-desc= locals.ogDescription || '레전드끄투에서 나만의 단어 실력을 뽐내보세요!'
-			button#game-start= L('gameStart')
+	+separator(5)
+	div(style='float: left; width: 100%;')
+		div(style='float: left; padding-left: 70px;')
+			h3#holder= L('title').replace(/\[.+?\]/g, "")
+			img#logo(src='/img/kkutu/short_logo.png')
+		div.jjoriping(style='margin-top: 40px;')
+			img.jjoObj.jjoEyeL(src='/img/jjoeyeL.png', style='left: -270px;')
+			img.jjoObj.jjoNose(src='/img/jjonose.png', style='left: -170px;')
+			img.jjoObj.jjoEyeR(src='/img/jjoeyeR.png', style='left: -70px;')
+			div.jjoDisplayBar(style='width: 325px; height: 85px;')
+				button#game-start.jjo-display= L('gameStart')
+	div(style='float: right; margin-top: -40px; width: 50%;')
 		div.server-list-box
-			div.server-list-title
-				label= L('serverList')
-				label#server-total
+			h3.server-list-title
 				a#server-refresh
 					+FA('refresh')
 					+Expl(L('serverRefresh'))
+				label= L('serverList')
+				label#server-total(style='color: #AAA; font-size: 13px;')
 			div#server-list
-			div.portal-shortcuts
-				div.portal-section-title 바로가기
-				div.shortcut-grid
-					- for (var s = 0; s < 8; s++)
-						- var sc = SHORTCUTS[s];
-						if sc
-							a.shortcut(href=sc.href, target='_blank', rel='noopener', title=sc.label)
-								+FA(sc.icon)
-								div.shortcut-label= sc.label
-						else
-							div.shortcut.shortcut-empty
-		div.portal-board.portal-updates
-			div.portal-board-title 업데이트 로그
-			iframe.portal-board-frame(src='/kkutu_bulletin.html#updates')
-		div.portal-side
-			div.portal-board.portal-notices
-				div.portal-board-title 공지사항
-				iframe.portal-board-frame(src='/kkutu_bulletin.html#notices')
-			div#portal-ad.portal-ad 여기에뭘넣어야할지모르겟슨
+	div(style='float: left; width: calc(100% - 4px); border: 2px solid #CCC; margin-top: 10px; background-color: #EEE;')
+		iframe#kkutu-bulletin(width='100%', height='400px', src='/kkutu_bulletin.html')
+		// iframe#kkutu-bulletin(width='100%', height='400px', src='/kkutu_bulletin_old.html')
+	+separator(10)
 
 block Bottom
 	div.bottom-legal!= L('Copyright')

@@ -86,12 +86,6 @@
 			var explSize;
 
 			if (!$expl.length) return;
-			$expl.filter(".expl-portal").each(function () {
-				var mother = $(this).data('mother');
-				if (!mother || !document.body.contains(mother)) $(this).remove();
-			});
-			$expl = $(".expl-active");
-			if (!$expl.length) return;
 			explSize = [$expl.outerWidth(), $expl.outerHeight()];
 			$expl.css({ 'left': Math.min(e.clientX + 5, size[0] - explSize[0] - 12), 'top': Math.min(e.clientY + 23, size[1] - explSize[1] - 12) });
 		}
@@ -102,12 +96,12 @@
 
 		$.cookie('test', "good");
 		if ($.cookie('test') != "good") {
-			$("#gn-content").html(gn = "쿠키 사용이 차단되어 있습니다. 로그인 관련 기능이 제한됩니다.<br>제한을 풀기 위해서는 브라우저 설정에서 쿠키 사용을 허용하도록 설정해야 합니다.<br>" + gn);
+			$gn.html(gn = "쿠키 사용이 차단되어 있습니다. 로그인 관련 기능이 제한됩니다.<br>제한을 풀기 위해서는 브라우저 설정에서 쿠키 사용을 허용하도록 설정해야 합니다.<br>" + gn);
 		} else {
 			$.cookie('test', "");
 		}
 		if (gn.length > 1) $gn.show();
-		$gn.on('click', '.gn-close', function (e) { $gn.hide(); });
+		$gn.on('click', function (e) { $gn.hide(); });
 
 		$(window).on('resize', function (e) {
 			size = [$(window).width(), $(window).height()];
@@ -154,17 +148,10 @@
 			$q.parent().addClass("expl-mother").on('mouseenter', function (e) {
 				var $e = $(e.currentTarget).children(".expl");
 
-				$(".expl-portal").remove();
 				$(".expl-active").removeClass("expl-active");
-				if ($(e.currentTarget).closest(".GameBox").length) {
-					$e.first().clone().addClass("expl-active expl-portal")
-						.data('mother', e.currentTarget).appendTo(document.body);
-				} else {
-					$e.addClass("expl-active");
-				}
+				$e.addClass("expl-active");
 				positionExpl(e);
 			}).on('mouseleave', function (e) {
-				$(".expl-portal").remove();
 				$(e.currentTarget).children(".expl").removeClass("expl-active");
 			});
 		})();

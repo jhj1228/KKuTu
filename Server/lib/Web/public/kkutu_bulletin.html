@@ -42,11 +42,11 @@
         }
 
         .nav-btn:hover {
-            color: #4EB44E;
+            color: #4a90e2;
         }
 
         .nav-btn.active {
-            color: #4EB44E;
+            color: #4a90e2;
         }
 
         .nav-btn.active::after {
@@ -56,7 +56,7 @@
             left: 0;
             width: 100%;
             height: 3px;
-            background-color: #4EB44E;
+            background-color: #4a90e2;
             /* border-radius: 3px 3px 0 0; */
         }
 
@@ -146,7 +146,7 @@
         }
 
         .bg-blue {
-            background: #4EB44E;
+            background: #4a90e2;
         }
 
         .bg-green {
@@ -170,7 +170,7 @@
 
         li::before {
             content: '•';
-            color: #4EB44E;
+            color: #4a90e2;
             font-weight: bold;
             position: absolute;
             left: 4px;
@@ -185,24 +185,6 @@
 
         a:visited {
             color: blue
-        }
-
-        body.single .nav-header {
-            display: none;
-        }
-
-        body.single .content-container {
-            padding: 12px;
-        }
-
-        body.single .card {
-            padding: 14px 16px;
-            margin-bottom: 12px;
-        }
-
-        body.single .card-header {
-            margin-bottom: 8px;
-            padding-bottom: 8px;
         }
     </style>
 </head>
@@ -220,17 +202,8 @@
         <div id="tab-updates" class="tab-content active">
             <div class="card">
                 <div class="card-header">
-                    <span class="header-title" style="color:#4EB44E">v1.4.9</span>
+                    <span class="header-title" style="color:#4a90e2">v1.4.8</span>
                     <span class="badge bg-red">NEW</span>
-                    <span class="header-sub">26.11.16</span>
-                </div>
-                <ul>
-                    <li>새로운 UI가 적용되었습니다.</li>
-                </ul>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <span class="header-title" style="color:#666">v1.4.8</span>
                     <span class="header-sub">26.11.13</span>
                 </div>
                 <ul>
@@ -701,12 +674,23 @@
         </div>
 
         <div id="tab-notices" class="tab-content">
-            <div class="card" style="border-left: 5px solid #ff5e57;">
+
+            <!-- <div class="card" style="border-left: 5px solid #ff5e57;">
                 <div class="card-header">
-                    <span class="header-title">UI 버그 제보</span>
+                    <span class="header-title">중요 공지사항</span>
+                    <span class="badge bg-red">필독</span>
                 </div>
                 <ul>
-                    <li>새로운 UI가 적용되었지만 아직 미완성인 부분이 있거나 제가 모르는 곳에 버그가 있을 수 있습니다.<br>버그 제보는 아래 이메일을 통해서만 받습니다.</li>
+                    <li>레전드끄투 서버는 24시간이 아닙니다. 언제든지 서버가 열고 닫힐 수 있으며, 보통 익일 00:00에 서버가 닫힙니다.</li>
+                </ul>
+            </div> -->
+            <div class="card" style="border-left: 5px solid #ff5e57;">
+                <div class="card-header">
+                    <span class="header-title">공지사항</span>
+                    <span class="badge bg-red">필독</span>
+                </div>
+                <ul>
+                    <li>공지사항이 없습니다.</li>
                 </ul>
             </div>
         </div>
@@ -736,18 +720,6 @@
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
         }
-
-        (function () {
-            var map = { updates: 'tab-updates', notices: 'tab-notices', events: 'tab-events' };
-            var id = map[location.hash.slice(1)];
-            if (!id || !document.getElementById(id)) return;
-            document.body.classList.add('single');
-            var contents = document.getElementsByClassName('tab-content');
-            for (var i = 0; i < contents.length; i++) {
-                contents[i].classList.remove('active');
-            }
-            document.getElementById(id).classList.add('active');
-        })();
     </script>
 </body>
 

@@ -1033,7 +1033,6 @@ function updateUI(myRoom, refresh) {
 	if (only == "for-gaming" && !myRoom) return;
 	if ($data.practicing) only = "for-gaming";
 
-	$("body").attr('data-only', only);
 	$(".kkutu-menu button").hide();
 	for (i in $stage.box) $stage.box[i].hide();
 	$stage.box.me.show();
@@ -1569,11 +1568,6 @@ function drawMyDress(avGroup) {
 	$("#dress-exordial").val(my.exordial);
 	drawMyGoods(avGroup || true);
 }
-function isCharPiece(obj) {
-	var g = obj && obj.group;
-
-	return g == "PIX" || g == "PIY" || g == "PIZ";
-}
 function renderGoods($target, preId, filter, equip, onClick) {
 	var $item;
 	var list = [];
@@ -1588,9 +1582,6 @@ function renderGoods($target, preId, filter, equip, onClick) {
 	}
 	for (i in $data.box) list.push({ key: i, obj: iGoods(i), value: $data.box[i] });
 	list.sort(function (a, b) {
-		var pa = isCharPiece(a.obj), pb = isCharPiece(b.obj);
-
-		if (pa != pb) return pa ? 1 : -1;
 		return (a.obj.name < b.obj.name) ? -1 : 1;
 	});
 	for (i in list) {
@@ -2120,10 +2111,6 @@ function gameReady() {
 	$data._gAnim = true;
 	$stage.box.room.show().height(360).animate({ 'height': 1 }, 500);
 	$stage.box.game.height(1).animate({ 'height': 410 }, 500);
-	$stage.box.game.removeClass("game-enter");
-	void $stage.box.game[0].offsetWidth;
-	$stage.box.game.addClass("game-enter");
-	addTimeout(function () { $stage.box.game.removeClass("game-enter"); }, 1200);
 	stopBGM();
 	$stage.dialog.resultSave.attr('disabled', false);
 	clearBoard();
@@ -2183,7 +2170,6 @@ function replayReady() {
 
 	replayStop();
 	$data._replay = true;
-	$("body").attr('data-only', 'for-replay');
 	$data.room = {
 		title: $rec.title,
 		players: [],
@@ -2675,17 +2661,9 @@ function loadShop() {
 		res.goods.sort(function (a, b) { return b.updatedAt - a.updatedAt; }).forEach(function (item, index, my) {
 			if (item.cost < 0) return;
 			var url = iImage(false, item);
-			var eq = shopPreviewEquip(item);
-			var $img;
 
-			if (eq) {
-				$img = $("<div>").addClass("moremi goods-image goods-moremi");
-				renderMoremi($img, eq);
-			} else {
-				$img = $("<div>").addClass("jt-image goods-image").css('background-image', "url(" + url + ")");
-			}
 			$body.append($("<div>").attr('id', "goods_" + item._id).addClass("goods")
-				.append($img)
+				.append($("<div>").addClass("jt-image goods-image").css('background-image', "url(" + url + ")"))
 				.append($("<div>").addClass("goods-title").html(iName(item._id)))
 				.append($("<div>").addClass("goods-cost").html(commify(item.cost) + L['ping']))
 				.append(explainGoods(item, false))
@@ -2695,17 +2673,6 @@ function loadShop() {
 	});
 	$(".shop-type.selected").removeClass("selected");
 	$("#shop-type-all").addClass("selected");
-}
-function shopPreviewEquip(item) {
-	var g = item.group;
-	var eq = {};
-
-	if (g == "Mhand") eq.Mlhand = item._id;
-	else if (g.slice(0, 3) == "BDG") eq.BDG = item._id;
-	else if (g.charAt(0) == "M" && MOREMI_PART.indexOf(g.slice(1)) != -1) eq[g] = item._id;
-	else return null;
-
-	return eq;
 }
 function filterShop(by, query) {
 	var isAll = by === true;
@@ -2794,12 +2761,9 @@ function vibrate(level) {
 	if ($data.opts.dv) return;
 	if (level < 1) return;
 
-	var $m = $("#Middle").css('padding-top', "");
-	var base = parseFloat($m.css('padding-top')) || 0;
-
-	$m.css('padding-top', base + level);
+	$("#Middle").css('padding-top', level);
 	addTimeout(function () {
-		$m.css('padding-top', "");
+		$("#Middle").css('padding-top', 0);
 		addTimeout(vibrate, 50, level * 0.7);
 	}, 50);
 }
@@ -2827,43 +2791,58 @@ function pushDisplay(text, mean, theme, wc) {
 	}
 	kkt = 'K' + $data._speed;
 
-	var $word = $("<div>").addClass("display-word");
-
-	$stage.game.display.append($word);
 	if (beat) {
 		for (i in beat) {
 			if (beat[i] == "0") continue;
 
-			$word.append($l = $("<div>")
+			$stage.game.display.append($l = $("<div>")
 				.addClass("display-text")
-				.css('float', isRev ? "right" : "left")
+				.css({ 'float': isRev ? "right" : "left", 'margin-top': -6, 'font-size': 36 })
+				.hide()
 				.html(isRev ? text.charAt(len - j - 1) : text.charAt(j))
 			);
 			j++;
 			addTimeout(function ($l, snd) {
+				var anim = { 'margin-top': 0 };
+
 				playSound(snd);
 				if ($l.html() == $data.mission) {
 					playSound('mission');
-					$l.addClass("display-mission");
+					$l.css({ 'color': "#66FF66" });
+					anim['font-size'] = 24;
+				} else {
+					anim['font-size'] = 20;
 				}
-				$l.addClass("display-on");
+				$l.show().animate(anim, 100);
 			}, Number(i) * tick, $l, ta);
 		}
+		i = $stage.game.display.children("div").get(0);
+		$(i).css(isRev ? 'margin-right' : 'margin-left', ($stage.game.display.width() - 20 * len) * 0.5);
 	} else {
-		$word.addClass("display-long");
-		for (i = 0; i < len; i++) {
+		j = "";
+		if (isRev) for (i = 0; i < len; i++) {
 			addTimeout(function (t) {
-				var $c = $("<span>").addClass("display-char").text(t);
-
 				playSound(ta);
 				if (t == $data.mission) {
 					playSound('mission');
-					$c.addClass("display-mission");
+					j = "<label style='color: #66FF66;'>" + t + "</label>" + j;
+				} else {
+					j = t + j;
 				}
-				if (isRev) $word.prepend($c);
-				else $word.append($c);
-				fitDisplayWord($word);
-			}, Number(i) * sg / len, isRev ? text[len - i - 1] : text[i]);
+				$stage.game.display.html(j);
+			}, Number(i) * sg / len, text[len - i - 1]);
+		}
+		else for (i = 0; i < len; i++) {
+			addTimeout(function (t) {
+				playSound(ta);
+				if (t == $data.mission) {
+					playSound('mission');
+					j += "<label style='color: #66FF66;'>" + t + "</label>";
+				} else {
+					j += t;
+				}
+				$stage.game.display.html(j);
+			}, Number(i) * sg / len, text[i]);
 		}
 	}
 	addTimeout(function () {
@@ -2873,28 +2852,14 @@ function pushDisplay(text, mean, theme, wc) {
 					if (v == 1) return;
 					else playSound('kung');
 				}
-				$word.removeClass("display-beat");
-				void $word[0].offsetWidth;
-				$word.addClass("display-beat");
+				(beat ? $stage.game.display.children(".display-text") : $stage.game.display)
+					.css('font-size', 21)
+					.animate({ 'font-size': 20 }, tick);
 			}, i * tick * 2, i);
 		}
 		addTimeout(pushHistory, tick * 4, text, mean, theme, wc);
 		if (!isKKT) playSound(kkt);
 	}, sg);
-}
-function fitDisplayWord($word) {
-	var word = $word[0];
-	var box = $stage.game.display[0];
-	var pad, max, size;
-
-	if (!word || !box) return;
-	word.style.fontSize = "";
-	pad = parseFloat(getComputedStyle(box).paddingLeft) + parseFloat(getComputedStyle(box).paddingRight);
-	max = box.clientWidth - pad;
-	if (max > 0 && word.scrollWidth > max) {
-		size = parseFloat(getComputedStyle(word).fontSize) * max / word.scrollWidth;
-		word.style.fontSize = Math.max(10, Math.floor(size)) + "px";
-	}
 }
 function pushHint(hint) {
 	var v = processWord("", hint);
@@ -2905,6 +2870,7 @@ function pushHint(hint) {
 			.append($("<label>").html(v))
 			.append($("<div>").addClass("expl").css({ 'white-space': "normal", 'width': 200 }).html(v.html()))
 	);
+	if (!mobile) $obj.width(0).animate({ width: 215 });
 	global.expl($obj);
 }
 function pushHistory(text, mean, theme, wc) {
@@ -3260,27 +3226,17 @@ function chatBalloon(text, id, flag) {
 		.attr('id', "cb-" + id)
 		.append($("<div>").addClass("jt-image " + img))
 	[(flag == 2) ? 'prepend' : 'append']($("<h4>").text(text));
-	var ot, ol, rect, base, bw, bh;
+	var ot, ol;
 
 	if (!$target.is(":visible") && $fallback.is(":visible")) $target = $fallback;
 	offset = $target.offset();
 	if (!offset) return;
 	$stage.balloons.append($obj);
-	rect = $target[0].getBoundingClientRect();
-	bw = $obj.outerWidth();
-	bh = $obj.outerHeight();
-	if (flag == 2) {
-		ot = 4 - bh;
-		ol = (rect.width - bw) * 0.5;
-	} else if (flag & 1) {
-		ot = rect.height;
-		ol = rect.width - bw;
-	} else {
-		ot = rect.height * 0.35;
-		ol = rect.width * 0.5 + 30;
-	}
-	base = $stage.balloons.offset() || { top: 0, left: 0 };
-	$obj.css({ top: offset.top - base.top + ot, left: offset.left - base.left + ol });
+	if (flag == 1) ot = 0, ol = 220;
+	else if (flag == 2) ot = 35 - $obj.height(), ol = -2;
+	else if (flag == 3) ot = 5, ol = 210;
+	else ot = 40, ol = 110;
+	$obj.css({ top: offset.top + ot, left: offset.left + ol });
 	addTimeout(function () {
 		$obj.animate({ 'opacity': 0 }, 500, function () { $obj.remove(); });
 	}, 2500);
