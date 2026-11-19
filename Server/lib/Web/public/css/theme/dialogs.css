@@ -421,20 +421,35 @@
 	width: 100% !important;
 }
 
+#RoomDiag .dialog-bar:has(.room-stepper):not([style*="display: none"]) {
+	display: flex !important;
+	align-items: center;
+}
+
+#RoomDiag .dialog-bar:has(.room-stepper) > h4 {
+	flex: none;
+	float: none;
+	width: 100px;
+}
+
 .room-stepper {
 	display: flex;
-	float: left;
-	width: calc(100% - 100px);
+	flex: 1;
+	box-sizing: border-box;
+	min-width: 0;
 	height: 32px;
+	border: 1px solid var(--border-strong);
 }
 
 #RoomDiag .room-stepper .room-step {
 	flex: none;
 	float: none;
 	box-sizing: border-box;
+	margin: 0;
 	padding: 0;
 	width: 36px;
-	height: 32px;
+	height: 100%;
+	border: none;
 	font-size: 16px;
 	font-weight: 700;
 	color: var(--text-2);
@@ -448,13 +463,28 @@
 
 #RoomDiag .room-stepper input {
 	flex: 1;
+	box-sizing: border-box;
+	margin: 0;
 	min-width: 0;
 	width: auto !important;
-	border-right: none;
-	border-left: none;
+	height: 100%;
+	border: none;
+	border-right: 1px solid var(--border);
+	border-left: 1px solid var(--border);
 	text-align: center;
 	font-weight: 700;
 	-moz-appearance: textfield;
+}
+
+#RoomDiag .room-stepper input:focus {
+	position: relative;
+	z-index: 1;
+	border-color: transparent;
+	box-shadow: 0 0 0 1px var(--primary), 0 0 0 4px rgba(37, 99, 235, 0.22);
+}
+
+#RoomDiag .room-stepper .room-step:focus-visible {
+	box-shadow: none;
 }
 
 #RoomDiag .room-stepper input::-webkit-inner-spin-button,
