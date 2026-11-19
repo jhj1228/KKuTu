@@ -682,8 +682,8 @@ block Middle
 				transform: scale(0.6);
 				transform-origin: center center;
 			}
-		div.dialog-bar(style='padding: 10px;')
-			div#wardrobe-grid(style='display: flex; justify-content: space-between; gap: 5px;')
+		div.dialog-bar(style='padding: 10px 0;')
+			div#wardrobe-grid(style='display: flex; justify-content: space-between; gap: 5px; padding: 0 6px; box-sizing: border-box;')
 				- for(var i=0; i<5; i++)
 					div.wardrobe-slot(data-index=i, style='width: 120px; border: 1px solid #ccc; padding: 5px; background: #f9f9f9; text-align: center;')
 						div.moremi.wardrobe-view(style='width: 80px; height: 80px; margin: 0 auto; background: #fff; border: 1px inset #eee;')

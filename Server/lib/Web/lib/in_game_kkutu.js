@@ -1162,7 +1162,9 @@ $(document).ready(function () {
 			var $delBtn = $me.find('.wardrobe-delete');
 
 			$view.empty();
-			$label.text((index + 1) + '번 슬롯');
+			$label.text((slot && slot.name) || ((index + 1) + '번 슬롯'))
+				.attr('title', '클릭하여 이름 변경')
+				.css('cursor', 'pointer');
 
 			if (slot && slot.equip) {
 				$loadBtn.prop('disabled', false);
@@ -1175,6 +1177,45 @@ $(document).ready(function () {
 		});
 	}
 	window.openWardrobe = openWardrobe;
+	$(document).on('click', '.wardrobe-label', function (e) {
+		e.stopPropagation();
+		var $label = $(this);
+		if ($label.find('input').length) return;
+		var idx = $label.closest('.wardrobe-slot').data('index');
+		var key = 'wardrobe_' + $data.id;
+		var slots = JSON.parse(localStorage.getItem(key) || '[]');
+		while (slots.length < 5) slots.push(null);
+		var defName = (idx + 1) + '번 슬롯';
+		var $input = $('<input type="text" maxlength="12">')
+			.val((slots[idx] && slots[idx].name) || defName)
+			.css({ width: '100%', height: '15px', 'font-size': '11px', 'text-align': 'center', 'box-sizing': 'border-box', padding: 0, float: 'none' });
+		var done = false;
+		function finish(save) {
+			if (done) return;
+			done = true;
+			if (save) {
+				var name = $.trim($input.val());
+				if (name === defName) name = '';
+				if (name) {
+					slots[idx] = slots[idx] || {};
+					slots[idx].name = name;
+				} else if (slots[idx]) {
+					delete slots[idx].name;
+					if (!slots[idx].equip) slots[idx] = null;
+				}
+				localStorage.setItem(key, JSON.stringify(slots));
+			}
+			openWardrobe();
+		}
+		$input.on('keydown', function (ev) {
+			ev.stopPropagation();
+			if (ev.keyCode == 13) finish(true);
+			else if (ev.keyCode == 27) finish(false);
+		}).on('blur', function () { finish(true); })
+			.on('click', function (ev) { ev.stopPropagation(); });
+		$label.empty().append($input);
+		$input.focus().select();
+	});
 	$(document).on('click', '.wardrobe-save-slot', function (e) {
 		var idx = $(e.currentTarget).data('index');
 		var key = 'wardrobe_' + $data.id;
@@ -1183,6 +1224,7 @@ $(document).ready(function () {
 
 		showConfirm((idx + 1) + '번 슬롯에 현재 코디를 저장할까요?', function () {
 			slots[idx] = {
+				name: slots[idx] && slots[idx].name,
 				equip: $.extend(true, {}, $data.users[$data.id].equip),
 				time: Date.now()
 			};
