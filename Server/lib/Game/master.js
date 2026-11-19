@@ -656,7 +656,7 @@ function processClientRequest($c, msg) {
 			if (Object.keys($c.friends).length >= 100) return $c.sendError(452);
 			if (temp = DIC[msg.target]) {
 				if (temp.guest) return $c.sendError(453);
-				if ($c._friend) return $c.sendError(454);
+				if ($c._friend == temp.id) return $c.sendError(454);
 				$c._friend = temp.id;
 				temp.send('friendAdd', { from: $c.id });
 			} else {

@@ -382,6 +382,8 @@ function onMessage(data) {
 			}
 			if (data.caj) checkAge();
 			updateCommunity();
+			updateFriendRequests();
+			showBlacklist();
 			break;
 		case 'conn':
 			$data.setUser(data.user.id, data.user);
@@ -489,17 +491,10 @@ function onMessage(data) {
 					res: false
 				}, true);
 			} else {
-				showConfirm(i + L['attemptFriendAdd'], function () {
-					send('friendAddRes', {
-						from: data.from,
-						res: true
-					}, true);
-				}, function () {
-					send('friendAddRes', {
-						from: data.from,
-						res: false
-					}, true);
-				});
+				$data._friendReqs = $data._friendReqs || {};
+				$data._friendReqs[data.from] = i;
+				notice(i + L['friendRequestArrived']);
+				updateFriendRequests();
 			}
 			break;
 		case 'friendAddRes':
@@ -1832,7 +1827,6 @@ function updateCommunity() {
 		$stage.dialog.commFriends.append(
 			$("<div>").addClass("cf-item").attr('id', "cfi-" + i)
 				.append($("<div>").addClass("cfi-status cfi-stat-" + (o.server ? 'on' : 'off')))
-				.append($("<div>").addClass("cfi-server").html(o.server ? L['server_' + o.server] : "-"))
 				.append($("<div>").addClass("cfi-name ellipse").html(p ? (p.title || p.name) : L['hidden']))
 				.append($("<div>").addClass("cfi-memo ellipse").text(memo))
 				.append(
@@ -1860,7 +1854,37 @@ function updateCommunity() {
 			send('friendRemove', { id: id }, true);
 		});
 	}
-	$("#CommunityDiag .dialog-title").html(L['communityText'] + " (" + len + " / 100)");
+	if (!len) $stage.dialog.commFriends.append($("<div>").addClass("comm-empty").html(L['friendEmpty']));
+	$("#comm-count-friends").html("(" + len + ")");
+}
+function updateFriendRequests() {
+	var reqs = $data._friendReqs || {};
+	var len = 0;
+	var i;
+
+	$stage.dialog.commRequests.empty();
+	for (i in reqs) {
+		len++;
+		$stage.dialog.commRequests.append(
+			$("<div>").addClass("cfr-item").attr('id', "cfr-" + i)
+				.append($("<div>").addClass("cfr-name ellipse").text(reqs[i]))
+				.append(
+					$("<div>").addClass("cfr-menu")
+						.append($("<i>").addClass("fa fa-check").on('click', respondFriendRequest(i, true)))
+						.append($("<i>").addClass("fa fa-remove").on('click', respondFriendRequest(i, false)))
+				)
+		);
+	}
+	if (!len) $stage.dialog.commRequests.append($("<div>").addClass("comm-empty").html(L['friendRequestEmpty']));
+	$("#comm-count-requests").html(len ? "(" + len + ")" : "");
+
+	function respondFriendRequest(id, res) {
+		return function () {
+			delete $data._friendReqs[id];
+			send('friendAddRes', { from: id, res: res }, true);
+			updateFriendRequests();
+		};
+	}
 }
 function requestRoomInfo(id) {
 	var o = $data.rooms[id];
@@ -3649,7 +3673,6 @@ function showBlacklist() {
 		}
 	}
 
-	$("#BlacklistDiag .dialog-title").html(L['blacklistText'] + " (" + count + " / 100)");
-	showDialog($stage.dialog.blacklist);
-	$stage.dialog.blacklist.show();
+	if (!count) $items.append($("<div>").addClass("comm-empty").html(L['blacklistEmpty']));
+	$("#comm-count-blacklist").html("(" + count + ")");
 }

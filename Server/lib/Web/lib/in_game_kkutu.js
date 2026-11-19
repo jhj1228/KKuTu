@@ -158,11 +158,8 @@ $(document).ready(function () {
 			settingReset: $("#setting-reset"),
 			community: $("#CommunityDiag"),
 			commFriends: $("#comm-friends"),
-			commFriendAdd: $("#comm-friend-add"),
-			blacklist: $("#BlacklistDiag"),
+			commRequests: $("#comm-requests"),
 			blacklistItems: $("#blacklist-items"),
-			blacklistClear: $("#blacklist-clear"),
-			mailbox: $("#MailboxDiag"),
 			mailboxItems: $("#mailbox-items"),
 			mailboxClaimAll: $("#mailbox-claim-all"),
 			mailboxDetail: $("#MailboxDetailDiag"),
@@ -512,22 +509,40 @@ $(document).ready(function () {
 		showDialog($stage.dialog.setting);
 	});
 	$stage.menu.community.on('click', function (e) {
-		if ($data.guest) return fail(451);
-		showDialog($stage.dialog.community);
+		openCommunity('friends');
 	});
 	$stage.menu.blacklist.on('click', function (e) {
-		if ($stage.dialog.blacklist.is(':visible')) {
-			$stage.dialog.blacklist.hide();
-		} else {
-			showBlacklist();
-		}
+		openCommunity('blacklist');
 	});
 	$stage.menu.mailbox.on('click', function (e) {
-		if ($data.guest) return fail(467);
-		$stage.dialog.mailboxClaimAll.prop('disabled', true);
-		showDialog($stage.dialog.mailbox);
-		loadMailbox();
+		openCommunity('mailbox');
 	});
+	$("#CommunityDiag .comm-tab").on('click', function (e) {
+		selectCommTab($(e.currentTarget).attr('data-tab'));
+	});
+	function openCommunity(tab) {
+		var $d = $stage.dialog.community;
+
+		if ($d.is(':visible') && $data._commTab == tab) return $d.hide();
+		if (!selectCommTab(tab)) return;
+		showDialog($d, true);
+	}
+	function selectCommTab(tab) {
+		if ($data.guest && tab != 'blacklist') {
+			fail(tab == 'mailbox' ? 467 : 451);
+			return false;
+		}
+		$data._commTab = tab;
+		$("#CommunityDiag .comm-tab").removeClass('selected').filter("[data-tab='" + tab + "']").addClass('selected');
+		$("#CommunityDiag .comm-panel").removeClass('selected').filter("#comm-panel-" + tab).addClass('selected');
+		if (tab == 'blacklist') {
+			showBlacklist();
+		} else if (tab == 'mailbox') {
+			$stage.dialog.mailboxClaimAll.prop('disabled', true);
+			loadMailbox();
+		}
+		return true;
+	}
 	$stage.dialog.mailboxClaimAll.on('click', function (e) {
 		claimMailboxItems($data._mailboxItems.map(function (item) { return item.id; }), true);
 	});
@@ -572,9 +587,7 @@ $(document).ready(function () {
 				res.items.forEach(appendMailboxItem);
 				$stage.dialog.mailboxClaimAll.prop('disabled', false);
 			} else {
-				$stage.dialog.mailboxItems.append($('<div>')
-					.css({ padding: '10px', textAlign: 'center' })
-					.text(L['mailboxEmpty']));
+				$stage.dialog.mailboxItems.append($('<div>').addClass('comm-empty').text(L['mailboxEmpty']));
 				$stage.dialog.mailboxClaimAll.prop('disabled', true);
 			}
 		});
@@ -609,21 +622,6 @@ $(document).ready(function () {
 				return { title: L['attendanceReward'], summary: summary, content: L['mailboxAttendanceContent'] + '\n\n' + summary };
 		}
 	}
-	$stage.dialog.commFriendAdd.on('click', function (e) {
-		var id = prompt(L['friendAddNotice']);
-
-		if (!id) return;
-		if (!$data.users[id]) return fail(450);
-
-		send('friendAdd', { target: id }, true);
-	});
-	$stage.dialog.blacklistClear.on('click', function (e) {
-		showConfirm(L['blacklistClearConfirm'], function () {
-			$data._shut = {};
-			localStorage.setItem('_shut', JSON.stringify($data._shut));
-			showBlacklist();
-		});
-	});
 	$stage.menu.newRoom.on('click', function (e) {
 		var $d;
 
@@ -4175,6 +4173,8 @@ function onMessage(data) {
 			}
 			if (data.caj) checkAge();
 			updateCommunity();
+			updateFriendRequests();
+			showBlacklist();
 			break;
 		case 'conn':
 			$data.setUser(data.user.id, data.user);
@@ -4282,17 +4282,10 @@ function onMessage(data) {
 					res: false
 				}, true);
 			} else {
-				showConfirm(i + L['attemptFriendAdd'], function () {
-					send('friendAddRes', {
-						from: data.from,
-						res: true
-					}, true);
-				}, function () {
-					send('friendAddRes', {
-						from: data.from,
-						res: false
-					}, true);
-				});
+				$data._friendReqs = $data._friendReqs || {};
+				$data._friendReqs[data.from] = i;
+				notice(i + L['friendRequestArrived']);
+				updateFriendRequests();
 			}
 			break;
 		case 'friendAddRes':
@@ -5625,7 +5618,6 @@ function updateCommunity() {
 		$stage.dialog.commFriends.append(
 			$("<div>").addClass("cf-item").attr('id', "cfi-" + i)
 				.append($("<div>").addClass("cfi-status cfi-stat-" + (o.server ? 'on' : 'off')))
-				.append($("<div>").addClass("cfi-server").html(o.server ? L['server_' + o.server] : "-"))
 				.append($("<div>").addClass("cfi-name ellipse").html(p ? (p.title || p.name) : L['hidden']))
 				.append($("<div>").addClass("cfi-memo ellipse").text(memo))
 				.append(
@@ -5653,7 +5645,37 @@ function updateCommunity() {
 			send('friendRemove', { id: id }, true);
 		});
 	}
-	$("#CommunityDiag .dialog-title").html(L['communityText'] + " (" + len + " / 100)");
+	if (!len) $stage.dialog.commFriends.append($("<div>").addClass("comm-empty").html(L['friendEmpty']));
+	$("#comm-count-friends").html("(" + len + ")");
+}
+function updateFriendRequests() {
+	var reqs = $data._friendReqs || {};
+	var len = 0;
+	var i;
+
+	$stage.dialog.commRequests.empty();
+	for (i in reqs) {
+		len++;
+		$stage.dialog.commRequests.append(
+			$("<div>").addClass("cfr-item").attr('id', "cfr-" + i)
+				.append($("<div>").addClass("cfr-name ellipse").text(reqs[i]))
+				.append(
+					$("<div>").addClass("cfr-menu")
+						.append($("<i>").addClass("fa fa-check").on('click', respondFriendRequest(i, true)))
+						.append($("<i>").addClass("fa fa-remove").on('click', respondFriendRequest(i, false)))
+				)
+		);
+	}
+	if (!len) $stage.dialog.commRequests.append($("<div>").addClass("comm-empty").html(L['friendRequestEmpty']));
+	$("#comm-count-requests").html(len ? "(" + len + ")" : "");
+
+	function respondFriendRequest(id, res) {
+		return function () {
+			delete $data._friendReqs[id];
+			send('friendAddRes', { from: id, res: res }, true);
+			updateFriendRequests();
+		};
+	}
 }
 function requestRoomInfo(id) {
 	var o = $data.rooms[id];
@@ -7442,9 +7464,8 @@ function showBlacklist() {
 		}
 	}
 
-	$("#BlacklistDiag .dialog-title").html(L['blacklistText'] + " (" + count + " / 100)");
-	showDialog($stage.dialog.blacklist);
-	$stage.dialog.blacklist.show();
+	if (!count) $items.append($("<div>").addClass("comm-empty").html(L['blacklistEmpty']));
+	$("#comm-count-blacklist").html("(" + count + ")");
 }
 /**
  * Rule the words! KKuTu Online

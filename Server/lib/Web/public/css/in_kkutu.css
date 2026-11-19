@@ -430,21 +430,17 @@ iframe {
 	background-color: gray;
 }
 
-.cfi-server {
-	width: 46px;
-	text-align: center;
-}
-
 .cfi-name {
 	width: 60px;
 }
 
 .cfi-memo {
-	width: calc(100% - 150px);
+	width: calc(100% - 114px);
 }
 
 .cfi-menu {
-	width: 30px;
+	width: 40px;
+	white-space: nowrap;
 }
 
 .cfi-menu>i {
@@ -480,6 +476,116 @@ iframe {
 
 .blacklist-menu>i:hover {
 	background-color: #FFF;
+}
+
+.comm-tabs {
+	display: flex;
+}
+
+.comm-tab {
+	flex: 1;
+	margin: 1px;
+}
+
+.comm-tab.selected {
+	color: #EEEEEE;
+	background-color: #444444;
+}
+
+.comm-count {
+	display: inline;
+	margin-left: 2px;
+	font-size: 11px;
+}
+
+.comm-panel {
+	display: none;
+	height: 320px;
+	overflow-y: scroll;
+}
+
+.comm-panel.selected {
+	display: block;
+}
+
+#comm-panel-mailbox {
+	overflow-y: hidden;
+}
+
+#mailbox-items {
+	height: 278px;
+	overflow-y: scroll;
+}
+
+.comm-head {
+	display: flex;
+	position: sticky;
+	top: 0px;
+	padding: 2px 0px;
+	margin-bottom: 2px;
+	color: #222222;
+	background-color: #DDDDDD;
+	z-index: 1;
+}
+
+.comm-head>div {
+	flex: 0 0 auto;
+	box-sizing: border-box;
+	height: auto;
+	text-align: center;
+	background-color: transparent;
+}
+
+.comm-head>div+div {
+	border-left: 2px solid #FFFFFF;
+}
+
+.comm-empty {
+	box-sizing: border-box;
+	padding: 10px;
+	width: 100%;
+	color: #888888;
+	text-align: center;
+}
+
+#comm-requests div {
+	float: left;
+}
+
+.cfr-item {
+	margin: 2px 0px;
+	width: 100%;
+}
+
+.cfr-name {
+	width: calc(100% - 40px);
+}
+
+.cfr-menu {
+	width: 40px;
+}
+
+.cfr-menu>i {
+	margin-right: 3px;
+	cursor: pointer;
+}
+
+.cfr-menu>i:hover {
+	background-color: #FFF;
+}
+
+.cfi-menu>i,
+.cfr-menu>i,
+.blacklist-menu>i {
+	padding: 1px;
+	transition: all 150ms ease;
+}
+
+.cfi-menu>i:active,
+.cfr-menu>i:active,
+.blacklist-menu>i:active {
+	color: #EEEEEE;
+	background-color: #444444;
 }
 
 #ProfileDiag .dialog-body div {
