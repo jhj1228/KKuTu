@@ -1,11 +1,19 @@
 /**
- * 프리서버 목록 (/serverlist)
+ * Rule the words! KKuTu Online
+ * Copyright (C) 2017 JJoriping(op@jjo.kr)
  *
- * sub/serverlist.json 에 등록된 서버들의 /servers 엔드포인트를 주기적으로 조회해
- * 접속 인원과 응답 시간(핑)을 캐시해 둡니다.
- * "self": true 인 항목은 네트워크 요청 없이 이 서버의 게임 서버 정보를 바로 사용합니다.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * 서버 등록·수정·삭제는 global.json 의 ADMIN 에 등록된 계정으로 로그인했을 때만 가능합니다.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 var fs = require("fs");
@@ -25,7 +33,6 @@ var refreshing = false;
 var waiters = [];
 var rerun = false;
 
-/* ---------- 설정 파일 ---------- */
 function fileMtime() {
 	try {
 		return fs.statSync(CONFIG_PATH).mtimeMs;
@@ -33,10 +40,6 @@ function fileMtime() {
 		return 0;
 	}
 }
-/**
- * 파일을 읽어 설정 객체를 돌려줍니다.
- * JSON 이 깨져 있으면(편집 도중 등) null 을 돌려주고, 호출한 쪽은 기존 설정을 유지합니다.
- */
 function loadConfig() {
 	var c;
 
@@ -69,7 +72,6 @@ function saveConfig(c) {
 	fs.renameSync(tmp, CONFIG_PATH);
 	configMtime = fileMtime();
 }
-/** 파일이 직접 수정됐으면 다시 읽습니다. 바뀌었으면 true. */
 function syncConfig() {
 	var m = fileMtime();
 	var c;
@@ -85,7 +87,6 @@ function newId() {
 	return crypto.randomBytes(6).toString("hex");
 }
 
-/* ---------- 상태 수집 ---------- */
 function summarize(list, max) {
 	var online = 0, capacity = 0;
 
@@ -107,11 +108,6 @@ function applyLocal(info) {
 }
 var MAX_REDIRECTS = 3;
 
-/**
- * url 의 JSON 을 가져옵니다. 301/302/307/308 리다이렉트는 최대 3번까지 따라갑니다.
- * (예: kkutu.co.kr/servers → kkutu.co.kr/o/servers)
- * 핑은 마지막 요청(실제 데이터를 받은 요청)의 응답 시간입니다.
- */
 function fetchJSON(url, timeout, callback, redirects) {
 	var done = false;
 	var started = Date.now();
@@ -196,7 +192,6 @@ function probe(server, callback) {
 function refresh(callback) {
 	if (callback) waiters.push(callback);
 	if (refreshing) {
-		// 진행 중인 갱신은 옛 목록 기준일 수 있으므로 끝난 뒤 한 번 더 돌림
 		rerun = true;
 		return;
 	}
@@ -228,7 +223,6 @@ function refresh(callback) {
 	}
 }
 
-/* ---------- 관리자 ---------- */
 function isAdmin(req) {
 	var profile = req.session && req.session.profile;
 
@@ -279,7 +273,6 @@ exports.run = function (Server, page, localSeek) {
 
 	function adminOnly(req, res, next) {
 		if (!isAdmin(req)) return res.status(403).send({ error: "권한이 없습니다." });
-		// 파일을 직접 고친 내용을 옛 메모리 값으로 덮어쓰지 않도록 먼저 다시 읽음
 		syncConfig();
 		next();
 	}
@@ -308,7 +301,6 @@ exports.run = function (Server, page, localSeek) {
 		else send();
 
 		function send() {
-			// 이 서버 자신의 인원은 요청 시점 값으로 갱신
 			var list = cache.list.map(function (v) {
 				return (v && v.self) ? applyLocal(Object.assign({}, v)) : v;
 			});

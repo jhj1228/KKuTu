@@ -16,7 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 프리서버 목록 (/serverlist) */
 (function () {
 	var REFRESH_INTERVAL = 60000;
 	var LIST = [];
@@ -126,8 +125,6 @@
 		$stage.total.html("&nbsp;(총 " + num(sum) + "명)");
 		$stage.updated.text("업데이트 일시: " + (data && data.updatedAt ? new Date(data.updatedAt).toLocaleString("ko-KR") : "-"));
 	}
-
-	/* ---------- 관리자 ---------- */
 	function adminBtn(icon, title, disabled, onClick) {
 		return $("<button>").attr({ type: "button", title: title })
 			.prop('disabled', disabled)

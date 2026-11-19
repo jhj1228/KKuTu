@@ -16,7 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* 프리서버 목록 (/serverlist) — in_portal.css 구조를 따름 */
 
 #sl-wrap {
 	float: left;
@@ -32,17 +31,12 @@
 	text-shadow: 0px 0px 4px #333;
 }
 
-/* short_logo.png 는 위아래 약 30px 가 투명 여백 */
 #sl-logo {
 	display: block;
 	margin: -20px auto 0px auto;
 	width: 234px;
 }
 
-/* ---------- 끄투 얼굴 (jjoriping) ----------
- * 눈 이미지(58×46)는 외곽선 2px, 아래가 열린 모양이므로
- * .jjoDisplayBar 와 같은 2px 테두리, 각진 윗변으로 이어 붙입니다.
- */
 .sl-jjo {
 	position: relative;
 	z-index: 1;
@@ -80,7 +74,6 @@
 	background-color: rgba(0, 0, 0, 0.7);
 }
 
-/* #game-start 와 같은 방식: 테두리 없음, 굵게, 올리면 글자가 커짐 */
 .sl-link {
 	box-sizing: border-box;
 	margin: 0px auto;
@@ -119,7 +112,6 @@
 .sl-link-red:hover { background-color: #BF4440; }
 .sl-link-orange:hover { background-color: #CC7F22; }
 
-/* ---------- 서버 목록 (.server-list-box) ---------- */
 .sl-list-title {
 	margin: 15px 0px 0px 0px;
 	font-size: 15px;
@@ -205,7 +197,6 @@
 	font-size: 11px;
 }
 
-/* .server-status 와 같은 색 */
 .sl-status {
 	display: inline-block;
 	margin-right: 4px;
@@ -258,10 +249,6 @@
 	font-size: 13px;
 }
 
-/* ---------- 하단 버튼 ----------
- * 다이얼로그 하단 버튼(.tail-button button)처럼 style.css 의 기본 button
- * (회색 테두리, 누르면 #444 로 어두워지는 효과)을 그대로 사용합니다.
- */
 .sl-menu {
 	display: flex;
 	justify-content: center;
@@ -279,7 +266,6 @@
 	color: #EEEEEE;
 }
 
-/* ---------- 등록 다이얼로그 (.dialog) ---------- */
 #sl-dialog {
 	z-index: 10;
 }
