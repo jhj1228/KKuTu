@@ -1582,6 +1582,9 @@ function renderGoods($target, preId, filter, equip, onClick) {
 	}
 	for (i in $data.box) list.push({ key: i, obj: iGoods(i), value: $data.box[i] });
 	list.sort(function (a, b) {
+		var pa = a.key.charAt() == "$", pb = b.key.charAt() == "$";
+
+		if (pa != pb) return pa ? 1 : -1; // 글자 조각은 맨 뒤로
 		return (a.obj.name < b.obj.name) ? -1 : 1;
 	});
 	for (i in list) {

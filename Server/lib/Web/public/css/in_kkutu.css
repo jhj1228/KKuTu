@@ -2146,6 +2146,9 @@ iframe {
 }
 
 .goods-box {
+	display: flex;
+	flex-wrap: wrap;
+	align-content: flex-start;
 	margin-top: 5px;
 	height: 125px;
 	overflow-y: scroll;
@@ -2174,11 +2177,13 @@ iframe {
 
 .dress-item {
 	float: left;
+	flex: 0 0 auto;
+	box-sizing: border-box;
 	padding: 1px;
 	border: 1px solid #CCCCCC;
 	margin: 1px;
-	width: 40px;
-	height: 40px;
+	width: 44px;
+	height: 44px;
 }
 
 .dress-equipped {
