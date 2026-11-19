@@ -112,3 +112,27 @@
 .wardrobe-view {
 	border: 1px solid var(--border);
 }
+
+#ChatBtn,
+#NewRoomBtn,
+#StartBtn,
+#ReadyBtn,
+#game-start,
+:is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes) {
+	border-color: transparent !important;
+	background-image: var(--primary-grad);
+}
+
+#ChatBtn:hover,
+#NewRoomBtn:hover,
+#StartBtn:hover,
+#ReadyBtn:hover,
+#game-start:hover,
+:is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes):hover {
+	filter: brightness(0.94);
+}
+
+#Intro .intro-bar > div,
+.server:hover .server-enter {
+	background-image: var(--primary-grad);
+}

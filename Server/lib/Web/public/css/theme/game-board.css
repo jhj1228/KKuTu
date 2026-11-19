@@ -210,7 +210,7 @@ body[data-only="for-gaming"] .GameBox.Product:not(:has(.cw, .pq)) {
 
 .GameBox:not(:has(.cw, .pq)) .jjo-round-time .graph-bar {
 	color: #FFFFFF;
-	background-color: var(--primary);
+	background-color: #3573E4;
 }
 
 .GameBox:not(:has(.cw, .pq)) .round-extreme {
