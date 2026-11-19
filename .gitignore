@@ -9,5 +9,5 @@ Server/lib/sub/global.json
 Server/lib/data/speedquiz/**
 KKUTU_ERROR.log
 /ssl
-db.sql
+db_old.sql
 .vscode

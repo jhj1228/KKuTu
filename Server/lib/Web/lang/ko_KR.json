@@ -630,7 +630,7 @@
 		"helpText": "도움말",
 		"settings": "FA{wrench}",
 		"settingsText": "환경 설정",
-		"community": "FA{comments}",
+		"community": "FA{users}",
 		"communityText": "친구",
 		"bulletin": "FA{bullhorn}&nbsp;알립니다",
 		"leaderboard": "FA{trophy}&nbsp;랭킹",
