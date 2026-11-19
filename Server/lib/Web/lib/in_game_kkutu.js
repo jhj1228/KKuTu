@@ -5137,7 +5137,7 @@ function roomListBar(o) {
 	if (rule.opts.indexOf("ijp") != -1) {
 		$mode.append($("<div>").addClass("expl").html("<h5>" + o.opts.injpick.map(function (item) {
 			return L["theme_" + item];
-		}) + "</h5>"));
+		}).join(", ") + "</h5>"));
 		global.expl($R);
 	}
 
@@ -5377,7 +5377,7 @@ function renderGoods($target, preId, filter, equip, onClick) {
 	list.sort(function (a, b) {
 		var pa = a.key.charAt() == "$", pb = b.key.charAt() == "$";
 
-		if (pa != pb) return pa ? 1 : -1; // 글자 조각은 맨 뒤로
+		if (pa != pb) return pa ? 1 : -1;
 		return (a.obj.name < b.obj.name) ? -1 : 1;
 	});
 	for (i in list) {
@@ -6861,14 +6861,14 @@ function setRoomHead($obj, room) {
 	if (rule.opts.indexOf("ijp") != -1) {
 		$rm.append($("<div>").addClass("expl").html("<h5>" + room.opts.injpick.map(function (item) {
 			return L["theme_" + item];
-		}) + "</h5>"));
+		}).join(", ") + "</h5>"));
 		global.expl($obj);
 	}
 
 	if (rule.opts.indexOf("sqj") != -1) {
 		$rm.append($("<div>").addClass("expl").html("<h5>" + room.opts.speedquizpick.map(function (item) {
 			return L["speedquiz_" + item];
-		}) + "</h5>"));
+		}).join(", ") + "</h5>"));
 		global.expl($obj);
 	}
 }

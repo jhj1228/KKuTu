@@ -258,6 +258,9 @@ span {
 .expl-active {
 	display: block;
 	position: fixed;
+	max-width: 400px;
+	white-space: normal;
+	word-break: keep-all;
 	padding: 5px;
 	/* border-radius: 5px; */
 	pointer-events: none;
