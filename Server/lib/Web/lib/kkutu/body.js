@@ -1569,6 +1569,11 @@ function drawMyDress(avGroup) {
 	$("#dress-exordial").val(my.exordial);
 	drawMyGoods(avGroup || true);
 }
+function isCharPiece(obj) {
+	var g = obj && obj.group;
+
+	return g == "PIX" || g == "PIY" || g == "PIZ";
+}
 function renderGoods($target, preId, filter, equip, onClick) {
 	var $item;
 	var list = [];
@@ -1583,6 +1588,9 @@ function renderGoods($target, preId, filter, equip, onClick) {
 	}
 	for (i in $data.box) list.push({ key: i, obj: iGoods(i), value: $data.box[i] });
 	list.sort(function (a, b) {
+		var pa = isCharPiece(a.obj), pb = isCharPiece(b.obj);
+
+		if (pa != pb) return pa ? 1 : -1;
 		return (a.obj.name < b.obj.name) ? -1 : 1;
 	});
 	for (i in list) {

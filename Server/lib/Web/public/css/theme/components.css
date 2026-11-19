@@ -85,46 +85,6 @@
 }
 
 
-.dialog {
-	color: var(--text);
-	background-color: var(--surface);
-	box-shadow: var(--line), var(--shadow-lg);
-}
-
-.dialog-head {
-	border-bottom-color: var(--border);
-	color: var(--text);
-	font-weight: 700;
-	background-color: var(--head);
-}
-
-.dialog .closeBtn {
-	background-color: #F06571;
-	cursor: pointer;
-}
-
-.dialog .closeBtn:hover {
-	background-color: var(--danger);
-}
-
-.dialog-bar h4 {
-	color: var(--text-2);
-}
-
-.tail-button button:first-child {
-	border-color: var(--primary);
-	color: #FFFFFF;
-	background-color: var(--primary);
-}
-
-.tail-button button:first-child:hover {
-	background-color: var(--primary-hover);
-}
-
-.ranking-me {
-	background-color: var(--primary-soft);
-}
-
 #AutoCompletionBox {
 	background-color: rgba(15, 23, 42, 0.9);
 	box-shadow: var(--shadow-md);
