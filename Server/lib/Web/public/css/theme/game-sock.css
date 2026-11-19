@@ -217,7 +217,7 @@ body[data-only="for-gaming"] .GameBox.Product:has(.jjoriping.cw):has(.bb:not([st
 	min-height: 0;
 	overflow: hidden;
 	color: var(--text);
-	background-color: #E7ECF4;
+	background-color: var(--surface);
 	container-type: size;
 }
 
@@ -255,12 +255,26 @@ body[data-only="for-gaming"] .GameBox.Product:has(.jjoriping.cw):has(.bb:not([st
 	font-size: 6cqmin;
 	font-weight: 700;
 	color: var(--text);
-	background-color: var(--surface);
-	box-shadow: inset 0 0 0 1px #B8C3D4, 0 0 0 1px #B8C3D4;
+	position: relative;
+	background-color: transparent;
+	box-shadow: none;
 }
 
-.GameBox:has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .sock-char[class$="sock-"] {
-	background-color: #E2E8F0;
+.GameBox:has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .sock-char::after {
+	content: "";
+	position: absolute;
+	top: -2px;
+	left: -2px;
+	width: 4px;
+	height: 4px;
+	border-radius: 50% !important;
+	background-color: #B8C3D4;
+	pointer-events: none;
+}
+
+.GameBox:has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .sock-char[style*="12.5%"]:is(:nth-child(-n+8), :nth-child(8n+1))::after,
+.GameBox:has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .sock-char[style*="10%"]:is(:nth-child(-n+10), :nth-child(10n+1))::after {
+	display: none;
 }
 
 .GameBox:has(.jjoriping.cw):has(.bb:not([style*="display: none"])) .sock-picked {
@@ -277,7 +291,7 @@ body[data-only="for-gaming"] .GameBox.Product:has(.jjoriping.cw):has(.bb:not([st
 
 	to {
 		color: transparent;
-		background-color: #E2E8F0;
+		background-color: transparent;
 	}
 }
 
