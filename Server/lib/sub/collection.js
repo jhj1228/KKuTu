@@ -123,6 +123,39 @@ function sqlSelect(q) {
 		return Escape("%K", item[0]);
 	}).join(', ');
 }
+var REGEX_LITERAL = "[^\\\\^$.|?*+()\\[\\]{}]";
+var REGEX_GROUP = "(" + REGEX_LITERAL + "+(?:\\|" + REGEX_LITERAL + "+)*)";
+var REGEX_PREFIX_GROUP = new RegExp("^\\^\\(" + REGEX_GROUP + "\\)([\\s\\S]*)$");
+var REGEX_PREFIX_CHAR = new RegExp("^\\^(" + REGEX_LITERAL + ")([\\s\\S]*)$");
+var REGEX_SUFFIX_GROUP = new RegExp("^([\\s\\S]*)\\(" + REGEX_GROUP + "\\)\\$$");
+var REGEX_SUFFIX_CHAR = new RegExp("^([\\s\\S]*)(" + REGEX_LITERAL + ")\\$$");
+
+function getRegexAnchor(src) {
+	var m;
+
+	if ((m = src.match(REGEX_PREFIX_GROUP)) || (m = src.match(REGEX_PREFIX_CHAR))) {
+		if (m[2].indexOf('|') == -1 && !/^[?*{]/.test(m[2])) return { prefix: m[1].split('|') };
+	}
+	if ((m = src.match(REGEX_SUFFIX_GROUP)) || (m = src.match(REGEX_SUFFIX_CHAR))) {
+		if (m[1].indexOf('|') == -1 && m[1].slice(-1) != "\\") return { suffix: m[2].split('|') };
+	}
+	return null;
+}
+function escapeLike(str) {
+	return str.replace(/[\\%_]/g, "\\$&");
+}
+function sqlRegex(key, src) {
+	var anchor = getRegexAnchor(src);
+	var sql = Escape("%K ~ %L", key, src);
+
+	if (!anchor) return sql;
+	if (anchor.prefix) return "(" + sql + " AND (" + anchor.prefix.map(function (p) {
+		return Escape("%K LIKE %L", key, escapeLike(p) + "%");
+	}).join(" OR ") + "))";
+	return "(" + sql + " AND (" + anchor.suffix.map(function (p) {
+		return Escape("reverse(%K) LIKE %L", key, escapeLike(Array.from(p).reverse().join('')) + "%");
+	}).join(" OR ") + "))";
+}
 function sqlWhere(q) {
 	if (!Object.keys(q).length) return "TRUE";
 
@@ -141,7 +174,7 @@ function sqlWhere(q) {
 			if (!c.length) return "TRUE";
 			return Escape("%I NOT IN (%s)", item[0], c.map(function (i) { return Escape("%V", i); }).join(','));
 		}
-		if (item[1] instanceof RegExp) return Escape("%K ~ %L", item[0], item[1].source);
+		if (item[1] instanceof RegExp) return sqlRegex(item[0], item[1].source);
 		return Escape("%K=%V", item[0], item[1]);
 	}
 	return q.map(wSearch).join(' AND ');

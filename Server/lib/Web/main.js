@@ -178,6 +178,22 @@ DB.ready = function () {
 	}, 4000);
 	JLog.success("DB가 준비되었습니다.");
 
+	["kkutu_ko", "kkutu_ko_g", "kkutu_ko_p", "kkutu_ko_u", "kkutu_en"].reduce(function (prev, table) {
+		return function () {
+			DB.users.direct("CREATE INDEX IF NOT EXISTS " + table + "_id_prefix ON " + table + " (_id varchar_pattern_ops)", function (prefixError) {
+				if (prefixError) JLog.error(table + " 앞글자 인덱스 생성 실패: " + prefixError.toString());
+				DB.users.direct("CREATE INDEX IF NOT EXISTS " + table + "_id_suffix ON " + table + " ((reverse(_id)) text_pattern_ops)", function (suffixError) {
+					if (suffixError) JLog.error(table + " 끝글자 인덱스 생성 실패: " + suffixError.toString());
+					DB.users.direct("ANALYZE " + table, function () {
+						prev();
+					}, true);
+				}, true);
+			}, true);
+		};
+	}, function () {
+		JLog.success("단어 검색 인덱스가 준비되었습니다.");
+	})();
+
 	DB.users.direct("CREATE TABLE IF NOT EXISTS item_enhance (user_id character varying(64) NOT NULL, item_id character varying(64) NOT NULL, level integer NOT NULL DEFAULT 0, PRIMARY KEY (user_id, item_id))", function (enhanceError) {
 		if (enhanceError) JLog.error("아이템 강화 테이블 생성 실패: " + enhanceError.toString());
 	}, true);
