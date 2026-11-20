@@ -591,11 +591,65 @@ exports.run = function (Server, page) {
 	function parseLanguage(word) {
 		return word.match(/[a-zA-Z]/) ? "en" : "ko";
 	}
+	Server.get("/cf-auto", function (req, res) {
+		if (!req.session.profile) return res.json({ error: 400 });
+		var uid = req.session.profile.id;
+		var db = "p";
+
+		MainDB.users.findOne(['_id', uid]).limit(['box', true]).on(function ($user) {
+			if (!$user) return res.json({ error: 400 });
+			var box = $user.box || {};
+			var have = { ko: {}, en: {} };
+			var jobs = [];
+			var found = [];
+			var left;
+			var k, n, ch, lang, table;
+
+			for (k in box) {
+				if (!/^\$WP[ABC]/.test(k)) continue;
+				n = typeof box[k] == "number" ? box[k] : ((box[k] && box[k].value) || 0);
+				if (n <= 0) continue;
+				ch = k.slice(4);
+				lang = parseLanguage(ch);
+				have[lang][ch] = (have[lang][ch] || 0) + n;
+			}
+			for (lang in have) {
+				table = MainDB.kkutu[lang === "ko" && ["g", "p", "u"].indexOf(db) !== -1 ? lang + "_" + db : lang];
+				if (table && Object.keys(have[lang]).length) jobs.push([table, have[lang]]);
+			}
+			if (!jobs.length) return res.json({ error: 471 });
+			left = jobs.length;
+			jobs.forEach(function (job) {
+				findComposableWords(job[0], job[1], function (words) {
+					found = found.concat(words);
+					if (--left) return;
+					if (!found.length) return res.json({ error: 471 });
+					res.json({ word: found[Math.floor(Math.random() * found.length)] });
+				});
+			});
+		});
+	});
+	function findComposableWords(table, have, callback) {
+		var cls = Object.keys(have).map(function (c) { return c.replace(/[\\\]\[^-]/g, "\\$&"); }).join('');
+
+		table.find(['_id', new RegExp("^[" + cls + "]{2,6}$")]).limit(5000).on(function ($docs) {
+			callback(($docs || []).map(function (doc) { return doc._id; }).filter(function (word) {
+				var used = {};
+				var i;
+
+				for (i = 0; i < word.length; i++) {
+					used[word[i]] = (used[word[i]] || 0) + 1;
+					if (used[word[i]] > have[word[i]]) return false;
+				}
+				return true;
+			}));
+		});
+	}
 	Server.post("/cf", function (req, res) {
 		if (!req.session.profile) return res.json({ error: 400 });
 		var uid = req.session.profile.id;
 		var tray = (req.body.tray || "").split('|');
-		var db = req.body.db || "p";
+		var db = "p";
 		var i, o;
 
 		if (tray.length < 1 || tray.length > 6) return res.json({ error: 400 });

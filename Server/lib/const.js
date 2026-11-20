@@ -308,7 +308,7 @@ exports.MISSION_en = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"
 
 exports.KO_INJEONG = [
 	"NEX", "IMS", "VOC", "RAG", "KTV", "ETP", "NAC", "NFX",
-	"KOT", "THP", "JLN", "LVL", "LKT", "LOL", "MIN", "MAF", "JAN",
+	"KRA", "KOT", "THP", "JLN", "LVL", "LKT", "LOL", "MIN", "MAF", "JAN",
 	"MAP", "MOB", "KCP", "BGP", "BUS", "BLA", "NVL", "STA",
 	"URT", "ELW", "MOV", "OVW", "WOW", "WEB", "KPO", "CSG",
 	"CKR", "CRO", "PJS", "HSS", "KMU", "KRP", "KAD", "HOS"

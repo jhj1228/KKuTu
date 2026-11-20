@@ -733,7 +733,7 @@ block Middle
 		div.dialog-bar.tail-button
 			button#enhance-ok= L('enhanceDo')
 			div#enhance-cost
-	+Dialog('CharFactoryDiag', 500, 410, L('charFactory'))
+	+Dialog('CharFactoryDiag', 500, 440, L('charFactory'))
 		div.dialog-bar(style='width: 300px;')
 			div#cf-tray
 			div#cf-dict
@@ -743,9 +743,11 @@ block Middle
 		div.dialog-bar(style='width: 200px;')
 			div#cf-cost
 		div.dialog-bar
+			input#cf-search(type='text', placeholder=L('cfSearch'), style='float: none; margin-bottom: 3px; width: 100%; height: 32px; box-sizing: border-box;')
 			div#cf-goods.goods-box
 		div.dialog-bar.tail-button
 			button#cf-compose= L('cfCompose')
+			button#cf-auto= L('cfAuto')
 	+Dialog('ChatLogDiag', 350, 500, L('chatLog'))
 		div#chat-log-board(style='height: 475px; font-size: 11px; overflow-y: scroll;')
 	+Dialog('ObtainDiag', 300, 200, L('notice'), true)

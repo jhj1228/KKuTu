@@ -894,10 +894,10 @@ function toggleShutBlock(target) {
 	}
 	localStorage.setItem('_shut', JSON.stringify($data._shut));
 }
-function tryDict(text, callback) {
+function tryDict(text, callback, db) {
 	var text = text.replace(/[^\sa-zA-Zㄱ-ㅎ0-9가-힣]/g, "");
 	var lang = text.match(/[ㄱ-ㅎ가-힣]/) ? 'ko' : 'en';
-	var db = $("#dict-db").val();
+	db = db || $("#dict-db").val();
 
 	if (text.length < 1) return callback({ error: 404 });
 	$.get("/dict/" + text + "?lang=" + lang + "&db=" + db, callback);
@@ -1685,6 +1685,18 @@ function requestEquip(id, isLeft) {
 		});
 	});
 }
+function getBoxCount(id) {
+	var bd = $data.box[id];
+
+	return typeof bd == "number" ? bd : ((bd && bd.value) || 0);
+}
+function filterCFGoods() {
+	var q = $.trim($("#cf-search").val() || "");
+
+	$("#cf-goods .dress-item").each(function () {
+		$(this).toggle(!q || q.indexOf(this.id.slice(7)) != -1);
+	});
+}
 function drawCharFactory() {
 	var $tray = $("#cf-tray");
 	var $dict = $("#cf-dict");
@@ -1713,6 +1725,28 @@ function drawCharFactory() {
 			fail(434);
 		}
 	});
+	filterCFGoods();
+	$data._cfFillWord = function (word) {
+		var GRADES = ['WPC', 'WPB', 'WPA'];
+		var chars = Array.from(word);
+		var tray = [];
+		var used = {};
+		var i, j, id;
+
+		if (chars.length > 6) return false;
+		for (i = 0; i < chars.length; i++) {
+			for (j = 0; j < GRADES.length; j++) {
+				id = "$" + GRADES[j] + chars[i];
+				if (getBoxCount(id) - (used[id] || 0) > 0) break;
+			}
+			if (j == GRADES.length) return false;
+			used[id] = (used[id] || 0) + 1;
+			tray.push(id);
+		}
+		$data._tray = tray;
+		drawCFTray();
+		return true;
+	};
 	function trayEmpty() {
 		$tray.html($("<h4>").css('padding-top', "8px").width("100%").html(L['cfTray']));
 	}
@@ -1750,7 +1784,7 @@ function drawCharFactory() {
 			viewReward(word, level, blend);
 			$stage.dialog.cfCompose.addClass("cf-composable");
 			if (!res.error) $dict.html(processWord(res.word, res.mean, res.theme, res.type.split(',')));
-		});
+		}, "p");
 		if (word == "") trayEmpty();
 	}
 	function viewReward(text, level, blend) {

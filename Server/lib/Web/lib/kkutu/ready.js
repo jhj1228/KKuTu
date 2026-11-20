@@ -1308,10 +1308,19 @@ $(document).ready(function () {
 		});
 	});
 
+	$("#cf-search").on('input', function (e) {
+		filterCFGoods();
+	});
+	$("#cf-auto").on('click', function (e) {
+		$.get("/cf-auto", function (res) {
+			if (res.error) return fail(res.error);
+			if (!$data._cfFillWord || !$data._cfFillWord(res.word)) return fail(471);
+		});
+	});
 	$stage.dialog.cfCompose.on('click', function (e) {
 		if (!$stage.dialog.cfCompose.hasClass("cf-composable")) return fail(436);
 		showConfirm(L['cfSureCompose'], function () {
-			$.post("/cf", { tray: $data._tray.join('|'), db: $("#dict-db").val() }, function (res) {
+			$.post("/cf", { tray: $data._tray.join('|') }, function (res) {
 				var i;
 
 				if (res.error) return fail(res.error);
