@@ -178,6 +178,10 @@ DB.ready = function () {
 	}, 4000);
 	JLog.success("DB가 준비되었습니다.");
 
+	DB.users.direct("CREATE TABLE IF NOT EXISTS item_enhance (user_id character varying(64) NOT NULL, item_id character varying(64) NOT NULL, level integer NOT NULL DEFAULT 0, PRIMARY KEY (user_id, item_id))", function (enhanceError) {
+		if (enhanceError) JLog.error("아이템 강화 테이블 생성 실패: " + enhanceError.toString());
+	}, true);
+
 	DB.users.direct("CREATE TABLE IF NOT EXISTS mailbox_claims (user_id character varying(64) NOT NULL, reward_id character varying(64) NOT NULL, PRIMARY KEY (user_id, reward_id))", function (legacyError) {
 		if (legacyError) return JLog.error("우편함 기존 이력 테이블 생성 실패: " + legacyError.toString());
 

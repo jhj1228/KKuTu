@@ -212,6 +212,7 @@ $(document).ready(function () {
 			dress: $("#DressDiag"),
 			dressOK: $("#dress-ok"),
 			wardrobe: $("#WardrobeDiag"),
+			enhance: $("#EnhanceDiag"),
 			wardrobeSave: $("#wardrobe-save"),
 			charFactory: $("#CharFactoryDiag"),
 			cfCompose: $("#cf-compose"),
@@ -1126,6 +1127,42 @@ $(document).ready(function () {
 	$("#dress-cf").on('click', function (e) {
 		if ($data._gaming) return fail(438);
 		if (showDialog($stage.dialog.charFactory)) drawCharFactory();
+	});
+	$("#dress-enhance").on('click', function (e) {
+		if ($data.guest) return fail(421);
+		if ($data._gaming) return fail(438);
+		if (!showDialog($("#EnhanceDiag"))) return;
+		loadEnhance(drawEnhance);
+	});
+	$("#enhance-ok").on('click', function (e) {
+		var id = $data._enhSel;
+
+		if (!id) return;
+		if ($data._gaming) return fail(438);
+		showConfirm(L['enhanceConfirm'], function () {
+			if ($data._gaming) return fail(438);
+			$("#enhance-ok").prop('disabled', true);
+			$.post("/enhance/" + encodeURIComponent(id), function (res) {
+				var my = $data.users[$data.id];
+
+				if (res.error) {
+					drawEnhanceInfo();
+					return fail(res.error);
+				}
+				my.money = res.money;
+				$data.enhance.levels[id] = res.level;
+				if (res.destroyed) {
+					my.box = $data.box = res.box;
+					$data._enhSel = null;
+				}
+				updateMe();
+				send('refresh');
+				drawEnhance();
+				playSound(res.success ? 'success' : 'fail');
+				if (res.destroyed) showAlert(L['enhanceDestroyed'] + "\n" + commify(res.refund) + L['enhanceRefund']);
+				else showAlert(L[res.success ? 'enhanceSuccess' : 'enhanceFail']);
+			});
+		});
 	});
 	$("#dress-wardrobe").on('click', function (e) {
 		if ($data.guest) return fail(421);
@@ -4173,6 +4210,7 @@ function onMessage(data) {
 				});
 			}
 			if (data.caj) checkAge();
+			if (!$data.guest) loadEnhance();
 			updateCommunity();
 			updateFriendRequests();
 			showBlacklist();
@@ -4907,6 +4945,7 @@ function checkRoom(modify) {
 	}
 	if ($data._gaming != $data.room.gaming) {
 		if ($data.room.gaming) {
+			$("#EnhanceDiag").hide();
 			gameReady();
 			$data._replay = false;
 			startRecord($data.room.game.title);
@@ -5019,7 +5058,9 @@ function updateUserList(refresh) {
 
 		for (i in $data.users) len++;
 	}
-	$stage.lobby.userListTitle.html(L['UserList'].replace("FA{users}", "<i class='fa fa-users'></i>")
+	$stage.lobby.userListTitle.html("<i class='fa fa-users'></i>"
+		+ "&lt;<b>" + '서버' + "</b>&gt; "
+		+ L['UserList'].replace("FA{users}", "")
 		+ " [" + len + L['MN'] + "]");
 
 	if (refresh) {
@@ -6485,7 +6526,7 @@ function loadShop() {
 				.append($("<div>").addClass("jt-image goods-image").css('background-image', "url(" + url + ")"))
 				.append($("<div>").addClass("goods-title").html(iName(item._id)))
 				.append($("<div>").addClass("goods-cost").html(commify(item.cost) + L['ping']))
-				.append(explainGoods(item, false))
+				.append(explainGoods(item, false, null, true))
 				.on('click', onGoods));
 		});
 		global.expl($body);
@@ -6508,10 +6549,108 @@ function filterShop(by, query) {
 		else $o.show();
 	}
 }
-function explainGoods(item, equipped, expire) {
+function getEnhanceLevel(id) {
+	return ($data.enhance && $data.enhance.levels[id]) || 0;
+}
+function isEnhanceOption(key) {
+	return !!$data.enhance && $data.enhance.options.indexOf(key) != -1;
+}
+function getEnhancedOption(id, key, value, level) {
+	if (!isEnhanceOption(key)) return value;
+	return value * (1 + $data.enhance.bonus * level);
+}
+function formatEnhanceOption(key, value) {
+	if (key.charAt(0) == 'g') return "+" + (value * 100).toFixed(1) + "%p";
+	return "+" + Number(value.toFixed(2));
+}
+function loadEnhance(callback) {
+	$.get('/enhance', function (res) {
+		if (res.error) return;
+		$data.enhance = res;
+		if (callback) callback();
+	});
+}
+function drawEnhance() {
+	var my = $data.users[$data.id];
+	var $goods = $("#enhance-goods");
+
+	var equipped = {};
+	var part;
+
+	for (part in (my.equip || {})) equipped[my.equip[part]] = true;
+	renderGoods($goods, 'enhance', true, {}, function (e) {
+		var id = $(e.currentTarget).attr('id').slice(8);
+
+		$goods.children(".cf-tray-selected").removeClass("cf-tray-selected");
+		if ($data._enhSel == id) {
+			$data._enhSel = null;
+		} else {
+			$data._enhSel = id;
+			$(e.currentTarget).addClass("cf-tray-selected");
+		}
+		drawEnhanceInfo();
+	});
+	$goods.children(".dress-item").each(function () {
+		var id = this.id.slice(8);
+		var opts = iGoods(id).options || {};
+		var ok = false;
+		var k;
+
+		for (k in opts) if (isEnhanceOption(k)) ok = true;
+		if (!ok || equipped[id]) return $(this).remove();
+		if (id == $data._enhSel) $(this).addClass("cf-tray-selected");
+	});
+	drawEnhanceInfo();
+}
+function drawEnhanceInfo() {
+	var my = $data.users[$data.id];
+	var id = $data._enhSel;
+	var $before = $("#enhance-before").empty();
+	var $after = $("#enhance-after").empty();
+	var $cost = $("#enhance-cost").removeClass("cf-composable");
+	var $ok = $("#enhance-ok").prop('disabled', true);
+	var cfg = $data.enhance;
+	var obj, level, cost;
+
+	if (!cfg || !id || !document.getElementById("enhance-" + id)) {
+		$data._enhSel = null;
+		$before.append($("<div>").addClass("comm-empty").html(L['enhanceSelect']));
+		$cost.html("-");
+		return;
+	}
+	obj = iGoods(id);
+	level = getEnhanceLevel(id);
+	appendEnhanceView($before, obj, level);
+	if (level >= cfg.max) {
+		$after.append($("<div>").addClass("comm-empty").html(L['enhanceMax']));
+		$cost.html(L['enhanceMax']);
+		return;
+	}
+	appendEnhanceView($after, obj, level + 1);
+	cost = cfg.cost[level];
+	$cost.html(L['enhanceCost'] + " " + commify(cost) + L['ping'] + " / " + L['enhanceRate'] + " " + Math.round(cfg.rate[level] * 100) + "%"
+		+ (level >= cfg.destroyLevel ? " / " + L['enhanceDestroyRate'] + " " + Number(((1 - cfg.rate[level]) * cfg.destroy[level] * 100).toFixed(1)) + "%" : ""));
+	if (my.money >= cost) {
+		$cost.addClass("cf-composable");
+		$ok.prop('disabled', false);
+	}
+
+	function appendEnhanceView($t, obj, lv) {
+		var k;
+
+		$t.append(getImage(obj.image).addClass("cf-rew-image"))
+			.append($("<div>").addClass("enhance-name ellipse").text(iName(obj._id) + (lv ? " (+" + lv + ")" : "")));
+		for (k in obj.options) {
+			if (!isEnhanceOption(k)) continue;
+			$t.append($("<div>").addClass("enhance-opt").html(L['OPTS_' + k] + " " + formatEnhanceOption(k, getEnhancedOption(obj._id, k, obj.options[k], lv))));
+		}
+	}
+}
+function explainGoods(item, equipped, expire, plain) {
 	var i;
+	var level = plain ? 0 : getEnhanceLevel(item._id);
 	var $R = $("<div>").addClass("expl dress-expl")
-		.append($("<div>").addClass("dress-item-title").html(iName(item._id) + (equipped ? L['equipped'] : "")))
+		.append($("<div>").addClass("dress-item-title").html(iName(item._id) + (level ? " (+" + level + ")" : "") + (equipped ? L['equipped'] : "")))
 		.append($("<div>").addClass("dress-item-group").html(L['GROUP_' + item.group]))
 		.append($("<div>").addClass("dress-item-expl").html(iDesc(item._id)));
 	var $opts = $("<div>").addClass("dress-item-opts");
@@ -6523,9 +6662,9 @@ function explainGoods(item, equipped, expire) {
 		if (i == "gif") continue;
 		var k = i.charAt(0);
 
-		txt = item.options[i];
+		txt = getEnhancedOption(item._id, i, item.options[i], level);
 		if (k == 'g') txt = "+" + (txt * 100).toFixed(1) + "%p";
-		else if (k == 'h') txt = "+" + txt;
+		else if (k == 'h') txt = "+" + (typeof txt == "number" ? Number(txt.toFixed(2)) : txt);
 
 		$opts.append($("<label>").addClass("item-opts-head").html(L['OPTS_' + i]))
 			.append($("<label>").addClass("item-opts-body").html(txt))

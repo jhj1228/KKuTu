@@ -178,6 +178,21 @@
             font-size: 18px;
         }
 
+        li ul {
+            margin-top: 6px;
+        }
+
+        li li {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        li li::before {
+            content: '-';
+            font-size: 15px;
+            left: 5px;
+        }
+
         .highlight {
             font-weight: bold;
             color: #333;
@@ -193,8 +208,8 @@
 
     <nav class="nav-header">
         <button class="nav-btn active" onclick="switchTab('tab-updates', this)">업데이트</button>
-        <button class="nav-btn" onclick="switchTab('tab-notices', this)">공지사항</button>
-        <!-- <button class="nav-btn" onclick="switchTab('tab-events', this)">단어 업데이트</button> -->
+        <!-- <button class="nav-btn" onclick="switchTab('tab-notices', this)">공지사항</button> -->
+        <button class="nav-btn" onclick="switchTab('tab-events', this)">추가 예정 기능</button>
     </nav>
 
     <div class="content-container">
@@ -704,15 +719,47 @@
             </div>
         </div>
         <div id="tab-events" class="tab-content">
-            <!-- <div class="card" style="border-left: 5px solid #ff5e57;">
-                <div class="card-header">
-                    <span class="header-title">공지사항</span>
-                    <span class="badge bg-red">필독</span>
-                </div>
+            <div class="card" style="border-left: 5px solid skyblue;">
                 <ul>
-                    <li>공지사항이 없습니다.</li>
+                    <li><b>프로필 창에 프로필 배지 추가</b></li>
                 </ul>
-            </div> -->
+                <ul>
+                    <li><b>글자 조합소 개편</b>
+                        <ul>
+                            <li>글자 조각 검색 추가</li>
+                            <li>글자 조각 자동 조합 기능 추가</li>
+                            <li>글자 조각 조합 시 일정 확률로 "☆ 글자 조각" 획득</li>
+                            <li>"☆ 글자 조각"은 어디든지 넣을 수 있으며, 획득 보상을 강화하는 역할</li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li><b>그림퀴즈 개편</b>
+                        <ul>
+                            <li>"되돌리기" 기능 추가</li>
+                            <li>기본 제공 색상 외에 직접 색상을 선택할 수 있는 기능 추가</li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li><b>아이템 강화 기능 추가</b></li>
+                </ul>
+                <ul>
+                    <li><b>GUEST는 정해진 방 제목만 선택할 수 있도록 개선</b></li>
+                </ul>
+                <ul>
+                    <li><b>랭킹에 변동사항 추가</b></li>
+                </ul>
+                <ul>
+                    <li><b>오끄감 스택을 무제한으로 확장</b></li>
+                </ul>
+                <ul>
+                    <li><b>유저 차단 시 차단된 유저 아바타의 차단 아이콘 표시</b></li>
+                </ul>
+                <ul>
+                    <li><b>채팅 자동 스크롤 옵션 제공</b></li>
+                </ul>
+            </div>
         </div>
     </div>
 

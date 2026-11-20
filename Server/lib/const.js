@@ -62,6 +62,16 @@ exports.OPTIONS = {
 	'apm': { name: "Apmal" } // 앞말잇기
 };
 exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
+exports.ENHANCE = {
+	MAX: 10,
+	BONUS: 0.1,
+	OPTIONS: ["gEXP", "hEXP", "gMNY", "hMNY"],
+	RATE: [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1],
+	COST: [100, 200, 300, 500, 800, 1200, 1700, 2300, 3000, 4000],
+	DESTROY_LEVEL: 8,
+	DESTROY: [0, 0, 0, 0, 0, 0, 0, 0, 0.3, 0.4],
+	REFUND: 0.3
+};
 exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
 exports.AVAIL_EQUIP = [
 	"NIK", "BDG1", "BDG2", "BDG3", "BDG4",

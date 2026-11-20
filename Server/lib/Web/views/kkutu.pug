@@ -692,7 +692,7 @@ block Middle
 			button#dress-cf= L('charFactory')
 			button#dress-wardrobe= L('wardrobe')
 			button#dress-enhance= L('Enhance')
-	+Dialog('WardrobeDiag', 660, 290, L('wardrobe'))
+	+Dialog('WardrobeDiag', 660, 270, L('wardrobe'))
 		style.
 			.wardrobe-view {
 				position: relative;
@@ -719,6 +719,20 @@ block Middle
 		div.dialog-bar.tail-button
 			button#wardrobe-save= L('save')
 			button#wardrobe-close= L('NO')
+	+Dialog('EnhanceDiag', 460, 340, L('Enhance'))
+		div.dialog-bar(style='width: 200px;')
+			h4(style='border-bottom: 1px solid #CCCCCC; width: 100%; height: 24px;')= L('enhanceBefore')
+			div#enhance-before.enhance-view
+		div.dialog-bar.enhance-arrow(style='width: 60px;')
+			+FA('arrow-right')
+		div.dialog-bar(style='width: 200px;')
+			h4(style='border-bottom: 1px solid #CCCCCC; width: 100%; height: 24px;')= L('enhanceAfter')
+			div#enhance-after.enhance-view
+		div.dialog-bar
+			div#enhance-goods.goods-box
+		div.dialog-bar.tail-button
+			button#enhance-ok= L('enhanceDo')
+			div#enhance-cost
 	+Dialog('CharFactoryDiag', 500, 410, L('charFactory'))
 		div.dialog-bar(style='width: 300px;')
 			div#cf-tray

@@ -21,6 +21,7 @@ var Cluster = require("cluster");
 var Const = require('../const');
 var Lizard = require('../sub/lizard');
 var JLog = require('../sub/jjlog');
+var PgEscape = require('pg-escape');
 var PENALTY = {};
 // 망할 셧다운제 var Ajae = require("../sub/ajae");
 var DB;
@@ -487,6 +488,7 @@ exports.Client = function (socket, profile, sid) {
 			my.data = new exports.Data($user.kkutu);
 			my.money = Number($user.money);
 			my.friends = $user.friends || {};
+			my.loadEnhance();
 			if (first) {
 				my.flush();
 				DB.users.update(['_id', my.id]).set(['nickname', my.nickname || "별명 미지정"]).on(function ($body) {
@@ -781,9 +783,24 @@ exports.Client = function (socket, profile, sid) {
 			my.sendError(400);
 		}
 	};
+	my.loadEnhance = function () {
+		if (my.guest) {
+			my.enhance = {};
+			return;
+		}
+		DB.users.direct("SELECT item_id, level FROM item_enhance WHERE user_id = " + PgEscape.literal(my.id), function (error, $result) {
+			var enhance = {};
+			var i;
+
+			if (error || !$result) return;
+			for (i = 0; i < $result.rows.length; i++) enhance[$result.rows[i].item_id] = Number($result.rows[i].level);
+			if (ROOM[my.place] && ROOM[my.place].gaming) my._nextEnhance = enhance;
+			else my.enhance = enhance;
+		}, true);
+	};
 	my.applyEquipOptions = function (rw) {
 		var $obj;
-		var i, j;
+		var i, j, k;
 		var pm = rw.playTime / 60000;
 
 		rw._score = Math.round(rw.score);
@@ -795,12 +812,13 @@ exports.Client = function (socket, profile, sid) {
 			if (!$obj) continue;
 			if (!$obj.options) continue;
 			for (j in $obj.options) {
-				if (j == "gEXP") rw.score += rw._score * $obj.options[j];
-				else if (j == "hEXP") rw.score += $obj.options[j] * pm;
-				else if (j == "gMNY") rw.money += rw._money * $obj.options[j];
-				else if (j == "hMNY") rw.money += $obj.options[j] * pm;
+				k = $obj.options[j] * (1 + Const.ENHANCE.BONUS * ((my.enhance || {})[my.equip[i]] || 0));
+				if (j == "gEXP") rw.score += rw._score * k;
+				else if (j == "hEXP") rw.score += k * pm;
+				else if (j == "gMNY") rw.money += rw._money * k;
+				else if (j == "hMNY") rw.money += k * pm;
 				else continue;
-				rw._blog.push("q" + j + $obj.options[j]);
+				rw._blog.push("q" + j + k);
 			}
 		}
 		if (rw.together && my.okgCount > 0) {
@@ -814,6 +832,10 @@ exports.Client = function (socket, profile, sid) {
 		}
 		rw.score = Math.round(rw.score);
 		rw.money = Math.round(rw.money);
+		if (my._nextEnhance) {
+			my.enhance = my._nextEnhance;
+			delete my._nextEnhance;
+		}
 	};
 	my.obtain = function (k, q, flush) {
 		if (my.guest) return;

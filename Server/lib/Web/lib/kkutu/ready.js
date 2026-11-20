@@ -139,6 +139,7 @@ $(document).ready(function () {
 			dress: $("#DressDiag"),
 			dressOK: $("#dress-ok"),
 			wardrobe: $("#WardrobeDiag"),
+			enhance: $("#EnhanceDiag"),
 			wardrobeSave: $("#wardrobe-save"),
 			charFactory: $("#CharFactoryDiag"),
 			cfCompose: $("#cf-compose"),
@@ -1053,6 +1054,42 @@ $(document).ready(function () {
 	$("#dress-cf").on('click', function (e) {
 		if ($data._gaming) return fail(438);
 		if (showDialog($stage.dialog.charFactory)) drawCharFactory();
+	});
+	$("#dress-enhance").on('click', function (e) {
+		if ($data.guest) return fail(421);
+		if ($data._gaming) return fail(438);
+		if (!showDialog($("#EnhanceDiag"))) return;
+		loadEnhance(drawEnhance);
+	});
+	$("#enhance-ok").on('click', function (e) {
+		var id = $data._enhSel;
+
+		if (!id) return;
+		if ($data._gaming) return fail(438);
+		showConfirm(L['enhanceConfirm'], function () {
+			if ($data._gaming) return fail(438);
+			$("#enhance-ok").prop('disabled', true);
+			$.post("/enhance/" + encodeURIComponent(id), function (res) {
+				var my = $data.users[$data.id];
+
+				if (res.error) {
+					drawEnhanceInfo();
+					return fail(res.error);
+				}
+				my.money = res.money;
+				$data.enhance.levels[id] = res.level;
+				if (res.destroyed) {
+					my.box = $data.box = res.box;
+					$data._enhSel = null;
+				}
+				updateMe();
+				send('refresh');
+				drawEnhance();
+				playSound(res.success ? 'success' : 'fail');
+				if (res.destroyed) showAlert(L['enhanceDestroyed'] + "\n" + commify(res.refund) + L['enhanceRefund']);
+				else showAlert(L[res.success ? 'enhanceSuccess' : 'enhanceFail']);
+			});
+		});
 	});
 	$("#dress-wardrobe").on('click', function (e) {
 		if ($data.guest) return fail(421);

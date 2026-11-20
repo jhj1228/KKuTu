@@ -141,6 +141,34 @@ function claimMailboxItem(uid, reward, callback) {
 	}, true);
 }
 
+function getEnhanceLevels(uid, callback) {
+	MainDB.users.direct("SELECT item_id, level FROM item_enhance WHERE user_id = " + PgEscape.literal(uid), function (error, $result) {
+		var levels = {};
+		var i;
+
+		if (error) return callback(error);
+		for (i = 0; i < $result.rows.length; i++) levels[$result.rows[i].item_id] = Number($result.rows[i].level);
+		callback(null, levels);
+	}, true);
+}
+function isEnhanceable(options) {
+	var i;
+
+	if (!options) return false;
+	for (i in options) if (Const.ENHANCE.OPTIONS.includes(i)) return true;
+	return false;
+}
+function hasItem($user, gid) {
+	var bd = ($user.box || {})[gid];
+
+	return !!bd && (bd.value > 0 || bd > 0);
+}
+function isEquipped($user, gid) {
+	var part;
+
+	for (part in ($user.equip || {})) if ($user.equip[part] == gid) return true;
+	return false;
+}
 function obtain($user, key, value, term, addValue) {
 	var now = (new Date()).getTime();
 
@@ -395,6 +423,86 @@ exports.run = function (Server, page) {
 				});
 			});
 		} else res.json({ error: 423 });
+	});
+	Server.get("/enhance", function (req, res) {
+		if (!req.session.profile) return res.json({ error: 400 });
+		if (req.session.profile.guest) return res.json({ error: 421 });
+
+		getEnhanceLevels(req.session.profile.id, function (error, levels) {
+			if (error) return res.json({ error: 500 });
+			res.json({
+				levels: levels,
+				max: Const.ENHANCE.MAX,
+				bonus: Const.ENHANCE.BONUS,
+				options: Const.ENHANCE.OPTIONS,
+				rate: Const.ENHANCE.RATE,
+				cost: Const.ENHANCE.COST,
+				destroyLevel: Const.ENHANCE.DESTROY_LEVEL,
+				destroy: Const.ENHANCE.DESTROY,
+				refund: Const.ENHANCE.REFUND
+			});
+		});
+	});
+	Server.post("/enhance/:id", function (req, res) {
+		if (!req.session.profile) return res.json({ error: 400 });
+		if (req.session.profile.guest) return res.json({ error: 421 });
+		var uid = req.session.profile.id;
+		var gid = req.params.id;
+
+		MainDB.kkutu_shop.findOne(['_id', gid]).on(function ($item) {
+			if (!$item) return res.json({ error: 430 });
+			if (!isEnhanceable($item.options)) return res.json({ error: 468 });
+
+			MainDB.users.findOne(['_id', uid]).limit(['money', true], ['box', true], ['equip', true]).on(function ($user) {
+				if (!$user) return res.json({ error: 400 });
+				if (isEquipped($user, gid)) return res.json({ error: 470 });
+				if (!hasItem($user, gid)) return res.json({ error: 430 });
+
+				getEnhanceLevels(uid, function (error, levels) {
+					var level = levels[gid] || 0;
+					var cost, success, payQuery;
+
+					if (error) return res.json({ error: 500 });
+					if (level >= Const.ENHANCE.MAX) return res.json({ error: 469 });
+					cost = Const.ENHANCE.COST[level];
+					if (Number($user.money) < cost) return res.json({ error: 407 });
+					success = Math.random() < Const.ENHANCE.RATE[level];
+					payQuery = "UPDATE users SET money = money - " + cost + " WHERE _id = " + PgEscape.literal(uid) + " AND money >= " + cost + " RETURNING money";
+
+					MainDB.users.direct(payQuery, function (payError, $paid) {
+						var money;
+
+						if (payError) return res.json({ error: 500 });
+						if (!$paid.rowCount) return res.json({ error: 407 });
+						money = Number($paid.rows[0].money);
+						if (!success) {
+							if (level >= Const.ENHANCE.DESTROY_LEVEL && Math.random() < Const.ENHANCE.DESTROY[level]) return destroyItem();
+							JLog.log("[강화 실패] " + gid + " +" + level + " by " + uid);
+							return res.json({ result: 200, success: false, level: level, money: money });
+						}
+						MainDB.users.direct("INSERT INTO item_enhance (user_id, item_id, level) VALUES (" + PgEscape.literal(uid) + ", " + PgEscape.literal(gid) + ", " + (level + 1) + ") ON CONFLICT (user_id, item_id) DO UPDATE SET level = EXCLUDED.level", function (enhanceError) {
+							if (enhanceError) return res.json({ error: 500 });
+							JLog.log("[강화 성공] " + gid + " +" + (level + 1) + " by " + uid);
+							res.json({ result: 200, success: true, level: level + 1, money: money });
+						}, true);
+					}, true);
+
+					function destroyItem() {
+						var refund = Math.floor(Math.max(0, Number($item.cost) || 0) * Const.ENHANCE.REFUND);
+
+						consume($user, gid, 1, true);
+						MainDB.users.direct("UPDATE users SET money = money + " + refund + ", box = " + PgEscape.literal(JSON.stringify($user.box)) + "::json WHERE _id = " + PgEscape.literal(uid) + " RETURNING money", function (destroyError, $destroyed) {
+							if (destroyError || !$destroyed.rowCount) return res.json({ error: 500 });
+							MainDB.users.direct("DELETE FROM item_enhance WHERE user_id = " + PgEscape.literal(uid) + " AND item_id = " + PgEscape.literal(gid), function (resetError) {
+								if (resetError) return res.json({ error: 500 });
+								JLog.log("[강화 파괴] " + gid + " +" + level + " by " + uid + " (환급 " + refund + ")");
+								res.json({ result: 200, success: false, destroyed: true, refund: refund, level: 0, money: Number($destroyed.rows[0].money), box: $user.box });
+							}, true);
+						}, true);
+					}
+				});
+			});
+		});
 	});
 	Server.post("/equip/:id", function (req, res) {
 		if (!req.session.profile) return res.json({ error: 400 });
