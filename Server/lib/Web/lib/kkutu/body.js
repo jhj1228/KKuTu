@@ -1718,6 +1718,7 @@ function drawCharFactory() {
 
 		if ($data._tray.length >= 6) return fail(435);
 		for (i in $data._tray) if ($data._tray[i] == id) c++;
+		if (id.slice(4) == "☆" && c) return fail(472);
 		if (bd - c > 0) {
 			$data._tray.push(id);
 			drawCFTray();
@@ -1776,7 +1777,7 @@ function drawCharFactory() {
 			var blend = false;
 
 			if (res.error) {
-				if (word.length == 3) {
+				if (word.length == 3 && word.indexOf("☆") == -1) {
 					blend = true;
 					$dict.html(L['cfBlend']);
 				} else return $dict.html(L['wpFail_' + res.error]);

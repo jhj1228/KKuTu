@@ -24,6 +24,8 @@ var GLOBAL = require("../../sub/global.json");
 var Const = require("../../const");
 
 var ATTENDANCE_REWARD = 100;
+var CF_STAR = "$WPC☆";
+var CF_STAR_RATE = 0.1;
 var LEVEL_REWARD = 5000;
 var OKG_TIME = 600000;
 var PLAY_REWARD_TIME = 1800000;
@@ -610,6 +612,7 @@ exports.run = function (Server, page) {
 				n = typeof box[k] == "number" ? box[k] : ((box[k] && box[k].value) || 0);
 				if (n <= 0) continue;
 				ch = k.slice(4);
+				if (ch == "☆") continue;
 				lang = parseLanguage(ch);
 				have[lang][ch] = (have[lang][ch] || 0) + n;
 			}
@@ -666,13 +669,16 @@ exports.run = function (Server, page) {
 				req[tray[i]] = (req[tray[i]] || 0) + 1;
 				if (($user.box[tray[i]] || 0) < req[tray[i]]) return res.json({ error: 434 });
 			}
-			var lang = parseLanguage(word);
+			if ((word.match(/☆/g) || []).length > 1) return res.json({ error: 472 });
+			var plain = word.replace(/☆/g, "");
+			if (!plain) return res.json({ error: 404 });
+			var lang = parseLanguage(plain);
 			var DB = MainDB.kkutu[lang === "ko" && ["g", "p", "u"].indexOf(db) !== -1 ? lang + "_" + db : lang];
 
 			if (!DB) return res.json({ error: 400 });
-			DB.findOne(['_id', word]).on(function ($dic) {
+			DB.findOne(['_id', plain]).on(function ($dic) {
 				if (!$dic) {
-					if (word.length == 3) {
+					if (plain.length == 3 && plain == word) {
 						blend = true;
 					} else return res.json({ error: 404 });
 				}
@@ -684,7 +690,7 @@ exports.run = function (Server, page) {
 
 					if (Math.random() >= o.rate) continue;
 					if (o.key.charAt(4) == "?") {
-						o.key = o.key.slice(0, 4) + (blend ? blendWord(word) : word.charAt(Math.floor(Math.random() * word.length)));
+						o.key = o.key.slice(0, 4) + (blend ? blendWord(plain) : plain.charAt(Math.floor(Math.random() * plain.length)));
 					}
 					obtain($user, o.key, o.value, o.term);
 					gain.push(o);
@@ -759,6 +765,7 @@ function getCFRewards(word, level, blend) {
 		if (wur >= 0.5) {
 			R.push({ key: "$WPA?", value: 1, rate: wur / 3 });
 		}
+		if (f.len >= 4) R.push({ key: CF_STAR, value: 1, rate: CF_STAR_RATE });
 	}
 	return { data: R, cost: cost };
 }
