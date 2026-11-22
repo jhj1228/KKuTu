@@ -104,6 +104,7 @@ $lib.Classic.turnEnd = function (id, data) {
 		playSound('timeout');
 	}
 	if (data.hint) {
+		clearTimeout($data._fail);
 		data.hint = data.hint._id;
 		hi = data.hint.indexOf($data._chars[0]);
 		if (hi == -1) hi = data.hint.indexOf($data._chars[1]);
