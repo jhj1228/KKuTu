@@ -1274,7 +1274,15 @@ function userListBar(o, forInvite) {
 	return $R;
 }
 function addonNickname($R, o) {
-	if (o.equip['NIK']) $R.addClass("x-" + o.equip['NIK']);
+	var $text;
+
+	if (o.equip['NIK']) {
+		$R.addClass("x-" + o.equip['NIK']);
+		$text = $R.hasClass("users-item") ? $R.children(".users-name") : $R;
+		$text.contents().filter(function () {
+			return this.nodeType == 3 && $.trim(this.nodeValue);
+		}).wrap("<label class='x-name-text'></label>");
+	}
 	if (o.equip['BDG'] == "b1_gm") $R.addClass("x-gm");
 	if (o.equip['BDG'] == "b1_subgm") $R.addClass("x-subgm");
 }
