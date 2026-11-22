@@ -382,6 +382,7 @@ function onMessage(data) {
 			}
 			if (data.caj) checkAge();
 			if (!$data.guest) loadEnhance();
+			if (!$data.guest) checkNicknameSetup();
 			updateCommunity();
 			updateFriendRequests();
 			showBlacklist();
@@ -2754,6 +2755,15 @@ function filterShop(by, query) {
 		if ((!isAll && by.indexOf(obj.group) == -1) || (query && iName(obj._id).toLowerCase().indexOf(query) == -1)) $o.hide();
 		else $o.show();
 	}
+}
+function checkNicknameSetup() {
+	$.get('/nickname/setup', function (res) {
+		if (!res || res.error || !res.required) return;
+		$("#nickname-setup-input").val("");
+		$("#NicknameSetupCover").show();
+		showDialog($("#NicknameSetupDiag"), true);
+		$("#nickname-setup-input").focus();
+	});
 }
 function getEnhanceLevel(id) {
 	return ($data.enhance && $data.enhance.levels[id]) || 0;

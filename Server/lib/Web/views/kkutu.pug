@@ -719,6 +719,14 @@ block Middle
 		div.dialog-bar.tail-button
 			button#wardrobe-save= L('save')
 			button#wardrobe-close= L('NO')
+	div#NicknameSetupCover
+	+Dialog('NicknameSetupDiag', 320, 140, L('alert'), true)
+		div.dialog-bar(style='text-align: center; padding: 5px; white-space: pre-wrap; word-break: keep-all; box-sizing: border-box;')= L('nickSetupDesc')
+		div.dialog-bar
+			h4= L('myNickname')
+			input#nickname-setup-input(type='text', placeholder=L('myNicknameX'), maxlength=16, style='width: 190px;')
+		div.dialog-bar.tail-button
+			button#nickname-setup-ok= L('OK')
 	+Dialog('EnhanceDiag', 460, 340, L('Enhance'))
 		div.dialog-bar(style='width: 200px;')
 			h4(style='border-bottom: 1px solid #CCCCCC; width: 100%; height: 24px;')= L('enhanceBefore')

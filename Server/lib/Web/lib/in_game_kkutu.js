@@ -1128,6 +1128,33 @@ $(document).ready(function () {
 		if ($data._gaming) return fail(438);
 		if (showDialog($stage.dialog.charFactory)) drawCharFactory();
 	});
+	$("#nickname-setup-ok").on('click', function (e) {
+		var nickname = $.trim($("#nickname-setup-input").val());
+		var my = $data.users[$data.id];
+
+		if (!nickname) return fail(475);
+		$data.NICKNAME_LIMIT.REGEX.lastIndex = 0;
+		if ($data.NICKNAME_LIMIT.REGEX.test(nickname)) return fail(474);
+		$("#nickname-setup-ok").attr('disabled', true);
+		$.post("/nickname/setup", { nickname: nickname }, function (res) {
+			$("#nickname-setup-ok").attr('disabled', false);
+			if (res.error) {
+				if (res.error == 473) {
+					$("#NicknameSetupDiag").hide();
+					$("#NicknameSetupCover").hide();
+				}
+				return fail(res.error);
+			}
+			$("#account-info").text(my.nickname = my.profile.title = my.profile.name = $data.nickname = res.nickname);
+			send("updateProfile", { nickname: res.nickname }, true);
+			$("#NicknameSetupDiag").hide();
+			$("#NicknameSetupCover").hide();
+			showAlert(L.nickChanged.replace("{V1}", res.nickname));
+		});
+	});
+	$("#nickname-setup-input").on('keydown', function (e) {
+		if (e.keyCode == 13) $("#nickname-setup-ok").trigger('click');
+	});
 	$("#dress-enhance").on('click', function (e) {
 		if ($data.guest) return fail(421);
 		if ($data._gaming) return fail(438);
@@ -4220,6 +4247,7 @@ function onMessage(data) {
 			}
 			if (data.caj) checkAge();
 			if (!$data.guest) loadEnhance();
+			if (!$data.guest) checkNicknameSetup();
 			updateCommunity();
 			updateFriendRequests();
 			showBlacklist();
@@ -6592,6 +6620,15 @@ function filterShop(by, query) {
 		if ((!isAll && by.indexOf(obj.group) == -1) || (query && iName(obj._id).toLowerCase().indexOf(query) == -1)) $o.hide();
 		else $o.show();
 	}
+}
+function checkNicknameSetup() {
+	$.get('/nickname/setup', function (res) {
+		if (!res || res.error || !res.required) return;
+		$("#nickname-setup-input").val("");
+		$("#NicknameSetupCover").show();
+		showDialog($("#NicknameSetupDiag"), true);
+		$("#nickname-setup-input").focus();
+	});
 }
 function getEnhanceLevel(id) {
 	return ($data.enhance && $data.enhance.levels[id]) || 0;

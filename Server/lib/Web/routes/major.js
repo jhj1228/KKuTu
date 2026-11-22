@@ -369,6 +369,41 @@ exports.run = function (Server, page) {
 	});
 
 	// POST
+	Server.get("/nickname/setup", function (req, res) {
+		if (!req.session.profile || req.session.profile.guest) return res.json({ required: false });
+
+		MainDB.users.direct("SELECT 1 FROM nickname_setup WHERE user_id = " + PgEscape.literal(req.session.profile.id), function (error, $result) {
+			if (error) return res.json({ required: false });
+			res.json({ required: !$result.rowCount });
+		}, true);
+	});
+	Server.post("/nickname/setup", function (req, res) {
+		if (!req.session.profile || req.session.profile.guest) return res.json({ error: 400 });
+		var uid = req.session.profile.id;
+		var nickname = String(req.body.nickname || "").trim().slice(0, 16);
+		var limit = GLOBAL.NICKNAME_LIMIT.REGEX;
+
+		if (!nickname) return res.json({ error: 475 });
+		if (new RegExp(limit[0], limit[1].replace("g", "")).test(nickname)) return res.json({ error: 474 });
+
+		MainDB.users.direct("SELECT 1 FROM nickname_setup WHERE user_id = " + PgEscape.literal(uid), function (error, $result) {
+			if (error) return res.json({ error: 500 });
+			if ($result.rowCount) return res.json({ error: 473 });
+
+			MainDB.users.findOne(['nickname', nickname]).on(function ($same) {
+				if ($same && $same._id != uid) return res.json({ error: 456 });
+
+				MainDB.users.update(['_id', uid]).set(['nickname', nickname]).on(function () {
+					MainDB.users.direct("INSERT INTO nickname_setup (user_id) VALUES (" + PgEscape.literal(uid) + ") ON CONFLICT DO NOTHING", function (insertError) {
+						if (insertError) return res.json({ error: 500 });
+						req.session.profile = { ...req.session.profile, name: nickname, title: nickname, nickname };
+						MainDB.session.update(['_id', req.sessionID]).set(['profile', req.session.profile]).on();
+						res.json({ result: 200, nickname: nickname });
+					}, true);
+				});
+			});
+		}, true);
+	});
 	Server.post("/profile", function (req, res) {
 		let nickname = req.body.nickname;
 		const exordial = req.body.exordial;
