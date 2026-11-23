@@ -1850,7 +1850,9 @@ function drawLeaderboard(data) {
 				.append(getLevelImage(item.score).addClass("ranking-image"))
 				.append($("<label>").css('padding-top', 2).html(getLevel(item.score)))
 			)
-			.append($("<td>").text(profile))
+			.append($("<td>").addClass("ranking-name").text(profile).on('click', function () {
+				requestProfile(item.id);
+			}))
 			.append($("<td>").html(commify(item.score)))
 		);
 	});

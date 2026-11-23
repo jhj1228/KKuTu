@@ -160,6 +160,14 @@ iframe {
 	width: 20px !important;
 }
 
+.ranking-name {
+	cursor: pointer;
+}
+
+.ranking-name:hover {
+	text-decoration: underline;
+}
+
 #AlertDiag {
 	z-index: 3000 !important;
 }
