@@ -39,6 +39,15 @@
 	height: 50px;
 }
 
+.goods-moremi {
+	overflow: hidden;
+}
+
+.goods-moremi img {
+	top: 0;
+	left: 0;
+}
+
 .goods-title {
 	margin: 2px 0px;
 	width: 186px;

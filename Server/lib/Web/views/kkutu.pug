@@ -232,6 +232,54 @@ block JS
 			});
 			setTimeout(initFunc, 200);
 		});
+	script.
+		$(function() {
+			function stepRoomValue($input, d) {
+				var min = Number($input.attr('min'));
+				var max = Number($input.attr('max'));
+				var v = Math.round(Number($input.val()) || 0) + d;
+
+				if (!isNaN(min)) v = Math.max(min, v);
+				if (!isNaN(max)) v = Math.min(max, v);
+				$input.val(v).trigger('change');
+			}
+			function segLabel(type, $o) {
+				var text = $o.text();
+
+				if (type == 'num') return text.replace(/[^0-9.]/g, '') || $o.val();
+				if (type == 'db') return text.replace(/\s*사전$/, '');
+				return text;
+			}
+			function syncRoomTime() {
+				$('.room-time-seg').each(function() {
+					var $seg = $(this).empty();
+					var type = $seg.attr('data-label');
+
+					$('#' + $seg.attr('data-for')).find('option').each(function() {
+						var $o = $(this);
+
+						$seg.append($('<button type="button">')
+							.addClass('room-time-opt' + ($o.is(':selected') ? ' selected' : '') + ($o.attr('style') ? ' short' : ''))
+							.attr('data-value', $o.val())
+							.text(segLabel(type, $o)));
+					});
+				});
+			}
+			$(document).on('click', '.room-step', function() {
+				stepRoomValue($('#' + $(this).data('target')), Number($(this).data('step')));
+			});
+			$(document).on('click', '.room-time-opt', function() {
+				var id = $(this).closest('.room-time-seg').attr('data-for');
+
+				$('#' + id).val($(this).attr('data-value')).trigger('change');
+				syncRoomTime();
+			});
+			$('#room-mode, #room-time, #choose-db').on('change', syncRoomTime);
+			$('#NewRoomBtn, #SetRoomBtn').on('click', function() {
+				setTimeout(syncRoomTime, 0);
+			});
+			syncRoomTime();
+		});
 
 block CSS
 	link(rel='stylesheet', href='/css/in_game_kkutu_shop.css')
@@ -399,7 +447,10 @@ block Middle
 			input#room-pw(type='password', placeholder=L('password'), maxlength=20)
 		div.dialog-bar
 			h4= L('userLimit')
-			input#room-limit(type='number', min=1, max=8, step=0.01, value=8)
+			div.room-stepper
+				button.room-step(type='button', data-target='room-limit', data-step='-1') −
+				input#room-limit(type='number', min=1, max=8, step=0.01, value=8)
+				button.room-step(type='button', data-target='room-limit', data-step='1') +
 		div.dialog-bar
 			h4= L('gameMode')
 			select#room-mode
@@ -436,8 +487,9 @@ block Middle
 					option(value="samsam",selected)= '3-3'
 					option(value="sami")= '3-2'
 					option(value="ii")= '2-2'
-		div.dialog-bar
+		div.dialog-bar.room-time-bar
 			h4= '낱말집'
+			div.room-time-seg(data-for='choose-db', data-label='db')
 			select#choose-db
 				option(value="g")= '기초 사전'
 				option(value="p",selected)= '표준 사전'
@@ -445,9 +497,13 @@ block Middle
 		div.dialog-bar
 			h4= L('numRound')
 			- var maxRounds = isAdmin ? 20 : 10;
-			input#room-round(type='number', min=1, max=maxRounds, step=1, value=5)
-		div.dialog-bar
+			div.room-stepper
+				button.room-step(type='button', data-target='room-round', data-step='-1') −
+				input#room-round(type='number', min=1, max=maxRounds, step=1, value=5)
+				button.room-step(type='button', data-target='room-round', data-step='1') +
+		div.dialog-bar.room-time-bar
 			h4= L('roundTime')
+			div.room-time-seg(data-for='room-time', data-label='num')
 			select#room-time
 				option(value=5, style='color: #FF4444')
 				option(value=10, style='color: #FF4444')
