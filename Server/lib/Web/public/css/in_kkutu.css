@@ -160,6 +160,29 @@ iframe {
 	width: 20px !important;
 }
 
+#ProfileDiag #profile-place {
+	width: calc(100% - 190px) !important;
+}
+
+#ProfileDiag #profile-badges {
+	display: flex;
+	float: right;
+	align-items: center;
+	gap: 4px;
+	padding: 3px 4px;
+	margin-right: 4px;
+	background-color: #00000010;
+}
+
+#ProfileDiag #profile-badges:empty {
+	display: none;
+}
+
+.profile-badge {
+	width: 16px;
+	height: 16px;
+}
+
 .ranking-name {
 	cursor: pointer;
 }

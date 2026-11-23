@@ -143,6 +143,23 @@ function claimMailboxItem(uid, reward, callback) {
 	}, true);
 }
 
+function getProfileBadges(uid, callback) {
+	MainDB.users.direct("SELECT badges FROM profile_badge WHERE user_id = " + PgEscape.literal(uid), function (error, $result) {
+		var badges = [null, null, null];
+		var saved, i;
+
+		if (error) return callback(error);
+		if ($result.rows.length) {
+			try {
+				saved = JSON.parse($result.rows[0].badges);
+			} catch (e) {
+				saved = [];
+			}
+			for (i = 0; i < 3; i++) badges[i] = (saved && saved[i]) || null;
+		}
+		callback(null, badges);
+	}, true);
+}
 function getEnhanceLevels(uid, callback) {
 	MainDB.users.direct("SELECT item_id, level FROM item_enhance WHERE user_id = " + PgEscape.literal(uid), function (error, $result) {
 		var levels = {};
@@ -369,6 +386,42 @@ exports.run = function (Server, page) {
 	});
 
 	// POST
+	Server.get("/profile-badge/:id", function (req, res) {
+		getProfileBadges(req.params.id, function (error, badges) {
+			if (error) return res.json({ error: 500 });
+			res.json({ badges: badges });
+		});
+	});
+	Server.post("/profile-badge/:id", function (req, res) {
+		if (!req.session.profile || req.session.profile.guest) return res.json({ error: 400 });
+		var uid = req.session.profile.id;
+		var gid = req.params.id;
+
+		getProfileBadges(uid, function (error, badges) {
+			var list;
+
+			if (error) return res.json({ error: 500 });
+			list = badges.filter(function (b) { return b; });
+			if (list.indexOf(gid) != -1) return save(list.filter(function (b) { return b != gid; }));
+			MainDB.kkutu_shop.findOne(['_id', gid]).on(function ($item) {
+				if (!$item || $item.group != "PBG") return res.json({ error: 430 });
+				MainDB.users.findOne(['_id', uid]).limit(['box', true]).on(function ($user) {
+					if (!$user || !hasItem($user, gid)) return res.json({ error: 430 });
+					list.push(gid);
+					save(list.slice(-3));
+				});
+			});
+		});
+
+		function save(list) {
+			var badges = [list[0] || null, list[1] || null, list[2] || null];
+
+			MainDB.users.direct("INSERT INTO profile_badge (user_id, badges) VALUES (" + PgEscape.literal(uid) + ", " + PgEscape.literal(JSON.stringify(badges)) + ") ON CONFLICT (user_id) DO UPDATE SET badges = EXCLUDED.badges", function (saveError) {
+				if (saveError) return res.json({ error: 500 });
+				res.json({ result: 200, badges: badges });
+			}, true);
+		}
+	});
 	Server.get("/nickname/setup", function (req, res) {
 		if (!req.session.profile || req.session.profile.guest) return res.json({ required: false });
 

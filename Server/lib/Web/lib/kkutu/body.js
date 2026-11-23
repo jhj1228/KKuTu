@@ -383,6 +383,7 @@ function onMessage(data) {
 			if (data.caj) checkAge();
 			if (!$data.guest) loadEnhance();
 			if (!$data.guest) checkNicknameSetup();
+			if (!$data.guest) loadProfileBadges();
 			updateCommunity();
 			updateFriendRequests();
 			showBlacklist();
@@ -1648,6 +1649,8 @@ function drawMyGoods(avGroup) {
 					updateUI(false);
 				});
 			});
+		} else if (item.group == "PBG") {
+			toggleProfileBadge(id);
 		} else if (AVAIL_EQUIP.indexOf(item.group) != -1) {
 			if (item.group == "Mhand") {
 				showConfirm(L['dressWhichHand'], function () {
@@ -1674,6 +1677,7 @@ function drawMyGoods(avGroup) {
 			});
 		}
 	});
+	markProfileBadges();
 }
 function requestEquip(id, isLeft) {
 	var my = $data.users[$data.id];
@@ -2037,6 +2041,7 @@ function requestProfile(id) {
 		renderMoremi($pi, o.equip);
 	}
 	$data._profiled = id;
+	drawProfileBadges(id);
 	$stage.dialog.profileKick.hide();
 	$stage.dialog.profileShut.hide();
 	$stage.dialog.profileDress.hide();
@@ -2111,6 +2116,7 @@ function showOfflineProfile(o, id) {
 
 	$data._profiled = id;
 	$data._profiled_obj = o;
+	drawProfileBadges(id);
 	$stage.dialog.profileKick.hide();
 	$stage.dialog.profileShut.hide();
 	$stage.dialog.profileDress.hide();
@@ -2765,6 +2771,45 @@ function filterShop(by, query) {
 		if ((!isAll && by.indexOf(obj.group) == -1) || (query && iName(obj._id).toLowerCase().indexOf(query) == -1)) $o.hide();
 		else $o.show();
 	}
+}
+function drawProfileBadges(id) {
+	var $b = $("#profile-badges").empty();
+
+	$.get("/profile-badge/" + encodeURIComponent(id), function (res) {
+		var i, bid;
+
+		if ($data._profiled != id || !res || res.error) return;
+		$b.empty();
+		for (i = 0; i < 3; i++) {
+			bid = res.badges[i];
+			if (bid && $data.shop[bid]) $b.append(getImage(iImage(bid)).addClass("profile-badge").append(explainGoods(iGoods(bid), false, null, true)));
+		}
+		global.expl($b);
+	});
+}
+function loadProfileBadges(callback) {
+	$.get("/profile-badge/" + encodeURIComponent($data.id), function (res) {
+		if (!res || res.error) return;
+		$data.profileBadges = res.badges;
+		if (callback) callback();
+	});
+}
+function markProfileBadges() {
+	($data.profileBadges || []).forEach(function (bid) {
+		if (bid) $(document.getElementById("dress-" + bid)).addClass("dress-equipped");
+	});
+}
+function toggleProfileBadge(id) {
+	var on = ($data.profileBadges || []).indexOf(id) != -1;
+
+	showConfirm(L[on ? 'sureUnequip' : 'sureEquip'] + ": " + L[id][0], function () {
+		$.post("/profile-badge/" + encodeURIComponent(id), function (res) {
+			if (res.error) return fail(res.error);
+			$data.profileBadges = res.badges;
+			drawMyDress($data._avGroup);
+			if ($data._profiled == $data.id) drawProfileBadges($data.id);
+		});
+	});
 }
 function checkNicknameSetup() {
 	$.get('/nickname/setup', function (res) {

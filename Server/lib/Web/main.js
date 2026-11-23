@@ -194,6 +194,10 @@ DB.ready = function () {
 		JLog.success("단어 검색 인덱스가 준비되었습니다.");
 	})();
 
+	DB.users.direct("CREATE TABLE IF NOT EXISTS profile_badge (user_id character varying(64) NOT NULL PRIMARY KEY, badges text NOT NULL)", function (badgeError) {
+		if (badgeError) JLog.error("프로필 배지 테이블 생성 실패: " + badgeError.toString());
+	}, true);
+
 	DB.users.direct("CREATE TABLE IF NOT EXISTS nickname_setup (user_id character varying(64) NOT NULL PRIMARY KEY, set_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP)", function (nicknameError) {
 		if (nicknameError) JLog.error("닉네임 설정 테이블 생성 실패: " + nicknameError.toString());
 	}, true);

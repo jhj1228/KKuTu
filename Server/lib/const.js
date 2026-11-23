@@ -80,7 +80,7 @@ exports.AVAIL_EQUIP = [
 exports.GROUPS = {
 	'spec': ["PIX", "PIY", "PIZ", "CNS"],
 	'skin': ["NIK", "Mskin"],
-	'badge': ["BDG1", "BDG2", "BDG3", "BDG4"],
+	'badge': ["BDG1", "BDG2", "BDG3", "BDG4", "PBG"],
 	'head': ["Mhead"],
 	'eye': ["Meye"],
 	'mouth': ["Mmouth"],
