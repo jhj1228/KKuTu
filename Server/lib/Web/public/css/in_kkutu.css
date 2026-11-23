@@ -905,10 +905,6 @@ iframe {
 }
 
 #dict-output {
-	padding: 10px 12px;
-	line-height: 1.6;
-	color: #CBD5E1 !important;
-	background-color: #111827 !important;
 	box-shadow: none !important;
 }
 
@@ -3635,7 +3631,7 @@ iframe {
 }
 
 .dress-item.dress-equipped {
-	box-shadow: inset 0 0 0 2px var(--success);
+	box-shadow: inset 0 0 0 2px #4E5A6B;
 }
 
 .dress-item .dress-item-image {
