@@ -1320,7 +1320,6 @@ function updateRoomList(refresh) {
 		$stage.menu.newRoom.trigger('click');
 	}
 }
-// 단일 프로세스라 채널 색이 늘 같으므로, 방 번호로 4색 중 하나를 고정적으로 골라 준다.
 function getRoomColor(id) {
 	var h = Math.imul(id ^ (id >>> 16), 0x45d9f3b);
 	h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
