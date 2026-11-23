@@ -1609,6 +1609,12 @@ iframe {
 	float: none;
 }
 
+#RoomInfoDiag .dialog-bar:has(#ri-players) {
+	border: 1px solid var(--border);
+	background-color: var(--surface);
+	box-shadow: none;
+}
+
 .ri-player {
 	width: 100%;
 	display: flex;
@@ -1633,24 +1639,28 @@ iframe {
 }
 
 .rip-title {
-	width: calc(100% - 43px);
 	flex: 1;
 	min-width: 0;
+	width: auto;
 	font-weight: 700;
 }
 
 .rip-team {
 	text-align: center;
+	flex: none;
 	padding: 2px 6px;
 	margin: 0;
 	width: auto;
 	font-size: 12px;
 	font-weight: 700;
+	white-space: nowrap;
 }
 
 .rip-form {
-	margin-top: 3px;
-	width: calc(100% - 90px);
+	flex: none;
+	margin-top: 0;
+	width: auto;
+	white-space: nowrap;
 }
 
 .UserListBox {
@@ -1861,6 +1871,9 @@ iframe {
 	cursor: pointer;
 	color: #18202C;
 	background-color: #F7F9FC;
+	background-image: linear-gradient(rgba(247, 249, 252, 0.78), rgba(247, 249, 252, 0.78)), url("/img/kkutu/rooms/wait.png");
+	background-size: cover;
+	background-position: center;
 	box-shadow: inset 0 0 0 1px #DFE4EB;
 	transition: background-color 200ms ease, box-shadow 200ms ease, filter 200ms ease;
 }
@@ -1888,11 +1901,6 @@ iframe {
 	margin-right: -10px;
 }
 
-.rooms-channel:hover {
-	width: 8px;
-	height: 8px;
-	border: 1px solid #000;
-}
 
 .channel-1 {
 	background-color: #F99;
@@ -1912,6 +1920,7 @@ iframe {
 
 .rooms-gaming {
 	background-color: #FCEBED;
+	background-image: linear-gradient(rgba(252, 235, 237, 0.78), rgba(252, 235, 237, 0.78)), url("/img/kkutu/rooms/play.png");
 }
 
 .rooms-gaming .rooms-number {
@@ -2573,7 +2582,7 @@ iframe {
 .items::before,
 .chain::before {
 	display: block;
-	margin-bottom: 2px;
+	margin-bottom: 7px;
 	font-size: 12px;
 	font-weight: 700;
 	color: #8A94A4;

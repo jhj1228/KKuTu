@@ -1320,6 +1320,12 @@ function updateRoomList(refresh) {
 		$stage.menu.newRoom.trigger('click');
 	}
 }
+// 단일 프로세스라 채널 색이 늘 같으므로, 방 번호로 4색 중 하나를 고정적으로 골라 준다.
+function getRoomColor(id) {
+	var h = Math.imul(id ^ (id >>> 16), 0x45d9f3b);
+	h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+	return ((h ^ (h >>> 16)) >>> 0) % 4 + 1;
+}
 function roomListBar(o) {
 	var $R, $ch, $mode;
 	var opts = getOptions(o.mode, o.opts, o.pq);
@@ -1334,8 +1340,8 @@ function roomListBar(o) {
 	}
 
 	$R = $("<div>").attr('id', "room-" + o.id).addClass("rooms-item")
-		.append($ch = $("<div>").addClass("rooms-channel channel-" + o.channel).on('click', function (e) { requestRoomInfo(o.id); }))
-		.append($("<div>").addClass("rooms-number").html(o.id))
+		.append($("<div>").addClass("rooms-channel channel-" + getRoomColor(o.id)))
+		.append($ch = $("<div>").addClass("rooms-number").html(o.id).on('click', function (e) { requestRoomInfo(o.id); }))
 		.append($("<div>").addClass("rooms-title ellipse").text(badWords(o.title)))
 		.append($("<div>").addClass("rooms-limit").html(o.players.length + " / " + o.limit))
 		.append($("<div>").width(270)

@@ -418,18 +418,34 @@ span {
 #Bottom {
 	float: left;
 	width: 1000px;
-	color: #444444;
+	color: #C9D1DC;
 	font-size: 11px;
 	text-align: center;
 }
 
 .bottom-legal {
 	margin-top: 10px;
-	color: #CCCCCC;
+	color: #F2F4F7;
 }
 
 .bottom-legal a {
 	padding: 0px 5px;
+}
+
+.bottom-legal label {
+	color: #C9D1DC !important;
+}
+
+#Background[style*="gamebg.png"] ~ #Bottom {
+	color: #6B7686;
+}
+
+#Background[style*="gamebg.png"] ~ #Bottom .bottom-legal {
+	color: #18202C;
+}
+
+#Background[style*="gamebg.png"] ~ #Bottom .bottom-legal label {
+	color: #4E5A6B !important;
 }
 
 .bottom-contact {
