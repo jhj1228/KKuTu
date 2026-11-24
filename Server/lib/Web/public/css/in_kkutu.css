@@ -588,7 +588,18 @@ iframe {
 	cursor: pointer;
 }
 
+#SettingDiag .dialog-bar:has(.dialog-opt) {
+	display: grid;
+	grid-template-columns: repeat(3, 100px);
+}
+
+#SettingDiag .dialog-bar:has(.dialog-opt) > h4 {
+	min-height: 22px;
+	line-height: 22px;
+}
+
 #SettingDiag .dialog-opt {
+	float: none;
 	width: 100px;
 }
 
@@ -1856,6 +1867,11 @@ iframe {
 
 .RoomListBox #RoomRefreshBtn {
 	width: 114px;
+}
+
+.RoomListBox #RoomRefreshBtn .fa-spin {
+	animation-duration: 1s;
+	animation-iteration-count: 1;
 }
 
 .RoomListBox #item_asc {

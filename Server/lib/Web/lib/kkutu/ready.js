@@ -557,6 +557,7 @@ $(document).ready(function () {
 
 		$("#room-title").toggle(!$data.guest);
 		$guest.toggle(!!$data.guest);
+		if ($data.guest) $("#room-noguest-panel").hide();
 		$guest.children(".current-title").remove();
 		if (!current) return;
 		$("#room-title").val(current);
@@ -601,7 +602,7 @@ $(document).ready(function () {
 
 		for (i in OPTIONS) {
 			k = OPTIONS[i].name.toLowerCase();
-			if (opts.indexOf(i) == -1) $("#" + prefix + "-" + k + "-panel").hide();
+			if (opts.indexOf(i) == -1 || (k == "noguest" && $data.guest)) $("#" + prefix + "-" + k + "-panel").hide();
 			else $("#" + prefix + "-" + k + "-panel").show();
 		}
 	}
@@ -624,6 +625,7 @@ $(document).ready(function () {
 			if (room.players.length >= room.limit) return false;
 		}
 		if (room.mode != mode) return false;
+		if ($data.guest && room.opts.noguest) return false;
 		for (i in opts) if (!room.opts[i]) return false;
 		return true;
 	}
@@ -792,7 +794,14 @@ $(document).ready(function () {
 		}
 	});
 	$stage.menu.roomRefresh.on('click', function (e) {
+		var $icon = $stage.menu.roomRefresh.find(".fa-refresh");
+
 		updateRoomList(true);
+		if ($icon.hasClass("fa-spin")) return;
+		$icon.addClass("fa-spin");
+		setTimeout(function () {
+			$icon.removeClass("fa-spin");
+		}, 1000);
 	});
 	$stage.menu.leaderboard.on('click', function (e) {
 		$data._lbpage = 0;

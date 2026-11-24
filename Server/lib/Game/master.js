@@ -312,6 +312,10 @@ Cluster.on('message', function (worker, msg) {
 				worker.send({ type: "invite-error", target: msg.id, code: 422 });
 				break;
 			}
+			if (DIC[msg.target].guest && ROOM[msg.place] && ROOM[msg.place].opts.noguest) {
+				worker.send({ type: "invite-error", target: msg.id, code: 478 });
+				break;
+			}
 			if (DIC[msg.target]._invited) {
 				worker.send({ type: "invite-error", target: msg.id, code: 419 });
 				break;
