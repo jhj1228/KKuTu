@@ -589,6 +589,10 @@ $(document).ready(function () {
 		$("#room-time").val($data.room.time / rule.time);
 		$("#room-rule").val($data.room.rule || "samsam");
 		$("#choose-db").val($data.room.db || "p");
+		if ($data.room.pq) {
+			$("#room-pq-order").val($data.room.pq.order || "correct");
+			$("#room-pq-wordlength").val($data.room.pq.wordlength || "short");
+		}
 		for (i in OPTIONS) {
 			k = OPTIONS[i].name.toLowerCase();
 			$("#room-" + k).attr('checked', $data.room.opts[k]);

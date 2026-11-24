@@ -726,6 +726,9 @@ iframe {
 }
 
 #RoomDiag #room-time,
+#RoomDiag #room-rule,
+#RoomDiag #room-pq-wordlength,
+#RoomDiag #room-pq-order,
 #RoomDiag #choose-db {
 	display: none;
 }
