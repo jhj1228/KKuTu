@@ -329,6 +329,7 @@ Server.get("/", function (req, res) {
 			'CATEGORIES': Const.CATEGORIES,
 			'GROUPS': Const.GROUPS,
 			'MODE': Const.GAME_TYPE,
+			'GUEST_ROOM_TITLES': Const.GUEST_ROOM_TITLES,
 			'RULE': Const.RULE,
 			'OPTIONS': Const.OPTIONS,
 			'NICKNAME_LIMIT': GLOBAL.NICKNAME_LIMIT,

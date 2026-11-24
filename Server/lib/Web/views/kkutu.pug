@@ -442,6 +442,9 @@ block Middle
 		div.dialog-bar
 			h4= L('roomTitle')
 			input#room-title(placeholder=(nick || L('guest'))+L('roomDefault'), maxlength=20)
+			select#room-title-guest(style='display: none;')
+				each title in locals.GUEST_ROOM_TITLES || []
+					option(value=title)= title
 		div.dialog-bar
 			h4= L('password')
 			input#room-pw(type='password', placeholder=L('password'), maxlength=20)

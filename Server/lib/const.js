@@ -297,6 +297,13 @@ exports.getPenalty = function (chain, score) {
 	return -1 * Math.round(Math.min(10 + (chain || []).length * 2.1 + score * 0.07, score));
 };
 exports.GAME_TYPE = Object.keys(exports.RULE);
+exports.GUEST_ROOM_TITLES = [
+	"즐겁게 끄투해요!",
+	"아무나 들어오세요",
+	"같이 한 판 하실 분",
+	"가볍게 한 판 해요",
+	"빠르게 한 판!",
+];
 exports.EXAMPLE_TITLE = {
 	'ko': "가나다라마바사아자차",
 	'en': "abcdefghij"

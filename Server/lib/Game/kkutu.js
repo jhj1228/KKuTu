@@ -689,6 +689,7 @@ exports.Client = function (socket, profile, sid) {
 			my.sendError(401);
 		} else {
 			// 새 방 만들어 들어가기
+			if (my.guest) room.title = getGuestRoomTitle(room.title);
 			/*
 				1. 마스터가 ID와 채널을 클라이언트로 보낸다.
 				2. 클라이언트가 그 채널 일꾼으로 접속한다.
@@ -852,6 +853,7 @@ exports.Client = function (socket, profile, sid) {
 		if ($room) {
 			if (!$room.gaming) {
 				if ($room.master == my.id) {
+					if (my.guest && room.title !== $room.title) room.title = getGuestRoomTitle(room.title);
 					$room.set(room);
 					exports.publish('room', { target: my.id, room: $room.getData(), modify: true }, room.password);
 				} else {
@@ -1662,6 +1664,9 @@ function getGuestName(sid) {
 		res += sid.charCodeAt(i) * (i + 1);
 	}
 	return "GUEST" + (1000 + (res % 9000));
+}
+function getGuestRoomTitle(title) {
+	return Const.GUEST_ROOM_TITLES.includes(title) ? title : Const.GUEST_ROOM_TITLES[0];
 }
 function shuffle(arr) {
 	var i, r = [];

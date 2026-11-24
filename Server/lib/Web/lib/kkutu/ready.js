@@ -552,12 +552,26 @@ $(document).ready(function () {
 				return { title: L['attendanceReward'], summary: summary, content: L['mailboxAttendanceContent'] };
 		}
 	}
+	function prepareRoomTitle(current) {
+		var $guest = $("#room-title-guest");
+
+		$("#room-title").toggle(!$data.guest);
+		$guest.toggle(!!$data.guest);
+		$guest.children(".current-title").remove();
+		if (!current) return;
+		$("#room-title").val(current);
+		if (!$guest.children().filter(function () { return this.value === current; }).length) {
+			$guest.prepend($("<option>").addClass("current-title").attr('value', current).text(badWords(current)));
+		}
+		$guest.val(current);
+	}
 	$stage.menu.newRoom.on('click', function (e) {
 		var $d;
 
 		$stage.dialog.quick.hide();
 
 		$data.typeRoom = 'enter';
+		prepareRoomTitle();
 		showDialog($d = $stage.dialog.room);
 		$d.find(".dialog-title").html(L['newRoom']);
 	});
@@ -567,7 +581,7 @@ $(document).ready(function () {
 		var i, k;
 
 		$data.typeRoom = 'setRoom';
-		$("#room-title").val($data.room.title);
+		prepareRoomTitle($data.room.title);
 		$("#room-limit").val($data.room.limit);
 		$("#room-mode").val($data.room.mode).trigger('change');
 		$("#room-round").val($data.room.round);
@@ -847,7 +861,7 @@ $(document).ready(function () {
 			opts[k] = $("#room-" + k).is(':checked');
 		}
 		send($data.typeRoom, {
-			title: $("#room-title").val().trim() || $("#room-title").attr('placeholder').trim(),
+			title: $data.guest ? $("#room-title-guest").val() : $("#room-title").val().trim() || $("#room-title").attr('placeholder').trim(),
 			password: $("#room-pw").val(),
 			limit: $("#room-limit").val(),
 			mode: $("#room-mode").val(),
