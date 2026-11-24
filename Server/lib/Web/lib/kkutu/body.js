@@ -1646,6 +1646,7 @@ function drawMyGoods(avGroup) {
 			showConfirm(L['surePayback'] + commify(Math.round((item.cost || 0) * 0.2)) + L['ping'], function () {
 				$.post("/payback/" + id, function (res) {
 					if (res.error) return fail(res.error);
+					send('refresh');
 					showAlert(L['painback']);
 					$data.box = res.box;
 					$data.users[$data.id].money = res.money;

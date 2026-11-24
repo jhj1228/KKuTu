@@ -353,6 +353,12 @@ exports.run = function (Server, page) {
 		MainDB.users.findOne(['_id', userId]).limit(['nickname', true], ['exordial', true], ['kkutu', true], ['equip', true]).on(function ($user) {
 			if (!$user) return res.json({ error: 405 });
 
+			var savedRecord = ($user.kkutu && $user.kkutu.record) || {};
+			var record = {};
+
+			Const.GAME_TYPE.forEach(function (mode) {
+				record[mode] = savedRecord[mode] || [0, 0, 0, 0];
+			});
 			res.json({
 				id: $user._id,
 				nickname: $user.nickname,
@@ -364,7 +370,7 @@ exports.run = function (Server, page) {
 				exordial: $user.exordial || "",
 				data: {
 					score: ($user.kkutu && $user.kkutu.score) || 0,
-					record: ($user.kkutu && $user.kkutu.record) || {}
+					record: record
 				},
 				equip: $user.equip || {},
 				offline: true

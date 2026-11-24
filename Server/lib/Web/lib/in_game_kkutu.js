@@ -562,6 +562,7 @@ $(document).ready(function () {
 			if (index >= ids.length) {
 				$stage.dialog.mailboxDetail.hide();
 				if (playSuccessSound) playSound('success');
+				send('refresh');
 				showAlert(L['mailboxClaimed']);
 				return loadMailbox();
 			}
@@ -1521,6 +1522,7 @@ $(document).ready(function () {
 			var my = $data.users[$data.id];
 
 			if (res.error) return fail(res.error);
+			send('refresh');
 			showAlert(L['purchased']);
 			my.money = res.money;
 			my.box = res.box;
@@ -5515,6 +5517,7 @@ function drawMyGoods(avGroup) {
 			showConfirm(L['surePayback'] + commify(Math.round((item.cost || 0) * 0.2)) + L['ping'], function () {
 				$.post("/payback/" + id, function (res) {
 					if (res.error) return fail(res.error);
+					send('refresh');
 					showAlert(L['painback']);
 					$data.box = res.box;
 					$data.users[$data.id].money = res.money;

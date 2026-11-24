@@ -1290,11 +1290,22 @@ iframe {
 	overflow-y: hidden;
 }
 
+#comm-panel-mailbox.selected {
+	display: flex;
+	flex-direction: column;
+}
+
 #mailbox-items {
-	padding-right: 5px;
-	height: 278px;
+	box-sizing: border-box;
+	flex: 1 1 auto;
+	min-height: 0;
 	overflow-y: scroll;
 	padding: 8px;
+}
+
+#comm-panel-mailbox .tail-button {
+	flex: none;
+	margin: 5px 0 0 0;
 }
 
 #mailbox-items > div[style*="cursor"] {

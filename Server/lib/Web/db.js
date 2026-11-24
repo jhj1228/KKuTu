@@ -24,22 +24,40 @@ var JLog = require("../sub/jjlog");
 var Collection = require("../sub/collection");
 var Pub = require("../sub/checkpub");
 var Lizard = require("../sub/lizard");
+var PgEscape = require("pg-escape");
 
-const FAKE_REDIS_FUNC = () => {
-	var R = new Lizard.Tail();
+const RANKED_SQL = "SELECT _id AS id, (kkutu->>'score')::numeric AS score, " +
+	"ROW_NUMBER() OVER (ORDER BY (kkutu->>'score')::numeric DESC, _id) - 1 AS rank " +
+	"FROM users WHERE kkutu IS NOT NULL AND kkutu->>'score' ~ '^[0-9]+(\\.[0-9]+)?$'";
+exports.RANKED_SQL = RANKED_SQL;
 
-	R.go({});
-	return R;
-};
-const FAKE_REDIS = {
-	putGlobal: FAKE_REDIS_FUNC,
-	getGlobal: FAKE_REDIS_FUNC,
-	getPage: FAKE_REDIS_FUNC,
-	getSurround: FAKE_REDIS_FUNC
-};
+function createRanking(table) {
+	return {
+		getSurround: function (id, rv) {
+			var R = new Lizard.Tail();
+
+			rv = rv || 8;
+			table.direct("WITH ranked AS (" + RANKED_SQL + "), t AS (SELECT rank FROM ranked WHERE id = " + PgEscape.literal(id) + ") " +
+				"SELECT ranked.id, ranked.score, ranked.rank FROM ranked, t " +
+				"WHERE ranked.rank >= GREATEST(0, t.rank - " + Math.round(rv / 2 + 1) + ") ORDER BY ranked.rank LIMIT " + Number(rv),
+				function (err, res) {
+					if (err) {
+						JLog.error("랭킹 조회 오류: " + err.toString());
+						return R.go({ target: id, data: [] });
+					}
+					R.go({
+						target: id,
+						data: res.rows.map(function (item) {
+							return { id: item.id, rank: Number(item.rank), score: Number(item.score) };
+						})
+					});
+				}, true);
+			return R;
+		}
+	};
+}
 
 Pub.ready = function (isPub) {
-	var Redis = require("redis").createClient();
 	var Pg = new PgPool({
 		user: GLOBAL.PG_USER,
 		password: GLOBAL.PG_PASSWORD,
@@ -47,22 +65,13 @@ Pub.ready = function (isPub) {
 		database: GLOBAL.PG_DATABASE,
 		host: GLOBAL.PG_HOST
 	});
-	Redis.on('connect', function () {
-		connectPg();
-	});
-	Redis.on('error', function (err) {
-		JLog.error("레디스 오류: " + err);
-		JLog.alert("레디스 없이 실행됩니다.");
-		Redis.quit();
-		connectPg(true);
-	});
-	function connectPg(noRedis) {
+	connectPg();
+	function connectPg() {
 		Pg.connect(function (err, pgMain) {
 			if (err) {
 				JLog.error("PostgreSQL 서버 연결 오류: " + err.toString());
 				return;
 			}
-			var redisAgent = noRedis ? null : new Collection.Agent("Redis", Redis);
 			var mainAgent = new Collection.Agent("Postgres", pgMain);
 
 			var DB = exports;
@@ -72,7 +81,6 @@ Pub.ready = function (isPub) {
 			DB.kkutu_cw = {};
 			DB.kkutu_manner = {};
 
-			DB.redis = noRedis ? FAKE_REDIS : new redisAgent.Table("KKuTu_Score");
 			for (i in LANG) {
 				DB.kkutu[LANG[i]] = new mainAgent.Table("kkutu_" + LANG[i]);
 				DB.kkutu_cw[LANG[i]] = new mainAgent.Table("kkutu_cw_" + LANG[i]);
@@ -100,11 +108,12 @@ Pub.ready = function (isPub) {
 
 			DB.session = new mainAgent.Table("session");
 			DB.users = new mainAgent.Table("users");
+			DB.ranking = createRanking(DB.users);
 			/* Enhanced User Block System [S] */
 			DB.ip_block = new mainAgent.Table("ip_block");
 			/* Enhanced User Block System [E] */
 
-			if (exports.ready) exports.ready(Redis, Pg);
+			if (exports.ready) exports.ready(null, Pg);
 			else JLog.warn("DB.onReady가 아직 정의되지 않았습니다.");
 		});
 	}

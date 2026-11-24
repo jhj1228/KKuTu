@@ -191,6 +191,21 @@ exports.Data = function (data) {
 	}
 	// 전, 승, 점수
 };
+function snapshotSync(data, money) {
+	var r = {}, i;
+
+	for (i in data.record) r[i] = data.record[i].slice();
+	return {
+		score: Number(data.score) || 0,
+		playTime: Number(data.playTime) || 0,
+		connectDate: data.connectDate,
+		record: r,
+		money: Number(money) || 0
+	};
+}
+function numSql(expr) {
+	return "COALESCE((" + expr + ")::numeric, 0)";
+}
 exports.WebServer = function (socket) {
 	var my = this;
 
@@ -487,6 +502,8 @@ exports.Client = function (socket, profile, sid) {
 			my.box = $user.box || {};
 			my.data = new exports.Data($user.kkutu);
 			my.money = Number($user.money);
+			my._sync = first ? null : snapshotSync(my.data, my.money);
+			my._flushSeq = (my._flushSeq || 0) + 1;
 			my.friends = $user.friends || {};
 			my.loadEnhance();
 			if (first) {
@@ -518,20 +535,82 @@ exports.Client = function (socket, profile, sid) {
 			R.go({ id: my.id, prev: 0 });
 			return R;
 		}
-		DB.users.upsert(['_id', my.id]).set(
-			!isNaN(my.money) ? ['money', my.money] : undefined,
-			(my.data && !isNaN(my.data.score)) ? ['kkutu', my.data] : undefined,
-			box ? ['box', my.box] : undefined,
-			equip ? ['equip', my.equip] : undefined,
-			friends ? ['friends', my.friends] : undefined
-		).on(function (__res) {
-			DB.redis.getGlobal(my.id).then(function (_res) {
-				DB.redis.putGlobal(my.id, my.data.score).then(function (res) {
-					JLog.log(`정보 업데이트됨 [${my.id}] 점수=${my.data.score} 핑=${my.money}`);
-					R.go({ id: my.id, prev: _res });
-				});
+		if (!my._sync || !my.data || isNaN(my.data.score) || isNaN(my.money)) {
+			// DB에 아직 행이 없는 신규 유저: 통째로 저장
+			DB.users.upsert(['_id', my.id]).set(
+				!isNaN(my.money) ? ['money', my.money] : undefined,
+				(my.data && !isNaN(my.data.score)) ? ['kkutu', my.data] : undefined,
+				box ? ['box', my.box] : undefined,
+				equip ? ['equip', my.equip] : undefined,
+				friends ? ['friends', my.friends] : undefined
+			).on(function () {
+				if (my.data && !isNaN(my.data.score) && !isNaN(my.money)) my._sync = snapshotSync(my.data, my.money);
+				R.go({ id: my.id, prev: null });
 			});
-		});
+			return R;
+		}
+		var base = my._sync;
+		var sent = snapshotSync(my.data, my.money);
+		var seq = my._flushSeq = (my._flushSeq || 0) + 1;
+		var K = "COALESCE(kkutu::jsonb, '{}'::jsonb)";
+		var k = K;
+		var dPlay = (sent.connectDate == base.connectDate) ? (sent.playTime - base.playTime) : sent.playTime;
+		var sets = [];
+		var i, j, d, changed, mode;
+
+		k = "jsonb_set(" + k + ", '{score}', to_jsonb(" + numSql("kkutu->>'score'") + " + " + (sent.score - base.score) + "), true)";
+		k = "jsonb_set(" + k + ", '{playTime}', to_jsonb(CASE WHEN kkutu->>'connectDate' = " + PgEscape.literal(String(sent.connectDate)) +
+			" THEN " + numSql("kkutu->>'playTime'") + " + " + dPlay + " ELSE " + sent.playTime + " END), true)";
+		k = "jsonb_set(" + k + ", '{connectDate}', " + PgEscape.literal(JSON.stringify(sent.connectDate === undefined ? 0 : sent.connectDate)) + "::jsonb, true)";
+		k = "jsonb_set(" + k + ", '{record}', COALESCE(" + K + "->'record', '{}'::jsonb), true)";
+		for (mode in sent.record) {
+			d = [];
+			changed = false;
+			for (j = 0; j < 4; j++) {
+				d[j] = (sent.record[mode][j] || 0) - ((base.record[mode] && base.record[mode][j]) || 0);
+				if (d[j]) changed = true;
+			}
+			if (!changed) continue;
+			k = "jsonb_set(" + k + ", ARRAY['record', " + PgEscape.literal(mode) + "], jsonb_build_array(" + d.map(function (v, j) {
+				return numSql("kkutu->'record'->" + PgEscape.literal(mode) + "->>" + j) + " + " + v;
+			}).join(", ") + "), true)";
+		}
+		sets.push("kkutu = " + k + "::json");
+		sets.push("money = COALESCE(money, 0) + " + (sent.money - base.money));
+		if (box) sets.push("box = " + PgEscape.literal(JSON.stringify(my.box)) + "::json");
+		if (equip) sets.push("equip = " + PgEscape.literal(JSON.stringify(my.equip)) + "::json");
+		if (friends) sets.push("friends = " + PgEscape.literal(JSON.stringify(my.friends)) + "::json");
+
+		my._sync = sent;
+		DB.users.direct("WITH prev AS (SELECT rank FROM (" + DB.RANKED_SQL + ") ranked WHERE id = " + PgEscape.literal(my.id) + ") " +
+			"UPDATE users SET " + sets.join(", ") + " WHERE _id = " + PgEscape.literal(my.id) +
+			" RETURNING kkutu, money, (SELECT rank FROM prev) AS prev_rank",
+			function (err, res) {
+				var row, cur;
+
+				if (err || !res.rows.length) {
+					JLog.error(`정보 업데이트 실패 [${my.id}] ` + (err ? err.toString() : "행 없음"));
+					return R.go({ id: my.id, prev: null });
+				}
+				row = res.rows[0];
+				if (seq == my._flushSeq && row.kkutu) {
+					cur = my.data;
+					cur.score = (Number(row.kkutu.score) || 0) + (cur.score - sent.score);
+					if (cur.connectDate == sent.connectDate) cur.playTime = (Number(row.kkutu.playTime) || 0) + (cur.playTime - sent.playTime);
+					for (i in cur.record) if (row.kkutu.record && row.kkutu.record[i]) {
+						for (j = 0; j < 4; j++) cur.record[i][j] = (Number(row.kkutu.record[i][j]) || 0) + ((cur.record[i][j] || 0) - (sent.record[i][j] || 0));
+					}
+					my.money = (Number(row.money) || 0) + (my.money - sent.money);
+					my._sync = snapshotSync({
+						score: Number(row.kkutu.score) || 0,
+						playTime: Number(row.kkutu.playTime) || 0,
+						connectDate: row.kkutu.connectDate,
+						record: row.kkutu.record || {}
+					}, row.money);
+				}
+				JLog.log(`정보 업데이트됨 [${my.id}] 점수=${my.data.score} 핑=${my.money}`);
+				R.go({ id: my.id, prev: row.prev_rank === null ? null : Number(row.prev_rank) });
+			}, true);
 		return R;
 	};
 	my.invokeWordPiece = function (text, coef) {
@@ -1423,7 +1502,7 @@ exports.Room = function (room, channel) {
 			suv = [];
 			for (i in uds) {
 				o[uds[i].id] = { prev: uds[i].prev };
-				suv.push(DB.redis.getSurround(uds[i].id));
+				suv.push(DB.ranking.getSurround(uds[i].id));
 			}
 			Lizard.all(suv).then(function (ranks) {
 				var i, j;

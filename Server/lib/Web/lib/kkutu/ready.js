@@ -489,6 +489,7 @@ $(document).ready(function () {
 			if (index >= ids.length) {
 				$stage.dialog.mailboxDetail.hide();
 				if (playSuccessSound) playSound('success');
+				send('refresh');
 				showAlert(L['mailboxClaimed']);
 				return loadMailbox();
 			}
@@ -1448,6 +1449,7 @@ $(document).ready(function () {
 			var my = $data.users[$data.id];
 
 			if (res.error) return fail(res.error);
+			send('refresh');
 			showAlert(L['purchased']);
 			my.money = res.money;
 			my.box = res.box;
