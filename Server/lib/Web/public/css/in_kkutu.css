@@ -3852,6 +3852,30 @@ iframe {
 	width: 1000px;
 }
 
+.ChatBox .product-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.chat-auto-scroll {
+	display: flex;
+	align-items: center;
+	color: #4E5A6B;
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.chat-auto-scroll input {
+	margin: 0 4px 0 0;
+	width: 12px;
+	height: 12px;
+	accent-color: #4E5A6B;
+	cursor: pointer;
+}
+
 .chat-balloon {
 	position: absolute;
 	width: 123px;

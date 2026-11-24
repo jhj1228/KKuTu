@@ -152,6 +152,7 @@ function applyOptions(opt) {
 	$("#only-waiting").attr('checked', $data.opts.ow);
 	$("#only-unlock").attr('checked', $data.opts.ou);
 	$("#no-filter").attr('checked', $data.opts.nf);
+	$("#chat-auto-scroll").prop('checked', !$data.opts.na);
 
 	var selectedBGM = $("#bgm-select").val();
 	if ($data.bgm && $data.bgm.key === "lobby") {
@@ -2208,7 +2209,7 @@ function gameReady() {
 	forkChat();
 	addTimeout(function () {
 		$stage.box.room.height(360).hide();
-		$stage.chat.scrollTop(999999999);
+		scrollChat();
 	}, 500);
 }
 function replayPrevInit() {
@@ -3464,7 +3465,7 @@ function forkChat() {
 
 	if (lh) if (lh.tagName == "HR") return;
 	$cs.append($("<hr>").addClass("chat-item"));
-	$stage.chat.scrollTop(999999999);
+	scrollChat();
 }
 function badWords(text) {
 	if ($data.opts && $data.opts.nf) return text;
@@ -3549,7 +3550,7 @@ function chat(profile, msg, from, timestamp) {
 		$msg.html("<label style='color: #7777FF; font-weight: bold;'>&lt;" + L['whisper'] + "&gt;</label>" + $msg.html());
 	}
 	addonNickname($bar, { equip: equip });
-	$stage.chat.scrollTop(999999999);
+	scrollChat();
 }
 function notice(msg, head) {
 	var time = new Date();
@@ -3561,8 +3562,12 @@ function notice(msg, head) {
 		.append($("<div>").addClass("chat-body").html(msg))
 		.append($("<div>").addClass("chat-stamp").text(time.toLocaleTimeString()))
 	);
-	$stage.chat.scrollTop(999999999);
+	scrollChat();
 	if (head == "tail") console.warn(time.toLocaleString(), msg);
+}
+function scrollChat() {
+	if ($data.opts && $data.opts.na) return;
+	$stage.chat.scrollTop(999999999);
 }
 function stackChat() {
 	var $v = $("#Chat .chat-item");
@@ -3732,7 +3737,8 @@ function saveLocalSettings() {
 		ou: $("#only-unlock").is(':checked'),
 		bs: $("#bgm-select").val(),
 		ff: $("#font-select").val(),
-		nf: $("#no-filter").is(':checked')
+		nf: $("#no-filter").is(':checked'),
+		na: $("#chat-auto-scroll").is(':not(:checked)')
 	};
 	applyOptions(opt);
 	localStorage.setItem('kkutu_settings', JSON.stringify(opt));
@@ -3756,7 +3762,8 @@ function resetLocalSettings() {
 		ou: false,
 		bs: "lobby",
 		ff: "original",
-		nf: false
+		nf: false,
+		na: false
 	};
 	applyOptions(opt);
 	$("#bgm-volume, #effect-volume, #ingame-volume").prop('disabled', false).css('opacity', '1');
@@ -3791,7 +3798,8 @@ function loadLocalSettings() {
 			ou: false,
 			bs: "lobby",
 			ff: "original",
-			nf: false
+			nf: false,
+			na: false
 		};
 	}
 	applyOptions(opt);
@@ -3801,6 +3809,10 @@ $(document).ready(function () {
 	loadLocalSettings();
 	$("#mute-bgm, #mute-effect, #mute-ingame, #deny-vibrate, #deny-invite, #deny-whisper, #deny-friend, #auto-ready, #sort-user, #only-waiting, #only-unlock, #bgm-select, #font-select, #no-filter").on('change', function () {
 		saveLocalSettings();
+	});
+	$("#chat-auto-scroll").on('change', function () {
+		saveLocalSettings();
+		scrollChat();
 	});
 
 	var volumeData = {

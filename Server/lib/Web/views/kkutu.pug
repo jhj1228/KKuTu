@@ -968,10 +968,16 @@ block Middle
 			div.bar-text.my-gauge-text
 			+Expl(true)
 				div#my-gauge-expl(style='color: #CCCCCC; white-space: pre-line;')
-	+Product('Chat')
-		div#Chat
-		input#Talk(maxlength=400)
-		button#ChatBtn= L('send')
+	div.ChatBox.Product(style='display: none')
+		h5.product-title
+			div!= L('Chat')
+			label.chat-auto-scroll(for='chat-auto-scroll')
+				input#chat-auto-scroll(type='checkbox', checked)
+				= L('chatAutoScroll')
+		div.product-body
+			div#Chat
+			input#Talk(maxlength=400)
+			button#ChatBtn= L('send')
 	//- +Product('AD')
 
 block Bottom
