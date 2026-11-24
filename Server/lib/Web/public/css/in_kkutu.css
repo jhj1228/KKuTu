@@ -2981,13 +2981,20 @@ iframe {
 	border-color: #4E5A6B;
 }
 
+#pq_undo {
+	margin-right: 5px;
+}
+
+#pq_undo,
 #pq_clear {
+	display: inline-block;
 	border-color: #C9D1DC;
 	color: #4E5A6B;
 	background-color: #FFFFFF;
 	transition: background-color 140ms ease, color 140ms ease;
 }
 
+#pq_undo:hover,
 #pq_clear:hover {
 	color: #18202C;
 	background-color: #EDF1F6;

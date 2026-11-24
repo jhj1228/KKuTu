@@ -53,8 +53,9 @@ const GUEST_PERMISSION = Master.GUEST_PERMISSION;
 const ENABLE_ROUND_TIME = Master.ENABLE_ROUND_TIME;
 const ENABLE_FORM = Master.ENABLE_FORM;
 const MODE_LENGTH = Master.MODE_LENGTH;
-const PQ_SERVER_MOVE_INTERVAL = 20;
-const PQ_SERVER_MOVE_DISTANCE = 1;
+const PQ_PATH_MAX = 64;
+const PQ_POINT_BURST = 1200;
+const PQ_POINT_PER_SECOND = 600;
 
 function isValidPictureQuizPosition(pos) {
 	if (!pos) return false;
@@ -64,38 +65,34 @@ function isValidPictureQuizPosition(pos) {
 function canRelayPictureQuizEvent(client, msg) {
 	var state = client._pictureQuizRelay || (client._pictureQuizRelay = {
 		drawing: false,
-		lastMoveAt: 0,
-		lastMovePos: null
+		budget: PQ_POINT_BURST,
+		budgetAt: Date.now()
 	});
 
 	switch (msg.eventtype) {
 		case 'mousedown':
 			if (!isValidPictureQuizPosition(msg.pos)) return false;
 			state.drawing = true;
-			state.lastMoveAt = 0;
-			state.lastMovePos = msg.pos;
 			return true;
 		case 'mousemove':
-			if (!state.drawing || !isValidPictureQuizPosition(msg.pos)) return false;
+			if (!state.drawing || !Array.isArray(msg.path)) return false;
+			if (!msg.path.length || msg.path.length > PQ_PATH_MAX) return false;
+			if (!msg.path.every(isValidPictureQuizPosition)) return false;
 
 			var now = Date.now();
-			if (state.lastMoveAt && now - state.lastMoveAt < PQ_SERVER_MOVE_INTERVAL) return false;
-			if (state.lastMovePos) {
-				var dx = Math.abs(msg.pos.X - state.lastMovePos.X);
-				var dy = Math.abs(msg.pos.Y - state.lastMovePos.Y);
-				if (dx + dy < PQ_SERVER_MOVE_DISTANCE) return false;
-			}
 
-			state.lastMoveAt = now;
-			state.lastMovePos = msg.pos;
+			state.budget = Math.min(PQ_POINT_BURST, state.budget + (now - state.budgetAt) * 0.001 * PQ_POINT_PER_SECOND);
+			state.budgetAt = now;
+			if (state.budget < msg.path.length) return false;
+			state.budget -= msg.path.length;
+			msg.path = msg.path.map(function (pos) { return { X: pos.X, Y: pos.Y }; });
 			return true;
 		case 'mouseup':
 			if (!state.drawing) return false;
 			state.drawing = false;
-			state.lastMoveAt = 0;
-			state.lastMovePos = null;
 			return true;
 		case 'clearall':
+		case 'undo':
 		case 'setColor':
 		case 'setWidth':
 			return true;
@@ -332,12 +329,13 @@ KKuTu.onClientMessage = function ($c, msg) {
 				if (!temp.gaming || !temp.game.turning) return;
 				if (temp.rule.rule != "PictureQuiz") return;
 				if (temp.game.seq[temp.game.turn] != $c.id) return;
-				if (["mousedown", "mousemove", "mouseup", "clearall", "setColor", "setWidth"].indexOf(msg.eventtype) == -1) return;
+				if (["mousedown", "mousemove", "mouseup", "clearall", "undo", "setColor", "setWidth"].indexOf(msg.eventtype) == -1) return;
 				if (!canRelayPictureQuizEvent($c, msg)) return;
 
 				broadcastPictureQuiz($c.place, {
 					eventtype: msg.eventtype,
 					pos: msg.pos,
+					path: msg.eventtype == "mousemove" ? msg.path : undefined,
 					color: msg.color,
 					width: msg.width
 				}, $c.id);

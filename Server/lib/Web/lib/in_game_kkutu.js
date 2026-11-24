@@ -625,7 +625,6 @@ $(document).ready(function () {
 				return { title: L['attendanceReward'], summary: summary, content: L['mailboxAttendanceContent'] };
 		}
 	}
-	// 게스트는 방 제목을 직접 입력하지 않고 정해진 목록에서 고른다.
 	function prepareRoomTitle(current) {
 		var $guest = $("#room-title-guest");
 
@@ -2876,21 +2875,34 @@ $lib.Speedquiz.turnEnd = function (id, data) {
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-var PQ_MOVE_INTERVAL = 16;
-var PQ_MOVE_DISTANCE = 0.5;
+var PQ_SEND_INTERVAL = 30;
+var PQ_PATH_MAX = 64;
+var PQ_HISTORY_MAX = 50;
 
-function canSendMove(pos) {
+function sendPictureQuiz(data) {
+    flushPath();
+    send('pictureQuiz', data);
+}
+
+function flushPath() {
     var my = $data.pq;
-    var now = Date.now();
 
-    if (!my.drawing) return false;
-    if (my.lastMoveAt && now - my.lastMoveAt < PQ_MOVE_INTERVAL) return false; if (my.lastMovePos) {
-        var dx = Math.abs(pos.X -
-            my.lastMovePos.X); var dy = Math.abs(pos.Y - my.lastMovePos.Y); if (dx + dy < PQ_MOVE_DISTANCE) return false;
-    }
-    my.lastMoveAt = now;
-    my.lastMovePos = pos;
-    return true;
+    clearTimeout(my.pathTimer);
+    my.pathTimer = null;
+    if (!my.path.length) return;
+    send('pictureQuiz', {
+        eventtype: "mousemove",
+        path: my.path
+    });
+    my.path = [];
+}
+
+function pushPath(pos) {
+    var my = $data.pq;
+
+    my.path.push(pos);
+    if (my.path.length >= PQ_PATH_MAX) flushPath();
+    else if (!my.pathTimer) my.pathTimer = setTimeout(flushPath, PQ_SEND_INTERVAL);
 }
 
 function listener(event) {
@@ -2901,10 +2913,8 @@ function listener(event) {
                 event.preventDefault();
                 var downPos = getMousePos(event);
                 $data.pq.drawing = true;
-                $data.pq.lastMoveAt = 0;
-                $data.pq.lastMovePos = null;
                 $lib.PictureQuiz.initDraw(downPos);
-                send('pictureQuiz', {
+                sendPictureQuiz({
                     eventtype: "mousedown",
                     pos: downPos
                 });
@@ -2913,13 +2923,11 @@ function listener(event) {
             case "touchmove":
                 if (event.type === "mousemove" && !event.buttons) break;
                 if (event.type === "touchmove") event.preventDefault();
+                if (!$data.pq.drawing) break;
                 var pos = getMousePos(event);
+                if (pos.X === $data.pq.pos.X && pos.Y === $data.pq.pos.Y) break;
                 $lib.PictureQuiz.draw(pos);
-                if (!canSendMove(pos)) break;
-                send('pictureQuiz', {
-                    eventtype: "mousemove",
-                    pos: pos
-                });
+                pushPath(pos);
                 break;
             case "mouseup":
             case "touchend":
@@ -2928,7 +2936,7 @@ function listener(event) {
                 if (!$data.pq.drawing) break;
                 $data.pq.drawing = false;
                 $lib.PictureQuiz.finishDraw();
-                send('pictureQuiz', {
+                sendPictureQuiz({
                     eventtype: "mouseup"
                 });
                 break;
@@ -2936,8 +2944,27 @@ function listener(event) {
     }
 }
 
+$lib.PictureQuiz.saveHistory = function () {
+    var my = $data.pq;
+
+    if (!my.history) return;
+    my.history.push(my.ctx.getImageData(0, 0, my.canvas.width, my.canvas.height));
+    if (my.history.length > PQ_HISTORY_MAX) my.history.shift();
+};
+
+$lib.PictureQuiz.undo = function () {
+    var my = $data.pq;
+    var prev = my.history && my.history.pop();
+
+    if (!prev) return;
+    my.pos.drawable = false;
+    my.ctx.beginPath();
+    my.ctx.putImageData(prev, 0, 0);
+};
+
 $lib.PictureQuiz.initDraw = function (pos) {
     var my = $data.pq;
+    if (!my.pos.drawable) $lib.PictureQuiz.saveHistory();
     my.ctx.beginPath();
     my.pos.drawable = true;
     my.pos.X = pos.X;
@@ -2990,6 +3017,7 @@ $lib.PictureQuiz.finishDraw = function () {
 
 $lib.PictureQuiz.clearAll = function () {
     var my = $data.pq;
+    $lib.PictureQuiz.saveHistory();
     my.ctx.fillStyle = "#fff";
     my.ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
@@ -3014,8 +3042,8 @@ function getMousePos(evt) {
     else if (evt.changedTouches && evt.changedTouches.length) point = evt.changedTouches[0];
 
     return {
-        X: point.clientX - rect.left,
-        Y: point.clientY - rect.top
+        X: Math.round((point.clientX - rect.left) * 10) / 10,
+        Y: Math.round((point.clientY - rect.top) * 10) / 10
     };
 }
 
@@ -3059,7 +3087,7 @@ $lib.PictureQuiz.roundReady = function (data) {
             $(".pqColor").removeClass("pqSelected");
             $(this).addClass("pqSelected");
             $lib.PictureQuiz.setColor($(this).attr("color"));
-            send('pictureQuiz', {
+            sendPictureQuiz({
                 eventtype: "setColor",
                 color: $(this).attr("color")
             });
@@ -3068,7 +3096,7 @@ $lib.PictureQuiz.roundReady = function (data) {
             $(".pqWidth").removeClass("pqSelected");
             $(this).addClass("pqSelected");
             $lib.PictureQuiz.setWidth($(this).attr("width"));
-            send('pictureQuiz', {
+            sendPictureQuiz({
                 eventtype: "setWidth",
                 width: $(this).attr("width")
             });
@@ -3082,21 +3110,31 @@ $lib.PictureQuiz.roundReady = function (data) {
     $("#pq_clear").click(function () {
         if (myturn) {
             $lib.PictureQuiz.clearAll();
-            send('pictureQuiz', {
+            sendPictureQuiz({
                 eventtype: "clearall"
             });
         }
     });
+    $("#pq_undo").off("click");
+    $("#pq_undo").click(function () {
+        if (!myturn || $data.pq.drawing || !$data.pq.history.length) return;
+        $lib.PictureQuiz.undo();
+        sendPictureQuiz({
+            eventtype: "undo"
+        });
+    });
+    if ($data.pq) clearTimeout($data.pq.pathTimer);
     $data.pq = {};
     $data.pq.myturn = myturn;
     $data.pq.drawing = false;
-    $data.pq.lastMoveAt = 0;
-    $data.pq.lastMovePos = null;
+    $data.pq.path = [];
+    $data.pq.pathTimer = null;
     $data.pq.canvas = canvas = document.getElementById("PQCanvas");
-    $data.pq.ctx = ctx = canvas.getContext("2d");
+    $data.pq.ctx = ctx = canvas.getContext("2d", { willReadFrequently: true });
     $data.pq.ctx.imageSmoothingEnabled = true;
     $data.pq.ctx.lineWidth = 3;
     $lib.PictureQuiz.clearAll();
+    $data.pq.history = [];
     $data.pq.pos = {
         drawable: false,
         x: -1,
@@ -3124,13 +3162,16 @@ $lib.PictureQuiz.drawCanvas = function (data) {
             $lib.PictureQuiz.initDraw(data.pos);
             break;
         case "mousemove":
-            $lib.PictureQuiz.draw(data.pos);
+            data.path.forEach($lib.PictureQuiz.draw);
             break;
         case "mouseup":
             $lib.PictureQuiz.finishDraw();
             break;
         case "clearall":
             $lib.PictureQuiz.clearAll();
+            break;
+        case "undo":
+            $lib.PictureQuiz.undo();
             break;
         case "setColor":
             $lib.PictureQuiz.setColor(data.color);
