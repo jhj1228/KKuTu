@@ -1410,6 +1410,12 @@ iframe {
 	background-color: transparent;
 }
 
+#CommunityDiag .comm-head>div {
+	color: inherit;
+	font-size: inherit;
+	font-weight: 400;
+}
+
 .comm-head>div+div {
 	border-left: 2px solid #FFFFFF;
 }
@@ -3946,8 +3952,9 @@ iframe {
 }
 
 #Talk:focus {
+	position: relative;
 	border-color: #8A94A4;
-	box-shadow: 0 0 0 2px rgba(78, 90, 107, 0.2);
+	box-shadow: 0 0 0 2px rgba(78, 90, 107, 0.2), inset -1px 0 0 #8A94A4;
 }
 
 #ChatBtn {

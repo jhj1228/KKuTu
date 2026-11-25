@@ -338,7 +338,7 @@
 		"optSpectator": "관전 불가",
 		"explSpectator": "게임이 진행 중인 방에 입장할 수 없게 합니다.",
 		"optNoguest": "손님 금지",
-		"explNoguest": "손님이 방에 입장할 수 없게 합니다.",
+		"explNoguest": "GUEST를 방에 입장할 수 없게 합니다.",
 		"optApmal": "앞말잇기",
 		"explApmal": "기존 끝말잇기 방식에서 앞말잇기 방식으로 변경됩니다.",
 		"hidden": "(미공개)",
