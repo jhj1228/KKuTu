@@ -18,137 +18,80 @@
 
 var MainDB = require("../db");
 var Const = require("../../const");
+var JLog = require("../../sub/jjlog");
+var PgEscape = require("pg-escape");
 
-var Language = {
-    'ko_KR': require("../lang/ko_KR.json"),
-};
+var LANG = require("../lang/ko_KR.json")['kkutu'];
+
+var MAX_LIMIT = 1000;
+
+function getThemeName(code) {
+    return LANG['theme_' + code] || code;
+}
+function getThemeList(codes) {
+    return codes.map(function (code) {
+        return { code: code, name: getThemeName(code) };
+    }).sort(function (a, b) {
+        return a.name.localeCompare(b.name, 'ko');
+    });
+}
+function isTheme(code) {
+    return Const.KO_THEME.includes(code) || Const.KO_INJEONG.includes(code);
+}
+function findWords(theme, columns, tail, callback) {
+    MainDB.kkutu['ko_p'].direct("SELECT " + columns + " FROM kkutu_ko_p WHERE theme ~ " + PgEscape.literal("(,|^)" + theme + "(,|$)") + tail, function (error, $result) {
+        if (error) JLog.error("단어장 조회 오류: " + error.toString());
+        callback(error, $result && $result.rows);
+    }, true);
+}
+function toInteger(value, fallback, min, max) {
+    value = Math.floor(Number(value));
+    if (!isFinite(value)) value = fallback;
+    return Math.min(max, Math.max(min, value));
+}
 
 exports.run = function (Server, page) {
     Server.get("/wordsearch", function (req, res) {
-        page(req, res, "wordsearch", {
-            'KO_THEME': Const.KO_THEME,
-            'KO_INJEONG': Const.KO_INJEONG
-        });
+        page(req, res, "wordsearch", { 'bg': "gamebg.png" });
+    });
+
+    Server.get("/api/wordsearch/themes/list", function (req, res) {
+        var themes = getThemeList(Const.KO_THEME).concat(getThemeList(Const.KO_INJEONG));
+
+        res.send({ error: 0, themes: themes, total: themes.length });
     });
 
     Server.get("/api/wordsearch/:theme", function (req, res) {
         var theme = req.params.theme;
-        var limit = Number(req.query.limit) || 100;
-        var offset = Number(req.query.offset) || 0;
+        var limit = toInteger(req.query.limit || 100, 100, 1, MAX_LIMIT);
+        var offset = toInteger(req.query.offset || 0, 0, 0, 1000000);
 
-        if (!theme) {
-            return res.send({ error: 400, message: "주제를 찾을 수 없습니다." });
-        }
+        if (!isTheme(theme)) return res.send({ error: 400, message: "주제를 찾을 수 없습니다." });
+        findWords(theme, "COUNT(*) AS total", "", function (countError, $count) {
+            if (countError) return res.send({ error: 500, message: "단어를 불러오지 못했습니다." });
 
-        MainDB.kkutu['ko'].find()
-            .on(function ($body) {
-                if (!$body || $body.length === 0) {
-                    return res.send({ error: 404, message: "해당 주제에 단어가 없습니다.", words: [] });
-                }
+            findWords(theme, "_id", ' ORDER BY _id COLLATE "C" LIMIT ' + limit + " OFFSET " + offset, function (error, $words) {
+                if (error) return res.send({ error: 500, message: "단어를 불러오지 못했습니다." });
 
-                var filteredWords = $body.filter(function (word) {
-                    if (!word.theme) return false;
-
-                    var themes = word.theme.toString().split(',').map(function (t) {
-                        return t.trim();
-                    });
-                    return themes.indexOf(theme) !== -1;
+                res.send({
+                    error: 0,
+                    total: Number($count[0].total),
+                    words: $words.map(function (item) { return item._id; })
                 });
-
-                if (filteredWords.length === 0) {
-                    return res.send({ error: 404, message: "해당 주제에 단어가 없습니다.", words: [] });
-                }
-
-                var words = filteredWords.slice(offset, offset + limit).map(function (word) {
-                    return {
-                        word: word._id,
-                        mean: word.mean || "",
-                        type: word.type || "",
-                        hit: word.hit || 0,
-                        flag: word.flag || 0
-                    };
-                });
-
-                res.send({ error: 0, words: words, total: filteredWords.length });
             });
-    });
-
-    Server.get("/api/wordsearch/themes/list", function (req, res) {
-        var langData = Language['ko_KR']['kkutu'];
-        var themeList = [];
-
-        var koThemeList = Const.KO_THEME.map(function (themeCode) {
-            var themeName = langData['theme_' + themeCode];
-            return {
-                code: themeCode,
-                name: themeName || themeCode
-            };
-        });
-        koThemeList.sort(function (a, b) {
-            return a.name.localeCompare(b.name, 'ko');
-        });
-        themeList = themeList.concat(koThemeList);
-
-        var koInjeongList = Const.KO_INJEONG.map(function (themeCode) {
-            var themeName = langData['theme_' + themeCode];
-            return {
-                code: themeCode,
-                name: themeName || themeCode
-            };
-        });
-        koInjeongList.sort(function (a, b) {
-            return a.name.localeCompare(b.name, 'ko');
-        });
-        themeList = themeList.concat(koInjeongList);
-
-        res.send({
-            error: 0,
-            themes: themeList,
-            total: themeList.length
         });
     });
 
     Server.get("/api/wordsearch/:theme/download", function (req, res) {
         var theme = req.params.theme;
 
-        if (!theme) {
-            return res.send({ error: 400, message: "주제를 찾을 수 없습니다." });
-        }
+        if (!isTheme(theme)) return res.status(404).send("주제를 찾을 수 없습니다.");
+        findWords(theme, "_id", ' ORDER BY _id COLLATE "C"', function (error, $words) {
+            if (error) return res.status(500).send("단어를 불러오지 못했습니다.");
 
-        MainDB.kkutu['ko'].find()
-            .on(function ($body) {
-                if (!$body || $body.length === 0) {
-                    return res.send({ error: 404, message: "해당 주제에 단어가 없습니다." });
-                }
-
-                var filteredWords = $body.filter(function (word) {
-                    if (!word.theme) return false;
-
-                    var themes = word.theme.toString().split(',').map(function (t) {
-                        return t.trim();
-                    });
-                    return themes.indexOf(theme) !== -1;
-                });
-
-                if (filteredWords.length === 0) {
-                    return res.send({ error: 404, message: "해당 주제에 단어가 없습니다." });
-                }
-
-                var sortedWords = filteredWords.sort(function (a, b) {
-                    return a._id.localeCompare(b._id, 'ko');
-                });
-
-                var content = sortedWords.map(function (word) {
-                    return word._id;
-                }).join('\n');
-
-                var langData = Language['ko_KR']['kkutu'];
-                var themeName = langData['theme_' + theme] || theme;
-                var filename = encodeURI(themeName + '.txt');
-
-                res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-                res.setHeader('Content-Disposition', 'attachment; filename=' + filename);
-                res.send(content);
-            });
+            res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+            res.setHeader('Content-Disposition', "attachment; filename*=UTF-8''" + encodeURIComponent(getThemeName(theme) + ".txt"));
+            res.send($words.map(function (item) { return item._id; }).join('\n'));
+        });
     });
 };

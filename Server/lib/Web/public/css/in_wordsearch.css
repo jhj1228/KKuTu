@@ -15,3 +15,118 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+.WordBox.Product {
+	width: 990px;
+	color: #18202C;
+	background-color: #FFFFFF;
+	box-shadow: 0 2px 1px #DFE4EB;
+}
+
+.WordBox .product-title {
+	border-bottom-color: #DFE4EB;
+	color: #18202C;
+	font-weight: 700;
+	background-color: #F2F4F7;
+}
+
+#wordControl {
+	display: flex;
+	gap: 5px;
+	margin-bottom: 5px;
+}
+
+#themeSelect,
+#wordControl button {
+	box-sizing: border-box;
+	height: 32px;
+	border-color: #C9D1DC;
+	color: #18202C;
+	background-color: #FFFFFF;
+	transition: border-color 140ms ease, box-shadow 140ms ease, background-color 140ms ease, filter 200ms ease;
+}
+
+#themeSelect {
+	width: 250px;
+	outline: none;
+}
+
+#themeSelect:focus {
+	border-color: #8A94A4;
+	box-shadow: 0 0 0 2px rgba(78, 90, 107, 0.2);
+}
+
+#wordControl #searchBtn {
+	width: 70px;
+	border-color: transparent;
+	color: #FFFFFF;
+	font-weight: 700;
+	background-color: #7A8696;
+	background-image: linear-gradient(90deg, #8A95A4 0%, #7A8696 100%);
+}
+
+#wordControl #searchBtn:hover {
+	filter: brightness(0.94);
+}
+
+#wordControl #downloadBtn {
+	padding: 0 10px;
+	margin-left: auto;
+	color: #4E5A6B;
+}
+
+#wordControl #downloadBtn:hover {
+	color: #18202C;
+	background-color: #EDF1F6;
+}
+
+#wordList,
+#loadingSpinner {
+	margin-bottom: 5px;
+}
+
+#loadingSpinner.hidden {
+	display: none;
+}
+
+.word-list {
+	box-sizing: border-box;
+	padding: 4px;
+	border: 1px solid #DFE4EB;
+	height: 470px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	scrollbar-color: #C9D1DC transparent;
+}
+
+.word-list::-webkit-scrollbar {
+	width: 8px;
+}
+
+.word-list::-webkit-scrollbar-thumb {
+	background-color: #C9D1DC;
+}
+
+.word-item {
+	padding: 0px 5px;
+	margin-bottom: 4px;
+	font-size: 13px;
+	line-height: 26px;
+	background-color: #F7F9FC;
+}
+
+.word-item:hover {
+	background-color: #EDF1F6;
+}
+
+.word-message,
+#loadingSpinner {
+	padding: 20px 0px;
+	font-size: 13px;
+	text-align: center;
+	color: #4E5A6B;
+}
+
+.word-error {
+	color: #D64545;
+}
