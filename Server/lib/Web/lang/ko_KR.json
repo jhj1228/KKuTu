@@ -57,7 +57,8 @@
 		"GROUP_Mshoes": "모레미 발",
 		"GROUP_Mback": "모레미 배경",
 		"GROUP_Mfront": "모레미 전경",
-		"GROUP_Mskin": "모레미 스킨"
+		"GROUP_Mskin": "모레미 스킨",
+		"GROUP_Mdeco": "모레미 장식"
 	},
 	"error": {
 		"title": "레전드끄투 - 오류!",
@@ -337,8 +338,8 @@
 		"explHard": "더욱 어려운 문제가 출제됩니다.",
 		"optSpectator": "관전 불가",
 		"explSpectator": "게임이 진행 중인 방에 입장할 수 없게 합니다.",
-		"optNoguest": "손님 금지",
-		"explNoguest": "GUEST를 방에 입장할 수 없게 합니다.",
+		"optNoguest": "게스트 금지",
+		"explNoguest": "손님을 방에 입장할 수 없게 합니다.",
 		"optApmal": "앞말잇기",
 		"explApmal": "기존 끝말잇기 방식에서 앞말잇기 방식으로 변경됩니다.",
 		"hidden": "(미공개)",
@@ -624,6 +625,7 @@
 		"category_mouth": "입",
 		"category_clothes": "옷",
 		"category_hs": "손발",
+		"category_deco": "장식",
 		"category_back": "배경",
 		"equipped": "<font style='color: #FFB861;'> (착용 중)</font>",
 		"sureEquip": "다음 항목을 착용합니다",

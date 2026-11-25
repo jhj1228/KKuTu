@@ -182,6 +182,14 @@ function hasItem($user, gid) {
 
 	return !!bd && (bd.value > 0 || bd > 0);
 }
+function getEquipPart(equip, gid, group, isLeft) {
+	var part;
+
+	if (group.substr(0, 3) == "BDG") return "BDG";
+	if (group == "Mhand") return isLeft ? "Mlhand" : "Mrhand";
+	for (part in equip) if (equip[part] == gid) return part;
+	return group;
+}
 function isEquipped($user, gid) {
 	var part;
 
@@ -617,9 +625,7 @@ exports.run = function (Server, page) {
 				if (!$item) return res.json({ error: 430 });
 				if (!Const.AVAIL_EQUIP.includes($item.group) && $item.group != "Mfront") return res.json({ error: 400 });
 
-				var part = $item.group;
-				if (part.substr(0, 3) == "BDG") part = "BDG";
-				if (part == "Mhand") part = isLeft ? "Mlhand" : "Mrhand";
+				var part = getEquipPart($user.equip, gid, $item.group, isLeft);
 				var qid = $user.equip[part];
 
 				if (qid) {

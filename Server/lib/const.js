@@ -62,7 +62,7 @@ exports.OPTIONS = {
 	'ngs': { name: "Noguest" }, // GUEST 금지
 	'apm': { name: "Apmal" } // 앞말잇기
 };
-exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'lhand', 'rhand', 'front'];
+exports.MOREMI_PART = ['back', 'eye', 'mouth', 'shoes', 'clothes', 'head', 'deco', 'lhand', 'rhand', 'front'];
 exports.ENHANCE = {
 	MAX: 10,
 	BONUS: 0.1,
@@ -73,10 +73,10 @@ exports.ENHANCE = {
 	DESTROY: [0, 0, 0, 0, 0, 0, 0, 0, 0.3, 0.4],
 	REFUND: 0.3
 };
-exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "back"];
+exports.CATEGORIES = ["all", "spec", "skin", "badge", "head", "eye", "mouth", "clothes", "hs", "deco", "back"];
 exports.AVAIL_EQUIP = [
 	"NIK", "BDG1", "BDG2", "BDG3", "BDG4",
-	"Mhead", "Meye", "Mmouth", "Mhand", "Mclothes", "Mshoes", "Mback", "Mfront", "Mskin"
+	"Mhead", "Meye", "Mmouth", "Mhand", "Mclothes", "Mshoes", "Mback", "Mfront", "Mskin", "Mdeco"
 ];
 exports.GROUPS = {
 	'spec': ["PIX", "PIY", "PIZ", "CNS"],
@@ -87,6 +87,7 @@ exports.GROUPS = {
 	'mouth': ["Mmouth"],
 	'clothes': ["Mclothes"],
 	'hs': ["Mhand", "Mshoes"],
+	'deco': ["Mdeco"],
 	'back': ["Mback", "Mfront"]
 };
 exports.RULE = {

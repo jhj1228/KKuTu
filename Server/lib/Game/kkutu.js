@@ -445,10 +445,7 @@ exports.Client = function (socket, profile, sid) {
 			}
 			if (!my.box[i].expire) continue;
 			if (my.box[i].expire < now) {
-				gr = SHOP[i].group;
-
-				if (gr.substr(0, 3) == "BDG") gr = "BDG";
-				if (my.equip[gr] == i) delete my.equip[gr];
+				for (gr in my.equip) if (my.equip[gr] == i) delete my.equip[gr];
 				delete my.box[i];
 				expired.push(i);
 			}

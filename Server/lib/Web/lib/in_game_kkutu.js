@@ -5547,7 +5547,7 @@ function renderGoods($target, preId, filter, equip, onClick) {
 		q = list[i].value;
 		g = obj.group;
 		if (g.substr(0, 3) == "BDG") g = "BDG";
-		equipped = (g == "Mhand") ? (equip['Mlhand'] == list[i].key || equip['Mrhand'] == list[i].key) : (equip[g] == list[i].key);
+		equipped = (g == "Mhand") ? (equip['Mlhand'] == list[i].key || equip['Mrhand'] == list[i].key) : (equip[getEquipPart(equip, list[i].key, g)] == list[i].key);
 
 		if (typeof q == "number") q = {
 			value: q
@@ -5626,11 +5626,17 @@ function drawMyGoods(avGroup) {
 	});
 	markProfileBadges();
 }
+function getEquipPart(equip, id, group, isLeft) {
+	var part;
+
+	if (group.substr(0, 3) == "BDG") return "BDG";
+	if (group == "Mhand") return isLeft ? "Mlhand" : "Mrhand";
+	for (part in equip) if (equip[part] == id) return part;
+	return group;
+}
 function requestEquip(id, isLeft) {
 	var my = $data.users[$data.id];
-	var part = $data.shop[id].group;
-	if (part == "Mhand") part = isLeft ? "Mlhand" : "Mrhand";
-	if (part.substr(0, 3) == "BDG") part = "BDG";
+	var part = getEquipPart(my.equip, id, $data.shop[id].group, isLeft);
 	var already = my.equip[part] == id;
 
 	showConfirm(L[already ? 'sureUnequip' : 'sureEquip'] + ": " + L[id][0], function () {
@@ -6941,7 +6947,7 @@ function onGoods(e) {
 	$oj = $("#purchase-ping-after").html(commify(after) + L['ping']);
 	$("#purchase-item-desc").html((after < 0) ? L['notEnoughMoney'] : spt);
 	for (i in my.equip) ceq[i] = my.equip[i];
-	ceq[($obj.group == "Mhand") ? ["Mlhand", "Mrhand"][Math.floor(Math.random() * 2)] : $obj.group] = id;
+	ceq[getEquipPart(ceq, id, $obj.group, Math.random() < 0.5)] = id;
 
 	renderMoremi("#moremi-after", ceq);
 
