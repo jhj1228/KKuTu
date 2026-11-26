@@ -1001,7 +1001,7 @@ $(document).ready(function () {
 	$stage.dialog.profileWhisper.on('click', function (e) {
 		var o = $data.users[$data._profiled];
 
-		$stage.talk.val("/e " + (o.profile.title || o.profile.name).replace(/\s/g, "") + " ").focus();
+		$stage.talk.val("/e " + getCallName(o) + " ").focus();
 	});
 	$stage.dialog.profileReport.on('click', function (e) {
 		requestReport();
@@ -1049,12 +1049,13 @@ $(document).ready(function () {
 				$stage.dialog.dress.hide();
 				return;
 			}
-			showConfirm($data.NICKNAME_LIMIT.TERM > 0 ? L.confirmNickChangeLimit.replace("{V1}", $data.NICKNAME_LIMIT.TERM) : L.confirmNickChange, function () {
+			showConfirm((data.nickname && $data.users[$data.id].fixed ? L.confirmReleaseFix + "\n\n" : "") + ($data.NICKNAME_LIMIT.TERM > 0 ? L.confirmNickChangeLimit.replace("{V1}", $data.NICKNAME_LIMIT.TERM) : L.confirmNickChange), function () {
 				$.post("/profile", data, function (res) {
 					if (res.error) return fail(res.error);
 					const message = [];
 					if (data.nickname) {
 						$("#account-info").text($data.users[$data.id].nickname = $data.users[$data.id].profile.title = $data.users[$data.id].profile.name = $data.nickname = data.nickname);
+						$data.users[$data.id].fixed = false;
 						message.push(L.nickChanged.replace("{V1}", data.nickname));
 					}
 					if (data.exordial !== undefined) message.push(L.exorChanged.replace("{V1}", $data.users[$data.id].exordial = $data.exordial = data.exordial));
@@ -1069,6 +1070,27 @@ $(document).ready(function () {
 				$stage.dialog.dress.hide();
 			});
 		}
+	});
+	$("#dress-fix-nick").on('change', function (e) {
+		var my = $data.users[$data.id];
+		var cost = Number($(e.currentTarget).attr('data-cost'));
+
+		if (!e.currentTarget.checked || my.fixed) return updateFixNick();
+		updateFixNick();
+		if ($data.guest) return fail(421);
+		if ($("#dress-nickname").val() !== $data.nickname) return fail(481);
+		showConfirm(L['sureFixNick'].replace("{V1}", $data.nickname).replace("{V2}", commify(cost)), function () {
+			$.post("/nickname/fix", function (res) {
+				if (res.error) return fail(res.error);
+				my.money = res.money;
+				my.fixed = true;
+				updateFixNick();
+				updateMe();
+				send('refresh');
+				send('updateProfile', {}, true);
+				showAlert(L['fixedNickDone'].replace("{V1}", res.nickname));
+			});
+		});
 	});
 	$("#DressDiag .dress-type").on('click', function (e) {
 		var $target = $(e.currentTarget);

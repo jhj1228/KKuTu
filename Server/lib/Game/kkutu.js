@@ -359,6 +359,7 @@ exports.Client = function (socket, profile, sid) {
 		};
 		if (!gaming) {
 			o.nickname = my.nickname;
+			o.fixed = !!my.fixedNick;
 			o.exordial = my.exordial;
 			o.profile = my.profile;
 			o.place = my.place;
@@ -494,6 +495,7 @@ exports.Client = function (socket, profile, sid) {
 				}
 			}*/
 			my.nickname = $user.nickname;
+			if (my.nickname) my.profile.title = my.profile.name = my.nickname;
 			my.exordial = $user.exordial || "";
 			my.equip = $user.equip || {};
 			my.box = $user.box || {};
@@ -513,15 +515,18 @@ exports.Client = function (socket, profile, sid) {
 				my.checkExpire();
 				my.okgCount = Math.floor((my.data.playTime || 0) / PER_OKG);
 			}
-			/* Enhanced User Block System [S] */
-			if (black) {
-				if (blockedUntil) R.go({ result: 444, black: black, blockedUntil: blockedUntil });
-				else R.go({ result: 444, black: black });
-			}
-			/* Enhanced User Block System [E] */
-			else if (Cluster.isMaster && $user.server && !my.admin) R.go({ result: 409, black: $user.server });
-			else if (exports.NIGHT && my.isAjae === false) R.go({ result: 440 });
-			else R.go({ result: 200 });
+			DB.users.direct("SELECT 1 FROM nickname_fixed WHERE user_id = " + PgEscape.literal(my.id) + " AND nickname = " + PgEscape.literal(my.nickname || ""), function (fixedError, $fixed) {
+				my.fixedNick = !fixedError && $fixed.rowCount > 0;
+				/* Enhanced User Block System [S] */
+				if (black) {
+					if (blockedUntil) R.go({ result: 444, black: black, blockedUntil: blockedUntil });
+					else R.go({ result: 444, black: black });
+				}
+				/* Enhanced User Block System [E] */
+				else if (Cluster.isMaster && $user.server && !my.admin) R.go({ result: 409, black: $user.server });
+				else if (exports.NIGHT && my.isAjae === false) R.go({ result: 440 });
+				else R.go({ result: 200 });
+			}, true);
 		});
 		return R;
 	};
@@ -1659,6 +1664,29 @@ function getFreeChannel() {
 		return channel || 0;
 	}
 }
+exports.getCallName = function (client) {
+	var name = (client.nickname || client.profile.title || client.profile.name || "").replace(/\s/g, "");
+
+	if (client.guest || client.robot || client.fixedNick) return name;
+	return name + "#" + Const.getNickCode(client.id);
+};
+exports.setNameKeys = function (DNAME, client) {
+	var plain = (client.nickname || client.profile.title || client.profile.name || "").replace(/\s/g, "");
+	var keys = [exports.getCallName(client)];
+
+	exports.clearNameKeys(DNAME, client);
+	if (keys[0] != plain && (!DNAME[plain] || !DIC[DNAME[plain]])) keys.push(plain);
+	keys.forEach(function (key) {
+		DNAME[key] = client.id;
+	});
+	client._nameKeys = keys;
+};
+exports.clearNameKeys = function (DNAME, client) {
+	(client._nameKeys || []).forEach(function (key) {
+		if (DNAME[key] == client.id) delete DNAME[key];
+	});
+	client._nameKeys = [];
+};
 function getGuestName(sid) {
 	var i, len = sid.length, res = 0;
 

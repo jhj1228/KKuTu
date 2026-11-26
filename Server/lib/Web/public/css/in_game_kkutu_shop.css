@@ -176,6 +176,10 @@
 	color: #F15F9A;
 }
 
+.x-yellow_name {
+	color: #FFD400;
+}
+
 .x-rainbow_name {
 	background-image: linear-gradient(to right, #ff3333, #ffa533, #43c227, #2f77d9, #1c18b9, #a939cc, #f15f9a);
 	background-size: 200% auto;

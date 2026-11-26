@@ -1566,8 +1566,70 @@ iframe {
 	font-size: 16px;
 }
 
-.profile-tag {
-	font-size: 11px;
+label.name-tag {
+	margin-left: 3px;
+	font-size: 0.65em;
+	font-weight: 400;
+	color: #8A94A4;
+	-webkit-text-fill-color: #8A94A4;
+	text-shadow: none;
+	filter: none;
+}
+
+.users-name label.name-tag {
+	font-size: 0.75em;
+}
+
+#DressDiag .dialog-bar:has(#dress-nickname) {
+	display: flex;
+	align-items: center;
+}
+
+#DressDiag .dialog-bar:has(#dress-nickname) > h4 {
+	flex: none;
+}
+
+#DressDiag .dialog-bar input#dress-nickname {
+	flex: 1;
+	min-width: 0;
+	width: auto !important;
+}
+
+#DressDiag .dress-fix-nick {
+	display: flex;
+	float: left;
+	align-items: center;
+	flex: none;
+	box-sizing: border-box;
+	margin-left: 8px;
+	height: 26px;
+	color: #4E5A6B;
+	font-size: 12px;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+#DressDiag .dress-fix-nick #dress-fix-nick {
+	float: none;
+	margin: 0 4px 0 0;
+	padding: 0;
+	width: 12px;
+	height: 12px;
+	accent-color: #4E5A6B;
+	cursor: pointer;
+}
+
+#DressDiag .dress-fix-nick #dress-fix-nick:disabled {
+	cursor: default;
+}
+
+#dress-fix-nick-text {
+	font-style: normal;
+}
+
+label.profile-tag {
+	font-size: 0.65em;
+	font-weight: 400;
 	color: var(--text-3);
 }
 

@@ -202,6 +202,10 @@ DB.ready = function () {
 		if (nicknameError) JLog.error("닉네임 설정 테이블 생성 실패: " + nicknameError.toString());
 	}, true);
 
+	DB.users.direct("CREATE TABLE IF NOT EXISTS nickname_fixed (user_id character varying(64) NOT NULL PRIMARY KEY, nickname text NOT NULL UNIQUE, fixed_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP)", function (fixedError) {
+		if (fixedError) JLog.error("고정닉 테이블 생성 실패: " + fixedError.toString());
+	}, true);
+
 	DB.users.direct("CREATE TABLE IF NOT EXISTS item_enhance (user_id character varying(64) NOT NULL, item_id character varying(64) NOT NULL, level integer NOT NULL DEFAULT 0, PRIMARY KEY (user_id, item_id))", function (enhanceError) {
 		if (enhanceError) JLog.error("아이템 강화 테이블 생성 실패: " + enhanceError.toString());
 	}, true);
@@ -328,6 +332,7 @@ Server.get("/", function (req, res) {
 			'AVAIL_EQUIP': Const.AVAIL_EQUIP,
 			'CATEGORIES': Const.CATEGORIES,
 			'GROUPS': Const.GROUPS,
+			'FIXED_NICK_COST': Const.FIXED_NICK_COST,
 			'MODE': Const.GAME_TYPE,
 			'GUEST_ROOM_TITLES': Const.GUEST_ROOM_TITLES,
 			'RULE': Const.RULE,

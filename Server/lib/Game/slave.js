@@ -235,7 +235,7 @@ Server.on('connection', function (socket, info) {
 		$c.refresh().then(function (ref) {
 			if (ref.result == 200) {
 				DIC[$c.id] = $c;
-				DNAME[($c.profile.title || $c.profile.name).replace(/\s/g, "")] = $c.id;
+				KKuTu.setNameKeys(DNAME, $c);
 
 				$c.enter(room, reserve.spec, reserve.pass);
 				if ($c.place == room.id) {
@@ -313,7 +313,7 @@ KKuTu.onClientMessage = function ($c, msg) {
 					process.send({ type: "tail-report", id: $c.id, chan: CHAN, place: $c.place, msg: msg });
 					msg.whisper.split(',').forEach(v => {
 						if (temp = DIC[DNAME[v]]) {
-							temp.send('chat', { from: $c.profile.title || $c.profile.name, profile: $c.profile, value: msg.value });
+							temp.send('chat', { from: KKuTu.getCallName($c), profile: $c.profile, value: msg.value });
 						} else {
 							$c.sendError(424, v);
 						}
@@ -546,7 +546,7 @@ KKuTu.onClientClosed = function ($c, code) {
 		return;
 	}
 	delete DIC[$c.id];
-	if ($c.profile) delete DNAME[$c.profile.title || $c.profile.name];
+	KKuTu.clearNameKeys(DNAME, $c);
 	if ($c.socket) $c.socket.removeAllListeners();
 	KKuTu.publish('disconnRoom', { id: $c.id });
 

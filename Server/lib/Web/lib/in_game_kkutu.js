@@ -1074,7 +1074,7 @@ $(document).ready(function () {
 	$stage.dialog.profileWhisper.on('click', function (e) {
 		var o = $data.users[$data._profiled];
 
-		$stage.talk.val("/e " + (o.profile.title || o.profile.name).replace(/\s/g, "") + " ").focus();
+		$stage.talk.val("/e " + getCallName(o) + " ").focus();
 	});
 	$stage.dialog.profileReport.on('click', function (e) {
 		requestReport();
@@ -1122,12 +1122,13 @@ $(document).ready(function () {
 				$stage.dialog.dress.hide();
 				return;
 			}
-			showConfirm($data.NICKNAME_LIMIT.TERM > 0 ? L.confirmNickChangeLimit.replace("{V1}", $data.NICKNAME_LIMIT.TERM) : L.confirmNickChange, function () {
+			showConfirm((data.nickname && $data.users[$data.id].fixed ? L.confirmReleaseFix + "\n\n" : "") + ($data.NICKNAME_LIMIT.TERM > 0 ? L.confirmNickChangeLimit.replace("{V1}", $data.NICKNAME_LIMIT.TERM) : L.confirmNickChange), function () {
 				$.post("/profile", data, function (res) {
 					if (res.error) return fail(res.error);
 					const message = [];
 					if (data.nickname) {
 						$("#account-info").text($data.users[$data.id].nickname = $data.users[$data.id].profile.title = $data.users[$data.id].profile.name = $data.nickname = data.nickname);
+						$data.users[$data.id].fixed = false;
 						message.push(L.nickChanged.replace("{V1}", data.nickname));
 					}
 					if (data.exordial !== undefined) message.push(L.exorChanged.replace("{V1}", $data.users[$data.id].exordial = $data.exordial = data.exordial));
@@ -1142,6 +1143,27 @@ $(document).ready(function () {
 				$stage.dialog.dress.hide();
 			});
 		}
+	});
+	$("#dress-fix-nick").on('change', function (e) {
+		var my = $data.users[$data.id];
+		var cost = Number($(e.currentTarget).attr('data-cost'));
+
+		if (!e.currentTarget.checked || my.fixed) return updateFixNick();
+		updateFixNick();
+		if ($data.guest) return fail(421);
+		if ($("#dress-nickname").val() !== $data.nickname) return fail(481);
+		showConfirm(L['sureFixNick'].replace("{V1}", $data.nickname).replace("{V2}", commify(cost)), function () {
+			$.post("/nickname/fix", function (res) {
+				if (res.error) return fail(res.error);
+				my.money = res.money;
+				my.fixed = true;
+				updateFixNick();
+				updateMe();
+				send('refresh');
+				send('updateProfile', {}, true);
+				showAlert(L['fixedNickDone'].replace("{V1}", res.nickname));
+			});
+		});
 	});
 	$("#DressDiag .dress-type").on('click', function (e) {
 		var $target = $(e.currentTarget);
@@ -4402,6 +4424,8 @@ function onMessage(data) {
 		case 'updateUser':
 			if (data.nickname) $data.users[data.id].nickname = $data.users[data.id].profile.title = $data.users[data.id].profile.name = data.nickname;
 			if (data.exordial) $data.users[data.id].exordial = data.exordial;
+			if (data.hasOwnProperty('fixed')) $data.users[data.id].fixed = data.fixed;
+			if (data.id == $data.id) updateFixNick();
 			if ($data.room) updateUI($data.room.id == data.place);
 			else updateUI(undefined, true);
 			break;
@@ -4747,7 +4771,7 @@ function runCommand(cmd) {
 				c = 0;
 				cmd[1] = cmd.slice(1).join(' ');
 				for (i in $data.users) {
-					if (getDisplayName($data.users[i]) == cmd[1]) {
+					if (getDisplayName($data.users[i]) == cmd[1] || getCallName($data.users[i]) == cmd[1]) {
 						notice("[" + (++c) + "] " + i);
 					}
 				}
@@ -4814,7 +4838,7 @@ function findOnlineUserIdByName(target) {
 
 	if (!target) return null;
 	for (id in $data.users) {
-		if (getDisplayName($data.users[id]) == target) return id;
+		if (getDisplayName($data.users[id]) == target || getCallName($data.users[id]) == target) return id;
 	}
 	return null;
 }
@@ -5197,7 +5221,7 @@ function userListBar(o, forInvite) {
 			.append($("<div>").addClass("jt-image users-image").css('background-image', "url('" + o.profile.image + "')"))
 			.append(getLevelImage(o.data.score).addClass("users-level"))
 			// .append($("<div>").addClass("jt-image users-from").css('background-image', "url('/img/kkutu/"+o.profile.type+".png')"))
-			.append($("<div>").addClass("users-name").text(getDisplayName(o)))
+			.append(addNameTag($("<div>").addClass("users-name").text(getDisplayName(o)), o))
 			.on('click', function (e) {
 				requestInvite($(e.currentTarget).attr('id').slice(12));
 			});
@@ -5206,7 +5230,7 @@ function userListBar(o, forInvite) {
 			.append($("<div>").addClass("jt-image users-image").css('background-image', "url('" + o.profile.image + "')"))
 			.append(getLevelImage(o.data.score).addClass("users-level"))
 			// .append($("<div>").addClass("jt-image users-from").css('background-image', "url('/img/kkutu/"+o.profile.type+".png')"))
-			.append($("<div>").addClass("users-name ellipse").text(getDisplayName(o)))
+			.append(addNameTag($("<div>").addClass("users-name ellipse").text(getDisplayName(o)), o))
 			.on('click', function (e) {
 				requestProfile($(e.currentTarget).attr('id').slice(11));
 			});
@@ -5311,7 +5335,7 @@ function normalGameUserBar(o) {
 		.append($m = $("<div>").addClass("moremi game-user-image"))
 		.append($("<div>").addClass("game-user-title")
 			.append(getLevelImage(o.data.score).addClass("game-user-level"))
-			.append($bar = $("<div>").addClass("game-user-name ellipse").html(getDisplayName(o)))
+			.append($bar = addNameTag($("<div>").addClass("game-user-name ellipse").html(getDisplayName(o)), o))
 			.append($("<div>").addClass("expl").html(L['LEVEL'] + " " + getLevel(o.data.score) + "<br>" + getDisplayName(o)))
 		)
 		.append($n = $("<div>").addClass("game-user-score"));
@@ -5327,7 +5351,7 @@ function miniGameUserBar(o) {
 	var $R = $("<div>").attr('id', "game-user-" + o.id).addClass("game-user")
 		.append($("<div>").addClass("game-user-title")
 			.append(getLevelImage(o.data.score).addClass("game-user-level"))
-			.append($bar = $("<div>").addClass("game-user-name ellipse").html(getDisplayName(o)))
+			.append($bar = addNameTag($("<div>").addClass("game-user-name ellipse").html(getDisplayName(o)), o))
 		)
 		.append($n = $("<div>").addClass("game-user-score"));
 	if (o.id == $data.id) $bar.addClass("game-user-my-name");
@@ -5395,7 +5419,7 @@ function updateRoom(gaming) {
 				)
 				.append($("<div>").addClass("room-user-title")
 					.append(getLevelImage(o.data.score).addClass("room-user-level"))
-					.append($bar = $("<div>").addClass("room-user-name").text(getDisplayName(o)))
+					.append($bar = addNameTag($("<div>").addClass("room-user-name").text(getDisplayName(o)), o))
 				).on('click', function (e) {
 					requestProfile($(e.currentTarget).attr('id').slice(10));
 				})
@@ -5520,6 +5544,7 @@ function drawMyDress(avGroup) {
 	$(".dress-type.selected").removeClass("selected");
 	$("#dress-type-all").addClass("selected");
 	$("#dress-nickname").val(my.nickname);
+	updateFixNick();
 	$("#dress-exordial").val(my.exordial);
 	drawMyGoods(avGroup || true);
 }
@@ -5807,7 +5832,7 @@ function drawLeaderboard(data) {
 				.append(getLevelImage(item.score).addClass("ranking-image"))
 				.append($("<label>").css('padding-top', 2).html(getLevel(item.score)))
 			)
-			.append($("<td>").addClass("ranking-name").text(profile).on('click', function () {
+			.append(addNameTag($("<td>").addClass("ranking-name").text(profile), $data.users[item.id] || item).on('click', function () {
 				requestProfile(item.id);
 			}))
 			.append($("<td>").html(commify(item.score)))
@@ -5915,7 +5940,7 @@ function requestRoomInfo(id) {
 
 		$pls.append($row = $("<div>").addClass("ri-player")
 			.append($moremi = $("<div>").addClass("moremi rip-moremi"))
-			.append($p = $("<div>").addClass("ellipse rip-title").text(getDisplayName(p)))
+			.append($p = addNameTag($("<div>").addClass("ellipse rip-title").text(getDisplayName(p)), p))
 			.append($("<div>").addClass("rip-team team-" + rd.t).html($("#team-" + rd.t).html()))
 			.append($("<div>").addClass("rip-form").html(L['pform_' + rd.f]))
 		);
@@ -5965,7 +5990,7 @@ function requestProfile(id) {
 		.append($("<div>").addClass("profile-head-item")
 			.append(getImage(o.profile.image).addClass("profile-image"))
 			.append($("<div>").addClass("profile-title ellipse").text(getDisplayName(o))
-				.append($("<label>").addClass("profile-tag").html(o.admin ? " " : " #" + o.id.toString().substr(0, 5)))
+				.append($("<label>").addClass("profile-tag").text(o.admin ? " " : " " + getNameTag(o)))
 			)
 		)
 		.append($("<div>").addClass("profile-head-item")
@@ -6042,7 +6067,7 @@ function showOfflineProfile(o, id) {
 		.append($("<div>").addClass("profile-head-item")
 			.append(getImage(o.profile.image).addClass("profile-image"))
 			.append($("<div>").addClass("profile-title ellipse").text(getDisplayName(o))
-				.append($("<label>").addClass("profile-tag").html(" #" + o.id.toString().substr(0, 5)))
+				.append($("<label>").addClass("profile-tag").text(" " + getNameTag(o)))
 			)
 		)
 		.append($("<div>").addClass("profile-head-item")
@@ -6519,7 +6544,7 @@ function roundEnd(result, data) {
 		$b.append($o = $("<div>").addClass("result-board-item")
 			.append($p = $("<div>").addClass("result-board-rank").html(r.rank + 1))
 			.append(getLevelImage(sc).addClass("result-board-level"))
-			.append($("<div>").addClass("result-board-name").text(getDisplayName(o)))
+			.append(addNameTag($("<div>").addClass("result-board-name").text(getDisplayName(o)), o))
 			.append($("<div>").addClass("result-board-score")
 				.html(data.scores ? (L['avg'] + " " + commify(data.scores[r.id]) + L['kpm']) : (commify(r.score || 0) + L['PTS']))
 			)
@@ -6657,7 +6682,7 @@ function drawRanking(ranks) {
 		$b.append($o = $("<div>").addClass("result-board-item")
 			.append($("<div>").addClass("result-board-rank").html(r.rank + 1))
 			.append(getLevelImage(r.score).addClass("result-board-level"))
-			.append($("<div>").addClass("result-board-name").text(getDisplayName(o)))
+			.append(addNameTag($("<div>").addClass("result-board-name").text(getDisplayName(o)), o))
 			.append($("<div>").addClass("result-board-score").html(commify(r.score) + L['PTS']))
 			.append($("<div>").addClass("result-board-reward").html(""))
 			.append($v = $("<div>").addClass("result-board-lvup").css('display', me ? "block" : "none")
@@ -7613,6 +7638,37 @@ function drawObtain(data) {
 }
 function getDisplayName(user) {
 	return user.nickname || user.profile.title || user.profile.name;
+}
+function getNickCode(id) {
+	var h = 2166136261, i;
+
+	id = String(id);
+	for (i = 0; i < id.length; i++) {
+		h ^= id.charCodeAt(i);
+		h = Math.imul(h, 16777619);
+	}
+	return 10000 + (h >>> 0) % 90000;
+}
+function getNameTag(user) {
+	if (!user || !user.id || user.guest || user.robot || user.fixed) return "";
+	return "#" + getNickCode(user.id);
+}
+function getCallName(user) {
+	return getDisplayName(user).replace(/\s/g, "") + getNameTag(user);
+}
+function addNameTag($target, user) {
+	var tag = getNameTag(user);
+
+	if (tag) $target.append($("<label>").addClass("name-tag").text(tag));
+	return $target;
+}
+function updateFixNick() {
+	var my = $data.users[$data.id];
+	var $check = $("#dress-fix-nick");
+
+	if (!my || !$check.length) return;
+	$check.prop('checked', !!my.fixed).prop('disabled', !!my.fixed || !!$data.guest);
+	$("#dress-fix-nick-text").text(L['fixNick']);
 }
 function renderMoremi(target, equip) {
 	var $obj = $(target).empty();

@@ -190,6 +190,16 @@ function getEquipPart(equip, gid, group, isLeft) {
 	for (part in equip) if (equip[part] == gid) return part;
 	return group;
 }
+function isFixedByOther(nickname, uid, callback) {
+	MainDB.users.direct("SELECT user_id FROM nickname_fixed WHERE nickname = " + PgEscape.literal(nickname) + " AND user_id <> " + PgEscape.literal(uid), function (error, $result) {
+		callback(error, !error && $result.rowCount > 0);
+	}, true);
+}
+function releaseFixedNick(uid, callback) {
+	MainDB.users.direct("DELETE FROM nickname_fixed WHERE user_id = " + PgEscape.literal(uid), function () {
+		if (callback) callback();
+	}, true);
+}
 function isEquipped($user, gid) {
 	var part;
 
@@ -297,7 +307,7 @@ exports.run = function (Server, page) {
 			"FROM users " +
 			"WHERE kkutu IS NOT NULL AND kkutu->>'score' ~ '^[0-9]+(\\.[0-9]+)?$'" +
 			") " +
-			"SELECT id, nickname, score, rank FROM ranked " +
+			"SELECT id, nickname, score, rank, EXISTS (SELECT 1 FROM nickname_fixed f WHERE f.user_id = ranked.id AND f.nickname = ranked.nickname) AS fixed FROM ranked " +
 			"WHERE " + where + " " +
 			"ORDER BY rank LIMIT " + limit;
 
@@ -313,6 +323,7 @@ exports.run = function (Server, page) {
 					return {
 						id: item.id,
 						nickname: item.nickname,
+						fixed: item.fixed,
 						score: item.score,
 						rank: Number(item.rank)
 					};
@@ -361,6 +372,11 @@ exports.run = function (Server, page) {
 		MainDB.users.findOne(['_id', userId]).limit(['nickname', true], ['exordial', true], ['kkutu', true], ['equip', true]).on(function ($user) {
 			if (!$user) return res.json({ error: 405 });
 
+			MainDB.users.direct("SELECT 1 FROM nickname_fixed WHERE user_id = " + PgEscape.literal($user._id) + " AND nickname = " + PgEscape.literal($user.nickname || ""), function (fixedError, $fixed) {
+				sendProfile($user, !fixedError && $fixed.rowCount > 0);
+			}, true);
+		});
+		function sendProfile($user, fixed) {
 			var savedRecord = ($user.kkutu && $user.kkutu.record) || {};
 			var record = {};
 
@@ -381,22 +397,30 @@ exports.run = function (Server, page) {
 					record: record
 				},
 				equip: $user.equip || {},
+				fixed: fixed,
 				offline: true
 			});
-		});
+		}
 	});
 	Server.get("/user-id", function (req, res) {
 		var nickname = (req.query.nickname || "").trim();
 
-		if (!nickname) return res.json({ error: 400 });
-		MainDB.users.findOne(['nickname', nickname]).limit(['nickname', true]).on(function ($user) {
-			if (!$user) return res.json({ error: 405 });
+		var code = nickname.match(/^(.+)#(\d{5})$/);
 
+		if (!nickname) return res.json({ error: 400 });
+		if (code) nickname = code[1];
+		MainDB.users.direct("SELECT u._id, u.nickname, (f.nickname IS NOT NULL) AS fixed FROM users u LEFT JOIN nickname_fixed f ON f.user_id = u._id AND f.nickname = u.nickname WHERE u.nickname = " + PgEscape.literal(nickname) + " ORDER BY fixed DESC, u._id", function (error, $result) {
+			var $user = error ? null : $result.rows.filter(function (row) {
+				return code ? (!row.fixed && Const.getNickCode(row._id) == code[2]) : true;
+			})[0];
+
+			if (!$user) return res.json({ error: 405 });
 			res.json({
 				id: $user._id,
-				nickname: $user.nickname
+				nickname: $user.nickname,
+				fixed: $user.fixed
 			});
-		});
+		}, true);
 	});
 
 	// POST
@@ -457,10 +481,12 @@ exports.run = function (Server, page) {
 			if (error) return res.json({ error: 500 });
 			if ($result.rowCount) return res.json({ error: 473 });
 
-			MainDB.users.findOne(['nickname', nickname]).on(function ($same) {
-				if ($same && $same._id != uid) return res.json({ error: 456 });
+			isFixedByOther(nickname, uid, function (fixedError, taken) {
+				if (fixedError) return res.json({ error: 500 });
+				if (taken) return res.json({ error: 456 });
 
 				MainDB.users.update(['_id', uid]).set(['nickname', nickname]).on(function () {
+					releaseFixedNick(uid);
 					MainDB.users.direct("INSERT INTO nickname_setup (user_id) VALUES (" + PgEscape.literal(uid) + ") ON CONFLICT DO NOTHING", function (insertError) {
 						if (insertError) return res.json({ error: 500 });
 						req.session.profile = { ...req.session.profile, name: nickname, title: nickname, nickname };
@@ -481,9 +507,11 @@ exports.run = function (Server, page) {
 		if (!nickname) return res.send({ result: 200 });
 
 		if (nickname.length > 16) nickname = nickname.slice(0, 16);
-		MainDB.users.findOne(['nickname', nickname]).on(function (data) {
-			if (data) return res.send({ error: 456 });
+		isFixedByOther(nickname, req.session.profile.id, function (fixedError, taken) {
+			if (fixedError) return res.send({ error: 500 });
+			if (taken) return res.send({ error: 456 });
 			MainDB.users.findOne(['_id', req.session.profile.id]).on(function (requester) {
+				if (requester.nickname === nickname) return res.send({ result: 200 });
 				const now = Number(new Date());
 				if (GLOBAL.NICKNAME_LIMIT.TERM > 0) {
 					const changedDate = new Date(Number(requester.nickChanged));
@@ -492,12 +520,40 @@ exports.run = function (Server, page) {
 					if (now < Number(changedDate)) return res.send({ error: 457 });
 				}
 
-				MainDB.users.update(['_id', req.session.profile.id]).set(['nickname', nickname], ['nickChanged', now]).on();
+				MainDB.users.update(['_id', req.session.profile.id]).set(['nickname', nickname], ['nickChanged', now]).on(function () {
+					releaseFixedNick(req.session.profile.id);
+				});
 				req.session.profile = { ...req.session.profile, name: nickname, title: nickname, nickname };
 				MainDB.session.update(['_id', req.sessionID]).set(['profile', req.session.profile]).on();
 				return res.send({ result: 200 });
 			});
 		});
+	});
+	Server.post("/nickname/fix", function (req, res) {
+		if (!req.session.profile || req.session.profile.guest) return res.json({ error: 400 });
+		var uid = PgEscape.literal(req.session.profile.id);
+		var cost = Const.FIXED_NICK_COST;
+
+		MainDB.users.direct("SELECT u.nickname, u.money, f.nickname AS fixed, (SELECT user_id FROM nickname_fixed WHERE nickname = u.nickname) AS holder FROM users u LEFT JOIN nickname_fixed f ON f.user_id = u._id WHERE u._id = " + uid, function (error, $result) {
+			var row;
+
+			if (error) return res.json({ error: 500 });
+			if (!(row = $result.rows[0])) return res.json({ error: 400 });
+			if (row.fixed === row.nickname) return res.json({ error: 480 });
+			if (row.holder) return res.json({ error: 456 });
+			if (Number(row.money) < cost) return res.json({ error: 407 });
+
+			MainDB.users.direct("WITH old AS (DELETE FROM nickname_fixed WHERE user_id = " + uid + "), " +
+				"f AS (INSERT INTO nickname_fixed (user_id, nickname) SELECT _id, nickname FROM users WHERE _id = " + uid + " AND nickname = " + PgEscape.literal(row.nickname) + " AND money >= " + cost + " ON CONFLICT (nickname) DO NOTHING RETURNING user_id) " +
+				"UPDATE users SET money = money - " + cost + " WHERE _id IN (SELECT user_id FROM f) RETURNING money", function (fixError, $fixed) {
+				if (fixError) {
+					JLog.error("고정닉 설정 오류: " + fixError.toString());
+					return res.json({ error: 500 });
+				}
+				if (!$fixed.rowCount) return res.json({ error: 456 });
+				res.json({ result: 200, nickname: row.nickname, money: Number($fixed.rows[0].money) });
+			}, true);
+		}, true);
 	});
 	Server.post("/buy/:id", function (req, res) {
 		if (req.session.profile) {

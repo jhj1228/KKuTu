@@ -90,6 +90,17 @@ exports.GROUPS = {
 	'deco': ["Mdeco"],
 	'back': ["Mback", "Mfront"]
 };
+exports.FIXED_NICK_COST = 1800;
+exports.getNickCode = function (id) {
+	var h = 2166136261, i;
+
+	id = String(id);
+	for (i = 0; i < id.length; i++) {
+		h ^= id.charCodeAt(i);
+		h = Math.imul(h, 16777619);
+	}
+	return 10000 + (h >>> 0) % 90000;
+};
 exports.RULE = {
 	/*
 		유형: { lang: 언어,

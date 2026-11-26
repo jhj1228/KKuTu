@@ -518,8 +518,7 @@ exports.init = function (_SID, _CHAN) {
 					if (ref.result == 200 || isBlockRelease) {
 						/* Enhanced User Block System [E] */
 						DIC[$c.id] = $c;
-						const displayName = ($c.profile.title || $c.profile.name || $c.id);
-						DNAME[displayName.replace(/\s/g, "")] = $c.id;
+						KKuTu.setNameKeys(DNAME, $c);
 						if (($c.guest && GLOBAL.GOOGLE_RECAPTCHA_TO_GUEST) || GLOBAL.GOOGLE_RECAPTCHA_TO_USER) {
 							$c.socket.send(JSON.stringify({
 								type: 'recaptcha',
@@ -618,12 +617,13 @@ function processClientRequest($c, msg) {
 			$c.refresh();
 			break;
 		case 'updateProfile':
-			msg.id = $c.id;
-			delete msg.type;
-			$c.updateProfile(msg);
-			if (msg.nickname) DIC[$c.id].nickname = DIC[$c.id].profile.title = DIC[$c.id].profile.name = msg.nickname;
-			if (msg.exordial) DIC[$c.id].exordial = msg.exordial;
-			for (let i in DIC) DIC[i].send('updateUser', msg);
+			if ($c.guest) return;
+			$c.refresh().then(function () {
+				var data = { id: $c.id, nickname: $c.nickname, exordial: $c.exordial, fixed: !!$c.fixedNick };
+
+				KKuTu.setNameKeys(DNAME, $c);
+				for (let i in DIC) DIC[i].send('updateUser', data);
+			});
 			break;
 		case 'talk':
 			if (!msg.value) return;
@@ -641,7 +641,7 @@ function processClientRequest($c, msg) {
 				msg.whisper.split(',').forEach(v => {
 					if (temp = DIC[DNAME[v]]) {
 						temp.send('chat', {
-							from: $c.profile.title || $c.profile.name,
+							from: KKuTu.getCallName($c),
 							profile: $c.profile,
 							value: msg.value
 						});
@@ -788,7 +788,7 @@ KKuTu.onClientClosed = function ($c, code) {
 	}
 	delete DIC[$c.id];
 	if ($c._error != 409 && !$c.admin) MainDB.users.update(['_id', $c.id]).set(['server', ""]).on();
-	if ($c.profile) delete DNAME[$c.profile.title || $c.profile.name];
+	KKuTu.clearNameKeys(DNAME, $c);
 	if ($c.socket) $c.socket.removeAllListeners();
 	if ($c.friends) narrateFriends($c.id, $c.friends, "off");
 	KKuTu.publish('disconn', { id: $c.id });
