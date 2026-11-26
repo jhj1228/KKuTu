@@ -5904,16 +5904,16 @@ function requestRoomInfo(id) {
 	$("#ri-round").html(o.round + ", " + o.time + L['SECOND']);
 	$("#ri-limit").html(o.players.length + " / " + o.limit);
 	o.players.forEach(function (p, i) {
-		var $p, $moremi;
+		var $p, $moremi, $row;
 		var rd = o.readies[p] || {};
+		var user = $data.users[p];
 
-		p = $data.users[p] || NULL_USER;
+		p = user || NULL_USER;
 		if (o.players[i].robot) {
-			p.profile = { title: L['robot'] };
-			p.equip = { robot: true };
+			p = { profile: { title: L['robot'] }, equip: { robot: true }, data: { score: 0 } };
 		} else rd.t = rd.t || 0;
 
-		$pls.append($("<div>").addClass("ri-player")
+		$pls.append($row = $("<div>").addClass("ri-player")
 			.append($moremi = $("<div>").addClass("moremi rip-moremi"))
 			.append($p = $("<div>").addClass("ellipse rip-title").text(getDisplayName(p)))
 			.append($("<div>").addClass("rip-team team-" + rd.t).html($("#team-" + rd.t).html()))
@@ -5923,6 +5923,9 @@ function requestRoomInfo(id) {
 		$p.prepend(getLevelImage(p.data.score).addClass("profile-level rip-level"));
 
 		renderMoremi($moremi, p.equip);
+		if (user) $row.addClass("ri-player-link").on('click', function () {
+			requestProfile(user.id);
+		});
 	});
 	showDialog($stage.dialog.roomInfo);
 	$stage.dialog.roomInfo.show();

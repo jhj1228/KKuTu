@@ -1658,6 +1658,14 @@ iframe {
 	background-color: var(--surface);
 }
 
+.ri-player-link {
+	cursor: pointer;
+}
+
+.ri-player-link:hover {
+	background-color: #EDF1F6;
+}
+
 .rip-moremi {
 	margin-right: 3px;
 	width: 40px;
