@@ -28,6 +28,7 @@ var Const = require("../const");
 var JLog = require('../sub/jjlog');
 var Secure = require('../sub/secure');
 var Recaptcha = require('../sub/recaptcha');
+var UserLog = require('./userlog');
 
 var MainDB;
 
@@ -210,49 +211,131 @@ function checkTailUser(id, place, msg) {
 		DIC[temp].send('tail', { a: "user", rid: place, id: id, msg: msg });
 	}
 }
-function sendReportToDiscord(reporter, targetId, reason) {
-	if (!GLOBAL.DISCORD_WEBHOOK_URL) return;
+var LAST_REPORT = {};
 
-	var targetUser = DIC[targetId];
-	var targetName = targetUser ? (targetUser.nickname || targetUser.profile.name) : "알 수 없음";
-	var targetIP = targetUser ? targetUser.remoteAddress : "IP 정보 없음";
+function escapeDiscord(text) {
+	return String(text || "").replace(/([\\*_~`|>#@:<\[\]()-])/g, "\\$1");
+}
+function describeReportUser($c) {
+	var name = $c.nickname || $c.profile.title || $c.profile.name || "?";
+	var tag = $c.guest ? " [GUEST]" : ($c.fixedNick ? " [고정닉]" : " #" + Const.getNickCode($c.id));
 
-	var payload = JSON.stringify({
+	return escapeDiscord(name) + tag + "\n`" + $c.id + "`";
+}
+function describeReportPlace($c) {
+	var room = $c.place && ROOM[$c.place];
+
+	if (!room) return "로비";
+	return room.id + "번 방 - " + escapeDiscord(room.title) + (room.gaming ? " (게임 중)" : "");
+}
+function getLogName(id) {
+	return DIC[id] ? KKuTu.getCallName(DIC[id]) : String(id);
+}
+function buildReportLog($reporter, $target, reason, detail) {
+	var lines = UserLog.dump($target.id);
+	var preview = lines.slice(-8).join("\n");
+	var minutes = Math.round(UserLog.KEEP_TIME / 60000);
+	var file = [
+		"[신고 대상] " + getLogName($target.id) + " (" + $target.id + ")",
+		"[신고자] " + getLogName($reporter.id) + " (" + $reporter.id + ")",
+		"[사유] " + reason,
+		"[내용] " + detail,
+		"[접수 시각] " + UserLog.formatTime(Date.now(), true),
+		"",
+		"===== 신고 대상의 최근 " + minutes + "분 기록 (" + lines.length + "건) =====",
+		lines.length ? lines.join("\n") : "(기록 없음)"
+	].join("\n");
+
+	if (preview.length > 950) preview = "…" + preview.slice(-950);
+	return {
+		count: lines.length,
+		minutes: minutes,
+		preview: lines.length ? "```\n" + preview.replace(/`/g, "ˋ") + "\n```" : "기록 없음",
+		file: file
+	};
+}
+function sendReportToDiscord($reporter, $target, reason, detail, callback) {
+	var payload, url, req, log, body, boundary, filename;
+
+	if (!GLOBAL.DISCORD_WEBHOOK_URL) {
+		JLog.warn("신고 웹훅(DISCORD_WEBHOOK_URL)이 설정되지 않아 신고를 전달하지 못했습니다.");
+		return callback(false);
+	}
+	log = buildReportLog($reporter, $target, reason, detail);
+	filename = "report_" + String($target.id).replace(/[^\w-]/g, "") + "_" + Date.now() + ".txt";
+	payload = JSON.stringify({
 		username: "KKuTu 신고 봇",
+		allowed_mentions: { parse: [] },
+		attachments: [{ id: 0, filename: filename }],
 		embeds: [{
-			title: "🚨 사용자 신고 접수",
-			color: 16711680, // 빨간색
+			title: "신고 접수 - " + reason,
+			color: 0xDC3545,
+			description: "```\n" + detail.replace(/`/g, "ˋ") + "\n```",
 			fields: [
-				{ name: "신고자", value: `${reporter.nickname} (#${reporter.id})`, inline: true },
-				{ name: "신고 대상", value: `${targetName} (#${targetId})`, inline: true },
-				{ name: "대상 IP", value: targetIP, inline: false },
-				{ name: "신고 사유", value: reason, inline: false },
-				{ name: "시간", value: new Date().toLocaleString(), inline: false }
-			]
+				{ name: "신고 대상", value: describeReportUser($target), inline: true },
+				{ name: "신고자", value: describeReportUser($reporter), inline: true },
+				{ name: "대상 위치", value: describeReportPlace($target), inline: false },
+				{ name: "대상 IP", value: escapeDiscord($target.remoteAddress || "알 수 없음"), inline: false },
+				{ name: "대상의 최근 " + log.minutes + "분 기록 " + log.count + "건 (전체는 첨부 파일)", value: log.preview, inline: false }
+			],
+			timestamp: new Date().toISOString()
 		}]
 	});
-
-	var url = require('url').parse(GLOBAL.DISCORD_WEBHOOK_URL);
-
-	var options = {
-		hostname: url.hostname,
-		path: url.path,
+	try {
+		url = new URL(GLOBAL.DISCORD_WEBHOOK_URL);
+	} catch (e) {
+		JLog.error("신고 웹훅 주소가 올바르지 않습니다.");
+		return callback(false);
+	}
+	boundary = "----KKuTuReport" + Date.now().toString(16);
+	body = Buffer.concat([
+		Buffer.from("--" + boundary + "\r\nContent-Disposition: form-data; name=\"payload_json\"\r\nContent-Type: application/json\r\n\r\n" + payload + "\r\n"),
+		Buffer.from("--" + boundary + "\r\nContent-Disposition: form-data; name=\"files[0]\"; filename=\"" + filename + "\"\r\nContent-Type: text/plain; charset=utf-8\r\n\r\n"),
+		Buffer.from("\ufeff" + log.file, "utf8"),
+		Buffer.from("\r\n--" + boundary + "--\r\n")
+	]);
+	req = https.request(url, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'Content-Length': Buffer.byteLength(payload)
-		}
-	};
-
-	var req = https.request(options, (res) => {
+		timeout: 10000,
+		headers: { 'Content-Type': "multipart/form-data; boundary=" + boundary, 'Content-Length': body.length }
+	}, function (res) {
+		res.resume();
+		if (res.statusCode >= 200 && res.statusCode < 300) return callback(true);
+		JLog.error("디스코드 웹훅 응답 오류: HTTP " + res.statusCode);
+		callback(false);
 	});
-
-	req.on('error', (e) => {
-		JLog.error(`디스코드 웹훅 오류: ${e.message}`);
+	req.on('timeout', function () {
+		req.destroy(new Error("timeout"));
 	});
+	req.on('error', function (e) {
+		JLog.error("디스코드 웹훅 오류: " + e.message);
+		callback(false);
+	});
+	req.end(body);
+}
+function handleReport(reporterId, msg) {
+	var $c = DIC[reporterId];
+	var $target = DIC[msg.target];
+	var reason = Const.REPORT_REASONS.hasOwnProperty(msg.reason) ? Const.REPORT_REASONS[msg.reason] : null;
+	var detail = typeof msg.detail == "string" ? msg.detail.trim() : "";
+	var now = Date.now();
 
-	req.write(payload);
-	req.end();
+	if (!$c) return;
+	if ($c.guest && !GUEST_PERMISSION.report) return $c.sendError(458);
+	if (!reason || !detail || detail.length > Const.REPORT_DETAIL_MAX) return $c.sendError(483);
+	if (!$target) return $c.sendError(450);
+	if ($target.id == $c.id) return $c.sendError(485);
+	if (LAST_REPORT[$c.id] && now - LAST_REPORT[$c.id] < Const.REPORT_COOLDOWN) return $c.sendError(482);
+
+	LAST_REPORT[$c.id] = now;
+	sendReportToDiscord($c, $target, reason, detail, function (ok) {
+		if (!ok) delete LAST_REPORT[$c.id];
+		if (!DIC[$c.id]) return;
+		if (ok) {
+			JLog.info("신고 접수 #" + $c.id + " -> #" + $target.id + " (" + msg.reason + ")");
+			$c.send('reportDone', { target: $target.id });
+		} else $c.sendError(484);
+	});
 }
 function narrateFriends(id, friends, stat) {
 	if (!friends) return;
@@ -292,6 +375,7 @@ Cluster.on('message', function (worker, msg) {
 				DIC[temp].send('tail', { a: "room", rid: msg.place, id: msg.id, msg: msg.msg });
 			}
 			checkTailUser(msg.id, msg.place, msg.msg);
+			UserLog.record(msg.id, msg.place, msg.msg, getLogName);
 			break;
 		case "okg":
 			if (DIC[msg.id]) DIC[msg.id].onOKG(msg.time);
@@ -392,12 +476,15 @@ Cluster.on('message', function (worker, msg) {
 			delete ROOM[msg.room.id];
 			break;
 		case "report":
-			sendReportToDiscord(msg.data.reporter, msg.data.target, msg.data.reason);
+			handleReport(msg.id, msg.msg || {});
 			break;
 		default:
 			JLog.warn(`처리되지 않은 IPC 메시지 유형: ${msg.type}`);
 	}
 });
+KKuTu.onClientLog = function ($c, msg) {
+	UserLog.record($c.id, $c.place, msg, getLogName);
+};
 exports.init = function (_SID, _CHAN) {
 	SID = _SID;
 	CHAN = _CHAN;
@@ -573,6 +660,7 @@ function joinNewUser($c) {
 	narrateFriends($c.id, $c.friends, "on");
 	KKuTu.publish('conn', { user: $c.getData() });
 
+	UserLog.add($c.id, 0, "접속");
 	JLog.info("새 사용자 #" + $c.id);
 }
 
@@ -755,23 +843,7 @@ function processClientRequest($c, msg) {
 			break;
 		*/
 		case 'report':
-			if (!msg.target || !msg.reason) return;
-			if ($c.guest && !GUEST_PERMISSION.report) {
-				$c.sendError(458);
-				return;
-			}
-			var REPORT_COOLDOWN = 60 * 1000;
-			if ($c._lastReport && now - $c._lastReport < REPORT_COOLDOWN) {
-				$c.send('notice', { value: "신고는 1분에 한 번만 가능합니다." });
-				return;
-			}
-			if (!DIC[msg.target]) {
-				$c.sendError(450);
-				return;
-			}
-			sendReportToDiscord($c, msg.target, msg.reason);
-			$c._lastReport = now;
-			$c.send('notice', { value: "신고가 접수되었습니다." });
+			handleReport($c.id, msg);
 			break;
 		case 'test':
 			checkTailUser($c.id, $c.place, msg);
@@ -792,6 +864,7 @@ KKuTu.onClientClosed = function ($c, code) {
 	if ($c.socket) $c.socket.removeAllListeners();
 	if ($c.friends) narrateFriends($c.id, $c.friends, "off");
 	KKuTu.publish('disconn', { id: $c.id });
+	UserLog.add($c.id, $c.place, "접속 종료");
 
 	JLog.alert("퇴장 #" + $c.id);
 };

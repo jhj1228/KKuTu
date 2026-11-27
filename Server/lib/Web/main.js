@@ -333,6 +333,8 @@ Server.get("/", function (req, res) {
 			'CATEGORIES': Const.CATEGORIES,
 			'GROUPS': Const.GROUPS,
 			'FIXED_NICK_COST': Const.FIXED_NICK_COST,
+			'REPORT_REASONS': Const.REPORT_REASONS,
+			'REPORT_DETAIL_MAX': Const.REPORT_DETAIL_MAX,
 			'MODE': Const.GAME_TYPE,
 			'GUEST_ROOM_TITLES': Const.GUEST_ROOM_TITLES,
 			'RULE': Const.RULE,

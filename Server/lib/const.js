@@ -90,6 +90,16 @@ exports.GROUPS = {
 	'deco': ["Mdeco"],
 	'back': ["Mback", "Mfront"]
 };
+exports.REPORT_REASONS = {
+	'chat': "불건전한 채팅 (욕설, 고인모독, 성희롱 등)",
+	'play': "비정상적인 플레이 (어뷰징, 버그 약용, 핵 및 매크로 등)",
+	'profile': "부적절한 닉네임 또는 소개글",
+	'ad': "홍보성 채팅",
+	'impersonate': "운영진 사칭",
+	'etc': "기타"
+};
+exports.REPORT_DETAIL_MAX = 250;
+exports.REPORT_COOLDOWN = 60000;
 exports.FIXED_NICK_COST = 1800;
 exports.getNickCode = function (id) {
 	var h = 2166136261, i;

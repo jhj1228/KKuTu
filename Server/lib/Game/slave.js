@@ -512,25 +512,7 @@ KKuTu.onClientMessage = function ($c, msg) {
 			ROOM[$c.place].setAI(msg.target, Math.round(msg.level), Math.round(msg.team));
 			break;
 		case 'report':
-			if (!msg.target || !msg.reason) return;
-			if ($c._lastReport && now - $c._lastReport < 60000) {
-				$c.send('notice', { value: "신고는 1분에 한 번만 가능합니다." });
-				return;
-			}
-			process.send({
-				type: "report",
-				data: {
-					reporter: {
-						nickname: $c.profile.title || $c.profile.name,
-						id: $c.id
-					},
-					target: msg.target,
-					reason: msg.reason
-				}
-			});
-
-			$c._lastReport = now;
-			$c.send('notice', { value: "신고가 접수되었습니다." });
+			process.send({ type: "report", id: $c.id, msg: { target: msg.target, reason: msg.reason, detail: msg.detail } });
 			break;
 		case 'ping':
 			$c.send('pong', { t: msg.t });

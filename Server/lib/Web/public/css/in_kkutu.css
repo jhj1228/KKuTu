@@ -819,14 +819,14 @@ iframe {
 	width: auto;
 }
 
-:is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok),
-.tail-button :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok) {
+:is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok, #report-ok),
+.tail-button :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok, #report-ok) {
 	border-color: var(--primary);
 	color: #FFFFFF;
 	background-color: var(--primary);
 }
 
-.tail-button :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok):hover {
+.tail-button :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok, #report-ok):hover {
 	border-color: var(--primary-hover);
 	color: #FFFFFF;
 	background-color: var(--primary-hover);
@@ -868,12 +868,12 @@ iframe {
 	line-height: 1;
 }
 
-.dialog :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok) {
+.dialog :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok, #report-ok) {
 	border-color: transparent !important;
 	background-image: var(--primary-grad);
 }
 
-.dialog :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok):hover {
+.dialog :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok, #report-ok):hover {
 	filter: brightness(0.94);
 }
 
@@ -1564,6 +1564,40 @@ iframe {
 	font-weight: bold;
 	width: 250px;
 	font-size: 16px;
+}
+
+#ReportDiag .report-label {
+	float: none;
+	width: 100%;
+	text-align: left;
+	font-weight: 700;
+	color: var(--text);
+}
+
+#ReportDiag #report-reason {
+	float: none;
+	width: 100% !important;
+}
+
+#ReportDiag #report-detail {
+	display: block;
+	box-sizing: border-box;
+	padding: 6px 8px;
+	width: 100%;
+	height: 120px;
+	font-size: 13px;
+	line-height: 1.5;
+	resize: none;
+}
+
+#report-warning {
+	box-sizing: border-box;
+	padding: 6px 8px;
+	width: 100%;
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--danger);
+	background-color: var(--danger-soft);
 }
 
 label.name-tag {

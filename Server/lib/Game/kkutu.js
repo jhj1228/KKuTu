@@ -322,6 +322,7 @@ exports.Client = function (socket, profile, sid) {
 		var isPictureQuizEvent = data && data.type === 'pictureQuiz';
 		if (!isPictureQuizEvent) JLog.log(`채널 @${channel} 메시지 #${my.id}: ${msg}`);
 		if (Cluster.isWorker && !isPictureQuizEvent) process.send({ type: "tail-report", id: my.id, chan: channel, place: my.place, msg: data.error ? msg : data });
+		if (Cluster.isMaster && exports.onClientLog) exports.onClientLog(my, data);
 
 		if (data && data.type === 'ping') {
 			my.send('pong', { t: data.t });

@@ -4598,7 +4598,13 @@ function onMessage(data) {
 				document.onkeyup = undefined;
 			}
 			break;
+		case 'reportDone':
+			$stage.dialog.report.hide();
+			$stage.dialog.reportOK.prop('disabled', false);
+			showAlert(L['reportDone']);
+			break;
 		case 'error':
+			$stage.dialog.reportOK.prop('disabled', false);
 			i = data.message || "";
 			if (data.code == 401) {
 				/* 로그인
@@ -7862,27 +7868,25 @@ $(document).ready(function () {
 	});
 });
 function requestReport() {
-	var targetUser = $data.users[$data._profiled] || $data.usersR[$data._profiled];
-	if (!targetUser) return notice(L['notReport']);
-	$("#report-reason-select").val("");
-	$("#report-reason-text").val("").attr("placeholder", "신고 사유를 구체적으로 입력해 주세요. 최대 250자 작성할 수 있으며, 신고 사유가 구체적일수록 처리하기 수월해집니다.");
+	var target = $data.users[$data._profiled] || $data.usersR[$data._profiled];
+
+	if ($data.guest) return fail(458);
+	if (!target) return notice(L['notReport']);
+	$data._reportTarget = target.id;
+	$("#ReportDiag .dialog-title").text(L['reportTitle'].replace("{V1}", getDisplayName(target)));
+	$("#report-reason").val("");
+	$("#report-detail").val("");
+	$stage.dialog.reportOK.prop('disabled', false);
 	showDialog($stage.dialog.report);
 }
 function submitReport() {
-	var selectedReason = $("#report-reason-select").val();
-	var detail = $("#report-reason-text").val().trim();
-	if (!selectedReason) {
-		return notice(L['profileReportX']);
-	}
-	if (!detail) {
-		return notice(L['profileReportXX']);
-	}
-	if (!$data._profiled) {
-		return notice(L['notReport']);
-	}
-	var finalReason = "[" + selectedReason + "] " + detail;
-	send('report', { target: $data._profiled, reason: finalReason });
-	$stage.dialog.report.hide();
+	var reason = $("#report-reason").val();
+	var detail = $.trim($("#report-detail").val());
+
+	if (!reason) return showAlert(L['reportNeedReason']);
+	if (!detail) return showAlert(L['reportNeedDetail']);
+	$stage.dialog.reportOK.prop('disabled', true);
+	send('report', { target: $data._reportTarget, reason: reason, detail: detail }, true);
 }
 
 function showBlacklist() {
