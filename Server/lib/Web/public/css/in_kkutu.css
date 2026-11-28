@@ -819,6 +819,17 @@ iframe {
 	width: auto;
 }
 
+.dialog-bar select#invite-robot-level {
+	flex: 1;
+	min-width: 0;
+	width: auto;
+}
+
+#invite-robot-bar {
+	align-items: center;
+	flex-wrap: nowrap;
+}
+
 :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok, #report-ok),
 .tail-button :is(#setting-ok, #mailbox-claim-all, #mailbox-claim, #quick-ok, #room-ok, #injpick-ok, #speedquizpick-ok, #practice-ok, #result-ok, #dict-search, #room-info-join, #purchase-ok, #replay-view, #dress-ok, #wardrobe-save, #cf-compose, #obtain-ok, #alert-ok, #kick-vote-yes, #nickname-setup-ok, #enhance-ok, #report-ok) {
 	border-color: var(--primary);

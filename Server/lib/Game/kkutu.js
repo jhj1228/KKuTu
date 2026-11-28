@@ -1049,7 +1049,7 @@ exports.Room = function (room, channel) {
 			pq: my.pq
 		};
 	};
-	my.addAI = function (caller) {
+	my.addAI = function (caller, reqLevel) {
 		if (my.players.length >= my.limit) {
 			return caller.sendError(429);
 		}
@@ -1059,7 +1059,9 @@ exports.Room = function (room, channel) {
 		if (!my.rule.ai) {
 			return caller.sendError(415);
 		}
-		var level = caller.admin ? 5 : 2;
+		var level = Math.round(Number(reqLevel));
+
+		if (isNaN(level) || level < 0 || level > 5) level = caller.admin ? 5 : 2;
 
 		my.players.push(new exports.Robot(null, my.id, level));
 		my.export();

@@ -826,6 +826,10 @@ $(document).ready(function () {
 		showDialog($stage.dialog.wordPlus);
 	});
 	$stage.menu.invite.on('click', function (e) {
+		if (!$data._inviteLevelSet) {
+			$data._inviteLevelSet = true;
+			$("#invite-robot-level").val($data.admin ? 5 : 2);
+		}
 		showDialog($stage.dialog.invite);
 		updateUserList(true);
 	});
@@ -6141,7 +6145,7 @@ function requestInvite(id) {
 			send('invite', { target: id });
 		});
 	} else {
-		send('invite', { target: id });
+		send('invite', { target: id, level: Number($("#invite-robot-level").val()) });
 	}
 }
 function checkFailCombo(id) {

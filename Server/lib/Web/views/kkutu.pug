@@ -637,8 +637,11 @@ block Middle
 			button#dict-search= L('SEARCH')
 	+Dialog('InviteDiag', 300, 420, L('invite'))
 		div.invite-board(style='height: 355px; overflow-y: scroll;')
-		div.dialog-bar.tail-button
+		div.dialog-bar.tail-button#invite-robot-bar
 			button#invite-robot= L('inviteRobot')
+			select#invite-robot-level
+				- for(var lv = 0; lv <= 5; lv++)
+					option(value=lv, selected=(lv == 2))= L('aiLevel' + lv)
 	+Dialog('RoomInfoDiag', 300, 365)
 		div.dialog-bar.room-info-head
 			h4= L('roomTitle')

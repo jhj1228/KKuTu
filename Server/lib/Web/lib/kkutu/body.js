@@ -2179,7 +2179,7 @@ function requestInvite(id) {
 			send('invite', { target: id });
 		});
 	} else {
-		send('invite', { target: id });
+		send('invite', { target: id, level: Number($("#invite-robot-level").val()) });
 	}
 }
 function checkFailCombo(id) {

@@ -426,7 +426,7 @@ KKuTu.onClientMessage = function ($c, msg) {
 			if (ROOM[$c.place].master != $c.id) return;
 			if (!GUEST_PERMISSION.invite) if ($c.guest) return;
 			if (msg.target == "AI") {
-				ROOM[$c.place].addAI($c);
+				ROOM[$c.place].addAI($c, msg.level);
 			} else {
 				process.send({ type: "invite", id: $c.id, place: $c.place, target: msg.target });
 			}

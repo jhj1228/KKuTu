@@ -753,6 +753,10 @@ $(document).ready(function () {
 		showDialog($stage.dialog.wordPlus);
 	});
 	$stage.menu.invite.on('click', function (e) {
+		if (!$data._inviteLevelSet) {
+			$data._inviteLevelSet = true;
+			$("#invite-robot-level").val($data.admin ? 5 : 2);
+		}
 		showDialog($stage.dialog.invite);
 		updateUserList(true);
 	});
