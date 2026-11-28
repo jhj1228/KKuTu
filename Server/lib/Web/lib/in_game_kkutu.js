@@ -4801,15 +4801,15 @@ function runCommand(cmd) {
 				cmd[1] = cmd.slice(1).join(' ');
 				for (i in $data.users) {
 					if (getDisplayName($data.users[i]) == cmd[1] || getCallName($data.users[i]) == cmd[1]) {
-						notice("[" + (++c) + "] " + i);
+						notice("[" + (++c) + "] " + formatIdCode(i));
 					}
 				}
 				if (!c) requestUserIdByName(cmd[1], function (res) {
-					if (res && res.id) notice("[1] " + res.id);
+					if (res && res.id) notice("[1] " + formatIdCode(res.id));
 					else notice(L['error_405']);
 				});
 			} else {
-				notice(L['myId'] + $data.id);
+				notice(L['myId'] + formatIdCode($data.id));
 			}
 			break;
 		case "/p":
@@ -4855,6 +4855,11 @@ function sendWhisper(target, text) {
 		send('talk', { whisper: target, value: text }, true);
 		chat({ title: "→" + target }, text, true);
 	}
+}
+function formatIdCode(id) {
+	var code = "#" + getNickCode(id);
+
+	return $data.admin ? code + " (" + id + ")" : code;
 }
 function requestUserIdByName(target, callback) {
 	if (!target) return callback({ error: 400 });
