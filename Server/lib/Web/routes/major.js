@@ -759,8 +759,6 @@ exports.run = function (Server, page) {
 			var box = $user.box || {};
 			var have = { ko: {}, en: {} };
 			var jobs = [];
-			var found = [];
-			var left;
 			var k, n, ch, lang, table;
 
 			for (k in box) {
@@ -777,21 +775,33 @@ exports.run = function (Server, page) {
 				if (table && Object.keys(have[lang]).length) jobs.push([table, have[lang]]);
 			}
 			if (!jobs.length) return res.json({ error: 471 });
-			left = jobs.length;
-			jobs.forEach(function (job) {
-				findComposableWords(job[0], job[1], function (words) {
-					found = found.concat(words);
-					if (--left) return;
-					if (!found.length) return res.json({ error: 471 });
-					res.json({ word: found[Math.floor(Math.random() * found.length)] });
+			searchAll("{2,6}", function (found) {
+				if (found.length) return pick(found);
+				searchAll("", function (single) {
+					if (!single.length) return res.json({ error: 471 });
+					pick(single);
 				});
 			});
+			function searchAll(range, done) {
+				var left = jobs.length;
+				var found = [];
+
+				jobs.forEach(function (job) {
+					findComposableWords(job[0], job[1], range, function (words) {
+						found = found.concat(words);
+						if (!--left) done(found);
+					});
+				});
+			}
+			function pick(list) {
+				res.json({ word: list[Math.floor(Math.random() * list.length)] });
+			}
 		});
 	});
-	function findComposableWords(table, have, callback) {
+	function findComposableWords(table, have, range, callback) {
 		var cls = Object.keys(have).map(function (c) { return c.replace(/[\\\]\[^-]/g, "\\$&"); }).join('');
 
-		table.find(['_id', new RegExp("^[" + cls + "]{2,6}$")]).limit(5000).on(function ($docs) {
+		table.find(['_id', new RegExp("^[" + cls + "]" + range + "$")]).limit(5000).on(function ($docs) {
 			callback(($docs || []).map(function (doc) { return doc._id; }).filter(function (word) {
 				var used = {};
 				var i;

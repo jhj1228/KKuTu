@@ -508,13 +508,13 @@ iframe {
 	border-color: var(--primary-soft-2);
 }
 
-#RoomDiag .dialog-bar:has(.dialog-opt) {
+:is(#QuickDiag, #RoomDiag) .dialog-bar:has(.dialog-opt) {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	column-gap: 4px;
 }
 
-#RoomDiag .dialog-bar:has(.dialog-opt) > h4 {
+:is(#QuickDiag, #RoomDiag) .dialog-bar:has(.dialog-opt) > h4 {
 	grid-column: 1 / -1;
 }
 
@@ -603,13 +603,13 @@ iframe {
 	width: 100px;
 }
 
-#RoomDiag .dialog-opt {
+:is(#QuickDiag, #RoomDiag) .dialog-opt {
 	float: none;
 	width: auto;
 	min-width: 0;
 }
 
-#RoomDiag .dialog-opt label {
+:is(#QuickDiag, #RoomDiag) .dialog-opt label {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
