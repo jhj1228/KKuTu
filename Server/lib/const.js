@@ -50,6 +50,7 @@ exports.OPTIONS = {
 	// 'bom': { name: "Boom" }, // 폭탄
 	// 'rvs': { name: "Reverse" }, // 리버스
 	'wpk': { name: "Wordpick" }, // 워드픽
+	'bgb': { name: "Bigboard" }, // 큰 보드
 	'ulm': { name: "Unlimited" }, // 무제한
 	'due': { name: "Dueum" }, // 두음법칙 금지
 	'thw': { name: "Threeword" }, // 3글자
@@ -198,7 +199,7 @@ exports.RULE = {
 	'KSS': { // 솎솎
 		lang: "ko",
 		rule: "Sock",
-		opts: ["no2", "wpk", "spc", "ngs"],
+		opts: ["no2", "wpk", "bgb", "spc", "ngs"],
 		time: 1,
 		ai: false,
 		big: true,

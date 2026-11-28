@@ -104,7 +104,9 @@ $lib.Sock.drawMaps = function () {
 $lib.Sock.drawDisplay = function () {
 	var $a = $("<div>").css('height', "100%"), $c;
 	var va = $data._board.split("");
-	var size = ($data._lang == "ko") ? "12.5%" : "10%";
+	var big = !!($data.room && $data.room.opts && $data.room.opts.bigboard);
+	var cols = ($data._lang == "ko") ? (big ? 10 : 8) : (big ? 12 : 10);
+	var size = (100 / cols) + "%";
 
 	va.forEach(function (item, index) {
 		$a.append($c = $("<div>").addClass("sock-char sock-" + item).css({ width: size, height: size }).html(item));

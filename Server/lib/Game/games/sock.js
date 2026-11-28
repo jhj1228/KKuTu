@@ -26,11 +26,15 @@ const LANG_STATS = {
 		reg: /^[가-힣]{2,5}$/,
 		add: ['type', Const.KOR_GROUP],
 		len: 64,
-		min: 5
+		min: 5,
+		bigLen: 100,
+		bigMin: 8
 	}, 'en': {
 		reg: /^[a-z]{4,10}$/,
 		len: 100,
-		min: 10
+		min: 10,
+		bigLen: 144,
+		bigMin: 14
 	}
 };
 
@@ -51,7 +55,9 @@ exports.roundReady = function () {
 	var my = this;
 	var words = [];
 	var conf = LANG_STATS[my.rule.lang];
-	var len = conf.len;
+	var boardLen = my.opts.bigboard ? conf.bigLen : conf.len;
+	var minLeft = my.opts.bigboard ? conf.bigMin : conf.min;
+	var len = boardLen;
 	var i, w;
 	var searchReg = conf.reg;
 	if (my.rule.lang === 'ko' && my.opts.wordpick && my.opts.no2) {
@@ -67,7 +73,7 @@ exports.roundReady = function () {
 			while (w = $docs.shift()) {
 				words.push(w._id);
 				i = w._id.length;
-				if ((len -= i) <= conf.min) break;
+				if ((len -= i) <= minLeft) break;
 			}
 			words.sort(function (a, b) { return b.length - a.length; });
 
@@ -75,7 +81,7 @@ exports.roundReady = function () {
 				my.game.answers = words.slice();
 			}
 			my.game.words = [];
-			my.game.board = getBoard(words, conf.len);
+			my.game.board = getBoard(words, boardLen);
 			my.byMaster('roundReady', {
 				round: my.game.round,
 				board: my.game.board,

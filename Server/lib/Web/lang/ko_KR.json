@@ -330,6 +330,8 @@
 		"explGentle": "이을 수 있는 단어가 7개 이하일 경우 사용할 수 없게 합니다.",
 		"optWordpick": "워드픽",
 		"explWordpick": "앞글자가 공개된 단어들을 보고 올바른 단어를 솎아냅니다.",
+		"optBigboard": "큰 보드",
+		"explBigboard": "보드 판의 크기가 8x8에서 10x10으로 커집니다.",
 		"optUnlimited": "무제한",
 		"explUnlimited": "출제되는 단어의 길이를 무제한으로 조절합니다.",
 		"optThreeword": "3글자",
