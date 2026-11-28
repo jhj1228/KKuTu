@@ -6050,7 +6050,7 @@ function requestProfile(id) {
 		}
 		$stage.dialog.profileWhisper.show();
 		$stage.dialog.profileReport.show();
-		$stage.dialog.profileFriend.show();
+		if (!isFriend(id)) $stage.dialog.profileFriend.show();
 	}
 	if ($data.room) {
 		if ($data.id != id && $data.id == $data.room.master) {
@@ -6062,6 +6062,9 @@ function requestProfile(id) {
 	showDialog($stage.dialog.profile);
 	$stage.dialog.profile.show();
 	global.expl($ex);
+}
+function isFriend(id) {
+	return !!($data.friends && $data.friends.hasOwnProperty(id));
 }
 function showOfflineProfile(o, id) {
 	var $rec = $("#profile-record").empty();
@@ -6122,7 +6125,7 @@ function showOfflineProfile(o, id) {
 		} else {
 			$stage.dialog.profileShut.text(L['shut']);
 		}
-		$stage.dialog.profileFriend.show();
+		if (!isFriend(id)) $stage.dialog.profileFriend.show();
 	}
 
 	showDialog($stage.dialog.profile);
