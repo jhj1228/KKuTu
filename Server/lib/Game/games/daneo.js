@@ -51,6 +51,8 @@ exports.roundReady = function () {
 	if (my.game.round <= my.round) {
 		my.game.theme = my.opts.injpick[Math.floor(Math.random() * ijl)];
 		my.game.chain = [];
+		my.game.robotWords = null;
+		if (hasRobot(my)) loadRobotWords.call(my, my.game.round, my.game.theme);
 		if (my.opts.mission) my.game.mission = getMission(my.rule.lang);
 		my.byMaster('roundReady', {
 			round: my.game.round,
@@ -248,7 +250,11 @@ exports.readyRobot = function (robot) {
 			!my.game.late;
 	}
 
-	getRandomWords.call(my, ["theme ~ " + PgEscape.literal("(^|,)" + my.game.theme + "($|,)"), "char_length(_id) <= " + ROBOT_LENGTH_LIMIT[level]], 0, function (list) {
+	var cached = my.game.robotWords ? pickCachedWords(my.game.robotWords, my.game.chain || [], ROBOT_LENGTH_LIMIT[level]) : null;
+
+	if (cached && (cached.length || my.game.robotWords.length < 3000)) {
+		pickList(cached);
+	} else getRandomWords.call(my, ["theme ~ " + PgEscape.literal("(^|,)" + my.game.theme + "($|,)"), "char_length(_id) <= " + ROBOT_LENGTH_LIMIT[level]], 0, function (list) {
 		if (!isCurrentTurn()) return;
 		if (list.length) pickList(list);
 		else denied();
@@ -275,14 +281,41 @@ exports.readyRobot = function (robot) {
 		}, delay);
 	}
 };
-function getRandomWords(where, sample, callback) {
+function hasRobot(my) {
+	var i;
+
+	for (i in my.game.seq) if (my.game.seq[i] && my.game.seq[i].robot) return true;
+	return false;
+}
+function loadRobotWords(round, theme) {
+	var my = this;
+
+	getRandomWords.call(my, ["theme ~ " + PgEscape.literal("(^|,)" + theme + "($|,)")], 0, function (list) {
+		if (my.game.round !== round || my.game.theme !== theme) return;
+		my.game.robotWords = list;
+	}, 3000, true);
+}
+function pickCachedWords(words, chain, maxLen) {
+	var used = {};
+	var list = [];
+	var i, w;
+
+	for (i = 0; i < chain.length; i++) used[chain[i]] = true;
+	for (i = 0; i < words.length; i++) {
+		w = words[i];
+		if (w._id.length > maxLen || used[w._id]) continue;
+		list.push(w);
+	}
+	return list.length ? [list[Math.floor(Math.random() * list.length)]] : [];
+}
+function getRandomWords(where, sample, callback, limit, ignoreChain) {
 	var my = this;
 	var chain = my.game.chain || [];
 	var cond = where.slice();
 
-	if (chain.length) cond.push("_id <> ALL(ARRAY[" + chain.map(function (w) { return PgEscape.literal(String(w)); }).join(",") + "]::text[])");
+	if (chain.length && !ignoreChain) cond.push("_id <> ALL(ARRAY[" + chain.map(function (w) { return PgEscape.literal(String(w)); }).join(",") + "]::text[])");
 	my.getWordTable().direct("SELECT _id, hit FROM " + my.getWordTableName() + (sample ? " TABLESAMPLE BERNOULLI (" + sample + ")" : "") +
-		(cond.length ? " WHERE " + cond.join(" AND ") : "") + " ORDER BY random() LIMIT 123", function (error, $res) {
+		(cond.length ? " WHERE " + cond.join(" AND ") : "") + " ORDER BY random() LIMIT " + (limit || 123), function (error, $res) {
 		callback(error ? [] : $res.rows);
 	}, true);
 }
