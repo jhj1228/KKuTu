@@ -909,27 +909,16 @@ block Middle
 			div.b-left.pqcmd(style='display: none;')
 				div
 					h3 색상 선택
-					div.pqColorList
-						div.pqColor(color="black")
-						div.pqColor(color="white")
-						div.pqColor(color="red")
-						div.pqColor(color="brightred")
-						div.pqColor(color="orange")
-						div.pqColor(color="slightlybrightorange")
-						div.pqColor(color="brightorange")
-						div.pqColor(color="yellow")
-						div.pqColor(color="mint")
-						div.pqColor(color="green")
-						div.pqColor(color="aqua")
-						div.pqColor(color="blue")
-						div.pqColor(color="indiago")
-						div.pqColor(color="darkred")
-						div.pqColor(color="purple")
-						div.pqColor(color="brightgray")
-						div.pqColor(color="slightlybrightgray")
-						div.pqColor(color="gray")
-						div.pqColor(color="slightlydarkgray")
-						div.pqColor(color="darkgray")
+					div.pqColorRow
+						div.pqColorList
+							div.pqColor(color="black")
+							div.pqColor(color="white")
+							div.pqColor(color="red")
+							div.pqColor(color="yellow")
+							div.pqColor(color="green")
+							div.pqColor(color="blue")
+						button#pq-custom-pick 선택
+						input#pq-custom-color(type="color", value="#000000")
 					h3 굵기 선택
 					div.pqWidthList
 						div.pqWidth(width="1") ·

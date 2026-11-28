@@ -2989,10 +2989,71 @@ label.profile-tag {
 	margin-right: 1px;
 }
 
-.pqColorList {
+.pqColorRow {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	gap: 5px;
+	clear: both;
+	width: 100%;
+	margin-bottom: 5px;
+}
+
+.pqColorRow + h3 {
+	clear: both;
+}
+
+.pqColorRow .pqColorList {
 	height: 13px;
-	width: 285px;
-	float: left !important;
+	width: auto;
+	float: none !important;
+	margin-bottom: 0;
+}
+
+#pq-custom-pick {
+	float: none;
+	box-sizing: border-box;
+	height: auto;
+	min-height: 0;
+	padding: 0 8px;
+	font-size: 12px;
+	line-height: 1;
+	border-color: #C9D1DC;
+	color: #4E5A6B;
+	background-color: #FFFFFF;
+	transition: background-color 140ms ease, color 140ms ease;
+}
+
+#pq-custom-pick:hover {
+	color: #18202C;
+	background-color: #EDF1F6;
+}
+
+#pq-custom-pick.pqSelected {
+	border-color: #4E5A6B;
+}
+
+#pq-custom-pick.pqSelected::before {
+	content: "";
+	display: inline-block;
+	margin-right: 4px;
+	width: 9px;
+	height: 9px;
+	vertical-align: -1px;
+	border: 1px solid #C9D1DC;
+	background-color: var(--pq-custom, #000);
+}
+
+#pq-custom-color {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	width: 0;
+	height: 0;
+	padding: 0;
+	border: 0;
+	opacity: 0;
+	pointer-events: none;
 }
 
 .pqColorList,
@@ -3041,62 +3102,6 @@ label.profile-tag {
 
 .pqColor[color="blue"] {
 	background-color: #00f;
-}
-
-.pqColor[color="darkred"] {
-	background-color: #910000;
-}
-
-.pqColor[color="orange"] {
-	background-color: #ff9000;
-}
-
-.pqColor[color="aqua"] {
-	background-color: #00ffe4;
-}
-
-.pqColor[color="purple"] {
-	background-color: #d400f4;
-}
-
-.pqColor[color="brightred"] {
-	background-color: #ff2390;
-}
-
-.pqColor[color="brightorange"] {
-	background-color: #ffe0cd;
-}
-
-.pqColor[color="indiago"] {
-	background-color: #0a00fe;
-}
-
-.pqColor[color="slightlybrightorange"] {
-	background-color: #ffb2b2;
-}
-
-.pqColor[color="mint"] {
-	background-color: #3dff81;
-}
-
-.pqColor[color="brightgray"] {
-	background-color: #dbdbdb;
-}
-
-.pqColor[color="slightlybrightgray"] {
-	background-color: #b6b6b6;
-}
-
-.pqColor[color="gray"] {
-	background-color: #8d8d8d;
-}
-
-.pqColor[color="slightlydarkgray"] {
-	background-color: #5c5c5c;
-}
-
-.pqColor[color="darkgray"] {
-	background-color: #343434;
 }
 
 .pqWidth {

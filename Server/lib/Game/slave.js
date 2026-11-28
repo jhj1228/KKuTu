@@ -91,9 +91,10 @@ function canRelayPictureQuizEvent(client, msg) {
 			if (!state.drawing) return false;
 			state.drawing = false;
 			return true;
+		case 'setColor':
+			return typeof msg.color == "string" && /^(#[0-9a-fA-F]{6}|[a-z]{1,24})$/.test(msg.color);
 		case 'clearall':
 		case 'undo':
-		case 'setColor':
 		case 'setWidth':
 			return true;
 		default:

@@ -165,9 +165,11 @@ $lib.PictureQuiz.clearAll = function () {
 
 $lib.PictureQuiz.setColor = function (c) {
     var my = $data.pq;
-    var color = "#00000";
-    color = $(".pqColor[color=" + c + "]").css("background-color");
-    my.ctx.strokeStyle = color;
+    var color;
+
+    if (/^#[0-9a-f]{6}$/i.test(c)) color = c;
+    else if (/^[a-z]+$/.test(c)) color = $(".pqColor[color=" + c + "]").css("background-color");
+    my.ctx.strokeStyle = color || "#000000";
 };
 
 $lib.PictureQuiz.setWidth = function (c) {
@@ -207,7 +209,7 @@ $lib.PictureQuiz.roundReady = function (data) {
     clearInterval($data._tTime);
     $(".pqcmd").show().css('opacity', 1).css('visibility', 'hidden');
 
-    $(".pqColor").removeClass("pqSelected");
+    $(".pqColor, #pq-custom-pick").removeClass("pqSelected");
     $(".pqWidth").removeClass("pqSelected");
     $(".pqColor[color=black]").addClass("pqSelected");
     $(".pqWidth[width=1]").addClass("pqSelected");
@@ -225,12 +227,27 @@ $lib.PictureQuiz.roundReady = function (data) {
         $(".pqColor").off("click");
         $(".pqWidth").off("click");
         $(".pqColor").click(function () {
-            $(".pqColor").removeClass("pqSelected");
+            $(".pqColor, #pq-custom-pick").removeClass("pqSelected");
             $(this).addClass("pqSelected");
             $lib.PictureQuiz.setColor($(this).attr("color"));
             sendPictureQuiz({
                 eventtype: "setColor",
                 color: $(this).attr("color")
+            });
+        });
+        $("#pq-custom-pick").off("click").on("click", function () {
+            $("#pq-custom-color").trigger("click");
+        });
+        $("#pq-custom-color").off("change").on("change", function () {
+            var hex = String(this.value || "").toLowerCase();
+
+            if (!/^#[0-9a-f]{6}$/.test(hex)) return;
+            $(".pqColor").removeClass("pqSelected");
+            $("#pq-custom-pick").addClass("pqSelected")[0].style.setProperty("--pq-custom", hex);
+            $lib.PictureQuiz.setColor(hex);
+            sendPictureQuiz({
+                eventtype: "setColor",
+                color: hex
             });
         });
         $(".pqWidth").click(function () {
@@ -246,6 +263,8 @@ $lib.PictureQuiz.roundReady = function (data) {
         $(".pqcmd").css('visibility', 'hidden');
         $(".pqColor").off("click");
         $(".pqWidth").off("click");
+        $("#pq-custom-pick").off("click");
+        $("#pq-custom-color").off("change");
     }
     $("#pq_clear").off("click");
     $("#pq_clear").click(function () {
