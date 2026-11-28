@@ -18,12 +18,14 @@
 
 var Const = require('../../const');
 var Lizard = require('../../sub/lizard');
+var PgEscape = require('pg-escape');
 var DB;
 var DIC;
 
 const ROBOT_START_DELAY = [1200, 800, 400, 200, 50, 0];
 const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 100, 0];
 const ROBOT_THINK_COEF = [4, 2, 1, 0, 0, 0];
+const ROBOT_LENGTH_LIMIT = [3, 4, 9, 15, 20, 99];
 
 exports.init = function (_DB, _DIC) {
 	DB = _DB;
@@ -246,13 +248,10 @@ exports.readyRobot = function (robot) {
 			!my.game.late;
 	}
 
-	getAuto.call(my, my.game.theme, 2).then(function (list) {
+	getRandomWords.call(my, ["theme ~ " + PgEscape.literal("(^|,)" + my.game.theme + "($|,)"), "char_length(_id) <= " + ROBOT_LENGTH_LIMIT[level]], 0, function (list) {
 		if (!isCurrentTurn()) return;
-		if (list.length) {
-			list.sort(function () { return Math.random() - 0.5; });
-
-			pickList(list);
-		} else denied();
+		if (list.length) pickList(list);
+		else denied();
 	});
 	function denied() {
 		text = "... T.T";
@@ -276,6 +275,17 @@ exports.readyRobot = function (robot) {
 		}, delay);
 	}
 };
+function getRandomWords(where, sample, callback) {
+	var my = this;
+	var chain = my.game.chain || [];
+	var cond = where.slice();
+
+	if (chain.length) cond.push("_id <> ALL(ARRAY[" + chain.map(function (w) { return PgEscape.literal(String(w)); }).join(",") + "]::text[])");
+	my.getWordTable().direct("SELECT _id, hit FROM " + my.getWordTableName() + (sample ? " TABLESAMPLE BERNOULLI (" + sample + ")" : "") +
+		(cond.length ? " WHERE " + cond.join(" AND ") : "") + " ORDER BY random() LIMIT 123", function (error, $res) {
+		callback(error ? [] : $res.rows);
+	}, true);
+}
 function toRegex(theme) {
 	return new RegExp(`(^|,)${theme}($|,)`);
 }

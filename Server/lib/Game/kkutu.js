@@ -981,6 +981,10 @@ exports.Room = function (room, channel) {
 		var db = my.rule.rule === "Classic" ? my.db : "p";
 		return DB.kkutu[lang === "ko" ? lang + "_" + db : lang];
 	};
+	my.getWordTableName = function (lang) {
+		lang = lang || my.rule.lang;
+		return "kkutu_" + (lang === "ko" ? lang + "_" + (my.rule.rule === "Classic" ? my.db : "p") : lang);
+	};
 	my.opts = {
 		manner: room.opts.manner,
 		extend: room.opts.injeong,

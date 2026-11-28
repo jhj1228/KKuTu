@@ -1590,6 +1590,24 @@ iframe {
 	resize: none;
 }
 
+#ReportDiag #report-ok {
+	border-color: transparent !important;
+	color: #FFFFFF;
+	font-weight: 700;
+	background-color: #7A8696;
+	background-image: linear-gradient(90deg, #8A95A4 0%, #7A8696 100%);
+	transition: filter 200ms ease;
+}
+
+#ReportDiag #report-ok:hover {
+	filter: brightness(0.94);
+}
+
+#ReportDiag #report-ok:disabled {
+	filter: none;
+	opacity: 0.5;
+}
+
 #report-warning {
 	box-sizing: border-box;
 	padding: 6px 8px;

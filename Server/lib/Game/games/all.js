@@ -18,6 +18,7 @@
 
 var Const = require('../../const');
 var Lizard = require('../../sub/lizard');
+var PgEscape = require('pg-escape');
 var DB;
 var DIC;
 
@@ -25,6 +26,7 @@ const ROBOT_START_DELAY = [1200, 800, 400, 200, 50, 0];
 const ROBOT_TYPE_COEF = [1250, 750, 500, 250, 100, 0];
 const ROBOT_THINK_COEF = [4, 2, 1, 0, 0, 0];
 const ROBOT_HIT_LIMIT = [8, 4, 2, 1, 0, 0];
+const ROBOT_LENGTH_LIMIT = [3, 4, 9, 15, 20, 99];
 
 exports.init = function (_DB, _DIC) {
 	DB = _DB;
@@ -255,35 +257,21 @@ exports.readyRobot = function (robot) {
 	var delay = ROBOT_START_DELAY[level];
 	var w, text;
 
-	var targetLang = 'ko';
+	var minHit = ROBOT_HIT_LIMIT[level] || 0;
+	var where = ["char_length(_id) <= " + ROBOT_LENGTH_LIMIT[level]].concat(minHit ? ["hit >= " + minHit] : []);
 
-	var skipCount = Math.floor(Math.random() * 10000);
-
-	function trySearch(sv) {
-		getAuto.call(my, 2, targetLang, sv).then(function (list) {
-			if (list && list.length > 0) {
-				processList(list);
-			} else {
-				if (sv > 0) {
-					trySearch(0);
-				} else {
-					denied();
-				}
-			}
+	getRandomWords.call(my, where, minHit ? 0 : 0.1, function (list) {
+		if (list.length) return pickList(list);
+		if (minHit) return denied();
+		getRandomWords.call(my, where, 0, function (all) {
+			if (all.length) pickList(all);
+			else denied();
 		});
-	}
-
-	trySearch(skipCount);
+	});
 
 	function denied() {
 		text = "... T.T";
 		after();
-	}
-
-	function processList(list) {
-		list.sort(function (a, b) { return b.hit - a.hit; });
-		if (ROBOT_HIT_LIMIT[level] > list[0].hit) denied();
-		else pickList(list);
 	}
 
 	function pickList(list) {
@@ -316,6 +304,17 @@ exports.readyRobot = function (robot) {
 		setTimeout(my.turnRobot, delay, robot, text);
 	}
 };
+function getRandomWords(where, sample, callback) {
+	var my = this;
+	var chain = my.game.chain || [];
+	var cond = where.slice();
+
+	if (chain.length) cond.push("_id <> ALL(ARRAY[" + chain.map(function (w) { return PgEscape.literal(String(w)); }).join(",") + "]::text[])");
+	my.getWordTable().direct("SELECT _id, hit FROM " + my.getWordTableName() + (sample ? " TABLESAMPLE BERNOULLI (" + sample + ")" : "") +
+		(cond.length ? " WHERE " + cond.join(" AND ") : "") + " ORDER BY random() LIMIT 123", function (error, $res) {
+		callback(error ? [] : $res.rows);
+	}, true);
+}
 function getMission(my) {
 	var arrKo = Const.MISSION_ko || [];
 	var arr = arrKo;
